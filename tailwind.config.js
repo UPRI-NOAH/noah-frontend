@@ -1,4 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   purge: ['./src/**/*.{html,ts}'],
@@ -10,6 +11,8 @@ module.exports = {
       },
       colors: {
         primary: 'var(--color-primary)',
+        'light-blue': colors.lightBlue,
+        cyan: colors.cyan,
       },
     },
   },
