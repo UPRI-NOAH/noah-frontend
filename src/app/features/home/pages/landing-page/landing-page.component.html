@@ -189,7 +189,7 @@
       <button
         type="button"
         class="text-xs uppercase font-bold tracking-wider bg-primary rounded-full px-4 py-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
-        routerLink="/map"
+        routerLink="/base"
       >
         Assess My Area
       </button>
@@ -200,24 +200,37 @@
 <!--Landing page 2nd scroll-->
 <div class="py-24 px-12 bg-gray-200">
   <div class="container mx-auto flex flex-wrap">
-    <div class="w-full md:w-1/2 md:pr-4 flex flex-wrap mb-12 md:mb-0">
-      <div class="p-2 w-1/2">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/weatherbtn.png"
-          class="w-full h-64 object-cover"
-        />
-      </div>
-      <div class="p-2 w-1/2">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/sensorbtn.png"
-          class="w-full h-64 object-cover"
-        />
-      </div>
-      <div class="p-2 w-full">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/volcanobtn.png"
-          class="w-full h-64 object-cover"
-        />
+    <div
+      class="w-full md:w-1/2 md:pr-4 flex flex-wrap mb-12 md:mb-0 relative py-3 sm:max-w-xl sm:mx-auto"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
+      ></div>
+      <div
+        class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20"
+      >
+        <div class="max-w-md mx-auto">
+          <div class="divide-y divide-gray-200">
+            <div
+              class="py-8 text-base leading-6 space-y-4 text-gray-400 sm:text-lg sm:leading-7"
+            >
+              <div class="p-2 w-full">
+                <img
+                  src="http://noah.up.edu.ph/static/img/sidebar/sensorbtn.png"
+                  class="w-full h-44 object-cover"
+                />
+              </div>
+              <p class="text-xs">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis
+                vulputate tellus. Etiam vel placerat lorem, eget ornare nibh. Ut
+                in commodo magna.
+              </p>
+            </div>
+            <div
+              class="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7"
+            ></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="w-full md:w-1/2 md:pl-4">
@@ -283,109 +296,6 @@
   </div>
 </div>
 <!--Landing page 3rd scroll-->
-
-<div
-  class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12"
->
-  <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-    <div
-      class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
-    ></div>
-    <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-      <div class="max-w-md mx-auto">
-        <div>
-          <img src="assets/icons/noah-logo.jpg" class="h-7 sm:h-8" />
-        </div>
-        <div class="divide-y divide-gray-200">
-          <div
-            class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
-          >
-            <p>
-              An advanced online playground for Tailwind CSS, including support
-              for things like:
-            </p>
-            <ul class="list-disc space-y-2">
-              <li class="flex items-start">
-                <span class="h-6 flex items-center sm:h-7">
-                  <svg
-                    class="flex-shrink-0 h-5 w-5 text-cyan-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-                <p class="ml-2">
-                  Customizing your
-                  <code class="text-sm font-bold text-gray-900"
-                    >tailwind.config.js</code
-                  >
-                  file
-                </p>
-              </li>
-              <li class="flex items-start">
-                <span class="h-6 flex items-center sm:h-7">
-                  <svg
-                    class="flex-shrink-0 h-5 w-5 text-cyan-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-                <p class="ml-2">
-                  Extracting classes with
-                  <code class="text-sm font-bold text-gray-900">@apply</code>
-                </p>
-              </li>
-              <li class="flex items-start">
-                <span class="h-6 flex items-center sm:h-7">
-                  <svg
-                    class="flex-shrink-0 h-5 w-5 text-cyan-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-                <p class="ml-2">Code completion with instant preview</p>
-              </li>
-            </ul>
-            <p>
-              Perfect for learning how the framework works, prototyping a new
-              idea, or creating a demo to share online.
-            </p>
-          </div>
-          <div
-            class="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7"
-          >
-            <p>Want to dig deeper into Tailwind?</p>
-            <p>
-              <a
-                href="https://tailwindcss.com/docs"
-                class="text-primary hover:text-cyan-700"
-              >
-                Read the docs &rarr;
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- TO DO: add footer -->
 <noah-footer> </noah-footer>

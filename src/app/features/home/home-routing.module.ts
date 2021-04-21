@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BaseComponent } from '@features/personalized-risk-assessment/components/base/base.component';
+import { PlaygroundComponent } from '@features/playground/playground.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { MapComponent } from './pages/map/map.component';
 
 const routes: Routes = [
   {
@@ -9,8 +10,12 @@ const routes: Routes = [
     component: LandingPageComponent,
   },
   {
-    path: 'map',
-    component: MapComponent,
+    path: 'base',
+    component: BaseComponent,
+  },
+  {
+    path: 'playground',
+    component: PlaygroundComponent,
   },
 ];
 
