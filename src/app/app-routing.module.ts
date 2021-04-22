@@ -8,6 +8,13 @@ const routes: Routes = [
       import('@features/home/home.module').then((m) => m.HomeModule),
   },
   {
+    path: 'personal',
+    loadChildren: () =>
+      import(
+        '@features/personalized-risk-assessment/personalized-risk-assessment.module'
+      ).then((m) => m.PersonalizedRiskAssessmentModule),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
