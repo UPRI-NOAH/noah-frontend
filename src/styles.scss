@@ -4,6 +4,9 @@
 
 :root {
   --color-primary: #0066ff;
+  --color-low: #ddec02;
+  --color-medium: #f2994a;
+  --color-high: #eb5757;
 }
 
 html,
@@ -12,6 +15,13 @@ body {
 }
 body {
   margin: 0;
+}
+
+.left-shadow {
+  box-shadow: 0 0 0 -inset rgba(#ccc, 0.25);
+  border: 1px solid rgba(#ccc, 0.5);
+  -webkit-box-shadow: 0 0 0 2px rgba(#ccc, 0.35);
+  -moz-box-shadow: 0 0 0 2px rgba(#ccc, 0.25);
 }
 
 .carousel-open:checked + .carousel-item {
