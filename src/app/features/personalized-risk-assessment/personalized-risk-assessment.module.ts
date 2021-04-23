@@ -14,6 +14,7 @@ import { LandslideComponent } from './components/landslide/landslide.component';
 import { StormSurgeComponent } from './components/storm-surge/storm-surge.component';
 import { CriticalFacilitiesComponent } from './components/critical-facilities/critical-facilities.component';
 import { PraMapComponent } from './components/pra-map/pra-map.component';
+import { PraNavComponent } from './components/pra-nav/pra-nav.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { PraMapComponent } from './components/pra-map/pra-map.component';
     StormSurgeComponent,
     CriticalFacilitiesComponent,
     PraMapComponent,
+    PraNavComponent,
   ],
   imports: [CommonModule, PersonalizedRiskAssessmentRoutingModule],
 })
