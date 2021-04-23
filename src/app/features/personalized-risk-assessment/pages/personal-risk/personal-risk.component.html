@@ -1,0 +1,19 @@
+<div class="top-0 fixed z-10 left-0 h-16 w-16">
+  <a class="flex max-w-xs p-2 items-center" routerLink="/">
+    <img src="assets/icons/noah-logo.jpg" alt="Project NOAH" />
+  </a>
+</div>
+
+<div class="relative w-full flex flex-wrap min-h-screen">
+  <div class="fixed inset-0 w-full md:w-9/12 flex justify-center items-center">
+    <noah-pra-map></noah-pra-map>
+  </div>
+
+  <div class="w-full hidden md:block overflow-none">
+    <div
+      class="lg:w-1/4 md:w-1/4 min-h-screen left-shadow bg-white p-8 flex flex-col md:ml-auto relative z-10"
+    >
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
