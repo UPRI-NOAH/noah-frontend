@@ -1,4 +1,4 @@
-<div class="top-0 fixed left-0 h-16 w-16">
+<div class="top-0 fixed z-10 left-0 h-16 w-16">
   <a class="flex max-w-xs p-2 items-center" routerLink="/">
     <img src="assets/icons/noah-logo.jpg" alt="Project NOAH" />
   </a>
@@ -9,7 +9,35 @@
     <noah-pra-map></noah-pra-map>
   </div>
 
-  <div class="w-full hidden md:block">
-    <router-outlet></router-outlet>
+  <div class="w-full hidden md:block overflow-none">
+    <div
+      class="lg:w-1/4 md:w-1/4 min-h-screen left-shadow bg-white p-8 flex flex-col md:ml-auto relative z-10"
+    >
+      <router-outlet></router-outlet>
+      <!-- Sidebar navigation bottom-->
+      <div
+        class="z-10 content-around flex flex-wrap lg:w-1/4 md:w-1/4 grid grid-cols-3 place-content-center fixed right-0 bottom-0 bg-white gap-4 h-10 justify-items-center shadow-inner my-50 py-50"
+      >
+        <button
+          type="button"
+          class="text-xs uppercase font-bold tracking-wider rounded-full px-4 py-2 inline-flex items-center justify-center text-primary focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
+          routerLink=""
+        >
+          Back
+        </button>
+        <p
+          class="text-xs px-4 py-2 inline-flex items-center justify-center mx-auto lg:mx-0"
+        >
+          1 of 5
+        </p>
+        <button
+          type="button"
+          class="text-xs uppercase font-bold tracking-wider bg-primary rounded-full px-4 py-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
+          routerLink="/flood"
+        >
+          Next
+        </button>
+      </div>
+    </div>
   </div>
 </div>
