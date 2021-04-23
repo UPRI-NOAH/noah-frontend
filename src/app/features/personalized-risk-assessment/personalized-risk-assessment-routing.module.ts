@@ -34,7 +34,7 @@ const routes: Routes = [
         component: StormSurgeComponent,
       },
       {
-        path: 'critical-facilites',
+        path: 'critical-facilities',
         component: CriticalFacilitiesComponent,
       },
     ],
