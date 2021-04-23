@@ -10,6 +10,11 @@ import { PersonalRiskComponent } from './pages/personal-risk/personal-risk.compo
 const routes: Routes = [
   {
     path: '',
+    redirectTo: 'base',
+    pathMatch: 'full',
+  },
+  {
+    path: '',
     component: PersonalRiskComponent,
     children: [
       {
