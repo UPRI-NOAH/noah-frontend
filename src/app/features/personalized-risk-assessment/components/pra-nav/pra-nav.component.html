@@ -1,0 +1,23 @@
+<div
+  class="z-10 content-around flex flex-wrap lg:w-1/4 md:w-1/4 grid grid-cols-3 place-content-center fixed right-0 bottom-0 bg-white gap-4 h-10 justify-items-center shadow-inner my-50 py-50"
+>
+  <button
+    type="button"
+    class="text-xs uppercase font-bold tracking-wider rounded-full px-4 py-2 inline-flex items-center justify-center text-primary focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
+    [routerLink]="prevRoute"
+  >
+    Back
+  </button>
+  <p
+    class="text-xs px-4 py-2 inline-flex items-center justify-center mx-auto lg:mx-0"
+  >
+    {{ currentPageIdx + 1 }} of {{ pageLength }}
+  </p>
+  <button
+    type="button"
+    class="text-xs uppercase font-bold tracking-wider bg-primary rounded-full px-4 py-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
+    [routerLink]="nextRoute"
+  >
+    Next
+  </button>
+</div>

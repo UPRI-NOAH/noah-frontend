@@ -5,27 +5,39 @@ import { CriticalFacilitiesComponent } from './components/critical-facilities/cr
 import { FloodComponent } from './components/flood/flood.component';
 import { LandslideComponent } from './components/landslide/landslide.component';
 import { StormSurgeComponent } from './components/storm-surge/storm-surge.component';
+import { PersonalRiskComponent } from './pages/personal-risk/personal-risk.component';
 
 const routes: Routes = [
   {
-    path: 'base',
-    component: BaseComponent,
+    path: '',
+    redirectTo: 'base',
+    pathMatch: 'full',
   },
   {
-    path: 'flood',
-    component: FloodComponent,
-  },
-  {
-    path: 'landslide',
-    component: LandslideComponent,
-  },
-  {
-    path: 'storm-surge',
-    component: StormSurgeComponent,
-  },
-  {
-    path: 'critical-facilites',
-    component: CriticalFacilitiesComponent,
+    path: '',
+    component: PersonalRiskComponent,
+    children: [
+      {
+        path: 'base',
+        component: BaseComponent,
+      },
+      {
+        path: 'flood',
+        component: FloodComponent,
+      },
+      {
+        path: 'landslide',
+        component: LandslideComponent,
+      },
+      {
+        path: 'storm-surge',
+        component: StormSurgeComponent,
+      },
+      {
+        path: 'critical-facilities',
+        component: CriticalFacilitiesComponent,
+      },
+    ],
   },
 ];
 
