@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureCollection, Feature } from 'geojson';
+import { LngLatLike } from 'mapbox-gl';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HazardType, PraStore, PRAPage, RiskLevel } from '../store/pra.store';
@@ -9,6 +10,14 @@ import { HazardType, PraStore, PRAPage, RiskLevel } from '../store/pra.store';
 })
 export class PraService {
   constructor(private http: HttpClient, private praStore: PraStore) {}
+
+  get currentCoords$(): Observable<LngLatLike> {
+    return this.praStore.state$.pipe(map((state) => state.center));
+  }
+
+  get currentCoords(): LngLatLike {
+    return this.praStore.state.center;
+  }
 
   get currentPage$(): Observable<PRAPage> {
     return this.praStore.state$.pipe(map((state) => state.currentPage));

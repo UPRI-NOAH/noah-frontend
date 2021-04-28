@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { LngLatLike } from 'mapbox-gl';
 
-const PH_DEFAULT_CENTER = { lat: 12.8797, lng: 121.774 };
+const PH_DEFAULT_CENTER = { lat: 10.783643615788, lng: 124.98624449022346 };
 
 export type PRAPage = 'base' | 'critical-facitilies' | HazardType;
 
