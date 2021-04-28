@@ -1,7 +1,7 @@
 import { FillLayer } from 'mapbox-gl';
 
 export const LEYTE_STORM_SURGE: FillLayer = {
-  id: 'leyte-storm-surge',
+  id: 'storm-surge',
   type: 'fill',
   source: {
     type: 'vector',

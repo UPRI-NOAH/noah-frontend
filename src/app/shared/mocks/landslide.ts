@@ -1,7 +1,7 @@
 import { FillLayer } from 'mapbox-gl';
 
 export const LEYTE_LANDSLIDE: FillLayer = {
-  id: 'leyte-landslide',
+  id: 'landslide',
   type: 'fill',
   source: {
     type: 'vector',

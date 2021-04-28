@@ -5,7 +5,9 @@ import { PraService } from '@features/personalized-risk-assessment/services/pra.
 import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
-import mapboxgl, { Map } from 'mapbox-gl';
+import mapboxgl, { Map, Marker } from 'mapbox-gl';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-pra-map',
@@ -14,10 +16,59 @@ import mapboxgl, { Map } from 'mapbox-gl';
 })
 export class PraMapComponent implements OnInit {
   map!: Map;
+  centerMarker!: Marker;
+  private _unsub = new Subject();
 
   constructor(private mapService: MapService, private praService: PraService) {}
 
   ngOnInit(): void {
+    this.initMap();
+    this.map.on('load', () => {
+      this.initLayers();
+      this.initMarkers();
+      this.initPageListener();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._unsub.next();
+    this._unsub.complete();
+  }
+
+  hideAllLayers() {
+    this.praService.hazardTypes.forEach((hazard) => {
+      this.map.setLayoutProperty(hazard, 'visibility', 'none');
+    });
+  }
+
+  initLayers() {
+    this.map.addLayer(LEYTE_FLOOD);
+    this.map.addLayer(LEYTE_LANDSLIDE);
+    this.map.addLayer(LEYTE_STORM_SURGE);
+
+    // Hide all on init
+    this.hideAllLayers;
+  }
+
+  initPageListener() {
+    this.praService.currentPage$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((page) => {
+        console.log(page);
+        if (page === 'critical-facilities') {
+          this.showAllLayers();
+          return;
+        }
+
+        this.hideAllLayers();
+        if (this.praService.isHazardPage(page)) {
+          this.map.setLayoutProperty(page, 'visibility', 'visible');
+        }
+      });
+  }
+
+  initMap() {
+    this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'pra-map',
       style: environment.mapbox.styles.base,
@@ -27,15 +78,18 @@ export class PraMapComponent implements OnInit {
       bearing: 30,
       center: this.praService.currentCoords,
     });
+  }
 
-    this.map.on('load', () => {
-      this.map.addLayer(LEYTE_FLOOD);
-      this.map.addLayer(LEYTE_LANDSLIDE);
-      this.map.addLayer(LEYTE_STORM_SURGE);
+  initMarkers() {
+    this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+      .setLngLat(this.praService.currentCoords)
+      .addTo(this.map);
+  }
 
-      // this.map.setLayoutProperty(LEYTE_FLOOD.id, 'visibility', 'none');
-      // this.map.setLayoutProperty(LEYTE_LANDSLIDE.id, 'visibility', 'none');
-      // this.map.setLayoutProperty(LEYTE_STORM_SURGE.id, 'visibility', 'none');
+  showAllLayers() {
+    this.praService.hazardTypes.forEach((hazard) => {
+      console.log(hazard);
+      this.map.setLayoutProperty(hazard, 'visibility', 'visible');
     });
   }
 }

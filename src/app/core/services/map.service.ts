@@ -6,7 +6,9 @@ import mapboxgl from 'mapbox-gl';
   providedIn: 'root',
 })
 export class MapService {
-  constructor() {
+  constructor() {}
+
+  init() {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
 }

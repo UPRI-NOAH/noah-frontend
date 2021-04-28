@@ -46,10 +46,18 @@ export class PraService {
     );
   }
 
+  get hazardTypes(): string[] {
+    return ['flood', 'landslide', 'storm-surge'];
+  }
+
+  isHazardPage(currentPage: PRAPage): boolean {
+    return this.hazardTypes.includes(currentPage);
+  }
+
   setCurrentPage(currentPage: PRAPage): void {
     this.praStore.patch({ currentPage }, 'update current page');
 
-    if (['flood', 'landslide', 'storm-surge'].includes(currentPage)) {
+    if (this.isHazardPage(currentPage)) {
       this.assessRisk(currentPage as HazardType);
     }
   }

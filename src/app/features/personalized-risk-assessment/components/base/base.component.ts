@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
 
 @Component({
   selector: 'noah-base',
@@ -6,5 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./base.component.scss'],
 })
 export class BaseComponent implements OnInit {
-  ngOnInit(): void {}
+  constructor(private praService: PraService) {}
+
+  ngOnInit(): void {
+    this.praService.setCurrentPage('base');
+  }
 }
