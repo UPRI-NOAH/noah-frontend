@@ -1,15 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { LEYTE_FLOOD } from '@shared/mocks/flood';
+import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
+import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import { FeatureCollection, Feature } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { defer, Observable } from 'rxjs';
+import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { HazardType, PraStore, PRAPage, RiskLevel } from '../store/pra.store';
+import { RiskService } from './risk.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PraService {
-  constructor(private http: HttpClient, private praStore: PraStore) {}
+  constructor(private praStore: PraStore, private riskService: RiskService) {}
 
   get currentCoords$(): Observable<LngLatLike> {
     return this.praStore.state$.pipe(map((state) => state.center));
@@ -27,16 +32,20 @@ export class PraService {
     return this.praStore.state$.pipe(map((state) => state.riskLevel));
   }
 
+  get hazardTypes(): string[] {
+    return ['flood', 'landslide', 'storm-surge'];
+  }
+
   async assessRisk(hazardType: HazardType): Promise<void> {
     this.praStore.patch({ isLoading: true }, 'loading risk level...');
 
-    const response: FeatureCollection = await this.http
-      .get<FeatureCollection>(
-        'http://localhost:8080/geoserver/wms?INFO_FORMAT=application/json&REQUEST=GetFeatureInfo&EXCEPTIONS=application/vnd.ogc.se_xml&SERVICE=WMS&VERSION=1.1.1&WIDTH=2&HEIGHT=2&X=1&Y=1&BBOX=124.55999410001472,11.580408358654404,124.56000410001472,11.580418358654404&LAYERS=cite:Biliran_Flood_100year&QUERY_LAYERS=cite:Biliran_Flood_100year&TYPENAME=cite:Biliran_Flood_100year&BUFFER=50&propertyName=Var&feature_count=50'
-      )
-      .toPromise();
+    const payload = {
+      coords: this.praStore.state.center,
+      tilesetName: this._getTilesetName(hazardType),
+    };
 
-    const riskLevel = this._formatRiskLevel(response);
+    const riskLevel = await this.riskService.assess(payload).toPromise();
+
     this.praStore.patch(
       {
         isLoading: false,
@@ -46,8 +55,18 @@ export class PraService {
     );
   }
 
-  get hazardTypes(): string[] {
-    return ['flood', 'landslide', 'storm-surge'];
+  init() {
+    this.currentPage$
+      .pipe(
+        distinctUntilChanged(),
+        tap((page) => {
+          if (this.isHazardPage(page)) {
+            const hazard = page as HazardType;
+            this.assessRisk(hazard);
+          }
+        })
+      )
+      .subscribe();
   }
 
   isHazardPage(currentPage: PRAPage): boolean {
@@ -56,58 +75,22 @@ export class PraService {
 
   setCurrentPage(currentPage: PRAPage): void {
     this.praStore.patch({ currentPage }, 'update current page');
-
-    if (this.isHazardPage(currentPage)) {
-      this.assessRisk(currentPage as HazardType);
-    }
   }
 
-  private _getRiskNum(feature: Feature): number {
-    const { properties } = feature;
-    if (!properties) {
-      return 0;
-    }
-
-    if ('Var' in properties) {
-      return parseInt(properties.Var);
-    }
-
-    if ('HZ' in properties) {
-      return parseInt(properties.HZ);
-    }
-
-    if ('HAZ' in properties) {
-      return parseFloat(properties.HAZ);
-    }
-
-    return 0;
-  }
-
-  private _computeAreaRiskNum(features: Array<Feature>): number {
-    const riskNumList = features.map((feature: Feature) =>
-      this._getRiskNum(feature)
-    );
-    return Math.max(...riskNumList);
-  }
-
-  private _formatRiskLevel(featureCollection: FeatureCollection): RiskLevel {
-    const riskLevelNum = this._computeAreaRiskNum(featureCollection.features);
-
-    switch (riskLevelNum) {
-      case 0:
-        return 'little';
-
-      case 1:
-        return 'low';
-
-      case 2:
-        return 'medium';
-
-      case 3:
-        return 'high';
-
+  // Temporary
+  private _getTilesetName(hazardType: HazardType): string {
+    switch (hazardType) {
+      case 'flood':
+        return 'jadurani.3tg2ae87';
+      // return LEYTE_FLOOD.source?.url || "";
+      case 'landslide':
+        return 'jadurani.boxlw5qe';
+      // return LEYTE_LANDSLIDE.source?.url || "";
+      case 'storm-surge':
+        return 'jadurani.cmmzrdab';
+      // return LEYTE_STORM_SURGE.source?.url || "";
       default:
-        return 'unavailable';
+        return '';
     }
   }
 }
