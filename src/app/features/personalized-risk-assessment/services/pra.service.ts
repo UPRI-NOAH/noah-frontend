@@ -77,6 +77,10 @@ export class PraService {
     this.praStore.patch({ currentPage }, 'update current page');
   }
 
+  setMapCenter(coords: { lat: number; lng: number }) {
+    this.praStore.patch({ center: coords }, 'update map center');
+  }
+
   // Temporary
   private _getTilesetName(hazardType: HazardType): string {
     switch (hazardType) {

@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
+import { MARKERS } from '@shared/mocks/critical-facilities';
 import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-pra-map',
@@ -27,6 +28,7 @@ export class PraMapComponent implements OnInit {
       this.initLayers();
       this.initMarkers();
       this.initPageListener();
+      this.initCenterListener();
     });
   }
 
@@ -39,6 +41,18 @@ export class PraMapComponent implements OnInit {
     this.praService.hazardTypes.forEach((hazard) => {
       this.map.setLayoutProperty(hazard, 'visibility', 'none');
     });
+  }
+
+  initCenterListener() {
+    this.praService.currentCoords$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .subscribe((center) => {
+        this.map.flyTo({
+          center,
+          zoom: 15,
+          essential: true,
+        });
+      });
   }
 
   initLayers() {
@@ -83,6 +97,10 @@ export class PraMapComponent implements OnInit {
     this.centerMarker = new mapboxgl.Marker({ color: '#333' })
       .setLngLat(this.praService.currentCoords)
       .addTo(this.map);
+
+    MARKERS.forEach((m) =>
+      new mapboxgl.Marker().setLngLat(m.coords).addTo(this.map)
+    );
   }
 
   showAllLayers() {

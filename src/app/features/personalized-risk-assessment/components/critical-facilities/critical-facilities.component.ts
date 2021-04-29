@@ -17,6 +17,10 @@ export class CriticalFacilitiesComponent implements OnInit {
   }
 
   focus(marker: SampleMarker) {
-    console.log({ marker });
+    const coords = {
+      lat: (<[number, number]>marker.coords)[1],
+      lng: (<[number, number]>marker.coords)[0],
+    };
+    this.praService.setMapCenter(coords);
   }
 }
