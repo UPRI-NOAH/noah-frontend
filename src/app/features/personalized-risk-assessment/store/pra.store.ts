@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
-const PH_DEFAULT_CENTER = { lat: 10.777080241395213, lng: 124.98707397619495 };
+export const PH_DEFAULT_CENTER = {
+  lat: 10.777080241395213,
+  lng: 124.98707397619495,
+};
 
 export type PRAPage = 'base' | 'critical-facilities' | HazardType;
 

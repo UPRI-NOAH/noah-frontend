@@ -7,7 +7,13 @@ import { FeatureCollection, Feature } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
 import { defer, Observable } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
-import { HazardType, PraStore, PRAPage, RiskLevel } from '../store/pra.store';
+import {
+  HazardType,
+  PraStore,
+  PRAPage,
+  RiskLevel,
+  PH_DEFAULT_CENTER,
+} from '../store/pra.store';
 import { RiskService } from './risk.service';
 
 @Injectable({
@@ -63,6 +69,7 @@ export class PraService {
           if (this.isHazardPage(page)) {
             const hazard = page as HazardType;
             this.assessRisk(hazard);
+            this.setMapCenter(PH_DEFAULT_CENTER);
           }
         })
       )
