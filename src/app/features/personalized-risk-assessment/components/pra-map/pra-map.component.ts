@@ -54,7 +54,6 @@ export class PraMapComponent implements OnInit {
     this.praService.currentPage$
       .pipe(takeUntil(this._unsub))
       .subscribe((page) => {
-        console.log(page);
         if (page === 'critical-facilities') {
           this.showAllLayers();
           return;
@@ -88,7 +87,6 @@ export class PraMapComponent implements OnInit {
 
   showAllLayers() {
     this.praService.hazardTypes.forEach((hazard) => {
-      console.log(hazard);
       this.map.setLayoutProperty(hazard, 'visibility', 'visible');
     });
   }
