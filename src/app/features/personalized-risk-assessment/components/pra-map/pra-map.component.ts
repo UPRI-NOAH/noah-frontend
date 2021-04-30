@@ -108,4 +108,42 @@ export class PraMapComponent implements OnInit {
       this.map.setLayoutProperty(hazard, 'visibility', 'visible');
     });
   }
+
+  mapSatellite() {
+    this.mapService.init();
+    this.map = new mapboxgl.Map({
+      container: 'pra-map',
+      style: environment.mapbox.styles.satellite,
+      zoom: 13,
+      pitch: 50,
+      touchZoomRotate: true,
+      bearing: 30,
+      center: this.praService.currentCoords,
+    });
+    this.map.on('load', () => {
+      this.initLayers();
+      this.initMarkers();
+      this.initPageListener();
+      this.initCenterListener();
+    });
+  }
+
+  mapboxBaseMap() {
+    this.mapService.init();
+    this.map = new mapboxgl.Map({
+      container: 'pra-map',
+      style: environment.mapbox.styles.base,
+      zoom: 13,
+      pitch: 50,
+      touchZoomRotate: true,
+      bearing: 30,
+      center: this.praService.currentCoords,
+    });
+    this.map.on('load', () => {
+      this.initLayers();
+      this.initMarkers();
+      this.initPageListener();
+      this.initCenterListener();
+    });
+  }
 }
