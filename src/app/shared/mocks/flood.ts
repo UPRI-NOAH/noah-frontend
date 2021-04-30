@@ -24,6 +24,6 @@ export const LEYTE_FLOOD: FillLayer = {
       3,
       ['match', ['get', 'Var'], [3], 'rgb(255, 0, 0)', '#000000'],
     ],
-    'fill-opacity': 0.3,
+    'fill-opacity': 0.75,
   },
 };
