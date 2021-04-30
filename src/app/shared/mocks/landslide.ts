@@ -24,6 +24,6 @@ export const LEYTE_LANDSLIDE: FillLayer = {
       3,
       ['match', ['get', 'LH'], [3], 'rgb(255, 0, 0)', '#000000'],
     ],
-    'fill-opacity': 0.3,
+    'fill-opacity': 0.75,
   },
 };
