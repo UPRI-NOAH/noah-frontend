@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
 
 @Component({
   selector: 'noah-personal-risk',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./personal-risk.component.scss'],
 })
 export class PersonalRiskComponent implements OnInit {
-  constructor() {}
+  constructor(private praService: PraService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.praService.init();
+  }
 }

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
+import { RiskLevel } from '@features/personalized-risk-assessment/store/pra.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-storm-surge',
@@ -6,7 +9,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./storm-surge.component.scss'],
 })
 export class StormSurgeComponent implements OnInit {
-  constructor() {}
+  riskLevel$: Observable<RiskLevel>;
 
-  ngOnInit(): void {}
+  constructor(private praService: PraService) {
+    this.riskLevel$ = this.praService.riskLevel$;
+  }
+
+  ngOnInit(): void {
+    this.praService.setCurrentPage('storm-surge');
+  }
 }

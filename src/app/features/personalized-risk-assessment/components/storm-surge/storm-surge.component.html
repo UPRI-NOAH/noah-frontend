@@ -2,12 +2,15 @@
   <h2 class="text-gray-900 text-lg mb-1 font-medium title-font uppercase">
     Your location
   </h2>
-  <div class="font-bold text-3xl pb-4">My Location</div>
+  <div class="font-bold text-3xl pb-4">Picas Norte, Javier, Leyte</div>
   <h4 class="text-l font-bold leading-tight mt-8 uppercase">
     Storm Surge Risk
   </h4>
-  <div class="font-bold text-xl text-high leading-tight mt-4 uppercase">
-    High
+  <div
+    class="font-bold text-xl leading-tight mt-4 uppercase"
+    [ngClass]="'text-' + (riskLevel$ | async)"
+  >
+    {{ riskLevel$ | async }}
   </div>
 
   <h4 class="text-l font-bold leading-tight mt-8 uppercase">

@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
+import { RiskLevel } from '@features/personalized-risk-assessment/store/pra.store';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-flood',
@@ -6,7 +10,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./flood.component.scss'],
 })
 export class FloodComponent implements OnInit {
-  constructor() {}
+  riskLevel$: Observable<RiskLevel>;
 
-  ngOnInit(): void {}
+  constructor(private praService: PraService) {
+    this.riskLevel$ = this.praService.riskLevel$;
+  }
+
+  ngOnInit(): void {
+    this.praService.setCurrentPage('flood');
+  }
 }

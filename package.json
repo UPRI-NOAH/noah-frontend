@@ -31,6 +31,7 @@
     "@angular-devkit/build-angular": "~0.1102.5",
     "@angular/cli": "~11.2.5",
     "@angular/compiler-cli": "~11.2.6",
+    "@types/geojson": "^7946.0.7",
     "@types/jasmine": "~3.6.0",
     "@types/mapbox-gl": "^2.1.1",
     "@types/node": "^12.11.1",
