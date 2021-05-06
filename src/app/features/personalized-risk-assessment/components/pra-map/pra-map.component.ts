@@ -10,6 +10,11 @@ import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
+// MapboxGeocoder ERROR
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+//MapboxGeocoder ERROR
+
 @Component({
   selector: 'noah-pra-map',
   templateUrl: './pra-map.component.html',
@@ -30,6 +35,15 @@ export class PraMapComponent implements OnInit {
       this.initPageListener();
       this.initCenterListener();
     });
+
+    //MapboxGeocoder ERROR
+    this.map.addControl(
+      new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+      })
+    );
+    //MapboxGeocoder ERROR
   }
 
   ngOnDestroy(): void {
