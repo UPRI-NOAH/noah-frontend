@@ -37,13 +37,26 @@ export class PraMapComponent implements OnInit {
     });
 
     //MapboxGeocoder ERROR
-    this.map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-      })
-    );
-    //MapboxGeocoder ERROR
+
+    var geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      flyTo: {
+        padding: 15, // If you want some minimum space around your result
+        easing: function (t) {
+          return t;
+        },
+        maxZoom: 13, // If you want your result not to go further than a specific zoom
+      },
+    });
+    this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
+    this.map.addControl(geocoder);
+    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // document.getElementById("geocoder").appendChild(geocoder.onAdd(this.map)); //Geocode Search
+
+    geocoder.on('result', function (result) {
+      console.log(result);
+    });
   }
 
   ngOnDestroy(): void {
