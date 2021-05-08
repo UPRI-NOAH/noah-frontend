@@ -10,20 +10,16 @@ export const LEYTE_LANDSLIDE: FillLayer = {
   'source-layer': 'Leyte_LandslideHazard-beq0xe',
   paint: {
     'fill-color': [
-      'step',
+      'interpolate',
+      ['linear'],
       ['get', 'LH'],
-      'hsl(50, 99%, 82%)',
       1,
-      [
-        'match',
-        ['get', 'LH'],
-        0,
-        'hsla(0, 100%, 68%, 0.89)',
-        'hsl(27, 100%, 51%)',
-      ],
+      '#f2c94c',
+      2,
+      '#f2994a',
       3,
-      ['match', ['get', 'LH'], [3], 'rgb(255, 0, 0)', '#000000'],
+      '#eb5757',
     ],
-    'fill-opacity': 0.75,
+    'fill-opacity': 0.9,
   },
 };
