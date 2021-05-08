@@ -10,20 +10,16 @@ export const LEYTE_STORM_SURGE: FillLayer = {
   'source-layer': 'Leyte_StormSurge_SSA4-93raju',
   paint: {
     'fill-color': [
-      'step',
+      'interpolate',
+      ['linear'],
       ['get', 'HAZ'],
-      'hsl(50, 99%, 82%)',
       1,
-      [
-        'match',
-        ['get', 'HAZ'],
-        0,
-        'hsla(0, 100%, 68%, 0.89)',
-        'hsl(27, 100%, 51%)',
-      ],
+      '#f2c94c',
+      2,
+      '#f2994a',
       3,
-      ['match', ['get', 'HAZ'], [3], 'rgb(255, 0, 0)', '#000000'],
+      '#eb5757',
     ],
-    'fill-opacity': 0.75,
+    'fill-opacity': 0.9,
   },
 };
