@@ -3,7 +3,9 @@
     Your location
   </h2>
   <div class="font-bold text-3xl pb-4">Picas Norte, Javier, Leyte</div>
-  <h4 class="text-l font-bold leading-tight mt-8 uppercase">Flood Risk</h4>
+  <h4 class="text-l font-bold leading-tight mt-8 uppercase">
+    Flood Hazard Level
+  </h4>
   <div
     class="font-bold text-xl leading-tight mt-4 uppercase"
     [ngClass]="'text-' + (riskLevel$ | async)"
