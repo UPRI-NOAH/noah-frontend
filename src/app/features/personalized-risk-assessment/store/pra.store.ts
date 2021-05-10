@@ -17,6 +17,7 @@ type PRAState = {
   center: { lng: number; lat: number };
   currentPage: PRAPage;
   riskLevel: RiskLevel;
+  currentLocation: string;
 };
 
 const createInitialValue = (): PRAState => {
@@ -25,6 +26,7 @@ const createInitialValue = (): PRAState => {
     center: PH_DEFAULT_CENTER,
     currentPage: 'base',
     riskLevel: 'unavailable',
+    currentLocation: '------',
   };
 };
 

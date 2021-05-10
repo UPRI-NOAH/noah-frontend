@@ -30,6 +30,10 @@ export class PraService {
     return this.praStore.state.center;
   }
 
+  get currentLocation$(): Observable<string> {
+    return this.praStore.state$.pipe(map((state) => state.currentLocation));
+  }
+
   get currentPage$(): Observable<PRAPage> {
     return this.praStore.state$.pipe(map((state) => state.currentPage));
   }
