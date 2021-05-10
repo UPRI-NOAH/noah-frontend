@@ -84,6 +84,10 @@ export class PraService {
     return this.hazardTypes.includes(currentPage);
   }
 
+  setCurrentLocation(currentLocation: string): void {
+    this.praStore.patch({ currentLocation }, 'update current location');
+  }
+
   setCurrentPage(currentPage: PRAPage): void {
     this.praStore.patch({ currentPage }, 'update current page');
   }

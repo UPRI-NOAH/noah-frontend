@@ -24,40 +24,17 @@ export class PraMapComponent implements OnInit {
   map!: Map;
   centerMarker!: Marker;
   private _unsub = new Subject();
-  mylocation: string = '';
 
   constructor(private mapService: MapService, private praService: PraService) {}
 
   ngOnInit(): void {
     this.initMap();
     this.map.on('load', () => {
+      this.initGeocoder();
       this.initLayers();
       this.initMarkers();
       this.initPageListener();
       this.initCenterListener();
-    });
-
-    //MapboxGeocoder ERROR
-
-    var geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
-      flyTo: {
-        padding: 15, // If you want some minimum space around your result
-        easing: function (t) {
-          return t;
-        },
-        maxZoom: 13, // If you want your result not to go further than a specific zoom
-      },
-    });
-    this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
-    this.map.addControl(geocoder);
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    // document.getElementById("geocoder").appendChild(geocoder.onAdd(this.map)); //Geocode Search
-
-    geocoder.on('result', (e) => {
-      this.mylocation = e.result['place_name'];
-      console.log(e.result['place_name']);
     });
   }
 
@@ -82,6 +59,29 @@ export class PraMapComponent implements OnInit {
           essential: true,
         });
       });
+  }
+
+  initGeocoder() {
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      flyTo: {
+        padding: 15, // If you want some minimum space around your result
+        easing: function (t) {
+          return t;
+        },
+        maxZoom: 13, // If you want your result not to go further than a specific zoom
+      },
+    });
+    this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
+    this.map.addControl(geocoder);
+    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // document.getElementById("geocoder").appendChild(geocoder.onAdd(this.map)); //Geocode Search
+
+    geocoder.on('result', (e) => {
+      this.praService.setCurrentLocation(e.result['place_name']);
+      console.log(e.result);
+    });
   }
 
   initLayers() {
