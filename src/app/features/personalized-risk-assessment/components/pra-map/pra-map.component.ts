@@ -24,6 +24,7 @@ export class PraMapComponent implements OnInit {
   map!: Map;
   centerMarker!: Marker;
   private _unsub = new Subject();
+  mylocation: string = '';
 
   constructor(private mapService: MapService, private praService: PraService) {}
 
@@ -54,8 +55,9 @@ export class PraMapComponent implements OnInit {
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
     // document.getElementById("geocoder").appendChild(geocoder.onAdd(this.map)); //Geocode Search
 
-    geocoder.on('result', function (result) {
-      console.log(result);
+    geocoder.on('result', (e) => {
+      this.mylocation = e.result['place_name'];
+      console.log(e.result['place_name']);
     });
   }
 
