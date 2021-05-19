@@ -20,6 +20,6 @@ export const LEYTE_FLOOD: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 0.9,
+    'fill-opacity': 1,
   },
 };
