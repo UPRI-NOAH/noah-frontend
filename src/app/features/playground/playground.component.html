@@ -1,11 +1,14 @@
-<div class="flex md:flex-row-reverse flex-wrap min-h-screen">
+<div class="relative flex flex-1 md:flex-row-reverse flex-wrap min-h-screen">
   <div class="top-0 fixed z-10 left-0 h-16 w-16">
     <a class="flex max-w-xs p-2 items-center" routerLink="/">
       <img src="assets/icons/noah-logo.jpg" alt="Project NOAH" />
     </a>
   </div>
-  <div id="map" class="w-screen min-h-screen"></div>
-
+  <div
+    id="map"
+    class="absolute inset-y-0 object-center md:w-auto w-screen min-h-screen"
+    style="right: 255px"
+  ></div>
   <!-- Right Navigation Sidebar     -->
   <div
     class="z-10 min-h-screen gap-2 w-full md:w-64 left-shadow bg-gray-300 p-4 text-left text-gray-700"

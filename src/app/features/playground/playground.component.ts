@@ -37,10 +37,8 @@ export class PlaygroundComponent implements OnInit {
       container: 'map',
       style: environment.mapbox.styles.base,
       zoom: 5,
-      pitch: 50,
       touchZoomRotate: true,
-      bearing: 30,
-      center: [122, 11],
+      center: [122.65301737691877, 11.834938659565541],
     });
   }
 }
