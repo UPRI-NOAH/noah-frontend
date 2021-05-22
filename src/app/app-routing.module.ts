@@ -15,6 +15,13 @@ const routes: Routes = [
       ).then((m) => m.PersonalizedRiskAssessmentModule),
   },
   {
+    path: 'playground',
+    loadChildren: () =>
+      import('@features/playground/playground.module').then(
+        (m) => m.PlaygroundModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

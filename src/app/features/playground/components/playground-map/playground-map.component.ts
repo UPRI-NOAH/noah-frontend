@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { environment } from '@env/environment';
+import { MapService } from '@core/services/map.service';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
-
+import { environment } from '@env/environment';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { MapService } from '@core/services/map.service';
 
 @Component({
-  selector: 'noah-playground',
-  templateUrl: './playground.component.html',
-  styleUrls: ['./playground.component.scss'],
+  selector: 'noah-playground-map',
+  templateUrl: './playground-map.component.html',
+  styleUrls: ['./playground-map.component.scss'],
 })
-export class PlaygroundComponent implements OnInit {
+export class PlaygroundMapComponent implements OnInit {
   map!: Map;
   constructor(private mapService: MapService) {}
 
@@ -27,7 +26,7 @@ export class PlaygroundComponent implements OnInit {
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
     });
-    this.map.addControl(geocoder);
+    this.map.addControl(geocoder, 'top-right');
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
   }
 
