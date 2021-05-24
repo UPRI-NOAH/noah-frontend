@@ -9,11 +9,11 @@ import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-
-// MapboxGeocoder ERROR
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-//MapboxGeocoder ERROR
+import { query } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
+import { features } from 'node:process';
 
 @Component({
   selector: 'noah-pra-map',
@@ -23,9 +23,14 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 export class PraMapComponent implements OnInit {
   map!: Map;
   centerMarker!: Marker;
+  mylocation: string = '';
   private _unsub = new Subject();
 
-  constructor(private mapService: MapService, private praService: PraService) {}
+  constructor(
+    private mapService: MapService,
+    private praService: PraService,
+    private httpClient: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.initMap();
@@ -65,6 +70,9 @@ export class PraMapComponent implements OnInit {
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
+      marker: {
+        color: 'orange',
+      },
       flyTo: {
         padding: 15, // If you want some minimum space around your result
         easing: function (t) {
@@ -76,7 +84,6 @@ export class PraMapComponent implements OnInit {
     this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
     this.map.addControl(geocoder);
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    // document.getElementById("geocoder").appendChild(geocoder.onAdd(this.map)); //Geocode Search
 
     geocoder.on('result', (e) => {
       this.praService.setCurrentLocation(e.result['place_name']);
@@ -111,6 +118,7 @@ export class PraMapComponent implements OnInit {
 
   initMap() {
     this.mapService.init();
+
     this.map = new mapboxgl.Map({
       container: 'pra-map',
       style: environment.mapbox.styles.base,
@@ -120,6 +128,41 @@ export class PraMapComponent implements OnInit {
       bearing: 30,
       center: this.praService.currentCoords,
     });
+
+    var geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      trackUserLocation: true,
+    });
+
+    this.map.addControl(geolocate, 'bottom-right');
+    this.map.on('load', () => {
+      geolocate.trigger();
+    });
+    geolocate.on('geolocate', locateUser);
+
+    const access_token =
+      'pk.eyJ1IjoiY2xvdWQ1IiwiYSI6ImNpcDU1czB2bzAwM2V2ZWt0NXF4bjNtcjEifQ.TPa7NFOV0B1PRnhSUUxTnA';
+    function locateUser(e) {
+      this.Mylongitude = e.coords.longitude;
+      this.Mylatitude = e.coords.latitude;
+      let api_url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.Mylongitude},${this.Mylatitude}.json?types=locality&access_token=${access_token}`;
+      console.log('lng:' + this.Mylongitude);
+      console.log('lat' + this.Mylatitude);
+
+      fetch(api_url)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          // console.log(data);
+          let myPlace = data.features[0].place_name;
+          console.log(myPlace);
+        });
+
+      geolocate.off('geolocate', null);
+    }
   }
 
   initMarkers() {
@@ -135,44 +178,6 @@ export class PraMapComponent implements OnInit {
   showAllLayers() {
     this.praService.hazardTypes.forEach((hazard) => {
       this.map.setLayoutProperty(hazard, 'visibility', 'visible');
-    });
-  }
-
-  mapSatellite() {
-    this.mapService.init();
-    this.map = new mapboxgl.Map({
-      container: 'pra-map',
-      style: environment.mapbox.styles.satellite,
-      zoom: 13,
-      pitch: 50,
-      touchZoomRotate: true,
-      bearing: 30,
-      center: this.praService.currentCoords,
-    });
-    this.map.on('load', () => {
-      this.initLayers();
-      this.initMarkers();
-      this.initPageListener();
-      this.initCenterListener();
-    });
-  }
-
-  mapboxBaseMap() {
-    this.mapService.init();
-    this.map = new mapboxgl.Map({
-      container: 'pra-map',
-      style: environment.mapbox.styles.base,
-      zoom: 13,
-      pitch: 50,
-      touchZoomRotate: true,
-      bearing: 30,
-      center: this.praService.currentCoords,
-    });
-    this.map.on('load', () => {
-      this.initLayers();
-      this.initMarkers();
-      this.initPageListener();
-      this.initCenterListener();
     });
   }
 }
