@@ -142,20 +142,13 @@ export class PraMapComponent implements OnInit {
 
     const _this = this;
 
-    const access_token =
-      'pk.eyJ1IjoiY2xvdWQ1IiwiYSI6ImNpcDU1czB2bzAwM2V2ZWt0NXF4bjNtcjEifQ.TPa7NFOV0B1PRnhSUUxTnA';
-
     async function locateUser(e) {
-      this.Mylongitude = e.coords.longitude;
-      this.Mylatitude = e.coords.latitude;
-      let api_url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.Mylongitude},${this.Mylatitude}.json?types=locality&access_token=${access_token}`;
-
-      const response = await fetch(api_url);
-      const data = await response.json();
-      const myPlace = data.features[0].place_name;
+      const { latitude, longitude } = e.coords;
+      const myPlace = await _this.mapService.reverseGeocode(
+        latitude,
+        longitude
+      );
       _this.praService.setCurrentLocation(myPlace);
-
-      geolocate.off('geolocate', null);
     }
   }
 
