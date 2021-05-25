@@ -10,9 +10,11 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./flood.component.scss'],
 })
 export class FloodComponent implements OnInit {
+  currentLocation$: Observable<string>;
   riskLevel$: Observable<RiskLevel>;
 
   constructor(private praService: PraService) {
+    this.currentLocation$ = this.praService.currentLocation$;
     this.riskLevel$ = this.praService.riskLevel$;
   }
 

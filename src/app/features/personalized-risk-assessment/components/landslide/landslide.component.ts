@@ -9,9 +9,11 @@ import { Observable } from 'rxjs';
   styleUrls: ['./landslide.component.scss'],
 })
 export class LandslideComponent implements OnInit {
+  currentLocation$: Observable<string>;
   riskLevel$: Observable<RiskLevel>;
 
   constructor(private praService: PraService) {
+    this.currentLocation$ = this.praService.currentLocation$;
     this.riskLevel$ = this.praService.riskLevel$;
   }
 
