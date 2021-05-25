@@ -32,6 +32,7 @@ export class PraMapComponent implements OnInit {
     this.initMap();
     this.map.on('load', () => {
       this.initGeocoder();
+      this.initGeolocation();
       this.initLayers();
       this.initMarkers();
       this.initPageListener();
@@ -87,6 +88,22 @@ export class PraMapComponent implements OnInit {
     });
   }
 
+  initGeolocation() {
+    const geolocate = this.mapService.getNewGeolocateControl();
+    this.map.addControl(geolocate, 'bottom-right');
+    geolocate.on('geolocate', locateUser);
+
+    const _this = this;
+    async function locateUser(e) {
+      const { latitude, longitude } = e.coords;
+      const myPlace = await _this.mapService.reverseGeocode(
+        latitude,
+        longitude
+      );
+      _this.praService.setCurrentLocation(myPlace);
+    }
+  }
+
   initLayers() {
     this.map.addLayer(LEYTE_FLOOD);
     this.map.addLayer(LEYTE_LANDSLIDE);
@@ -124,32 +141,6 @@ export class PraMapComponent implements OnInit {
       bearing: 30,
       center: this.praService.currentCoords,
     });
-
-    var geolocate = new mapboxgl.GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      trackUserLocation: true,
-    });
-
-    this.map.addControl(geolocate, 'bottom-right');
-
-    this.map.on('load', () => {
-      geolocate.trigger();
-    });
-
-    geolocate.on('geolocate', locateUser);
-
-    const _this = this;
-
-    async function locateUser(e) {
-      const { latitude, longitude } = e.coords;
-      const myPlace = await _this.mapService.reverseGeocode(
-        latitude,
-        longitude
-      );
-      _this.praService.setCurrentLocation(myPlace);
-    }
   }
 
   initMarkers() {

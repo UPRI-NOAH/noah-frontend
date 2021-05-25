@@ -12,6 +12,15 @@ export class MapService {
     mapboxgl.accessToken = environment.mapbox.accessToken;
   }
 
+  getNewGeolocateControl() {
+    return new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      trackUserLocation: true,
+    });
+  }
+
   /**
    * Returns the geographic coordinates given a string address
    */
