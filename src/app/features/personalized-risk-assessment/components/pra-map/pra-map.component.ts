@@ -6,7 +6,7 @@ import { MARKERS } from '@shared/mocks/critical-facilities';
 import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
-import mapboxgl, { Map, Marker } from 'mapbox-gl';
+import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -22,6 +22,7 @@ import { features } from 'node:process';
 })
 export class PraMapComponent implements OnInit {
   map!: Map;
+  geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mylocation: string = '';
   private _unsub = new Subject();
@@ -37,6 +38,7 @@ export class PraMapComponent implements OnInit {
       this.initMarkers();
       this.initPageListener();
       this.initCenterListener();
+      this.initGeolocationListener();
     });
   }
 
@@ -89,11 +91,14 @@ export class PraMapComponent implements OnInit {
   }
 
   initGeolocation() {
-    const geolocate = this.mapService.getNewGeolocateControl();
-    this.map.addControl(geolocate, 'bottom-right');
-    geolocate.on('geolocate', locateUser);
+    this.geolocateControl = this.mapService.getNewGeolocateControl();
+    this.map.addControl(this.geolocateControl, 'bottom-right');
+  }
 
+  initGeolocationListener() {
     const _this = this;
+    this.geolocateControl.on('geolocate', locateUser);
+
     async function locateUser(e) {
       const { latitude, longitude } = e.coords;
       const myPlace = await _this.mapService.reverseGeocode(
