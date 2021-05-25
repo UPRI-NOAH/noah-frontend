@@ -11,9 +11,6 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { query } from '@angular/animations';
-import { HttpClient } from '@angular/common/http';
-import { features } from 'node:process';
 
 @Component({
   selector: 'noah-pra-map',
