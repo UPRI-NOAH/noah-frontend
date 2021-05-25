@@ -26,11 +26,7 @@ export class PraMapComponent implements OnInit {
   mylocation: string = '';
   private _unsub = new Subject();
 
-  constructor(
-    private mapService: MapService,
-    private praService: PraService,
-    private httpClient: HttpClient
-  ) {}
+  constructor(private mapService: MapService, private praService: PraService) {}
 
   ngOnInit(): void {
     this.initMap();
@@ -137,29 +133,27 @@ export class PraMapComponent implements OnInit {
     });
 
     this.map.addControl(geolocate, 'bottom-right');
+
     this.map.on('load', () => {
       geolocate.trigger();
     });
+
     geolocate.on('geolocate', locateUser);
+
+    const _this = this;
 
     const access_token =
       'pk.eyJ1IjoiY2xvdWQ1IiwiYSI6ImNpcDU1czB2bzAwM2V2ZWt0NXF4bjNtcjEifQ.TPa7NFOV0B1PRnhSUUxTnA';
-    function locateUser(e) {
+
+    async function locateUser(e) {
       this.Mylongitude = e.coords.longitude;
       this.Mylatitude = e.coords.latitude;
       let api_url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.Mylongitude},${this.Mylatitude}.json?types=locality&access_token=${access_token}`;
-      console.log('lng:' + this.Mylongitude);
-      console.log('lat' + this.Mylatitude);
 
-      fetch(api_url)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          // console.log(data);
-          let myPlace = data.features[0].place_name;
-          console.log(myPlace);
-        });
+      const response = await fetch(api_url);
+      const data = await response.json();
+      const myPlace = data.features[0].place_name;
+      _this.praService.setCurrentLocation(myPlace);
 
       geolocate.off('geolocate', null);
     }
