@@ -97,12 +97,19 @@ export class PraMapComponent implements OnInit {
     this.geolocateControl.on('geolocate', locateUser);
 
     async function locateUser(e) {
-      const { latitude, longitude } = e.coords;
-      const myPlace = await _this.mapService.reverseGeocode(
-        latitude,
-        longitude
-      );
-      _this.praService.setCurrentLocation(myPlace);
+      try {
+        const { latitude, longitude } = e.coords;
+        const myPlace = await _this.mapService.reverseGeocode(
+          latitude,
+          longitude
+        );
+        _this.praService.setCurrentLocation(myPlace);
+      } catch (error) {
+        // temporary
+        alert(
+          'Unable to retrieve your location, please manually input your city / brgy'
+        );
+      }
     }
   }
 
