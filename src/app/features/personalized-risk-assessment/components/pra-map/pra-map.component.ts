@@ -97,6 +97,8 @@ export class PraMapComponent implements OnInit {
     this.geolocateControl.on('geolocate', locateUser);
 
     async function locateUser(e) {
+      // NOTE: This function gets called twice or more
+      // TO DO: identify what is causing the multiple calls
       try {
         const { latitude, longitude } = e.coords;
         const myPlace = await _this.mapService.reverseGeocode(
