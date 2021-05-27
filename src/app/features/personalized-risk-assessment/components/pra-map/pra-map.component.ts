@@ -7,8 +7,8 @@ import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
@@ -94,11 +94,12 @@ export class PraMapComponent implements OnInit {
 
   initGeolocationListener() {
     const _this = this;
-    this.geolocateControl.on('geolocate', locateUser);
+
+    fromEvent(this.geolocateControl, 'geolocate')
+      .pipe(takeUntil(this._unsub), debounceTime(2500))
+      .subscribe(locateUser);
 
     async function locateUser(e) {
-      // NOTE: This function gets called twice or more
-      // TO DO: identify what is causing the multiple calls
       try {
         const { latitude, longitude } = e.coords;
         const myPlace = await _this.mapService.reverseGeocode(
