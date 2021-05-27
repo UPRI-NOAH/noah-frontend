@@ -30,6 +30,10 @@ export class PraService {
     return this.praStore.state.center;
   }
 
+  get currentLocation$(): Observable<string> {
+    return this.praStore.state$.pipe(map((state) => state.currentLocation));
+  }
+
   get currentPage$(): Observable<PRAPage> {
     return this.praStore.state$.pipe(map((state) => state.currentPage));
   }
@@ -78,6 +82,10 @@ export class PraService {
 
   isHazardPage(currentPage: PRAPage): boolean {
     return this.hazardTypes.includes(currentPage);
+  }
+
+  setCurrentLocation(currentLocation: string): void {
+    this.praStore.patch({ currentLocation }, 'update current location');
   }
 
   setCurrentPage(currentPage: PRAPage): void {

@@ -6,9 +6,11 @@ import { MARKERS } from '@shared/mocks/critical-facilities';
 import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
-import mapboxgl, { Map, Marker } from 'mapbox-gl';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 @Component({
   selector: 'noah-pra-map',
@@ -17,7 +19,9 @@ import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 })
 export class PraMapComponent implements OnInit {
   map!: Map;
+  geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
+  mylocation: string = '';
   private _unsub = new Subject();
 
   constructor(private mapService: MapService, private praService: PraService) {}
@@ -25,10 +29,13 @@ export class PraMapComponent implements OnInit {
   ngOnInit(): void {
     this.initMap();
     this.map.on('load', () => {
+      this.initGeocoder();
+      this.initGeolocation();
       this.initLayers();
       this.initMarkers();
       this.initPageListener();
       this.initCenterListener();
+      this.initGeolocationListener();
     });
   }
 
@@ -53,6 +60,60 @@ export class PraMapComponent implements OnInit {
           essential: true,
         });
       });
+  }
+
+  initGeocoder() {
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: {
+        color: 'orange',
+      },
+      flyTo: {
+        padding: 15, // If you want some minimum space around your result
+        easing: function (t) {
+          return t;
+        },
+        maxZoom: 13, // If you want your result not to go further than a specific zoom
+      },
+    });
+    this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
+    this.map.addControl(geocoder);
+    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    geocoder.on('result', (e) => {
+      this.praService.setCurrentLocation(e.result['place_name']);
+      console.log(e.result);
+    });
+  }
+
+  initGeolocation() {
+    this.geolocateControl = this.mapService.getNewGeolocateControl();
+    this.map.addControl(this.geolocateControl, 'bottom-right');
+  }
+
+  initGeolocationListener() {
+    const _this = this;
+
+    fromEvent(this.geolocateControl, 'geolocate')
+      .pipe(takeUntil(this._unsub), debounceTime(2500))
+      .subscribe(locateUser);
+
+    async function locateUser(e) {
+      try {
+        const { latitude, longitude } = e.coords;
+        const myPlace = await _this.mapService.reverseGeocode(
+          latitude,
+          longitude
+        );
+        _this.praService.setCurrentLocation(myPlace);
+      } catch (error) {
+        // temporary
+        alert(
+          'Unable to retrieve your location, please manually input your city / brgy'
+        );
+      }
+    }
   }
 
   initLayers() {
@@ -82,6 +143,7 @@ export class PraMapComponent implements OnInit {
 
   initMap() {
     this.mapService.init();
+
     this.map = new mapboxgl.Map({
       container: 'pra-map',
       style: environment.mapbox.styles.base,

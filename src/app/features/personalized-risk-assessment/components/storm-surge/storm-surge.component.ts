@@ -9,9 +9,11 @@ import { Observable } from 'rxjs';
   styleUrls: ['./storm-surge.component.scss'],
 })
 export class StormSurgeComponent implements OnInit {
+  currentLocation$: Observable<string>;
   riskLevel$: Observable<RiskLevel>;
 
   constructor(private praService: PraService) {
+    this.currentLocation$ = this.praService.currentLocation$;
     this.riskLevel$ = this.praService.riskLevel$;
   }
 
