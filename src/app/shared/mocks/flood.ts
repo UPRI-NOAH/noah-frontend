@@ -29,9 +29,9 @@ export const LEYTE_FLOOD_5: FillLayer = {
   type: 'fill',
   source: {
     type: 'vector',
-    url: 'mapbox://jadurani.bhiuk4sy',
+    url: 'mapbox://jadurani.1b0wrydb',
   },
-  'source-layer': 'drive-download-20210531T01250-2t4e1m',
+  'source-layer': 'Leyte_5year_Flood-atysck',
   paint: {
     'fill-color': [
       'interpolate',
@@ -53,9 +53,9 @@ export const LEYTE_FLOOD_25: FillLayer = {
   type: 'fill',
   source: {
     type: 'vector',
-    url: 'mapbox://jadurani.3e5y5216',
+    url: 'mapbox://jadurani.60qgk1hq',
   },
-  'source-layer': '25-leyte-abuyog-60lan2',
+  'source-layer': 'Leyte_25year_Flood-cquuxm',
   paint: {
     'fill-color': [
       'interpolate',
@@ -79,9 +79,9 @@ export const LEYTE_FLOOD_100: FillLayer = {
   type: 'fill',
   source: {
     type: 'vector',
-    url: 'mapbox://jadurani.3tg2ae87',
+    url: 'mapbox://jadurani.bqe1u0g0',
   },
-  'source-layer': 'Leyte_Flood_100year-15dhkm',
+  'source-layer': 'Leyte_Flood_100year-8l0x62',
   paint: {
     'fill-color': [
       'interpolate',
