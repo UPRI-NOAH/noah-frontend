@@ -25,7 +25,7 @@ export const LEYTE_FLOOD: FillLayer = {
 };
 
 export const LEYTE_FLOOD_5: FillLayer = {
-  id: 'flood-5',
+  id: 'flood-return-period-5',
   type: 'fill',
   source: {
     type: 'vector',
@@ -49,7 +49,7 @@ export const LEYTE_FLOOD_5: FillLayer = {
 };
 
 export const LEYTE_FLOOD_25: FillLayer = {
-  id: 'flood-25',
+  id: 'flood-return-period-25',
   type: 'fill',
   source: {
     type: 'vector',
@@ -75,7 +75,7 @@ export const LEYTE_FLOOD_25: FillLayer = {
 // This is a duplicate of LEYTE_FLOOD at the top of this file
 // This is a workaround. We'll refactor this later on.
 export const LEYTE_FLOOD_100: FillLayer = {
-  id: 'flood-100',
+  id: 'flood-return-period-100',
   type: 'fill',
   source: {
     type: 'vector',
