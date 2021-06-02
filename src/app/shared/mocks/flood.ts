@@ -44,7 +44,7 @@ export const LEYTE_FLOOD_5: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 1,
+    'fill-opacity': 0.75,
   },
 };
 
@@ -68,7 +68,7 @@ export const LEYTE_FLOOD_25: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 1,
+    'fill-opacity': 0.75,
   },
 };
 
@@ -94,6 +94,6 @@ export const LEYTE_FLOOD_100: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 1,
+    'fill-opacity': 0.75,
   },
 };
