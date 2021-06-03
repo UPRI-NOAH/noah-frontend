@@ -47,3 +47,39 @@ export const LEYTE_PROVINCE_LANDSLIDE: FillLayer = {
     'fill-opacity': 1,
   },
 };
+
+export const LEYTE_PROVINCE_ALLUVIAL: FillLayer = {
+  id: 'alluvial-fan-hazard',
+  type: 'fill',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.5z50jk2x',
+  },
+  'source-layer': 'Leyte_Merged_AFDF_1-4dfa9e',
+  paint: {
+    'fill-color': [
+      'interpolate',
+      ['linear'],
+      ['get', 'LH'],
+      3,
+      '#eb5757',
+      4,
+      '#000000',
+    ],
+    'fill-opacity': 1,
+  },
+};
+
+export const LEYTE_PROVINCE_UNSTABLE_SLOPES: FillLayer = {
+  id: 'unstable-slopes-maps',
+  type: 'fill',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.5z50jk2x', //temporary while waiting for url of unstable slopes
+  },
+  'source-layer': 'Leyte_Merged_AFDF_1-4dfa9e', //temporary source-layer for testing
+  paint: {
+    'fill-color': ['interpolate', ['linear'], ['get', 'LH'], 3, '#eb5757'],
+    'fill-opacity': 1,
+  },
+};

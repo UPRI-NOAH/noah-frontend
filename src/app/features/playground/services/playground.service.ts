@@ -10,12 +10,18 @@ import {
   LEYTE_STORM_SURGE_ADVISORY_3,
   LEYTE_STORM_SURGE_ADVISORY_4,
 } from '@shared/mocks/storm-surges';
+import {
+  LEYTE_PROVINCE_LANDSLIDE,
+  LEYTE_PROVINCE_ALLUVIAL,
+  LEYTE_PROVINCE_UNSTABLE_SLOPES,
+} from '@shared/mocks/landslide';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   FloodReturnPeriod,
   PlaygroundStore,
   StormSurgeAdvisory,
+  LandslideHazards,
 } from '../store/playground.store';
 
 @Injectable({
@@ -60,6 +66,23 @@ export class PlaygroundService {
     );
   }
 
+  get landslideLayer$(): Observable<string> {
+    return this.currentLandslideHazards$.pipe(
+      map((landslideHazards: LandslideHazards) => {
+        switch (landslideHazards) {
+          case 'landslide-hazard':
+            return LEYTE_PROVINCE_LANDSLIDE['source-layer'];
+          case 'alluvial-fan-hazard':
+            return LEYTE_PROVINCE_ALLUVIAL['source-layer'];
+          case 'unstable-slopes-maps':
+            return LEYTE_PROVINCE_UNSTABLE_SLOPES['source-layer'];
+          default:
+            return LEYTE_PROVINCE_LANDSLIDE['source-layer'];
+        }
+      })
+    );
+  }
+
   get currentFloodReturnPeriod$(): Observable<FloodReturnPeriod> {
     return this.playgroundStore.state$.pipe(
       map((state) => state.currentFloodReturnPeriod)
@@ -69,6 +92,12 @@ export class PlaygroundService {
   get currentStormSurgeAdvisory$(): Observable<StormSurgeAdvisory> {
     return this.playgroundStore.state$.pipe(
       map((state) => state.currentStormSurgeAdvisory)
+    );
+  }
+
+  get currentLandslideHazards$(): Observable<LandslideHazards> {
+    return this.playgroundStore.state$.pipe(
+      map((state) => state.currentLandslideHazards)
     );
   }
 
@@ -89,11 +118,19 @@ export class PlaygroundService {
     ];
   }
 
+  get landslideHazards(): LandslideHazards[] {
+    return ['landslide-hazard', 'alluvial-fan-hazard', 'unstable-slopes-maps'];
+  }
+
   setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {
     this.playgroundStore.patch({ currentFloodReturnPeriod });
   }
 
   setCurrentStormSurgeAdvisory(currentStormSurgeAdvisory: StormSurgeAdvisory) {
     this.playgroundStore.patch({ currentStormSurgeAdvisory });
+  }
+
+  setCurrentLandslideHazards(currentLandslideHazards: LandslideHazards) {
+    this.playgroundStore.patch({ currentLandslideHazards });
   }
 }

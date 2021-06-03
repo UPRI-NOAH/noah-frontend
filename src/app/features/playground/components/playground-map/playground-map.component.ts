@@ -15,10 +15,16 @@ import {
   LEYTE_STORM_SURGE_ADVISORY_3,
   LEYTE_STORM_SURGE_ADVISORY_4,
 } from '@shared/mocks/storm-surges';
+import {
+  LEYTE_PROVINCE_LANDSLIDE,
+  LEYTE_PROVINCE_ALLUVIAL,
+  LEYTE_PROVINCE_UNSTABLE_SLOPES,
+} from '@shared/mocks/landslide';
 import { PlaygroundService } from '@features/playground/services/playground.service';
 import {
   FloodReturnPeriod,
   StormSurgeAdvisory,
+  LandslideHazards,
 } from '@features/playground/store/playground.store';
 
 @Component({
@@ -42,6 +48,7 @@ export class PlaygroundMapComponent implements OnInit {
 
       this.initFloodReturnPeriodListener();
       this.initStormSurgeAdvisoryListener();
+      this.initLandslideHazardsListener();
     });
   }
 
@@ -54,6 +61,11 @@ export class PlaygroundMapComponent implements OnInit {
     this.playgroundService.stormsurgeAdvisory.forEach(
       (stormsurgeAdvisory: StormSurgeAdvisory) => {
         this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'none');
+      }
+    );
+    this.playgroundService.landslideHazards.forEach(
+      (landslideHazards: LandslideHazards) => {
+        this.map.setLayoutProperty(landslideHazards, 'visibility', 'none');
       }
     );
   }
@@ -76,6 +88,15 @@ export class PlaygroundMapComponent implements OnInit {
     );
   }
 
+  initLandslideHazardsListener() {
+    this.playgroundService.currentLandslideHazards$.subscribe(
+      (landslideHazards) => {
+        this.hideAllLayers();
+        this.map.setLayoutProperty(landslideHazards, 'visibility', 'visible');
+      }
+    );
+  }
+
   initGeocoder() {
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -94,6 +115,10 @@ export class PlaygroundMapComponent implements OnInit {
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_2);
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_3);
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_4);
+
+    this.map.addLayer(LEYTE_PROVINCE_LANDSLIDE);
+    this.map.addLayer(LEYTE_PROVINCE_ALLUVIAL);
+    this.map.addLayer(LEYTE_PROVINCE_UNSTABLE_SLOPES);
 
     this.hideAllLayers();
   }

@@ -12,14 +12,21 @@ export type StormSurgeAdvisory =
   | 'storm-surge-advisory-3'
   | 'storm-surge-advisory-4';
 
+export type LandslideHazards =
+  | 'landslide-hazard'
+  | 'alluvial-fan-hazard'
+  | 'unstable-slopes-maps';
+
 type PlaygroundState = {
   currentFloodReturnPeriod: FloodReturnPeriod;
   currentStormSurgeAdvisory: StormSurgeAdvisory;
+  currentLandslideHazards: LandslideHazards;
 };
 
 const createInitialValue = (): PlaygroundState => ({
   currentFloodReturnPeriod: 'flood-return-period-5',
   currentStormSurgeAdvisory: 'storm-surge-advisory-1',
+  currentLandslideHazards: 'landslide-hazard',
 });
 
 @Injectable({
