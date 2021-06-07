@@ -15,6 +15,7 @@ export type StormSurgeAdvisory =
 export type LandslideHazards =
   | 'landslide-hazard'
   | 'alluvial-fan-hazard'
+  | 'debris-flow'
   | 'unstable-slopes-maps';
 
 type PlaygroundState = {

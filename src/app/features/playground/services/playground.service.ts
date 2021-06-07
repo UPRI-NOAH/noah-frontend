@@ -119,7 +119,12 @@ export class PlaygroundService {
   }
 
   get landslideHazards(): LandslideHazards[] {
-    return ['landslide-hazard', 'alluvial-fan-hazard', 'unstable-slopes-maps'];
+    return [
+      'landslide-hazard',
+      'alluvial-fan-hazard',
+      'debris-flow',
+      'unstable-slopes-maps',
+    ];
   }
 
   setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {

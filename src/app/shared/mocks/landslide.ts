@@ -1,4 +1,4 @@
-import { FillLayer } from 'mapbox-gl';
+import { FillLayer, LineLayer } from 'mapbox-gl';
 
 export const LEYTE_LANDSLIDE: FillLayer = {
   id: 'landslide',
@@ -48,8 +48,23 @@ export const LEYTE_PROVINCE_LANDSLIDE: FillLayer = {
   },
 };
 
-export const LEYTE_PROVINCE_ALLUVIAL: FillLayer = {
+export const LEYTE_PROVINCE_ALLUVIAL: LineLayer = {
   id: 'alluvial-fan-hazard',
+  type: 'line',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.5z50jk2x',
+  },
+  'source-layer': 'Leyte_Merged_AFDF_1-4dfa9e',
+  paint: {
+    'line-color': ['interpolate', ['linear'], ['get', 'LH'], 4, '#000000'],
+    'line-opacity': 1,
+    'line-width': 2,
+  },
+};
+
+export const LEYTE_PROVINCE_DEBRIS_FLOW: FillLayer = {
+  id: 'debris-flow',
   type: 'fill',
   source: {
     type: 'vector',
@@ -57,15 +72,7 @@ export const LEYTE_PROVINCE_ALLUVIAL: FillLayer = {
   },
   'source-layer': 'Leyte_Merged_AFDF_1-4dfa9e',
   paint: {
-    'fill-color': [
-      'interpolate',
-      ['linear'],
-      ['get', 'LH'],
-      3,
-      '#eb5757',
-      4,
-      '#000000',
-    ],
+    'fill-color': ['interpolate', ['linear'], ['get', 'LH'], 3, '#eb5757'],
     'fill-opacity': 1,
   },
 };

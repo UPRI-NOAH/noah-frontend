@@ -19,6 +19,7 @@ import {
   LEYTE_PROVINCE_LANDSLIDE,
   LEYTE_PROVINCE_ALLUVIAL,
   LEYTE_PROVINCE_UNSTABLE_SLOPES,
+  LEYTE_PROVINCE_DEBRIS_FLOW,
 } from '@shared/mocks/landslide';
 import { PlaygroundService } from '@features/playground/services/playground.service';
 import {
@@ -64,6 +65,9 @@ export class PlaygroundMapComponent implements OnInit {
     this.playgroundService.landslideHazards.forEach(
       (landslideHazards: LandslideHazards) => {
         this.map.setLayoutProperty(landslideHazards, 'visibility', 'none');
+        if (landslideHazards === 'alluvial-fan-hazard') {
+          this.map.setLayoutProperty('debris-flow', 'visibility', 'none');
+        }
       }
     );
   }
@@ -90,6 +94,9 @@ export class PlaygroundMapComponent implements OnInit {
       (landslideHazards) => {
         this.hideLandslideLayers();
         this.map.setLayoutProperty(landslideHazards, 'visibility', 'visible');
+        if (landslideHazards === 'alluvial-fan-hazard') {
+          this.map.setLayoutProperty('debris-flow', 'visibility', 'visible');
+        }
       }
     );
   }
@@ -126,6 +133,7 @@ export class PlaygroundMapComponent implements OnInit {
 
     this.map.addLayer(LEYTE_PROVINCE_LANDSLIDE);
     this.map.addLayer(LEYTE_PROVINCE_ALLUVIAL);
+    this.map.addLayer(LEYTE_PROVINCE_DEBRIS_FLOW);
     this.map.addLayer(LEYTE_PROVINCE_UNSTABLE_SLOPES);
     this.hideLandslideLayers();
   }
