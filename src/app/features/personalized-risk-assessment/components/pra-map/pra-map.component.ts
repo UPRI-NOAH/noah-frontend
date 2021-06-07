@@ -146,13 +146,31 @@ export class PraMapComponent implements OnInit {
 
     this.map = new mapboxgl.Map({
       container: 'pra-map',
-      style: environment.mapbox.styles.base,
       zoom: 13,
       pitch: 50,
       touchZoomRotate: true,
       bearing: 30,
       center: this.praService.currentCoords,
     });
+    this.map.setStyle(environment.mapbox.styles.base);
+
+    var layerList = document.getElementById('menu');
+    var inputs = layerList.getElementsByTagName('input');
+
+    function switchLayer(layer) {
+      var layerId = layer.target.id;
+      this.map = new mapboxgl.Map({
+        container: 'pra-map',
+        style: 'mapbox://styles/jadurani/' + layerId,
+        center: [122.723, 13.075],
+        zoom: 5,
+      });
+      console.log(layerId);
+    }
+
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].onclick = switchLayer;
+    }
   }
 
   initMarkers() {
