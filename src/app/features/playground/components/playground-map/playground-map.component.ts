@@ -52,17 +52,15 @@ export class PlaygroundMapComponent implements OnInit {
     });
   }
 
-  hideAllLayers() {
+  hideFloodLayers() {
     this.playgroundService.floodReturnPeriods.forEach(
       (returnPeriod: FloodReturnPeriod) => {
         this.map.setLayoutProperty(returnPeriod, 'visibility', 'none');
       }
     );
-    this.playgroundService.stormsurgeAdvisory.forEach(
-      (stormsurgeAdvisory: StormSurgeAdvisory) => {
-        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'none');
-      }
-    );
+  }
+
+  hideLandslideLayers() {
     this.playgroundService.landslideHazards.forEach(
       (landslideHazards: LandslideHazards) => {
         this.map.setLayoutProperty(landslideHazards, 'visibility', 'none');
@@ -70,20 +68,19 @@ export class PlaygroundMapComponent implements OnInit {
     );
   }
 
-  initFloodReturnPeriodListener() {
-    this.playgroundService.currentFloodReturnPeriod$.subscribe(
-      (returnPeriod) => {
-        this.hideAllLayers();
-        this.map.setLayoutProperty(returnPeriod, 'visibility', 'visible');
+  hideStormSurgeLayers() {
+    this.playgroundService.stormsurgeAdvisory.forEach(
+      (stormsurgeAdvisory: StormSurgeAdvisory) => {
+        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'none');
       }
     );
   }
 
-  initStormSurgeAdvisoryListener() {
-    this.playgroundService.currentStormSurgeAdvisory$.subscribe(
-      (stormsurgeAdvisory) => {
-        this.hideAllLayers();
-        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'visible');
+  initFloodReturnPeriodListener() {
+    this.playgroundService.currentFloodReturnPeriod$.subscribe(
+      (returnPeriod) => {
+        this.hideFloodLayers();
+        this.map.setLayoutProperty(returnPeriod, 'visibility', 'visible');
       }
     );
   }
@@ -91,8 +88,17 @@ export class PlaygroundMapComponent implements OnInit {
   initLandslideHazardsListener() {
     this.playgroundService.currentLandslideHazards$.subscribe(
       (landslideHazards) => {
-        this.hideAllLayers();
+        this.hideLandslideLayers();
         this.map.setLayoutProperty(landslideHazards, 'visibility', 'visible');
+      }
+    );
+  }
+
+  initStormSurgeAdvisoryListener() {
+    this.playgroundService.currentStormSurgeAdvisory$.subscribe(
+      (stormsurgeAdvisory) => {
+        this.hideStormSurgeLayers();
+        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'visible');
       }
     );
   }
@@ -110,17 +116,18 @@ export class PlaygroundMapComponent implements OnInit {
     this.map.addLayer(LEYTE_FLOOD_5);
     this.map.addLayer(LEYTE_FLOOD_25);
     this.map.addLayer(LEYTE_FLOOD_100);
+    this.hideFloodLayers();
 
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_1);
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_2);
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_3);
     this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_4);
+    this.hideStormSurgeLayers();
 
     this.map.addLayer(LEYTE_PROVINCE_LANDSLIDE);
     this.map.addLayer(LEYTE_PROVINCE_ALLUVIAL);
     this.map.addLayer(LEYTE_PROVINCE_UNSTABLE_SLOPES);
-
-    this.hideAllLayers();
+    this.hideLandslideLayers();
   }
 
   initMap() {
