@@ -3,15 +3,25 @@
 
 <div class="bottom-0 fixed z-10 left-0 h-16 w-16 flex flex-row py-4">
   <a class="flex max-w-xs p-2 items-center space-x-3">
-    <button
-      class="bg-white px-4 py-2 text-xs font-semibold tracking-wider text-blue-600 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-    >
-      Mapbox
-    </button>
-    <button
-      class="bg-white px-4 py-2 text-xs font-semibold tracking-wider text-blue-600 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-    >
-      Satellite
-    </button>
+    <div class="switch" id="menu">
+      <input
+        type="radio"
+        name="switch"
+        value="Off"
+        checked
+        id="ckn56hvjq09fb17p6cmnve685"
+      />
+      <label class="btn-toggle" for="basemap">Mapbox</label>
+
+      <input
+        type="radio"
+        name="switch"
+        value="On"
+        id="ckn9l9me41v9l17pg0ob9fy5n"
+      />
+      <label class="btn-toggle btn-toggle--off" for="satellite"
+        >Satellite</label
+      >
+    </div>
   </a>
 </div>
