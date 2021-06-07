@@ -4,9 +4,9 @@
 
 :root {
   --color-primary: #0066ff;
-  --color-low: #f2c94c;
-  --color-medium: #f2994a;
-  --color-high: #eb5757;
+  --color-low: #fdd353;
+  --color-medium: #ff7700;
+  --color-high: #ff0000;
 }
 
 html,
@@ -15,6 +15,7 @@ body {
 }
 body {
   margin: 0;
+  padding: 0;
 }
 
 .left-shadow {

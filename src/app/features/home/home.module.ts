@@ -6,15 +6,15 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { NavigationComponent } from './pages/navigation/navigation.component';
 import { FooterComponent } from './pages/footer/footer.component';
 import { PersonalizedRiskAssessmentModule } from '@features/personalized-risk-assessment/personalized-risk-assessment.module';
-import { PlaygroundComponent } from '@features/playground/playground.component';
+import { PlaygroundModule } from '@features/playground/playground.module';
 
 @NgModule({
-  declarations: [
-    LandingPageComponent,
-    NavigationComponent,
-    FooterComponent,
-    PlaygroundComponent,
+  declarations: [LandingPageComponent, NavigationComponent, FooterComponent],
+  imports: [
+    CommonModule,
+    HomeRoutingModule,
+    PersonalizedRiskAssessmentModule,
+    PlaygroundModule,
   ],
-  imports: [CommonModule, HomeRoutingModule, PersonalizedRiskAssessmentModule],
 })
 export class HomeModule {}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PlaygroundService } from '@features/playground/services/playground.service';
 
 @Component({
   selector: 'noah-playground',
@@ -6,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./playground.component.scss'],
 })
 export class PlaygroundComponent implements OnInit {
-  constructor() {}
+  constructor(private PlaygroundService: PlaygroundService) {}
 
   ngOnInit(): void {}
 }

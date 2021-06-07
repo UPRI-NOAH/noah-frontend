@@ -1,0 +1,116 @@
+<div class="border-b border-gray-200 my-0 py-2">
+  <div class="block">
+    <div class="inline-flex inline-text py-0 pb-0">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 mr-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+        />
+      </svg>
+      <p class="font-bold text-s uppercase">Storm Surge</p>
+    </div>
+    <div class="mt-2 text-xs uppercase px-8">
+      <div
+        class="font-bold text-gray-800 text-xs mb-1 font-medium title-font uppercase"
+      >
+        Storm Surge Advisory
+      </div>
+      <div class="flex flex-col">
+        <span class="inline-flex items-center mt-1">
+          <input
+            id="storm-surge-advisory-1"
+            type="radio"
+            class="h-4 w-4 text-red-600"
+            [checked]="
+              'storm-surge-advisory-1' === (currentStormSurgeAdvisory$ | async)
+            "
+            (click)="viewStormSurgeAdvisory('storm-surge-advisory-1')"
+          />
+          <label for="storm-surge-advisory-1" class="ml-2 text-gray-700"
+            >SSA #1</label
+          >
+        </span>
+        <span class="inline-flex items-center mt-1">
+          <input
+            id="storm-surge-advisory-2"
+            type="radio"
+            class="h-4 w-4 text-red-600"
+            [checked]="
+              'storm-surge-advisory-2' === (currentStormSurgeAdvisory$ | async)
+            "
+            (click)="viewStormSurgeAdvisory('storm-surge-advisory-2')"
+          />
+          <label for="storm-surge-advisory-2" class="ml-2 text-gray-700"
+            >SSA #2</label
+          >
+        </span>
+        <span class="inline-flex items-center mt-1">
+          <input
+            id="storm-surge-advisory-3"
+            type="radio"
+            class="h-4 w-4 text-red-600"
+            [checked]="
+              'storm-surge-advisory-3' === (currentStormSurgeAdvisory$ | async)
+            "
+            (click)="viewStormSurgeAdvisory('storm-surge-advisory-3')"
+          />
+          <label for="storm-surge-advisory-3" class="ml-2 text-gray-700"
+            >SSA #3</label
+          >
+        </span>
+        <span class="inline-flex items-center mt-1">
+          <input
+            id="storm-surge-advisory-4"
+            type="radio"
+            class="h-4 w-4 text-red-600"
+            [checked]="
+              'storm-surge-advisory-4' === (currentStormSurgeAdvisory$ | async)
+            "
+            (click)="viewStormSurgeAdvisory('storm-surge-advisory-4')"
+          />
+          <label for="storm-surge-advisory-4" class="ml-2 text-gray-700"
+            >SSA #4</label
+          >
+        </span>
+      </div>
+      <div class="mt-2 text-xs uppercase">
+        <span
+          class="font-bold text-gray-800 text-xs mb-1 font-medium title-font"
+          >Legend</span
+        >
+        <div>
+          <label class="inline-flex items-center">
+            <div class="box-border h-4 w-4 p-2 border-1 bg-high"></div>
+            <span class="ml-2">High</span>
+          </label>
+        </div>
+        <div>
+          <label class="inline-flex items-center">
+            <div class="box-border h-4 w-4 p-2 border-1 bg-medium"></div>
+            <span class="ml-2">Medium</span>
+          </label>
+        </div>
+        <div>
+          <label class="inline-flex items-center">
+            <div class="box-border h-4 w-4 p-2 border-1 bg-low"></div>
+            <span class="ml-2">Low</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
