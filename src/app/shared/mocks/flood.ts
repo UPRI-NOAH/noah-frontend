@@ -1,4 +1,32 @@
-import { FillLayer } from 'mapbox-gl';
+import { FillLayer, SymbolLayer } from 'mapbox-gl';
+
+export const SAMPLE_SCHOOLS: SymbolLayer = {
+  id: 'leyte-schools',
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    tiles: [
+      'http://localhost:8080/geoserver/gwc/service/wmts?' +
+        'REQUEST=GetTile' +
+        '&SERVICE=WMTS' +
+        '&VERSION=1.0.0' +
+        '&LAYER=noah-test-may2021:leyte_schools' +
+        '&STYLE=' +
+        '&TILEMATRIX=EPSG:900913:{z}' +
+        '&TILEMATRIXSET=EPSG:900913' +
+        '&FORMAT=application/vnd.mapbox-vector-tile' +
+        '&TILECOL={x}&TILEROW={y}',
+    ],
+  },
+  'source-layer': 'leyte_schools',
+  layout: {
+    'icon-image': 'custom-marker',
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+};
 
 export const LEYTE_FLOOD: FillLayer = {
   id: 'flood',

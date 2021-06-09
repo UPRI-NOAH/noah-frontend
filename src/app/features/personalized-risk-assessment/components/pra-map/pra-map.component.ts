@@ -3,7 +3,7 @@ import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
 import { MARKERS } from '@shared/mocks/critical-facilities';
-import { LEYTE_FLOOD } from '@shared/mocks/flood';
+import { LEYTE_FLOOD, SAMPLE_SCHOOLS } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
@@ -31,11 +31,25 @@ export class PraMapComponent implements OnInit {
     this.map.on('load', () => {
       this.initGeocoder();
       this.initGeolocation();
-      this.initLayers();
-      this.initMarkers();
       this.initPageListener();
       this.initCenterListener();
       this.initGeolocationListener();
+
+      // this.initMarkers();
+
+      const _this = this;
+      this.map.loadImage(
+        'assets/icons/map_sprite_school.png',
+        (error, image) => {
+          if (error) throw error;
+          _this.map.addImage('custom-marker', image);
+          _this.map.addLayer(SAMPLE_SCHOOLS);
+        }
+      );
+    });
+
+    this.map.on('style.load', () => {
+      this.initLayers();
     });
   }
 
@@ -152,19 +166,22 @@ export class PraMapComponent implements OnInit {
       bearing: 30,
       center: this.praService.currentCoords,
     });
+
     this.map.setStyle(environment.mapbox.styles.base);
 
     var layerList = document.getElementById('menu');
     var inputs = layerList.getElementsByTagName('input');
 
+    const _this = this;
     function switchLayer(layer) {
       var layerId = layer.target.id;
-      this.map = new mapboxgl.Map({
-        container: 'pra-map',
-        style: 'mapbox://styles/jadurani/' + layerId,
-        center: [122.723, 13.075],
-        zoom: 5,
-      });
+      _this.map.setStyle(`mapbox://styles/jadurani/${layerId}`);
+      // this.map = new mapboxgl.Map({
+      //   container: 'pra-map',
+      //   style: 'mapbox://styles/jadurani/' + layerId,
+      //   center: [122.723, 13.075],
+      //   zoom: 5,
+      // });
       console.log(layerId);
     }
 
