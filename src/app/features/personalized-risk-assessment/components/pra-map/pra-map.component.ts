@@ -11,6 +11,7 @@ import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { env } from 'node:process';
 
 @Component({
   selector: 'noah-pra-map',
@@ -21,7 +22,6 @@ export class PraMapComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
-  mylocation: string = '';
   private _unsub = new Subject();
 
   constructor(private mapService: MapService, private praService: PraService) {}
@@ -143,33 +143,30 @@ export class PraMapComponent implements OnInit {
 
   initMap() {
     this.mapService.init();
-
     this.map = new mapboxgl.Map({
       container: 'pra-map',
+      style: environment.mapbox.styles.base,
       zoom: 13,
       pitch: 50,
       touchZoomRotate: true,
       bearing: 30,
       center: this.praService.currentCoords,
     });
-    this.map.setStyle(environment.mapbox.styles.base);
 
-    var layerList = document.getElementById('menu');
-    var inputs = layerList.getElementsByTagName('input');
+    let layerList = document.getElementById('menu');
+    let inputs = layerList.getElementsByTagName('button');
 
+    const _this = this;
     function switchLayer(layer) {
-      var layerId = layer.target.id;
-      this.map = new mapboxgl.Map({
-        container: 'pra-map',
-        style: 'mapbox://styles/jadurani/' + layerId,
-        center: [122.723, 13.075],
-        zoom: 5,
-      });
-      console.log(layerId);
+      let layerId = layer.target.id;
+      _this.map.setStyle('mapbox://styles/jadurani/' + layerId);
     }
 
-    for (var i = 0; i < inputs.length; i++) {
+    for (let i = 0; i < inputs.length; i++) {
       inputs[i].onclick = switchLayer;
+      this.map.on('style.load', function () {
+        this.initCenterListener();
+      });
     }
   }
 
