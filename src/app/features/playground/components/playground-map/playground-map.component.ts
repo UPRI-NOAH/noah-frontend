@@ -142,7 +142,7 @@ export class PlaygroundMapComponent implements OnInit {
     this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: environment.mapbox.styles.base,
+      style: environment.mapbox.styles.terrain,
       zoom: 5,
       touchZoomRotate: true,
       center: [122.65301737691877, 11.834938659565541],

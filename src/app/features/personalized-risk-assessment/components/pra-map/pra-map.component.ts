@@ -12,6 +12,10 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+import { PRAPage } from '@features/personalized-risk-assessment/store/pra.store';
+
+type MapStyle = 'terrain' | 'satellite';
+
 @Component({
   selector: 'noah-pra-map',
   templateUrl: './pra-map.component.html',
@@ -21,22 +25,36 @@ export class PraMapComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
-  mylocation: string = '';
+  mapStyle: MapStyle = 'terrain';
+
   private _unsub = new Subject();
 
   constructor(private mapService: MapService, private praService: PraService) {}
 
   ngOnInit(): void {
     this.initMap();
-    this.map.on('load', () => {
-      this.initGeocoder();
-      this.initGeolocation();
-      this.initLayers();
-      this.initMarkers();
-      this.initPageListener();
-      this.initCenterListener();
-      this.initGeolocationListener();
-    });
+
+    fromEvent(this.map, 'load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initGeocoder();
+        this.initGeolocation();
+        this.initMarkers();
+
+        this.initPageListener();
+        this.initCenterListener();
+        this.initGeolocationListener();
+      });
+
+    fromEvent(this.map, 'style.load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initLayers();
+        this.hideAllLayers();
+
+        const page = this.praService.currentPage;
+        this.showLayers(page);
+      });
   }
 
   ngOnDestroy(): void {
@@ -120,33 +138,21 @@ export class PraMapComponent implements OnInit {
     this.map.addLayer(LEYTE_FLOOD);
     this.map.addLayer(LEYTE_LANDSLIDE);
     this.map.addLayer(LEYTE_STORM_SURGE);
-
-    // Hide all on init
-    this.hideAllLayers;
   }
 
   initPageListener() {
     this.praService.currentPage$
       .pipe(takeUntil(this._unsub))
       .subscribe((page) => {
-        if (page === 'critical-facilities') {
-          this.showAllLayers();
-          return;
-        }
-
-        this.hideAllLayers();
-        if (this.praService.isHazardPage(page)) {
-          this.map.setLayoutProperty(page, 'visibility', 'visible');
-        }
+        this.showLayers(page);
       });
   }
 
   initMap() {
     this.mapService.init();
-
     this.map = new mapboxgl.Map({
       container: 'pra-map',
-      style: environment.mapbox.styles.base,
+      style: environment.mapbox.styles[this.mapStyle],
       zoom: 13,
       pitch: 50,
       touchZoomRotate: true,
@@ -169,5 +175,30 @@ export class PraMapComponent implements OnInit {
     this.praService.hazardTypes.forEach((hazard) => {
       this.map.setLayoutProperty(hazard, 'visibility', 'visible');
     });
+  }
+
+  showCurrentHazardLayer(page: PRAPage) {
+    if (!this.praService.isHazardPage(page)) return;
+
+    this.map.setLayoutProperty(page, 'visibility', 'visible');
+  }
+
+  showLayers(page: PRAPage) {
+    if (page === 'critical-facilities') {
+      this.showAllLayers();
+      return;
+    }
+
+    this.hideAllLayers();
+    this.showCurrentHazardLayer(page);
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+    }
   }
 }
