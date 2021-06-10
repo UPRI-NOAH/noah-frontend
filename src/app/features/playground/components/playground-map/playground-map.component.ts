@@ -35,6 +35,7 @@ import {
 })
 export class PlaygroundMapComponent implements OnInit {
   map!: Map;
+  pgLocation: string = '';
 
   constructor(
     private mapService: MapService,
@@ -46,7 +47,6 @@ export class PlaygroundMapComponent implements OnInit {
     this.map.on('load', () => {
       this.initLayers();
       this.initGeocoder();
-
       this.initFloodReturnPeriodListener();
       this.initStormSurgeAdvisoryListener();
       this.initLandslideHazardsListener();
@@ -115,8 +115,12 @@ export class PlaygroundMapComponent implements OnInit {
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
     });
-    this.map.addControl(geocoder, 'top-right');
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    geocoder.on('result', (e) => {
+      this.playgroundService.setCurrentLocationPg(e.result['place_name']);
+      console.log(e.result['place_name']);
+    });
   }
 
   initLayers() {

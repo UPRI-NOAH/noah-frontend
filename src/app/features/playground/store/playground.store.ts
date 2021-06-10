@@ -22,12 +22,14 @@ type PlaygroundState = {
   currentFloodReturnPeriod: FloodReturnPeriod;
   currentStormSurgeAdvisory: StormSurgeAdvisory;
   currentLandslideHazards: LandslideHazards;
+  currentLocationPg: string;
 };
 
 const createInitialValue = (): PlaygroundState => ({
   currentFloodReturnPeriod: 'flood-return-period-5',
   currentStormSurgeAdvisory: 'storm-surge-advisory-1',
   currentLandslideHazards: 'landslide-hazard',
+  currentLocationPg: '-------',
 });
 
 @Injectable({

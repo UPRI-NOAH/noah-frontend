@@ -89,6 +89,12 @@ export class PlaygroundService {
     );
   }
 
+  get currentLocationPg$(): Observable<string> {
+    return this.playgroundStore.state$.pipe(
+      map((state) => state.currentLocationPg)
+    );
+  }
+
   get currentStormSurgeAdvisory$(): Observable<StormSurgeAdvisory> {
     return this.playgroundStore.state$.pipe(
       map((state) => state.currentStormSurgeAdvisory)
@@ -129,6 +135,13 @@ export class PlaygroundService {
 
   setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {
     this.playgroundStore.patch({ currentFloodReturnPeriod });
+  }
+
+  setCurrentLocationPg(currentLocationPg: string): void {
+    this.playgroundStore.patch(
+      { currentLocationPg },
+      'Update Current Location'
+    );
   }
 
   setCurrentStormSurgeAdvisory(currentStormSurgeAdvisory: StormSurgeAdvisory) {
