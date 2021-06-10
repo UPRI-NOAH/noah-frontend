@@ -7,11 +7,13 @@ import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import { fromEvent, Subject } from 'rxjs';
+import { combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { env } from 'node:process';
+import { PRAPage } from '@features/personalized-risk-assessment/store/pra.store';
+
+type MapStyle = 'terrain' | 'satellite';
 
 @Component({
   selector: 'noah-pra-map',
@@ -22,21 +24,36 @@ export class PraMapComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
+  mapStyle: MapStyle = 'terrain';
+
   private _unsub = new Subject();
 
   constructor(private mapService: MapService, private praService: PraService) {}
 
   ngOnInit(): void {
     this.initMap();
-    this.map.on('load', () => {
-      this.initGeocoder();
-      this.initGeolocation();
-      this.initLayers();
-      this.initMarkers();
-      this.initPageListener();
-      this.initCenterListener();
-      this.initGeolocationListener();
-    });
+
+    fromEvent(this.map, 'load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initGeocoder();
+        this.initGeolocation();
+        this.initMarkers();
+
+        this.initPageListener();
+        this.initCenterListener();
+        this.initGeolocationListener();
+      });
+
+    fromEvent(this.map, 'style.load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initLayers();
+        this.hideAllLayers();
+
+        const page = this.praService.currentPage;
+        this.showLayers(page);
+      });
   }
 
   ngOnDestroy(): void {
@@ -120,24 +137,13 @@ export class PraMapComponent implements OnInit {
     this.map.addLayer(LEYTE_FLOOD);
     this.map.addLayer(LEYTE_LANDSLIDE);
     this.map.addLayer(LEYTE_STORM_SURGE);
-
-    // Hide all on init
-    this.hideAllLayers;
   }
 
   initPageListener() {
     this.praService.currentPage$
       .pipe(takeUntil(this._unsub))
       .subscribe((page) => {
-        if (page === 'critical-facilities') {
-          this.showAllLayers();
-          return;
-        }
-
-        this.hideAllLayers();
-        if (this.praService.isHazardPage(page)) {
-          this.map.setLayoutProperty(page, 'visibility', 'visible');
-        }
+        this.showLayers(page);
       });
   }
 
@@ -145,29 +151,13 @@ export class PraMapComponent implements OnInit {
     this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'pra-map',
-      style: environment.mapbox.styles.base,
+      style: environment.mapbox.styles[this.mapStyle],
       zoom: 13,
       pitch: 50,
       touchZoomRotate: true,
       bearing: 30,
       center: this.praService.currentCoords,
     });
-
-    let layerList = document.getElementById('menu');
-    let inputs = layerList.getElementsByTagName('button');
-
-    const _this = this;
-    function switchLayer(layer) {
-      let layerId = layer.target.id;
-      _this.map.setStyle('mapbox://styles/jadurani/' + layerId);
-    }
-
-    for (let i = 0; i < inputs.length; i++) {
-      inputs[i].onclick = switchLayer;
-      this.map.on('style.load', function () {
-        this.initCenterListener();
-      });
-    }
   }
 
   initMarkers() {
@@ -184,5 +174,30 @@ export class PraMapComponent implements OnInit {
     this.praService.hazardTypes.forEach((hazard) => {
       this.map.setLayoutProperty(hazard, 'visibility', 'visible');
     });
+  }
+
+  showCurrentHazardLayer(page: PRAPage) {
+    if (!this.praService.isHazardPage(page)) return;
+
+    this.map.setLayoutProperty(page, 'visibility', 'visible');
+  }
+
+  showLayers(page: PRAPage) {
+    if (page === 'critical-facilities') {
+      this.showAllLayers();
+      return;
+    }
+
+    this.hideAllLayers();
+    this.showCurrentHazardLayer(page);
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+    }
   }
 }
