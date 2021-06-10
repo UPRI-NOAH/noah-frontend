@@ -7,10 +7,11 @@ import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
 import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import { combineLatest, fromEvent, Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 import { PRAPage } from '@features/personalized-risk-assessment/store/pra.store';
 
 type MapStyle = 'terrain' | 'satellite';
