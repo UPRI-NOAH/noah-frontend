@@ -35,6 +35,10 @@ export class PlaygroundService {
     return this.playgroundStore.state.center;
   }
 
+  get center$(): Observable<LngLatLike> {
+    return this.playgroundStore.state$.pipe(map((state) => state.center));
+  }
+
   get floodLayer$(): Observable<string> {
     return this.currentFloodReturnPeriod$.pipe(
       map((returnPeriod: FloodReturnPeriod) => {
@@ -136,6 +140,10 @@ export class PlaygroundService {
       'debris-flow',
       'unstable-slopes-maps',
     ];
+  }
+
+  setCenter(center: { lat: number; lng: number }) {
+    this.playgroundStore.patch({ center });
   }
 
   setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {

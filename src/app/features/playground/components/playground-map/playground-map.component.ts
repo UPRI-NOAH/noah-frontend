@@ -27,6 +27,7 @@ import {
   StormSurgeAdvisory,
   LandslideHazards,
 } from '@features/playground/store/playground.store';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-playground-map',
@@ -46,7 +47,7 @@ export class PlaygroundMapComponent implements OnInit {
     this.initMap();
     this.map.on('load', () => {
       this.initLayers();
-      this.initGeocoder();
+      this.initCenterListener();
       this.initFloodReturnPeriodListener();
       this.initStormSurgeAdvisoryListener();
       this.initLandslideHazardsListener();
@@ -110,16 +111,13 @@ export class PlaygroundMapComponent implements OnInit {
     );
   }
 
-  initGeocoder() {
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
-    });
-    // document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    geocoder.on('result', (e) => {
-      this.playgroundService.setCurrentLocationPg(e.result['place_name']);
-      console.log(e.result['place_name']);
+  initCenterListener() {
+    this.playgroundService.center$.pipe(skip(1)).subscribe((center) => {
+      this.map.flyTo({
+        center,
+        zoom: 13,
+        essential: true,
+      });
     });
   }
 

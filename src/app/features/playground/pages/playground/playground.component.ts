@@ -19,5 +19,7 @@ export class PlaygroundComponent implements OnInit {
 
   selectPlace(selectedPlace) {
     this.playgroundService.setCurrentLocationPg(selectedPlace.text);
+    const [lng, lat] = selectedPlace.center;
+    this.playgroundService.setCenter({ lat, lng });
   }
 }
