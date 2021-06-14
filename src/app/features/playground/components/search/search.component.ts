@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { BehaviorSubject } from 'rxjs';
@@ -11,6 +11,9 @@ import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
+  @Input() searchTerm: string;
+  @Output() selectPlace: EventEmitter<any> = new EventEmitter();
+
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
 
@@ -39,9 +42,9 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  selectPlace(place) {
+  pickPlace(place) {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
-    // add another control here
+    this.selectPlace.emit(place);
   }
 }

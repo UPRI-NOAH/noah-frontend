@@ -9,6 +9,11 @@ import { Observable } from 'rxjs';
 })
 export class PlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
+  searchTerm: string;
+
+  selectPlace(selectedPlace) {
+    console.log(selectedPlace);
+  }
 
   constructor(private PlaygroundService: PlaygroundService) {}
 

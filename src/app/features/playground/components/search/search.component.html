@@ -54,7 +54,7 @@
     *ngIf="isDropdownOpen && (places$ | async)?.length"
   >
     <button
-      (click)="selectPlace(place)"
+      (click)="pickPlace(place)"
       *ngFor="let place of places$ | async"
       class="
         block
