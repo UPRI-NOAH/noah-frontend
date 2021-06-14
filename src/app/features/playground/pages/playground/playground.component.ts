@@ -11,13 +11,13 @@ export class PlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
   searchTerm: string;
 
-  selectPlace(selectedPlace) {
-    console.log(selectedPlace);
-  }
-
-  constructor(private PlaygroundService: PlaygroundService) {}
+  constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
-    this.currentLocationPg$ = this.PlaygroundService.currentLocationPg$;
+    this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
+  }
+
+  selectPlace(selectedPlace) {
+    this.playgroundService.setCurrentLocationPg(selectedPlace.text);
   }
 }

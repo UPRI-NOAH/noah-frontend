@@ -23,12 +23,17 @@ import {
   StormSurgeAdvisory,
   LandslideHazards,
 } from '../store/playground.store';
+import { LngLatLike } from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaygroundService {
   constructor(private playgroundStore: PlaygroundStore) {}
+
+  get center(): LngLatLike {
+    return this.playgroundStore.state.center;
+  }
 
   get floodLayer$(): Observable<string> {
     return this.currentFloodReturnPeriod$.pipe(

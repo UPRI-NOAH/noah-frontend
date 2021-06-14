@@ -149,7 +149,7 @@ export class PlaygroundMapComponent implements OnInit {
       style: environment.mapbox.styles.base,
       zoom: 5,
       touchZoomRotate: true,
-      center: [122.65301737691877, 11.834938659565541],
+      center: this.playgroundService.center,
     });
   }
 }
