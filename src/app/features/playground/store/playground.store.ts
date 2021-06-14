@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
+export const PH_DEFAULT_CENTER = {
+  lat: 11.968179,
+  lng: 121.918612,
+};
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -22,12 +27,16 @@ type PlaygroundState = {
   currentFloodReturnPeriod: FloodReturnPeriod;
   currentStormSurgeAdvisory: StormSurgeAdvisory;
   currentLandslideHazards: LandslideHazards;
+  currentLocationPg: string;
+  center: { lng: number; lat: number };
 };
 
 const createInitialValue = (): PlaygroundState => ({
   currentFloodReturnPeriod: 'flood-return-period-5',
   currentStormSurgeAdvisory: 'storm-surge-advisory-1',
   currentLandslideHazards: 'landslide-hazard',
+  currentLocationPg: '-------',
+  center: PH_DEFAULT_CENTER,
 });
 
 @Injectable({

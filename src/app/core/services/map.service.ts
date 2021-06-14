@@ -25,7 +25,10 @@ export class MapService {
   /**
    * Returns the geographic coordinates given a string address
    */
-  forwardGeocode() {}
+  forwardGeocode(searchText: string) {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchText}.json?country=PH&access_token=${environment.mapbox.accessToken}`;
+    return this.httpClient.get(url);
+  }
 
   /**
    * Returns the string address given the geographic coordinates

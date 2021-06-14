@@ -23,12 +23,21 @@ import {
   StormSurgeAdvisory,
   LandslideHazards,
 } from '../store/playground.store';
+import { LngLatLike } from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaygroundService {
   constructor(private playgroundStore: PlaygroundStore) {}
+
+  get center(): LngLatLike {
+    return this.playgroundStore.state.center;
+  }
+
+  get center$(): Observable<LngLatLike> {
+    return this.playgroundStore.state$.pipe(map((state) => state.center));
+  }
 
   get floodLayer$(): Observable<string> {
     return this.currentFloodReturnPeriod$.pipe(
@@ -89,6 +98,12 @@ export class PlaygroundService {
     );
   }
 
+  get currentLocationPg$(): Observable<string> {
+    return this.playgroundStore.state$.pipe(
+      map((state) => state.currentLocationPg)
+    );
+  }
+
   get currentStormSurgeAdvisory$(): Observable<StormSurgeAdvisory> {
     return this.playgroundStore.state$.pipe(
       map((state) => state.currentStormSurgeAdvisory)
@@ -127,8 +142,19 @@ export class PlaygroundService {
     ];
   }
 
+  setCenter(center: { lat: number; lng: number }) {
+    this.playgroundStore.patch({ center });
+  }
+
   setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {
     this.playgroundStore.patch({ currentFloodReturnPeriod });
+  }
+
+  setCurrentLocationPg(currentLocationPg: string): void {
+    this.playgroundStore.patch(
+      { currentLocationPg },
+      'Update Current Location'
+    );
   }
 
   setCurrentStormSurgeAdvisory(currentStormSurgeAdvisory: StormSurgeAdvisory) {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaygroundService } from '@features/playground/services/playground.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-playground',
@@ -7,7 +8,18 @@ import { PlaygroundService } from '@features/playground/services/playground.serv
   styleUrls: ['./playground.component.scss'],
 })
 export class PlaygroundComponent implements OnInit {
-  constructor(private PlaygroundService: PlaygroundService) {}
+  currentLocationPg$: Observable<string>;
+  searchTerm: string;
 
-  ngOnInit(): void {}
+  constructor(private playgroundService: PlaygroundService) {}
+
+  ngOnInit(): void {
+    this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
+  }
+
+  selectPlace(selectedPlace) {
+    this.playgroundService.setCurrentLocationPg(selectedPlace.text);
+    const [lng, lat] = selectedPlace.center;
+    this.playgroundService.setCenter({ lat, lng });
+  }
 }

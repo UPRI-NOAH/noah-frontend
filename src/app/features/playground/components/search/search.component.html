@@ -1,0 +1,100 @@
+<!-- SEARCH CONTAINER -->
+<div class="relative">
+  <div
+    class="
+      relative
+      text-gray-400
+      w-full
+      border-solid border-gray-300 border-2
+      rounded-md
+      z-10
+    "
+  >
+    <span class="absolute left-0 flex items-center pl-2">
+      <button
+        type="submit"
+        class="px-x py-1 outline-none shadow-outline cursor-pointer"
+      >
+        <svg
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </button>
+    </span>
+    <input
+      type="search"
+      [formControl]="searchTermCtrl"
+      (keyup)="isDropdownOpen = true"
+      (focus)="isDropdownOpen = true"
+      class="
+        py-2
+        w-full
+        text-sm
+        rounded-md
+        pl-10
+        outline-none
+        bg-white
+        text-gray-900
+      "
+      placeholder="Search..."
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- DROPDOWN -->
+  <div
+    class="absolute mt-2 py-2 w-full bg-white shadow-xl rounded-md z-10"
+    *ngIf="isDropdownOpen && (places$ | async)?.length"
+  >
+    <button
+      (click)="pickPlace(place)"
+      *ngFor="let place of places$ | async"
+      class="
+        block
+        w-full
+        px-4
+        py-2
+        text-left text-gray-800
+        hover:bg-primary hover:text-white
+        group
+      "
+    >
+      {{ place.text }}
+      <div
+        class="
+          text-xs text-gray-400
+          group-hover:text-gray-100
+          overflow-ellipsis
+          whitespace-nowrap
+          overflow-hidden
+        "
+      >
+        {{ place.place_name }}
+      </div>
+    </button>
+  </div>
+
+  <!-- BACKDROP -->
+  <div
+    (click)="isDropdownOpen = false"
+    *ngIf="isDropdownOpen"
+    class="
+      fixed
+      h-full
+      w-full
+      bg-black
+      opacity-30
+      top-0
+      right-0
+      bottom-0
+      left-0
+    "
+  ></div>
+</div>

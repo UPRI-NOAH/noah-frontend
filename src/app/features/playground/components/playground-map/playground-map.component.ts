@@ -27,6 +27,7 @@ import {
   StormSurgeAdvisory,
   LandslideHazards,
 } from '@features/playground/store/playground.store';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-playground-map',
@@ -35,6 +36,7 @@ import {
 })
 export class PlaygroundMapComponent implements OnInit {
   map!: Map;
+  pgLocation: string = '';
 
   constructor(
     private mapService: MapService,
@@ -45,8 +47,7 @@ export class PlaygroundMapComponent implements OnInit {
     this.initMap();
     this.map.on('load', () => {
       this.initLayers();
-      this.initGeocoder();
-
+      this.initCenterListener();
       this.initFloodReturnPeriodListener();
       this.initStormSurgeAdvisoryListener();
       this.initLandslideHazardsListener();
@@ -110,13 +111,14 @@ export class PlaygroundMapComponent implements OnInit {
     );
   }
 
-  initGeocoder() {
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
+  initCenterListener() {
+    this.playgroundService.center$.pipe(skip(1)).subscribe((center) => {
+      this.map.flyTo({
+        center,
+        zoom: 11,
+        essential: true,
+      });
     });
-    this.map.addControl(geocoder, 'top-right');
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
   }
 
   initLayers() {
@@ -145,7 +147,7 @@ export class PlaygroundMapComponent implements OnInit {
       style: environment.mapbox.styles.terrain,
       zoom: 5,
       touchZoomRotate: true,
-      center: [122.65301737691877, 11.834938659565541],
+      center: this.playgroundService.center,
     });
   }
 }
