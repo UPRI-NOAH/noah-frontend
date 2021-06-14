@@ -95,8 +95,6 @@ export class PraMapComponent implements OnInit {
         maxZoom: 13, // If you want your result not to go further than a specific zoom
       },
     });
-    this.map.getContainer().querySelector('.mapboxgl-ctrl-bottom-left');
-    this.map.addControl(geocoder);
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     geocoder.on('result', (e) => {
@@ -107,7 +105,7 @@ export class PraMapComponent implements OnInit {
 
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
-    this.map.addControl(this.geolocateControl, 'bottom-right');
+    this.map.addControl(this.geolocateControl, 'top-right');
   }
 
   initGeolocationListener() {
