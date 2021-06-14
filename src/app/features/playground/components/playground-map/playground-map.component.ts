@@ -115,7 +115,7 @@ export class PlaygroundMapComponent implements OnInit {
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
     });
-    document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
+    // document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
     geocoder.on('result', (e) => {
       this.playgroundService.setCurrentLocationPg(e.result['place_name']);
