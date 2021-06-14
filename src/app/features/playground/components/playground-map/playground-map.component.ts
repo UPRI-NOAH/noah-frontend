@@ -115,7 +115,7 @@ export class PlaygroundMapComponent implements OnInit {
     this.playgroundService.center$.pipe(skip(1)).subscribe((center) => {
       this.map.flyTo({
         center,
-        zoom: 13,
+        zoom: 11,
         essential: true,
       });
     });

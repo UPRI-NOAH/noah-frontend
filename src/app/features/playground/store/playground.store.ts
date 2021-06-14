@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
 export const PH_DEFAULT_CENTER = {
-  lat: 11.834938659565541,
-  lng: 122.65301737691877,
+  lat: 11.968179,
+  lng: 121.918612,
 };
 
 export type FloodReturnPeriod =

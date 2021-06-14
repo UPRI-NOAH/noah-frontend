@@ -33,7 +33,7 @@ export class SearchComponent implements OnInit {
             this.places$.next([]);
           }
         }),
-        debounceTime(800),
+        debounceTime(300),
         filter((searchText) => searchText && this.isDropdownOpen),
         switchMap((searchText) => this.mapService.forwardGeocode(searchText))
       )
