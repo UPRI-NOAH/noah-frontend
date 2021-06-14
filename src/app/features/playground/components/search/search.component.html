@@ -63,9 +63,21 @@
         py-2
         text-left text-gray-800
         hover:bg-primary hover:text-white
+        group
       "
     >
       {{ place.text }}
+      <div
+        class="
+          text-xs text-gray-400
+          group-hover:text-gray-100
+          overflow-ellipsis
+          whitespace-nowrap
+          overflow-hidden
+        "
+      >
+        {{ place.place_name }}
+      </div>
     </button>
   </div>
 

@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { BehaviorSubject } from 'rxjs';
 // import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from '@mapbox/geojson-types';
-import { debounceTime, filter, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-search',
@@ -24,6 +24,12 @@ export class SearchComponent implements OnInit {
 
     this.searchTermCtrl.valueChanges
       .pipe(
+        tap((searchText) => {
+          if (!searchText?.length) {
+            this.isDropdownOpen = false;
+            this.places$.next([]);
+          }
+        }),
         debounceTime(800),
         filter((searchText) => searchText && this.isDropdownOpen),
         switchMap((searchText) => this.mapService.forwardGeocode(searchText))
