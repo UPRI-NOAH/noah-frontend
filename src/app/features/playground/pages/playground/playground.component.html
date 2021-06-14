@@ -18,19 +18,13 @@
       text-left text-gray-700
     "
   >
+    <!-- Location Search -->
     <noah-search
       [searchTerm]="searchTerm"
       (selectPlace)="selectPlace($event)"
     ></noah-search>
 
-    <div class="border-b border-gray-200 my-0 py-4">
-      <h2 class="text-gray-900 font-bold text-lg mb-1 title-font uppercase">
-        Your Location
-      </h2>
-      <p class="font-bold text-xs py-4 pb-4">
-        {{ currentLocationPg$ | async }}
-      </p>
-    </div>
+    <hr class="my-4" />
 
     <!-- Flood -->
     <noah-flood-playground></noah-flood-playground>
