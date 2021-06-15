@@ -88,7 +88,7 @@ export class PraService {
     return this.hazardTypes.includes(currentPage);
   }
 
-  setCenterpra(center: { lat: number; lng: number }) {
+  setCenter(center: { lat: number; lng: number }) {
     this.praStore.patch({ center });
   }
   setCurrentLocation(currentLocation: string): void {

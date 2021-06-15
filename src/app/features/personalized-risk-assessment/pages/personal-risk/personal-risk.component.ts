@@ -17,6 +17,6 @@ export class PersonalRiskComponent implements OnInit {
   selectPlace(selectedPlace) {
     this.praService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;
-    this.praService.setCenterpra({ lat, lng });
+    this.praService.setCenter({ lat, lng });
   }
 }
