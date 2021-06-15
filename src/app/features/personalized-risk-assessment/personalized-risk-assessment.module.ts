@@ -28,13 +28,8 @@ import { SearchComponent } from '@features/personalized-risk-assessment/componen
     CriticalFacilitiesComponent,
     PraMapComponent,
     PraNavComponent,
-
     SearchComponent,
   ],
-  imports: [
-    CommonModule,
-    PersonalizedRiskAssessmentRoutingModule,
-    SharedModule,
-  ],
+  imports: [PersonalizedRiskAssessmentRoutingModule, SharedModule],
 })
 export class PersonalizedRiskAssessmentModule {}
