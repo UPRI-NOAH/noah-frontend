@@ -139,7 +139,7 @@ export const LEYTE_SCHOOLS: SymbolLayer = {
   },
   'source-layer': 'leyte_schools',
   layout: {
-    'icon-image': 'leyte_schools',
+    'icon-image': 'icon-school',
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
@@ -156,7 +156,7 @@ export const LEYTE_HOSPITALS: SymbolLayer = {
   },
   'source-layer': 'leyte_hospitals',
   layout: {
-    'icon-image': 'leyte_hospitals',
+    'icon-image': 'icon-hospital',
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
@@ -165,15 +165,15 @@ export const LEYTE_HOSPITALS: SymbolLayer = {
 };
 
 export const LEYTE_FIRESTATIONS: SymbolLayer = {
-  id: 'leyte_firestations',
+  id: 'leyte_firestation',
   type: 'symbol',
   source: {
     type: 'vector',
     url: 'mapbox://jadurani.ckq7u97310bbw28lg0yxolcv2-1gmiz',
   },
-  'source-layer': 'leyte_firestations',
+  'source-layer': 'leyte_firestation',
   layout: {
-    'icon-image': 'leyte_firestations',
+    'icon-image': 'icon-firestation',
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
@@ -182,15 +182,15 @@ export const LEYTE_FIRESTATIONS: SymbolLayer = {
 };
 
 export const LEYTE_POLICESTATIONS: SymbolLayer = {
-  id: 'leyte_policestations',
+  id: 'leyte_police',
   type: 'symbol',
   source: {
     type: 'vector',
     url: 'mapbox://jadurani.ckq7uatvk04kq21pqtks7rj3m-0n4tz',
   },
-  'source-layer': 'leyte_policestations',
+  'source-layer': 'leyte_police',
   layout: {
-    'icon-image': 'leyte_policestations',
+    'icon-image': 'icon-policestation',
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
