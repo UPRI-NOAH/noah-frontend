@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
+import { CF_TILESET_NAMES } from '@shared/mocks/critical-facilities';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLat, LngLatLike } from 'mapbox-gl';
 import { Observable, of } from 'rxjs';
@@ -32,6 +33,20 @@ export class RiskService {
     );
   }
 
+  getCriticalFacilities(coords: { lat: number; lng: number }) {
+    const payload = {
+      coords,
+      limit: 25,
+      radius: 5000, // 5km
+      tilesetName: CF_TILESET_NAMES,
+    };
+
+    return this.getFeatureInfo(payload).pipe(
+      tap((feature) => console.log(feature)),
+      take(1)
+    );
+  }
+
   getFeatureInfo(
     payload: AssessmentPayload
   ): Observable<FeatureCollection | null> {
@@ -41,12 +56,10 @@ export class RiskService {
       .set('limit', payload.limit ? String(payload.limit) : '20')
       .set('access_token', environment.mapbox.accessToken);
 
-    return this.http
-      .get<FeatureCollection>(baseURL, { params })
-      .pipe(
-        tap((result) => console.log(result)),
-        catchError(this.handleError('getFeatureInfo', null))
-      );
+    return this.http.get<FeatureCollection>(baseURL, { params }).pipe(
+      tap((result) => console.log(result)),
+      catchError(this.handleError('getFeatureInfo', null))
+    );
   }
 
   private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {

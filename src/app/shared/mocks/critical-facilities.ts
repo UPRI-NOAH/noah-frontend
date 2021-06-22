@@ -1,4 +1,4 @@
-import { LngLatLike, SymbolLayer } from 'mapbox-gl';
+import { LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
 
 export type SampleMarker = {
   coords: LngLatLike;
@@ -197,3 +197,13 @@ export const LEYTE_POLICESTATIONS: SymbolLayer = {
     'text-size': 10,
   },
 };
+
+export const CF_TILESET_NAMES = [
+  LEYTE_SCHOOLS,
+  LEYTE_HOSPITALS,
+  LEYTE_FIRESTATIONS,
+  LEYTE_FIRESTATIONS,
+]
+  .map((symbolLayer: SymbolLayer) => (symbolLayer.source as VectorSource).url)
+  .join(',')
+  .replace(/mapbox:\/\//g, '');
