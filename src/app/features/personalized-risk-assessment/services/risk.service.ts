@@ -122,7 +122,7 @@ export class RiskService {
       coords: feature.geometry.coordinates,
       name: feature.properties.name,
       type: getType(feature.properties.tilequery.layer),
-      distance: feature.properties.tilequery.distance,
+      distance: feature.properties.tilequery.distance / 1000, // to km
     }));
   }
 

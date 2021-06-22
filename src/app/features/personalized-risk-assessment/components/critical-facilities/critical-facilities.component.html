@@ -18,7 +18,9 @@
     </span>
     <span class="w-5/6 pl-3">
       <div class="text-sm">{{ facility.name }}</div>
-      <small class="text-gray-500"> {{ facility.address }} </small>
+      <small class="text-gray-500" *ngIf="facility.distance">
+        {{ facility.distance | number: '1.1-2' }} km away</small
+      >
     </span>
   </button>
 
