@@ -22,12 +22,16 @@ import { RiskService } from './risk.service';
 export class PraService {
   constructor(private praStore: PraStore, private riskService: RiskService) {}
 
-  get currentCoords$(): Observable<{ lng: number; lat: number }> {
+  get center$(): Observable<{ lng: number; lat: number }> {
     return this.praStore.state$.pipe(map((state) => state.center));
   }
 
+  get currentCoords$(): Observable<{ lng: number; lat: number }> {
+    return this.praStore.state$.pipe(map((state) => state.currentCoords));
+  }
+
   get currentCoords(): { lng: number; lat: number } {
-    return this.praStore.state.center;
+    return this.praStore.state.currentCoords;
   }
 
   get currentLocation$(): Observable<string> {

@@ -15,6 +15,7 @@ export type RiskLevel = 'unavailable' | 'little' | 'low' | 'medium' | 'high';
 type PRAState = {
   isLoading: boolean;
   center: { lng: number; lat: number };
+  currentCoords: { lng: number; lat: number };
   currentPage: PRAPage;
   riskLevel: RiskLevel;
   currentLocation: string;
@@ -24,6 +25,7 @@ const createInitialValue = (): PRAState => {
   return {
     isLoading: false,
     center: PH_DEFAULT_CENTER,
+    currentCoords: PH_DEFAULT_CENTER,
     currentPage: 'base',
     riskLevel: 'unavailable',
     currentLocation: '------',

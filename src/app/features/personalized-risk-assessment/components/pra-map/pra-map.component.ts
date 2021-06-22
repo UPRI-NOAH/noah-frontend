@@ -76,7 +76,7 @@ export class PraMapComponent implements OnInit {
   }
 
   initCenterListener() {
-    this.praService.currentCoords$
+    this.praService.center$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
