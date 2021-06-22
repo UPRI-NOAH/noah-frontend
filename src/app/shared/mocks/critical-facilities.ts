@@ -1,4 +1,4 @@
-import { LngLatLike } from 'mapbox-gl';
+import { LngLatLike, SymbolLayer } from 'mapbox-gl';
 
 export type SampleMarker = {
   coords: LngLatLike;
@@ -129,3 +129,71 @@ export const MARKERS: SampleMarker[] = [
     address: 'Tabango, Leyte, Philippines',
   },
 ];
+
+export const LEYTE_SCHOOLS: SymbolLayer = {
+  id: 'leyte_schools',
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.ckq7u49zi010o20nrjlynz9jo-5cez5',
+  },
+  'source-layer': 'leyte_schools',
+  layout: {
+    'icon-image': 'leyte_schools',
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+};
+
+export const LEYTE_HOSPITALS: SymbolLayer = {
+  id: 'leyte_hospitals',
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.ckq7ua4aq1yh328qncf078jpv-9xhtt',
+  },
+  'source-layer': 'leyte_hospitals',
+  layout: {
+    'icon-image': 'leyte_hospitals',
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+};
+
+export const LEYTE_FIRESTATIONS: SymbolLayer = {
+  id: 'leyte_firestations',
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.ckq7u97310bbw28lg0yxolcv2-1gmiz',
+  },
+  'source-layer': 'leyte_firestations',
+  layout: {
+    'icon-image': 'leyte_firestations',
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+};
+
+export const LEYTE_POLICESTATIONS: SymbolLayer = {
+  id: 'leyte_policestations',
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: 'mapbox://jadurani.ckq7uatvk04kq21pqtks7rj3m-0n4tz',
+  },
+  'source-layer': 'leyte_policestations',
+  layout: {
+    'icon-image': 'leyte_policestations',
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+};
