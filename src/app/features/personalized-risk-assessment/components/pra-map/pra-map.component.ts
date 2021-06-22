@@ -7,7 +7,6 @@ import {
   LEYTE_HOSPITALS,
   LEYTE_POLICESTATIONS,
   LEYTE_SCHOOLS,
-  MARKERS,
 } from '@shared/mocks/critical-facilities';
 import { LEYTE_FLOOD } from '@shared/mocks/flood';
 import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';

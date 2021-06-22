@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
 import { RiskService } from '@features/personalized-risk-assessment/services/risk.service';
-import { MARKERS, SampleMarker } from '@shared/mocks/critical-facilities';
+import { SampleMarker } from '@shared/mocks/critical-facilities';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 

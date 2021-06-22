@@ -28,6 +28,12 @@ import {
   LandslideHazards,
 } from '@features/playground/store/playground.store';
 import { skip } from 'rxjs/operators';
+import {
+  LEYTE_FIRESTATIONS,
+  LEYTE_HOSPITALS,
+  LEYTE_POLICESTATIONS,
+  LEYTE_SCHOOLS,
+} from '@shared/mocks/critical-facilities';
 
 @Component({
   selector: 'noah-playground-map',
@@ -47,6 +53,7 @@ export class PlaygroundMapComponent implements OnInit {
     this.initMap();
     this.map.on('load', () => {
       this.initLayers();
+      this.initMarkers();
       this.initCenterListener();
       this.initFloodReturnPeriodListener();
       this.initStormSurgeAdvisoryListener();
@@ -100,6 +107,39 @@ export class PlaygroundMapComponent implements OnInit {
         }
       }
     );
+  }
+
+  initMarkers() {
+    const _this = this;
+    this.map.loadImage('assets/map-sprites/hospital.png', (error, image) => {
+      if (error) throw error;
+      _this.map.addImage('icon-hospital', image);
+      _this.map.addLayer(LEYTE_HOSPITALS);
+    });
+
+    this.map.loadImage(
+      'assets/map-sprites/fire-station.png',
+      (error, image) => {
+        if (error) throw error;
+        _this.map.addImage('icon-firestation', image);
+        _this.map.addLayer(LEYTE_FIRESTATIONS);
+      }
+    );
+
+    this.map.loadImage(
+      'assets/map-sprites/police-station.png',
+      (error, image) => {
+        if (error) throw error;
+        _this.map.addImage('icon-policestation', image);
+        _this.map.addLayer(LEYTE_POLICESTATIONS);
+      }
+    );
+
+    this.map.loadImage('assets/map-sprites/school.png', (error, image) => {
+      if (error) throw error;
+      _this.map.addImage('icon-school', image);
+      _this.map.addLayer(LEYTE_SCHOOLS);
+    });
   }
 
   initStormSurgeAdvisoryListener() {
