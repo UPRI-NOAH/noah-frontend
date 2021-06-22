@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+  isMenu: boolean = false;
+  isList: number;
+  isSearch: boolean = false;
   constructor() {}
 
   ngOnInit(): void {}
