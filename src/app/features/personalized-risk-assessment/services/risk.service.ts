@@ -1,7 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
-import { CF_TILESET_NAMES } from '@shared/mocks/critical-facilities';
+import {
+  CF_TILESET_NAMES,
+  CriticalFacilityLayer,
+} from '@shared/mocks/critical-facilities';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLat, LngLatLike } from 'mapbox-gl';
 import { Observable, of } from 'rxjs';
@@ -14,6 +17,29 @@ type AssessmentPayload = {
   propertyName?: string;
   radius?: number;
   tilesetName: string;
+};
+
+type CriticalFacilityFeature = Feature & {
+  geometry: {
+    coordinates: [number, number];
+  };
+  properties: {
+    amenity: string;
+    name: string;
+    tilequery: {
+      distance: number;
+      geometry: string;
+      layer: CriticalFacilityLayer;
+    };
+  };
+};
+
+type MapItem = {
+  coords: LngLatLike;
+  name: string;
+  type: string;
+  address?: string;
+  distance: number;
 };
 
 const httpOptions = {
@@ -42,7 +68,11 @@ export class RiskService {
     };
 
     return this.getFeatureInfo(payload).pipe(
-      tap((feature) => console.log(feature)),
+      map((featureCollection) =>
+        this._getCriticalFacility(
+          featureCollection.features as CriticalFacilityFeature[]
+        )
+      ),
       take(1)
     );
   }
@@ -68,6 +98,32 @@ export class RiskService {
     }
 
     return this._formatRiskLevel(feature);
+  }
+
+  private _getCriticalFacility(
+    featureList: CriticalFacilityFeature[]
+  ): MapItem[] {
+    const getType = (layerName: CriticalFacilityLayer) => {
+      switch (layerName) {
+        case 'leyte_firestation':
+          return 'fire-station';
+        case 'leyte_hospitals':
+          return 'hospital';
+        case 'leyte_police':
+          return 'police-station';
+        case 'leyte_schools':
+          return 'school';
+        default:
+          throw new Error('critical facility layer not found!');
+      }
+    };
+
+    return featureList.map((feature) => ({
+      coords: feature.geometry.coordinates,
+      name: feature.properties.name,
+      type: getType(feature.properties.tilequery.layer),
+      distance: feature.properties.tilequery.distance,
+    }));
   }
 
   /**

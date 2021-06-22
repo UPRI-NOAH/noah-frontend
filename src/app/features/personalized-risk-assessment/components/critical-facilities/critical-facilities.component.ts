@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class CriticalFacilitiesComponent implements OnInit {
   currentLocation$: Observable<string>;
-  criticalFacilities = MARKERS;
+  criticalFacilities = [];
 
   constructor(
     private praService: PraService,
@@ -26,7 +26,9 @@ export class CriticalFacilitiesComponent implements OnInit {
         lat: 10.777080241395213,
         lng: 124.98707397619495,
       })
-      .subscribe(() => {});
+      .subscribe(
+        (criticalFacilities) => (this.criticalFacilities = criticalFacilities)
+      );
   }
 
   focus(marker: SampleMarker) {

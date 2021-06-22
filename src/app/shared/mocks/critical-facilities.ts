@@ -207,3 +207,9 @@ export const CF_TILESET_NAMES = [
   .map((symbolLayer: SymbolLayer) => (symbolLayer.source as VectorSource).url)
   .join(',')
   .replace(/mapbox:\/\//g, '');
+
+export type CriticalFacilityLayer =
+  | 'leyte_schools'
+  | 'leyte_hospitals'
+  | 'leyte_firestation'
+  | 'leyte_police';
