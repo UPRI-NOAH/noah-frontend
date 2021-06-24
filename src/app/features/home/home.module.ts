@@ -7,6 +7,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { FooterComponent } from './components/footer/footer.component';
 import { PersonalizedRiskAssessmentModule } from '@features/personalized-risk-assessment/personalized-risk-assessment.module';
 import { PlaygroundModule } from '@features/playground/playground.module';
+import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-hazards.module';
 
 @NgModule({
   declarations: [LandingPageComponent, NavigationComponent, FooterComponent],
@@ -15,6 +16,7 @@ import { PlaygroundModule } from '@features/playground/playground.module';
     HomeRoutingModule,
     PersonalizedRiskAssessmentModule,
     PlaygroundModule,
+    KnowYourHazardsModule,
   ],
 })
 export class HomeModule {}
