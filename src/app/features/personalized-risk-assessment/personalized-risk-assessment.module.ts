@@ -15,6 +15,8 @@ import { StormSurgeComponent } from './components/storm-surge/storm-surge.compon
 import { CriticalFacilitiesComponent } from './components/critical-facilities/critical-facilities.component';
 import { PraMapComponent } from './components/pra-map/pra-map.component';
 import { PraNavComponent } from './components/pra-nav/pra-nav.component';
+import { SharedModule } from '@shared/shared.module';
+import { SearchComponent } from '@features/personalized-risk-assessment/components/search/search.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { PraNavComponent } from './components/pra-nav/pra-nav.component';
     CriticalFacilitiesComponent,
     PraMapComponent,
     PraNavComponent,
+    SearchComponent,
   ],
-  imports: [CommonModule, PersonalizedRiskAssessmentRoutingModule],
+  imports: [PersonalizedRiskAssessmentRoutingModule, SharedModule],
 })
 export class PersonalizedRiskAssessmentModule {}
