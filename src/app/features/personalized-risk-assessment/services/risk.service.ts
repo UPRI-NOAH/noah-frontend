@@ -1,6 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
+import {
+  CF_TILESET_NAMES,
+  CriticalFacilityLayer,
+} from '@shared/mocks/critical-facilities';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLat, LngLatLike } from 'mapbox-gl';
 import { Observable, of } from 'rxjs';
@@ -13,6 +17,29 @@ type AssessmentPayload = {
   propertyName?: string;
   radius?: number;
   tilesetName: string;
+};
+
+type CriticalFacilityFeature = Feature & {
+  geometry: {
+    coordinates: [number, number];
+  };
+  properties: {
+    amenity: string;
+    name: string;
+    tilequery: {
+      distance: number;
+      geometry: string;
+      layer: CriticalFacilityLayer;
+    };
+  };
+};
+
+type MapItem = {
+  coords: LngLatLike;
+  name: string;
+  type: string;
+  address?: string;
+  distance: number;
 };
 
 const httpOptions = {
@@ -32,6 +59,24 @@ export class RiskService {
     );
   }
 
+  getCriticalFacilities(coords: { lat: number; lng: number }) {
+    const payload = {
+      coords,
+      limit: 25,
+      radius: 5000, // 5km
+      tilesetName: CF_TILESET_NAMES,
+    };
+
+    return this.getFeatureInfo(payload).pipe(
+      map((featureCollection) =>
+        this._getCriticalFacility(
+          featureCollection.features as CriticalFacilityFeature[]
+        )
+      ),
+      take(1)
+    );
+  }
+
   getFeatureInfo(
     payload: AssessmentPayload
   ): Observable<FeatureCollection | null> {
@@ -41,12 +86,10 @@ export class RiskService {
       .set('limit', payload.limit ? String(payload.limit) : '20')
       .set('access_token', environment.mapbox.accessToken);
 
-    return this.http
-      .get<FeatureCollection>(baseURL, { params })
-      .pipe(
-        tap((result) => console.log(result)),
-        catchError(this.handleError('getFeatureInfo', null))
-      );
+    return this.http.get<FeatureCollection>(baseURL, { params }).pipe(
+      tap((result) => console.log(result)),
+      catchError(this.handleError('getFeatureInfo', null))
+    );
   }
 
   private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {
@@ -55,6 +98,32 @@ export class RiskService {
     }
 
     return this._formatRiskLevel(feature);
+  }
+
+  private _getCriticalFacility(
+    featureList: CriticalFacilityFeature[]
+  ): MapItem[] {
+    const getType = (layerName: CriticalFacilityLayer) => {
+      switch (layerName) {
+        case 'leyte_firestation':
+          return 'fire-station';
+        case 'leyte_hospitals':
+          return 'hospital';
+        case 'leyte_police':
+          return 'police-station';
+        case 'leyte_schools':
+          return 'school';
+        default:
+          throw new Error('critical facility layer not found!');
+      }
+    };
+
+    return featureList.map((feature) => ({
+      coords: feature.geometry.coordinates,
+      name: feature.properties.name,
+      type: getType(feature.properties.tilequery.layer),
+      distance: feature.properties.tilequery.distance / 1000, // to km
+    }));
   }
 
   /**
