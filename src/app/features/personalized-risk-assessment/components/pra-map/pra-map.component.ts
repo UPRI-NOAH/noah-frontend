@@ -170,6 +170,12 @@ export class PraMapComponent implements OnInit {
       .setLngLat(this.praService.currentCoords)
       .addTo(this.map);
 
+    this.praService.currentCoords$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((currentCoords) => {
+        this.centerMarker.setLngLat(currentCoords);
+      });
+
     const _this = this;
     this.map.loadImage('assets/map-sprites/hospital.png', (error, image) => {
       if (error) throw error;

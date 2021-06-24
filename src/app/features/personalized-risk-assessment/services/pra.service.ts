@@ -95,6 +95,11 @@ export class PraService {
   setCenter(center: { lat: number; lng: number }) {
     this.praStore.patch({ center });
   }
+
+  setCurrentCoords(currentCoords: { lat: number; lng: number }) {
+    this.praStore.patch({ currentCoords });
+  }
+
   setCurrentLocation(currentLocation: string): void {
     this.praStore.patch({ currentLocation }, 'update current location');
   }
