@@ -5,9 +5,20 @@ export const LEYTE_FLOOD: FillLayer = {
   type: 'fill',
   source: {
     type: 'vector',
-    url: 'mapbox://jadurani.3tg2ae87',
+    tiles: [
+      'http://202.90.159.72:8080/geoserver/gwc/service/wmts?' +
+        'REQUEST=GetTile' +
+        '&SERVICE=WMTS' +
+        '&VERSION=1.0.0' +
+        '&LAYER=noah_postgis:leyte_100year_flood' +
+        '&STYLE=' +
+        '&TILEMATRIX=EPSG:900913:{z}' +
+        '&TILEMATRIXSET=EPSG:900913' +
+        '&FORMAT=application/vnd.mapbox-vector-tile' +
+        '&TILECOL={x}&TILEROW={y}',
+    ],
   },
-  'source-layer': 'Leyte_Flood_100year-15dhkm',
+  'source-layer': 'leyte_100year_flood',
   paint: {
     'fill-color': [
       'interpolate',
@@ -29,9 +40,20 @@ export const LEYTE_FLOOD_5: FillLayer = {
   type: 'fill',
   source: {
     type: 'vector',
-    url: 'mapbox://jadurani.1b0wrydb',
+    tiles: [
+      'http://202.90.159.72:8080/geoserver/gwc/service/wmts?' +
+        'REQUEST=GetTile' +
+        '&SERVICE=WMTS' +
+        '&VERSION=1.0.0' +
+        '&LAYER=noah_postgis:leyte_5year_flood' +
+        '&STYLE=' +
+        '&TILEMATRIX=EPSG:900913:{z}' +
+        '&TILEMATRIXSET=EPSG:900913' +
+        '&FORMAT=application/vnd.mapbox-vector-tile' +
+        '&TILECOL={x}&TILEROW={y}',
+    ],
   },
-  'source-layer': 'Leyte_5year_Flood-atysck',
+  'source-layer': 'leyte_5year_flood',
   paint: {
     'fill-color': [
       'interpolate',
