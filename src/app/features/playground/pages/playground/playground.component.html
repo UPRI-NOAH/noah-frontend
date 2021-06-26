@@ -1,41 +1,366 @@
-<div class="relative flex flex-1 md:flex-row-reverse min-h-screen">
-  <div class="top-0 fixed z-10 left-0 h-16 w-16">
-    <a class="flex max-w-xs p-2 items-center" routerLink="/">
-      <img src="assets/icons/noah-logo.jpg" alt="Project NOAH" />
-    </a>
+<div
+  class="flex h-full antialiased text-gray-900 bg-gray-100 dark:bg-dark dark:text-light"
+>
+  <div class="h-full z-50">
+    <button
+      (click)="isMenu = !isMenu"
+      class="fixed p-2 z-20 text-white bg-blue-600 rounded-lg top-5 left-5"
+    >
+      <svg
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+      <span class="sr-only">Open menu</span>
+    </button>
+
+    <div
+      *ngIf="isMenu"
+      id="sidebar"
+      class="fixed inset-y-0 z-30 flex w-80 bg-white overflow-y-auto lg:sticky h-screen top-0 pt-10"
+    >
+      <div class="px-4">
+        <div class="flex items-center justify-between">
+          <div class="w-32">
+            <img
+              class="w-24"
+              src="assets/icons/noah-logo1.png"
+              alt="quicklist logo"
+            />
+          </div>
+          <div
+            (click)="isMenu = !isMenu"
+            class="text-gray-700 ml-8 cursor-pointer"
+          >
+            <svg
+              class="w-6 h-6"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <ul class="my-2 flex flex-wrap">
+          <!-- 3D -->
+          <div
+            class="flex flex-col p-5 w-full bg-gray-300 shadow-md hover:shodow-lg rounded-2xl mt-8"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-xl leading-none">3D Terrain</div>
+                </div>
+              </div>
+              <div class="cursor-pointer">
+                <button
+                  class="w-6 h-6 bg-gray-100 focus:outline-none flex items-center justify-center rounded-full"
+                >
+                  <svg
+                    (click)="openMenu(1)"
+                    [ngClass]="isOpenedList === 1 ? ' hidden ' : ' '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16 17.5626L22.6 10.9626L24.4853 12.848L16 21.3333L7.51465 12.848L9.39998 10.9626L16 17.5626Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                  <svg
+                    (click)="closeMenu()"
+                    [ngClass]="isOpenedList === 1 ? ' ' : ' hidden '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="12"
+                    viewBox="0 0 18 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div [ngClass]="isOpenedList === 1 ? ' pt-5 ' : ' hidden '">
+              <hr class="pb-4" />
+              <div class="flex items-center">
+                <div class="text-m f-f-r">Exaggeration</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FLOOD HAZARD -->
+          <div
+            class="flex flex-col p-5 w-full bg-gray-300 shadow-md hover:shodow-lg rounded-2xl mt-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-xl leading-none">Flood Hazard</div>
+                </div>
+              </div>
+              <div class="cursor-pointer">
+                <button
+                  class="w-6 h-6 bg-gray-100 focus:outline-none flex items-center justify-center rounded-full"
+                >
+                  <svg
+                    (click)="openMenu(2)"
+                    [ngClass]="isOpenedList === 2 ? ' hidden ' : ' '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16 17.5626L22.6 10.9626L24.4853 12.848L16 21.3333L7.51465 12.848L9.39998 10.9626L16 17.5626Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                  <svg
+                    (click)="closeMenu()"
+                    [ngClass]="isOpenedList === 2 ? ' ' : ' hidden '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="12"
+                    viewBox="0 0 18 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div [ngClass]="isOpenedList === 2 ? ' pt-5 ' : ' hidden '">
+              <hr class="pb-4" />
+              <div class="flex items-center">
+                <div class="text-m f-f-r">Exaggeration</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LANDSLIDE HAZARD -->
+          <div
+            class="flex flex-col p-5 w-full bg-gray-300 shadow-md hover:shodow-lg rounded-2xl mt-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-xl leading-none">Landslide Hazard</div>
+                </div>
+              </div>
+              <div class="cursor-pointer">
+                <button
+                  class="w-6 h-6 bg-gray-100 focus:outline-none flex items-center justify-center rounded-full"
+                >
+                  <svg
+                    (click)="openMenu(3)"
+                    [ngClass]="isOpenedList === 3 ? ' hidden ' : ' '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16 17.5626L22.6 10.9626L24.4853 12.848L16 21.3333L7.51465 12.848L9.39998 10.9626L16 17.5626Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                  <svg
+                    (click)="closeMenu()"
+                    [ngClass]="isOpenedList === 3 ? ' ' : ' hidden '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="12"
+                    viewBox="0 0 18 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div [ngClass]="isOpenedList === 3 ? ' pt-5 ' : ' hidden '">
+              <hr class="pb-4" />
+              <div class="flex items-center">
+                <div class="text-m f-f-r">Exaggeration</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STORM SURGE HAZARD -->
+          <div
+            class="flex flex-col p-5 w-full bg-gray-300 shadow-md hover:shodow-lg rounded-2xl mt-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-xl leading-none">Storm Surge Hazard</div>
+                </div>
+              </div>
+              <div class="cursor-pointer">
+                <button
+                  class="w-6 h-6 bg-gray-100 focus:outline-none flex items-center justify-center rounded-full"
+                >
+                  <svg
+                    (click)="openMenu(4)"
+                    [ngClass]="isOpenedList === 4 ? ' hidden ' : ' '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16 17.5626L22.6 10.9626L24.4853 12.848L16 21.3333L7.51465 12.848L9.39998 10.9626L16 17.5626Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                  <svg
+                    (click)="closeMenu()"
+                    [ngClass]="isOpenedList === 4 ? ' ' : ' hidden '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="12"
+                    viewBox="0 0 18 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div [ngClass]="isOpenedList === 4 ? ' pt-5 ' : ' hidden '">
+              <hr class="pb-4" />
+              <div class="flex items-center">
+                <div class="text-m f-f-r">Exaggeration</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CRITICAL FACILITIES HAZARD -->
+          <div
+            class="flex flex-col p-5 w-full bg-gray-300 shadow-md hover:shodow-lg rounded-2xl mt-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <label class="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    class="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-xl leading-none">Critical Facilities</div>
+                </div>
+              </div>
+              <div class="cursor-pointer">
+                <button
+                  class="w-6 h-6 bg-gray-100 focus:outline-none flex items-center justify-center rounded-full"
+                >
+                  <svg
+                    (click)="openMenu(5)"
+                    [ngClass]="isOpenedList === 5 ? ' hidden ' : ' '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16 17.5626L22.6 10.9626L24.4853 12.848L16 21.3333L7.51465 12.848L9.39998 10.9626L16 17.5626Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                  <svg
+                    (click)="closeMenu()"
+                    [ngClass]="isOpenedList === 5 ? ' ' : ' hidden '"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="12"
+                    viewBox="0 0 18 12"
+                    fill="none"
+                  >
+                    <path
+                      d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+                      fill="#4A5568"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div [ngClass]="isOpenedList === 5 ? ' pt-5 ' : ' hidden '">
+              <hr class="pb-4" />
+              <div class="flex items-center">
+                <div class="text-m f-f-r">Exaggeration</div>
+              </div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
   </div>
-  <noah-playground-map></noah-playground-map>
 
-  <div
-    class="
-      z-10
-      min-h-screen
-      gap-2
-      w-full
-      md:w-64
-      left-shadow
-      p-2
-      text-left text-gray-700
-    "
-  >
-    <!-- Location Search -->
-    <noah-search
-      [searchTerm]="searchTerm"
-      (selectPlace)="selectPlace($event)"
-    ></noah-search>
-
-    <hr class="my-4" />
-
-    <!-- Flood -->
-    <noah-flood-playground></noah-flood-playground>
-
-    <!-- Storm Surge -->
-    <noah-storm-surge-playground></noah-storm-surge-playground>
-
-    <!-- Landslide -->
-    <noah-landslide-playground></noah-landslide-playground>
-
-    <!-- Critical Facilities -->
-    <noah-critical-facilities-playground></noah-critical-facilities-playground>
-  </div>
+  <main class="flex flex-col items-center justify-center flex-1">
+    <!-- Page content -->
+    <noah-playground-map></noah-playground-map>
+  </main>
 </div>

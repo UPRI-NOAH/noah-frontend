@@ -8,6 +8,17 @@ import { Observable } from 'rxjs';
   styleUrls: ['./playground.component.scss'],
 })
 export class PlaygroundComponent implements OnInit {
+  isSidebarOpen: boolean = false;
+  isMenu: boolean = true;
+
+  isOpenedList;
+  openMenu(source) {
+    this.isOpenedList = source;
+  }
+  closeMenu() {
+    this.isOpenedList = -1;
+  }
+
   currentLocationPg$: Observable<string>;
   searchTerm: string;
 
