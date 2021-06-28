@@ -1,13 +1,23 @@
 <div class="my-0 pt-2">
   <div class="block">
     <div class="w-full overflow-hidden border-t">
-      <div class="flex w-full justify-between lg:justify-start items-center">
+      <div
+        class="inline-flex w-full justify-between lg:justify-start items-center"
+      >
         <label
           id="tab-multi-one"
-          class="font-bold uppercase block p-5 leading-normal cursor-pointer"
+          class="
+            font-bold
+            w-full
+            uppercase
+            block
+            p-5
+            leading-normal
+            cursor-pointer
+          "
           >Flood</label
         >
-        <div class="cursor-pointer w-full right-0" for="tab-multi-one">
+        <div class="cursor-pointer right-0" for="tab-multi-one">
           <button
             class="
               w-8
@@ -53,7 +63,7 @@
         </div>
       </div>
       <div
-        [ngClass]="isOpenedList === 1 ? ' ' : ' hidden '"
+        [ngClass]="isOpenedList === 1 ? ' hidden ' : ' '"
         class="max-h-screen overflow-hidden bg-gray-100 leading-normal"
       >
         <div class="my-2 text-xs uppercase px-8">

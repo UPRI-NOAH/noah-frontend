@@ -11,10 +11,19 @@ import { Observable } from 'rxjs';
 export class StormSurgePlaygroundComponent implements OnInit {
   currentStormSurgeAdvisory$: Observable<StormSurgeAdvisory>;
 
+  isOpenedList: number;
+  openMenu(source: number) {
+    this.isOpenedList = source;
+  }
+  closeMenu() {
+    this.isOpenedList = -1;
+  }
+
   constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
-    this.currentStormSurgeAdvisory$ = this.playgroundService.currentStormSurgeAdvisory$;
+    this.currentStormSurgeAdvisory$ =
+      this.playgroundService.currentStormSurgeAdvisory$;
   }
 
   viewStormSurgeAdvisory(stormsurgeAdvisory: StormSurgeAdvisory) {

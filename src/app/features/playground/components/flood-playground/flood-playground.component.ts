@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 export class FloodPlaygroundComponent implements OnInit {
   currentFloodReturnPeriod$: Observable<FloodReturnPeriod>;
 
-  isOpenedList;
-  openMenu(source) {
+  isOpenedList: number;
+  openMenu(source: number) {
     this.isOpenedList = source;
   }
   closeMenu() {
