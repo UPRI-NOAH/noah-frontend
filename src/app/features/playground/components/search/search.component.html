@@ -1,7 +1,18 @@
 <!-- SEARCH CONTAINER -->
 <div class="relative">
   <div
-    class="focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent relative text-gray-400 w-full border-solid border-gray-300 border-2 rounded-md z-10"
+    class="
+      focus:outline-none
+      focus:ring-2
+      focus:ring-gray-600
+      focus:border-transparent
+      relative
+      text-gray-400
+      w-full
+      border-solid border-gray-300 border-2
+      rounded-md
+      z-10
+    "
   >
     <span class="absolute left-0 flex items-center pl-2">
       <button
@@ -26,7 +37,16 @@
       [formControl]="searchTermCtrl"
       (keyup)="isDropdownOpen = true"
       (focus)="isDropdownOpen = true"
-      class="py-2 w-full text-sm rounded-md pl-10 outline-none bg-white text-gray-900"
+      class="
+        py-2
+        w-full
+        text-sm
+        rounded-md
+        pl-10
+        outline-none
+        bg-white
+        text-gray-900
+      "
       placeholder="Search..."
       autocomplete="off"
     />
@@ -40,11 +60,25 @@
     <button
       (click)="pickPlace(place)"
       *ngFor="let place of places$ | async"
-      class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white group"
+      class="
+        block
+        w-full
+        px-4
+        py-2
+        text-left text-gray-800
+        hover:bg-primary hover:text-white
+        group
+      "
     >
       {{ place.text }}
       <div
-        class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
+        class="
+          text-xs text-gray-400
+          group-hover:text-gray-100
+          overflow-ellipsis
+          whitespace-nowrap
+          overflow-hidden
+        "
       >
         {{ place.place_name }}
       </div>
@@ -55,6 +89,16 @@
   <div
     (click)="isDropdownOpen = false"
     *ngIf="isDropdownOpen"
-    class="fixed h-full w-full bg-black opacity-30 top-0 right-0 bottom-0 left-0"
+    class="
+      fixed
+      h-full
+      w-full
+      bg-black
+      opacity-30
+      top-0
+      right-0
+      bottom-0
+      left-0
+    "
   ></div>
 </div>
