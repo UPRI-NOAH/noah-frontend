@@ -19,6 +19,9 @@ export class PlaygroundComponent implements OnInit {
     this.isOpenedList = -1;
   }
 
+  getSliderValue(event) {
+    console.log(event.target.value);
+  }
   currentLocationPg$: Observable<string>;
   searchTerm: string;
 
