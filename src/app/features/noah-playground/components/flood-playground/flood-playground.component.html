@@ -1,1 +1,389 @@
-<p>flood-playground works!</p>
+<div
+  class="flex flex-col p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-2xl mt-6"
+>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center">
+      <label class="inline-flex items-center checkbox">
+        <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+      </label>
+      <div class="flex flex-col ml-3">
+        <h6 class="text-xl leading-none font-bold">Flood Hazard</h6>
+      </div>
+    </div>
+    <div class="cursor-pointer">
+      <button
+        class="w-6 h-6 focus:outline-none flex items-center justify-center rounded-full"
+      >
+        <svg
+          (click)="openMenu(2)"
+          [ngClass]="isOpenedList === 2 ? ' hidden ' : ' '"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1000 1000"
+          width="18"
+          height="12"
+        >
+          <path
+            d="M283.7 10l-58.4 58.4L656 500 225.3 931.6l58.4 58.4 491-490-491-490z"
+          />
+        </svg>
+        <svg
+          (click)="closeMenu()"
+          [ngClass]="isOpenedList === 2 ? ' ' : ' hidden '"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 18 12"
+          fill="none"
+        >
+          <path
+            d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+            fill="#4A5568"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div [ngClass]="isOpenedList === 2 ? ' pt-5 ' : ' hidden '">
+    <hr class="pb-2" />
+    <div class="pl-6">
+      <div class="items-center">
+        <!-- 5 YEARS RETURN PERIOD -->
+        <div class="text-m f-f-r py-2 pl-4">
+          <div class="flex items-center">
+            <label class="inline-flex items-center checkbox">
+              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+            </label>
+            <div class="flex flex-col ml-3">
+              <div class="text-lg f-f-r">5-Year Return Period</div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-lg f-f-r">Opacity</div>
+              <div class="flex items-center">
+                <input
+                  id="width"
+                  type="range"
+                  value="0"
+                  min="0"
+                  max="1"
+                  (change)="getSliderValue($event)"
+                  (oninput)="getSliderValue($event)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-lg f-f-r mb-2">Legend</div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-high"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">High</div>
+                </div>
+              </div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-medium"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">Medium</div>
+                </div>
+              </div>
+
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-low"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-m f-f-r">Choose Color</div>
+              <div class="flex items-center">
+                <div>
+                  <div
+                    class="grid gap-1 grid-cols-3 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-6"
+                  >
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color1"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color2"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color3"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color4"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color5"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-high"
+                        role="button"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 5 YEARS RETURN PERIOD -->
+        <hr class="p-2" />
+      </div>
+      <!-- 25 YEARS RETURN PERIOD -->
+      <div class="items-center py-2 pl-4">
+        <div class="text-m f-f-r">
+          <div class="flex items-center">
+            <label class="inline-flex items-center checkbox">
+              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+            </label>
+            <div class="flex flex-col ml-3">
+              <div class="text-lg f-f-r">25-Year Return Period</div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-m f-f-r">Opacity</div>
+              <div class="flex items-center">
+                <input
+                  id="width"
+                  type="range"
+                  value="0"
+                  min="0"
+                  max="1"
+                  (change)="getSliderValue($event)"
+                  (oninput)="getSliderValue($event)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-lg f-f-r mb-2">Legend</div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-high"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">High</div>
+                </div>
+              </div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-medium"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">Medium</div>
+                </div>
+              </div>
+
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-low"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-m f-f-r">Choose Color</div>
+              <div class="flex items-center">
+                <div>
+                  <div
+                    class="grid gap-1 grid-cols-3 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-6"
+                  >
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color1"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color2"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color3"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color4"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color5"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-high"
+                        role="button"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 25 YEARS RETURN PERIOD -->
+      <hr class="p-2" />
+      <!-- 100 YEARS RETURN PERIOD -->
+      <div class="items-center pl-4">
+        <div class="text-m f-f-r">
+          <div class="flex items-center">
+            <label class="inline-flex items-center checkbox">
+              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+            </label>
+            <div class="flex flex-col ml-3">
+              <div class="text-lg f-f-r">100-Year Return Period</div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-lg f-f-r">Opacity</div>
+              <div class="flex items-center">
+                <input
+                  id="width"
+                  type="range"
+                  value="0"
+                  min="0"
+                  max="1"
+                  (change)="getSliderValue($event)"
+                  (oninput)="getSliderValue($event)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-m f-f-r mb-2">Legend</div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-high"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">High</div>
+                </div>
+              </div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-medium"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">Medium</div>
+                </div>
+              </div>
+
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div class="h-6 w-6 mx-auto rounded-md bg-low"></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none">low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center pt-4">
+            <div class="flex flex-col ml-8">
+              <div class="text-m f-f-r">Choose Color</div>
+              <div class="flex items-center">
+                <div>
+                  <div
+                    class="grid gap-1 grid-cols-3 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-6"
+                  >
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color1"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color2"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color3"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color4"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-color5"
+                        role="button"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="h-6 w-6 mx-auto rounded-md bg-high"
+                        role="button"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 100 YEARS RETURN PERIOD -->
+    </div>
+  </div>
+</div>

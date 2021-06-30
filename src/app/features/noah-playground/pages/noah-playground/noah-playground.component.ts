@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PlaygroundService } from '@features/playground/services/playground.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -6,7 +8,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./noah-playground.component.scss'],
 })
 export class NoahPlaygroundComponent implements OnInit {
-  constructor() {}
+  currentLocationPg$: Observable<string>;
+  searchTerm: string;
 
-  ngOnInit(): void {}
+  isSidebarOpen: boolean = false;
+  isMenu: boolean = true;
+
+  isOpenedList;
+  openMenu(source) {
+    this.isOpenedList = source;
+  }
+  closeMenu() {
+    this.isOpenedList = -1;
+  }
+
+  getSliderValue(event) {
+    console.log(event.target.value);
+  }
+
+  constructor(private playgroundService: PlaygroundService) {}
+
+  ngOnInit(): void {
+    this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
+  }
+
+  selectPlace(selectedPlace) {
+    this.playgroundService.setCurrentLocationPg(selectedPlace.text);
+    const [lng, lat] = selectedPlace.center;
+    this.playgroundService.setCenter({ lat, lng });
+  }
 }
