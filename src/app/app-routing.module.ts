@@ -34,6 +34,13 @@ const routes: Routes = [
       import('@features/home/home.module').then((m) => m.HomeModule),
   },
   {
+    path: 'noah-playground',
+    loadChildren: () =>
+      import('@features/noah-playground/noah-playground.module').then(
+        (m) => m.NoahPlaygroundModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
