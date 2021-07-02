@@ -210,16 +210,12 @@
               </div>
             </div>
           </div>
-          <!-- FLOOD HAZARD -->
-          <noah-flood-playground class="w-full"></noah-flood-playground>
 
-          <!-- LANDSLIDE HAZARD -->
-          <noah-landslide-playground class="w-full"></noah-landslide-playground>
-
-          <!-- STORM SURGE HAZARD -->
-          <noah-storm-surge-playground
+          <noah-hazard-type
             class="w-full"
-          ></noah-storm-surge-playground>
+            *ngFor="let hazard of hazardTypes"
+            [hazard]="hazard"
+          ></noah-hazard-type>
 
           <!-- CRITICAL FACILITIES HAZARD -->
           <noah-critical-facilities-playground
