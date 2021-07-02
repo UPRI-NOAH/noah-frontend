@@ -1,100 +1,144 @@
-<div class="border-b border-gray-200 my-0 py-2">
+<div class="my-0 pt-2">
   <div class="block">
-    <div class="inline-flex inline-text py-0 pb-0">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 mr-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-        />
-      </svg>
-      <p class="font-bold text-s uppercase">Landslide</p>
-    </div>
-    <div class="mt-2 text-xs uppercase px-8">
+    <div class="w-full overflow-hidden border-t">
       <div
-        class="font-bold text-gray-800 text-xs mb-1 font-medium title-font uppercase"
+        class="inline-flex w-full justify-between lg:justify-start items-center"
       >
-        Hazards Type
-      </div>
-      <div class="flex flex-col">
-        <span class="inline-flex items-center mt-1">
-          <input
-            id="landslide-hazard"
-            type="radio"
-            class="h-4 w-4 text-red-600"
-            [checked]="
-              'landslide-hazard' === (currentLandslideHazards$ | async)
-            "
-            (click)="viewLandslideHazards('landslide-hazard')"
-          />
-          <label for="landslide-hazard" class="ml-2 text-gray-700"
-            >Landslide Hazards</label
-          >
-        </span>
-        <span class="inline-flex items-center mt-1">
-          <input
-            id="alluvial-fan-hazard"
-            type="radio"
-            class="h-4 w-4 text-red-600"
-            [checked]="
-              'alluvial-fan-hazard' === (currentLandslideHazards$ | async)
-            "
-            (click)="viewLandslideHazards('alluvial-fan-hazard')"
-          />
-          <label for="alluvial-fan-hazard" class="ml-2 text-gray-700"
-            >Alluvial Fan Hazards</label
-          >
-        </span>
-        <span class="inline-flex items-center mt-1">
-          <input
-            id="unstable-slopes-maps"
-            type="radio"
-            class="h-4 w-4 text-red-600"
-            [checked]="
-              'unstable-slopes-maps' === (currentLandslideHazards$ | async)
-            "
-            (click)="viewLandslideHazards('unstable-slopes-maps')"
-          />
-          <label for="unstable-slopes-maps" class="ml-2 text-gray-700"
-            >Unstable Slopes Maps</label
-          >
-        </span>
-      </div>
-      <div class="mt-2 text-xs uppercase">
-        <span
-          class="font-bold text-gray-800 text-xs mb-1 font-medium title-font"
-          >Legend</span
+        <label
+          id="tab-multi-three"
+          class="
+            font-bold
+            w-full
+            uppercase
+            block
+            p-5
+            leading-normal
+            cursor-pointer
+          "
+          >Landslide</label
         >
-        <div>
-          <label class="inline-flex items-center">
-            <div class="box-border h-4 w-4 p-2 border-1 bg-high"></div>
-            <span class="ml-2">High</span>
-          </label>
+        <div class="cursor-pointer right-0" for="tab-multi-three">
+          <button
+            class="
+              w-8
+              h-8
+              float-right
+              bg-gray-100
+              focus:outline-none
+              flex
+              items-center
+              justify-center
+              rounded-full
+            "
+          >
+            <svg
+              (click)="openMenu(1)"
+              [ngClass]="isOpenedList === 1 ? ' hidden ' : ' '"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <svg
+              (click)="closeMenu()"
+              [ngClass]="isOpenedList === 1 ? ' ' : ' hidden '"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
         </div>
-        <div>
-          <label class="inline-flex items-center">
-            <div class="box-border h-4 w-4 p-2 border-1 bg-medium"></div>
-            <span class="ml-2">Medium</span>
-          </label>
-        </div>
-        <div>
-          <label class="inline-flex items-center">
-            <div class="box-border h-4 w-4 p-2 border-1 bg-low"></div>
-            <span class="ml-2">Low</span>
-          </label>
+      </div>
+      <div
+        [ngClass]="isOpenedList === 1 ? ' hidden ' : ' '"
+        class="max-h-screen overflow-hidden bg-gray-100 leading-normal"
+      >
+        <div class="my-2 text-xs uppercase px-8">
+          <div
+            class="font-bold text-gray-800 text-xs mb-1 title-font uppercase"
+          >
+            Hazards Type
+          </div>
+          <div class="flex flex-col">
+            <span class="inline-flex items-center mt-1">
+              <input
+                id="landslide-hazard"
+                type="radio"
+                class="h-4 w-4 text-red-600"
+                [checked]="
+                  'landslide-hazard' === (currentLandslideHazards$ | async)
+                "
+                (click)="viewLandslideHazards('landslide-hazard')"
+              />
+              <label for="landslide-hazard" class="ml-2 text-gray-700"
+                >Landslide Hazards</label
+              >
+            </span>
+            <span class="inline-flex items-center mt-1">
+              <input
+                id="alluvial-fan-hazard"
+                type="radio"
+                class="h-4 w-4 text-red-600"
+                [checked]="
+                  'alluvial-fan-hazard' === (currentLandslideHazards$ | async)
+                "
+                (click)="viewLandslideHazards('alluvial-fan-hazard')"
+              />
+              <label for="alluvial-fan-hazard" class="ml-2 text-gray-700"
+                >Alluvial Fan Hazards</label
+              >
+            </span>
+            <span class="inline-flex items-center mt-1">
+              <input
+                id="unstable-slopes-maps"
+                type="radio"
+                class="h-4 w-4 text-red-600"
+                [checked]="
+                  'unstable-slopes-maps' === (currentLandslideHazards$ | async)
+                "
+                (click)="viewLandslideHazards('unstable-slopes-maps')"
+              />
+              <label for="unstable-slopes-maps" class="ml-2 text-gray-700"
+                >Unstable Slopes Maps</label
+              >
+            </span>
+          </div>
+          <div class="mt-2 text-xs uppercase">
+            <span class="font-bold text-gray-800 text-xs mb-1 title-font"
+              >Legend</span
+            >
+            <div>
+              <label class="inline-flex items-center">
+                <div class="box-border h-4 w-4 p-2 border-1 bg-high"></div>
+                <span class="ml-2">High</span>
+              </label>
+            </div>
+            <div>
+              <label class="inline-flex items-center">
+                <div class="box-border h-4 w-4 p-2 border-1 bg-medium"></div>
+                <span class="ml-2">Medium</span>
+              </label>
+            </div>
+            <div>
+              <label class="inline-flex items-center">
+                <div class="box-border h-4 w-4 p-2 border-1 bg-low"></div>
+                <span class="ml-2">Low</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

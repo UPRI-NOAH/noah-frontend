@@ -11,10 +11,19 @@ import { Observable } from 'rxjs';
 export class LandslidePlaygroundComponent implements OnInit {
   currentLandslideHazards$: Observable<LandslideHazards>;
 
+  isOpenedList: number;
+  openMenu(source: number) {
+    this.isOpenedList = source;
+  }
+  closeMenu() {
+    this.isOpenedList = -1;
+  }
+
   constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
-    this.currentLandslideHazards$ = this.playgroundService.currentLandslideHazards$;
+    this.currentLandslideHazards$ =
+      this.playgroundService.currentLandslideHazards$;
   }
 
   viewLandslideHazards(landslideHazards: LandslideHazards) {

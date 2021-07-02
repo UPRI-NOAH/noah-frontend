@@ -10,8 +10,9 @@
     class="
       z-10
       min-h-screen
+      bg-white
+      w-screen
       gap-2
-      w-full
       md:w-64
       left-shadow
       p-2
@@ -23,8 +24,6 @@
       [searchTerm]="searchTerm"
       (selectPlace)="selectPlace($event)"
     ></noah-search>
-
-    <hr class="my-4" />
 
     <!-- Flood -->
     <noah-flood-playground></noah-flood-playground>

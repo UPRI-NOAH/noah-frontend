@@ -11,10 +11,19 @@ import { Observable } from 'rxjs';
 export class FloodPlaygroundComponent implements OnInit {
   currentFloodReturnPeriod$: Observable<FloodReturnPeriod>;
 
+  isOpenedList: number;
+  openMenu(source: number) {
+    this.isOpenedList = source;
+  }
+  closeMenu() {
+    this.isOpenedList = -1;
+  }
+
   constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
-    this.currentFloodReturnPeriod$ = this.playgroundService.currentFloodReturnPeriod$;
+    this.currentFloodReturnPeriod$ =
+      this.playgroundService.currentFloodReturnPeriod$;
   }
 
   viewReturnPeriod(returnPeriod: FloodReturnPeriod) {
