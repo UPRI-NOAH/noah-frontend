@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { PlaygroundService } from '@features/playground/services/playground.service';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -18,16 +16,10 @@ export class NoahPlaygroundComponent implements OnInit {
 
   isOpenedList: boolean = true;
 
-  sliderCtrl: FormControl;
-
   constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
     this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
-    this.sliderCtrl = new FormControl(25);
-    this.sliderCtrl.valueChanges
-      .pipe(take(50))
-      .subscribe((v) => console.log(v));
   }
 
   openMenu() {
