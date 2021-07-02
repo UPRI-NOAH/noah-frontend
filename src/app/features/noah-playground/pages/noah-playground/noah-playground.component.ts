@@ -15,26 +15,12 @@ export class NoahPlaygroundComponent implements OnInit {
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
 
-  isOpenedList: boolean = true;
-
   hazardTypes = HAZARDS;
 
   constructor(private playgroundService: PlaygroundService) {}
 
   ngOnInit(): void {
     this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
-  }
-
-  openMenu() {
-    this.isOpenedList = true;
-  }
-
-  closeMenu() {
-    this.isOpenedList = false;
-  }
-
-  getSliderValue(event) {
-    console.log(event.target.value);
   }
 
   selectPlace(selectedPlace) {
