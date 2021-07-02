@@ -203,33 +203,31 @@
             <div [ngClass]="isOpenedList ? ' pt-5 ' : ' hidden '">
               <hr class="pb-4" />
               <div class="pl-6">
-                <div class="flex items-center pb-2 pl-4">
-                  <div class="text-m f-f-r">Exaggeration</div>
-                </div>
-                <div class="flex items-center">
-                  <div class="px-6 w-full">
-                    <input
-                      class="
-                        rounded-lg
-                        overflow-hidden
-                        appearance-none
-                        bg-blue-400
-                        h-3
-                        w-full
-                      "
-                      type="range"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value="50"
-                      [formControl]="sliderCtrl"
-                    />
+                <div class="px-6">
+                  <div class="flex items-center pb-2">
+                    <div class="text-m f-f-r">Exaggeration</div>
+                  </div>
+                  <div class="flex">
+                    <div class="w-10/12">
+                      <input
+                        class="w-full"
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value="50"
+                        [formControl]="sliderCtrl"
+                      />
 
-                    <div
-                      class="flex justify-between mt-2 text-xs text-gray-600"
-                    >
-                      <span class="w-8 text-left">0%</span>
-                      <span class="w-8 text-right">1%</span>
+                      <div
+                        class="flex justify-between text-xs text-gray-600 mx-1"
+                      >
+                        <span class="w-8 text-left">0</span>
+                        <span class="w-8 text-right">1</span>
+                      </div>
+                    </div>
+                    <div class="pl-2 w-2/12">
+                      {{ sliderCtrl.value }}
                     </div>
                   </div>
                 </div>
