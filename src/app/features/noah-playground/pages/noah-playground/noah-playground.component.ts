@@ -14,12 +14,14 @@ export class NoahPlaygroundComponent implements OnInit {
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
 
-  isOpenedList;
-  openMenu(source) {
-    this.isOpenedList = source;
+  isOpenedList: boolean = true;
+
+  openMenu() {
+    this.isOpenedList = true;
   }
+
   closeMenu() {
-    this.isOpenedList = -1;
+    this.isOpenedList = false;
   }
 
   getSliderValue(event) {

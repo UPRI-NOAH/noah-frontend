@@ -1,10 +1,25 @@
 <div
-  class="flex h-full antialiased text-black bg-black-100 dark:bg-dark dark:text-light"
+  class="
+    flex
+    h-full
+    antialiased
+    text-black
+    bg-black-100
+    dark:bg-dark dark:text-light
+  "
 >
   <div class="h-full z-50">
     <button
       (click)="isMenu = !isMenu"
-      class="fixed p-2 z-20 text-white bg-blue-700 top-7rounded-lg top-20 left-5"
+      class="
+        fixed
+        p-2
+        z-20
+        text-white
+        bg-blue-700
+        top-7rounded-lg top-20
+        left-5
+      "
     >
       <svg
         class="w-6 h-6"
@@ -26,7 +41,19 @@
     <div
       *ngIf="isMenu"
       id="sidebar"
-      class="fixed inset-y-0 z-40 flex w-96 bg-white overflow-y-auto lg:sticky h-screen top-0 pt-10"
+      class="
+        fixed
+        inset-y-0
+        z-40
+        flex
+        w-96
+        bg-white
+        overflow-y-auto
+        lg:sticky
+        h-screen
+        top-0
+        pt-10
+      "
     >
       <div class="absolute inset-0">
         <img
@@ -97,7 +124,16 @@
           <noah-search-playground class="w-full mt-8"></noah-search-playground>
           <!-- 3D -->
           <div
-            class="flex flex-col p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-2xl mt-8"
+            class="
+              flex flex-col
+              p-5
+              w-full
+              bg-sidebar
+              shadow-md
+              hover:shodow-lg
+              rounded-2xl
+              mt-8
+            "
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center">
@@ -113,11 +149,19 @@
               </div>
               <div class="cursor-pointer">
                 <button
-                  class="w-6 h-6 focus:outline-none flex items-center justify-center rounded-full"
+                  (click)="openMenu()"
+                  [class.hidden]="isOpenedList"
+                  class="
+                    w-6
+                    h-6
+                    focus:outline-none
+                    flex
+                    items-center
+                    justify-center
+                    rounded-full
+                  "
                 >
                   <svg
-                    (click)="openMenu(1)"
-                    [ngClass]="isOpenedList === 1 ? ' hidden ' : ' '"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 1000 1000"
                     width="12"
@@ -127,10 +171,21 @@
                       d="M283.7 10l-58.4 58.4L656 500 225.3 931.6l58.4 58.4 491-490-491-490z"
                     />
                   </svg>
-
+                </button>
+                <button
+                  (click)="closeMenu()"
+                  [class.hidden]="!isOpenedList"
+                  class="
+                    w-6
+                    h-6
+                    focus:outline-none
+                    flex
+                    items-center
+                    justify-center
+                    rounded-full
+                  "
+                >
                   <svg
-                    (click)="closeMenu()"
-                    [ngClass]="isOpenedList === 1 ? ' ' : ' hidden '"
                     xmlns="http://www.w3.org/2000/svg"
                     width="12"
                     height="12"
@@ -145,7 +200,7 @@
                 </button>
               </div>
             </div>
-            <div [ngClass]="isOpenedList === 1 ? ' pt-5 ' : ' hidden '">
+            <div [ngClass]="isOpenedList ? ' pt-5 ' : ' hidden '">
               <hr class="pb-4" />
               <div class="pl-6">
                 <div class="flex items-center pb-2 pl-4">
@@ -154,14 +209,20 @@
                 <div class="flex items-center">
                   <div class="px-6 w-full">
                     <input
-                      class="rounded-lg overflow-hidden appearance-none bg-blue-400 h-3 w-full"
+                      class="
+                        rounded-lg
+                        overflow-hidden
+                        appearance-none
+                        bg-blue-400
+                        h-3
+                        w-full
+                      "
                       type="range"
                       min="0"
-                      max="1"
+                      max="100"
                       step="1"
-                      value="0.5"
+                      value="50"
                       (change)="getSliderValue($event)"
-                      (oninput)="getSliderValue($event)"
                     />
 
                     <div
