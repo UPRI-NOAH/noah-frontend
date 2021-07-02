@@ -1,307 +1,405 @@
-<!-- SITE HEADER -->
-<div class="fixed z-50">
-  <!-- SITE TITLE -->
-  <div class="flex max-w-xs p-2 items-center">
-    <img src="assets/icons/noah-logo.jpg" class="z-50" />
-    <div class="text-xs font-bold uppercase tracking-wider p-2 z-50">
-      Nationwide Operational Assessment of Hazards
-    </div>
+<body class="leading-normal tracking-normal gradient">
+  <!--Nav-->
+  <div class="fixed z-50">
+    <!-- SITE NAV -->
+    <noah-navigation></noah-navigation>
   </div>
-  <noah-navigation></noah-navigation>
-  <!-- ADD BUTTONS-->
 
-  <!-- TO DO: PLAYGROUND CTA -->
-</div>
-
-<!-- ABOVE THE FOLD -->
-<!-- <div class="container mx-auto h-screen justify-center lg:justify-start flex items-center">
-  <div class="text-center lg:w-1/3 lg:text-left">
-    <div class="font-bold text-3xl pb-4">Know the risks. Be prepared.</div>
-    <div class="pb-4">
-      Assess how likely are you to be affected by floods, landslides, and storm
-      surges and what you can do about it.
-    </div>
-    <button type="button"
-      class="text-xs uppercase font-bold tracking-wider bg-primary rounded-full px-4 py-2 inline-flex items-center justify-center text-white
-      focus:outline-none focus:ring-2 focus:ring-inset">
-      Assess My Area
-    </button>
-  </div>
-</div> -->
-
-<div
-  class="w-full flex flex-wrap md:h-screen pt-32 justify-items-center place-content-center"
->
-  <div
-    class="pt-6 md:pt-0 w-full md:flex-1 md:order-last justify-items-center place-content-center"
-  >
-    <!-- CSS FOR THIS CAROUSEL (styles.scss)-->
-    <div class="carousel relative shadow-2xl z-0 md:w-11/12">
-      <div class="carousel-inner relative overflow-hidden w-full z-0">
-        <!--Slide 1-->
-        <input
-          class="carousel-open"
-          type="radio"
-          id="carousel-1"
-          name="carousel"
-          aria-hidden="true"
-          hidden=""
-          checked="checked"
-        />
-        <div class="carousel-item absolute opacity-0">
+  <div class="pt-24">
+    <div class="items-center">
+      <section class="items-center justify-cente w-full h-screen">
+        <div class="absolute top-0 w-full h-screen">
           <img
-            src="assets/icons/slide1.jpg"
-            alt="Random first slide"
-            class="imgResponsive"
+            src="assets/icons/landing-bg.png"
+            class="h-screen w-full object-cover"
           />
         </div>
-        <label
-          for="carousel-3"
-          class="prev control-1 w-10 h-10 ml-2 md:ml-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 left-0 my-auto"
-          >‹</label
-        >
-        <label
-          for="carousel-2"
-          class="next control-1 w-10 h-10 mr-2 md:mr-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 right-0 my-auto"
-          >›</label
-        >
+        <section class="flex items-center justify-center h-screen">
+          <div class="container mx-auto py-72 px-4 h-full">
+            <div class="flex content-center items-center justify-center h-full">
+              <div
+                class="relative flex flex-col min-w-0 break-words mb-6 rounded-lg border-0"
+              >
+                <div class="flex-auto">
+                  <div
+                    class="w-9/12 m-auto py-16 min-h-screen flex items-center justify-center z-50"
+                  >
+                    <div
+                      class="bg-white shadow overflow-hidden sm:rounded-lg pb-8"
+                    >
+                      <div class="border-t border-gray-200 text-center pt-14">
+                        <h1 class="text-4xl font-bold pb-8">
+                          Know Your Hazards
+                        </h1>
+                        <p class="text-2sm pb-10 px-12">
+                          Assess how likely are you to be affected by
+                          <b>floods</b>, <b>landslides</b>, and
+                          <b>storm surges</b> and what you can do about it.
+                        </p>
+                        <div class="md:flex items-center justify-center">
+                          <div class="md:flex-shrink-1">
+                            <div class="p-1 px-4 pb-2 pt-4">
+                              <div
+                                class="bg-white flex items-center justify-center rounded-full shadow-xl"
+                              >
+                                <div class="pl-3">
+                                  <svg
+                                    class="text-gray-600 h-4 w-4 fill-current"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    version="1.1"
+                                    id="Capa_1"
+                                    x="0px"
+                                    y="0px"
+                                    viewBox="0 0 56.966 56.966"
+                                    style="
+                                      enable-background: new 0 0 56.966 56.966;
+                                    "
+                                    xml:space="preserve"
+                                    width="512px"
+                                    height="512px"
+                                  >
+                                    <path
+                                      d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"
+                                    />
+                                  </svg>
+                                </div>
 
-        <!--Slide 2-->
-        <input
-          class="carousel-open"
-          type="radio"
-          id="carousel-2"
-          name="carousel"
-          aria-hidden="true"
-          hidden=""
-        />
-        <div class="carousel-item absolute opacity-0">
-          <img
-            src="assets/icons/slide2.jpg"
-            alt="Random second slide"
-            class="imgResponsive"
-          />
+                                <input
+                                  class="rounded-l-full w-full py-4 px-7 text-gray-700 leading-tight focus:outline-none"
+                                  id="search"
+                                  type="text"
+                                  placeholder="Where do you live?"
+                                />
+
+                                <div class="pl-0">
+                                  <svg
+                                    class="w-10"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M12 4.5V2.625"
+                                      stroke="#0166FF"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M12 21.375V19.5"
+                                      stroke="#0166FF"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M12 5.25C10.665 5.25 9.35994 5.64588 8.2499 6.38758C7.13987 7.12928 6.27471 8.18349 5.76382 9.41689C5.25292 10.6503 5.11925 12.0075 5.3797 13.3169C5.64015 14.6262 6.28303 15.829 7.22703 16.773C8.17104 17.717 9.37377 18.3599 10.6831 18.6203C11.9925 18.8808 13.3497 18.7471 14.5831 18.2362C15.8165 17.7253 16.8707 16.8601 17.6124 15.7501C18.3541 14.6401 18.75 13.335 18.75 12C18.75 10.2098 18.0388 8.4929 16.773 7.22703C15.5071 5.96116 13.7902 5.25 12 5.25Z"
+                                      stroke="#0166FF"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M12 9C12.5933 9 13.1734 9.17595 13.6667 9.50559C14.1601 9.83524 14.5446 10.3038 14.7716 10.8519C14.9987 11.4001 15.0581 12.0033 14.9424 12.5853C14.8266 13.1672 14.5409 13.7018 14.1213 14.1213C13.7018 14.5409 13.1672 14.8266 12.5853 14.9424C12.0033 15.0581 11.4001 14.9987 10.8519 14.7716C10.3038 14.5446 9.83524 14.1601 9.50559 13.6667C9.17595 13.1734 9 12.5933 9 12C9 11.2043 9.31607 10.4413 9.87868 9.87868C10.4413 9.31607 11.2044 9 12 9Z"
+                                      fill="#0166FF"
+                                      stroke="#0166FF"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M19.5 12H21.375"
+                                      stroke="#0166FF"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M2.625 12H4.5"
+                                      stroke="#0166FF"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-4 md:mt-0 md:ml-0">
+                            <div class="px-4 pb-2 pt-4">
+                              <button
+                                class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                                type="button"
+                              >
+                                Search
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <section class="bg-white">
+    <div class="max-w-5xl px-6 py-16 mx-auto">
+      <div class="items-center md:flex md:space-x-6">
+        <div class="md:w-1/2">
+          <h3 class="text-3xl font-semibold text-gray-800">
+            Know Your Hazard:<br />
+            Flooding
+          </h3>
+          <p class="max-w-md mt-4 text-gray-600 pb-4">
+            In the event of
+            <b>flooding due to ranfall as heavy as Ondoy,</b> how likely are you
+            to be affected
+          </p>
+          <button
+            class="mx-auto lg:mx-0 hover:underline bg-white text-blue-600 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
+            routerLink="personal"
+          >
+            Find out more
+          </button>
         </div>
-        <label
-          for="carousel-1"
-          class="prev control-2 w-10 h-10 ml-2 md:ml-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 left-0 my-auto"
-          >‹</label
-        >
-        <label
-          for="carousel-3"
-          class="next control-2 w-10 h-10 mr-2 md:mr-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 right-0 my-auto"
-          >›</label
-        >
 
-        <!--Slide 3-->
-        <input
-          class="carousel-open"
-          type="radio"
-          id="carousel-3"
-          name="carousel"
-          aria-hidden="true"
-          hidden=""
-        />
-        <div class="carousel-item absolute opacity-0">
-          <div class="block h-full w-full text-white text-5xl text-center">
-            <img src="assets/icons/slide4.jpg" />
+        <div class="mt-8 md:mt-0 md:w-1/2">
+          <div class="flex items-center justify-center">
+            <div class="max-w-md">
+              <img
+                class="object-cover object-center w-full rounded-md shadow"
+                src="assets/icons/flood.png"
+              />
+            </div>
           </div>
         </div>
-        <label
-          for="carousel-2"
-          class="prev control-3 w-10 h-10 ml-2 md:ml-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 left-0 my-auto"
-          >‹</label
-        >
-        <label
-          for="carousel-1"
-          class="next control-3 w-10 h-10 mr-2 md:mr-10 absolute cursor-pointer hidden text-3xl font-bold text-black hover:text-white rounded-full bg-white hover:bg-blue-700 leading-tight text-center z-10 inset-y-0 right-0 my-auto"
-          >›</label
-        >
-
-        <!-- Add additional indicators for each slide-->
-        <ol class="carousel-indicators">
-          <li class="inline-block mr-3">
-            <label
-              for="carousel-1"
-              class="carousel-bullet cursor-pointer block text-4xl text-white hover:text-blue-700"
-              >•</label
-            >
-          </li>
-          <li class="inline-block mr-3">
-            <label
-              for="carousel-2"
-              class="carousel-bullet cursor-pointer block text-4xl text-white hover:text-blue-700"
-              >•</label
-            >
-          </li>
-          <li class="inline-block mr-3">
-            <label
-              for="carousel-3"
-              class="carousel-bullet cursor-pointer block text-4xl text-white hover:text-blue-700"
-              >•</label
-            >
-          </li>
-        </ol>
       </div>
     </div>
-    <!-- CSS FOR THIS CAROUSEL (styles.scss)-->
-    <!-- LOGOS-->
-    <div
-      class="flex md:flex-row md:w-11/12 justify-items-center place-content-center mt-5"
-    >
-      <div class="w-full px-4 py-6 md:mx-2 lg:mx-4 mt-4 md:mt-0">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/floodbtn.png"
-          alt=""
-          class="mx-auto h-12"
-        />
-        <h6 class="text-lg font-bold leading-tight mt-3 text-center">Flood</h6>
-      </div>
+  </section>
 
-      <div class="w-full px-4 py-6 md:mx-2 lg:mx-4 mt-4 md:mt-0">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/landslidebtn.png"
-          alt=""
-          class="mx-auto h-12"
-        />
-        <h6 class="text-lg font-bold leading-tight mt-3 text-center">
-          Landslide
-        </h6>
-      </div>
+  <section class="bg-white">
+    <div class="max-w-5xl px-6 py-16 mx-auto">
+      <div class="items-center md:flex md:space-x-6">
+        <div class="md:w-1/2">
+          <div class="flex items-center justify-center">
+            <div class="max-w-md">
+              <img
+                class="object-cover object-center w-full rounded-md shadow"
+                src="assets/icons/storm_surge.png"
+              />
+            </div>
+          </div>
+        </div>
 
-      <div class="w-full px-4 py-6 md:mx-2 lg:mx-4 mt-4 md:mt-0">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/stormsurgebtn.png"
-          alt=""
-          class="mx-auto h-12"
-        />
-        <h6 class="text-lg font-bold leading-tight mt-3 text-center">
-          Storm Surge
-        </h6>
+        <div class="mt-8 md:mt-0 md:w-1/2">
+          <h3 class="text-3xl font-semibold text-gray-800">
+            Know Your Hazard:<br />Storm Surge
+          </h3>
+          <p class="max-w-md mt-4 text-gray-600 pb-4">
+            How prone is your neighborhood to <b>storm surges</b> as strong as
+            those caused by the typhoon Yolanda?
+          </p>
+          <button
+            class="mx-auto lg:mx-0 hover:underline bg-white text-blue-600 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
+          >
+            Find out more
+          </button>
+        </div>
       </div>
     </div>
-    <!-- LOGOS-->
-  </div>
+  </section>
 
-  <div
-    class="w-full p-6 pb-12 md:p-12 md:w-5/12 flex flex-wrap justify-items-center place-content-center relative"
-  >
-    <div class="w-full relative text-center py-12 px-12 md:p-0 md:text-left">
-      <div class="font-bold text-3xl pb-4">Know the hazards. Be prepared.</div>
-      <div class="pb-4">
-        Assess how likely are you to be affected by floods, landslides, and
-        storm surges and what you can do about it.
-      </div>
+  <hr class="mb-6 border-t" />
+  <section class="bg-white">
+    <div class="max-w-5xl px-6 py-16 mx-auto text-center">
+      <h2 class="text-4xl font-semibold text-gray-800">
+        Are you a Researcher or a Policy Maker?
+      </h2>
+      <p class="max-w-lg mx-auto mt-4 pb-4">
+        Check out the NOAH PLAYGROUND for a more granular assessment of natural
+        hazards in a wider area.
+      </p>
+
       <button
-        type="button"
-        class="text-xs uppercase font-bold tracking-wider bg-primary rounded-full px-4 py-2 inline-flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-inset mx-auto lg:mx-0"
-        routerLink="personal"
+        class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
       >
-        Assess My Area
+        NOAH PLAYGROUND
       </button>
     </div>
-  </div>
-</div>
+  </section>
 
-<!--Landing page 2nd scroll-->
-<!-- <div class="py-24 px-12 bg-gray-200">
-  <div class="container mx-auto flex flex-wrap">
+  <!-- WALA LANG DESIGN LANG. HAHAHA -->
+  <svg
+    class="wave-top"
+    viewBox="0 0 1439 147"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+  >
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g transform="translate(-1.000000, -14.000000)" fill-rule="nonzero">
+        <g class="wave" fill="#f8fafc">
+          <path
+            d="M1440,84 C1383.555,64.3 1342.555,51.3 1317,45 C1259.5,30.824 1206.707,25.526 1169,22 C1129.711,18.326 1044.426,18.475 980,22 C954.25,23.409 922.25,26.742 884,32 C845.122,37.787 818.455,42.121 804,45 C776.833,50.41 728.136,61.77 713,65 C660.023,76.309 621.544,87.729 584,94 C517.525,105.104 484.525,106.438 429,108 C379.49,106.484 342.823,104.484 319,102 C278.571,97.783 231.737,88.736 205,84 C154.629,75.076 86.296,57.743 0,32 L0,0 L1440,0 L1440,84 Z"
+          ></path>
+        </g>
+        <g transform="translate(1.000000, 15.000000)" fill="#FFFFFF">
+          <g
+            transform="translate(719.500000, 68.500000) rotate(-180.000000) translate(-719.500000, -68.500000) "
+          >
+            <path
+              d="M0,0 C90.7283404,0.927527913 147.912752,27.187927 291.910178,59.9119003 C387.908462,81.7278826 543.605069,89.334785 759,82.7326078 C469.336065,156.254352 216.336065,153.6679 0,74.9732496"
+              opacity="0.100000001"
+            ></path>
+            <path
+              d="M100,104.708498 C277.413333,72.2345949 426.147877,52.5246657 546.203633,45.5787101 C666.259389,38.6327546 810.524845,41.7979068 979,55.0741668 C931.069965,56.122511 810.303266,74.8455141 616.699903,111.243176 C423.096539,147.640838 250.863238,145.462612 100,104.708498 Z"
+              opacity="0.100000001"
+            ></path>
+            <path
+              d="M1046,51.6521276 C1130.83045,29.328812 1279.08318,17.607883 1439,40.1656806 L1439,120 C1271.17211,77.9435312 1140.17211,55.1609071 1046,51.6521276 Z"
+              opacity="0.200000003"
+            ></path>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+
+  <footer class="bg-gray-300 pt-12 pb-8 px-4">
     <div
-      class="w-full md:w-1/2 md:pr-4 flex flex-wrap mb-12 md:mb-0 relative py-3 sm:max-w-xl sm:mx-auto"
+      class="mx-auto px-4 container overflow-hidden flex flex-col lg:flex-row justify-between"
     >
-      <div
-        class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
-      ></div>
-      <div
-        class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20"
-      >
-        <div class="max-w-md mx-auto">
-          <div class="divide-y divide-gray-200">
-            <div
-              class="py-8 text-base leading-6 space-y-4 text-gray-400 sm:text-lg sm:leading-7"
+      <div class="w-full lg:w-2/6 lg:mx-4 lg:pr-8">
+        <a
+          class="flex title-font font-medium items-center md:justify-start justify-center"
+        >
+          <img src="assets/icons/logo-noah.png" class="z-50 w-24" />
+          <span class="ml-3 text-s">
+            Nationwide Operational<br />Assessment of Hazards (NOAH)</span
+          >
+        </a>
+        <form class="flex items-center mt-6 justify-center">
+          <div class="w-full">
+            <label
+              class="block uppercase tracking-wide text-gray-600 text-sm font-bold mb-2"
+              for="grid-last-name"
             >
-              <div class="p-2 w-full">
-                <img
-                  src="http://noah.up.edu.ph/static/img/sidebar/sensorbtn.png"
-                  class="w-full h-44 object-cover"
-                />
-              </div>
-              <p class="text-xs">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis
-                vulputate tellus. Etiam vel placerat lorem, eget ornare nibh. Ut
-                in commodo magna.
-              </p>
+              noah is a project of:
+            </label>
+            <div class="relative flex">
+              <img src="assets/icons/up.png" />
+
+              <img src="assets/icons/upri.png" class="pl-2" />
+              <span class="ml-4 pt-2 text-s">UP Resilience Institute</span>
             </div>
-            <div
-              class="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7"
-            ></div>
           </div>
+        </form>
+      </div>
+
+      <div class="w-2/3 block sm:flex text-sm mt-6 lg:mt-0">
+        <ul
+          class="text-gray-700 list-none p-0 font-thin flex flex-col text-left w-full"
+        >
+          <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
+            Related Project:
+          </li>
+          <li>
+            <a
+              href="#"
+              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
+              >Endcov.ph</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
+              >ReBUILD</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
+              >WebSAFE</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              class="inline-block py-2 px-3 hover:text-blue-600 no-underline pb-5"
+              >Safer U</a
+            >
+          </li>
+        </ul>
+
+        <ul
+          class="text-gray-700 list-none p-0 font-thin flex flex-col text-left w-full md:pl-20 lg:pl-24 xl:pl-0"
+        >
+          <div class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
+            Follow Us:
+          </div>
+          <div class="flex pl-4 justify-start mt-2 pb-4">
+            <a
+              class="flex items-center hover:text-blue-600 mr-6 no-underline"
+              href="#"
+            >
+              <svg viewBox="0 0 24 24" class="fill-current w-5 h-5">
+                <path
+                  d="M23.998 12c0-6.628-5.372-12-11.999-12C5.372 0 0 5.372 0 12c0 5.988 4.388 10.952 10.124 11.852v-8.384H7.078v-3.469h3.046V9.356c0-3.008 1.792-4.669 4.532-4.669 1.313 0 2.686.234 2.686.234v2.953H15.83c-1.49 0-1.955.925-1.955 1.874V12h3.328l-.532 3.469h-2.796v8.384c5.736-.9 10.124-5.864 10.124-11.853z"
+                />
+              </svg>
+            </a>
+            <a
+              class="flex items-center hover:text-blue-600 mr-6 no-underline"
+              href="#"
+            >
+              <svg viewBox="0 0 24 24" class="fill-current w-5 h-5">
+                <path
+                  d="M23.954 4.569a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.691 8.094 4.066 6.13 1.64 3.161a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.061a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63a9.936 9.936 0 002.46-2.548l-.047-.02z"
+                />
+              </svg>
+            </a>
+            <a
+              class="flex items-center hover:text-blue-600 no-underline"
+              href="#"
+            >
+              <svg
+                fill="none"
+                class="h-6 w-6 mr-6"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+            </a>
+          </div>
+        </ul>
+
+        <div class="text-gray-700 flex flex-col w-full md:pl-6 pr-4">
+          <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
+            About
+          </li>
+          <p class="text-black-400 py-2 px-5 sm:w-72 lg:w-64 xl:w-96 md:w-96">
+            UP NOAH seeks to assist the country in disaster risk reduction and
+            management, climate change adaptation and mitigation efforts and
+            related activities through reserach, development and extension
+            services.
+          </p>
         </div>
       </div>
     </div>
-    <div class="w-full md:w-1/2 md:pl-4">
-      <h2 class="text-4xl mb-10">Lorem ipsum dolor sit amet</h2>
-      <div class="max-w-lg">
-        <p class="mb-6 text-gray-700">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis
-          vulputate tellus. Etiam vel placerat lorem, eget ornare nibh. Ut in
-          commodo magna. Quisque vitae fermentum quam. Mauris venenatis id enim
-          at porta. Etiam molestie lorem non odio hendrerit.
-        </p>
-        <p class="mb-6 text-gray-700">
-          At vulputate ligula consequat. Morbi sollicitudin mollis erat, in
-          tempus nisi. Quisque vehicula vitae sem in ornare. Vivamus id odio
-          ligula.
-        </p>
-      </div>
-    </div>
-  </div>
-</div> -->
-<!--Landing page 2nd scroll-->
-
-<!--Landing page 3rd scroll-->
-<!-- <div class="py-24 px-12">
-  <div class="container mx-auto flex flex-wrap">
-    <div class="w-full md:w-1/2 md:pl-4">
-      <h2 class="text-4xl mb-10">Lorem ipsum dolor sit amet</h2>
-      <div class="max-w-lg">
-        <p class="mb-6 text-gray-700">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iaculis
-          vulputate tellus. Etiam vel placerat lorem, eget ornare nibh. Ut in
-          commodo magna. Quisque vitae fermentum quam. Mauris venenatis id enim
-          at porta. Etiam molestie lorem non odio hendrerit.
-        </p>
-        <p class="mb-6 text-gray-700">
-          At vulputate ligula consequat. Morbi sollicitudin mollis erat, in
-          tempus nisi. Quisque vehicula vitae sem in ornare. Vivamus id odio
-          ligula.
-        </p>
-      </div>
-    </div>
-
-    <div class="w-full md:w-1/2 md:pr-4 flex flex-wrap mb-12 md:mb-0">
-      <div class="p-2 w-1/2">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/weatherbtn.png"
-          class="w-full h-64 object-cover"
-        />
-      </div>
-      <div class="p-2 w-1/2">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/sensorbtn.png"
-          class="w-full h-64 object-cover"
-        />
-      </div>
-      <div class="p-2 w-full">
-        <img
-          src="http://noah.up.edu.ph/static/img/sidebar/volcanobtn.png"
-          class="w-full h-64 object-cover"
-        />
-      </div>
-    </div>
-  </div>
-</div> -->
-<!--Landing page 3rd scroll-->
-
-<!-- TO DO: add footer -->
-<!-- <noah-footer> </noah-footer> -->
+  </footer>
+</body>

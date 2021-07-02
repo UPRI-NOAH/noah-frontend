@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { NavigationComponent } from './pages/navigation/navigation.component';
+import { FooterComponent } from './pages/footer/footer.component';
 import { PersonalizedRiskAssessmentModule } from '@features/personalized-risk-assessment/personalized-risk-assessment.module';
 import { PlaygroundModule } from '@features/playground/playground.module';
 

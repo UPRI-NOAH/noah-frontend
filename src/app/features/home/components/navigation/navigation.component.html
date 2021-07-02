@@ -1,0 +1,358 @@
+<nav
+  id="header"
+  class="fixed w-full z-0 top-0 bg-white border-b-2 border-blue-100"
+>
+  <div
+    class="
+      w-full
+      container
+      mx-auto
+      flex flex-wrap
+      items-center
+      justify-between
+      mt-0
+      py-2
+    "
+  >
+    <div class="pl-0 flex items-center">
+      <div
+        class="
+          w-full
+          container
+          mx-auto
+          flex flex-wrap
+          items-center
+          justify-between
+          mt-0
+          py-2
+        "
+      >
+        <div class="flex items-center">
+          <a
+            class="
+              toggleColour
+              no-underline
+              hover:no-underline
+              font-bold
+              text-2xl
+              lg:text-4xl
+            "
+          >
+            <div class="flex max-w-xs p-2 items-center">
+              <img src="assets/icons/logo-noah.png" class="z-50 w-20" />
+              <div class="text-xs font-bold uppercase tracking-wider p-2 z-50">
+                Nationwide Operational Assessment of Hazards
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="
+        w-full
+        flex-grow
+        lg:flex lg:items-center lg:w-auto
+        hidden
+        mt-2
+        lg:mt-0
+        bg-white
+        lg:bg-transparent
+        justify-end
+        p-4
+        lg:p-0
+        z-20
+      "
+    >
+      <div
+        class="
+          w-full
+          flex-grow
+          lg:flex lg:items-center lg:w-auto
+          hidden
+          mt-2
+          lg:mt-0
+          bg-white
+          lg:bg-transparent
+          text-black
+          p-4
+          lg:p-0
+          z-20
+        "
+        id="nav-content"
+      >
+        <ul class="list-reset lg:flex justify-end flex-1 items-center">
+          <li class="mr-3">
+            <a class="inline-block py-2 px-4 text-black font-bold no-underline"
+              >About</a
+            >
+          </li>
+          <li class="mr-3">
+            <a
+              class="
+                inline-block
+                text-black
+                no-underline
+                hover:text-gray-800 hover:text-underline
+                py-2
+                px-4
+              "
+              >Downloads</a
+            >
+          </li>
+          <li class="mr-3">
+            <a
+              class="
+                inline-block
+                text-black
+                no-underline
+                hover:text-gray-800 hover:text-underline
+                py-2
+                px-4
+              "
+              >Blog</a
+            >
+          </li>
+        </ul>
+      </div>
+      <button
+        type="button"
+        class="
+          text-xs
+          uppercase
+          font-bold
+          tracking-wider
+          bg-primary
+          rounded-full
+          px-4
+          py-2
+          inline-flex
+          items-center
+          justify-center
+          text-white
+          focus:outline-none focus:ring-2 focus:ring-inset
+          mx-auto
+          lg:mx-0
+          transform
+          transition
+          hover:scale-105
+          duration-300
+          ease-in-out
+        "
+        routerLink="playground"
+      >
+        Playground
+      </button>
+    </div>
+  </div>
+  <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
+</nav>
+<!-- Navbar -->
+<nav>
+  <div
+    class="
+      py-4
+      px-6
+      w-full
+      flex
+      lg:hidden
+      justify-between
+      items-center
+      bg-white
+      fixed
+      top-0
+      z-40
+    "
+  >
+    <div class="pl-0 flex items-center">
+      <div
+        class="
+          w-full
+          container
+          mx-auto
+          flex flex-wrap
+          items-center
+          justify-between
+          mt-0
+          py-2
+        "
+      >
+        <div class="flex items-center">
+          <a
+            class="
+              toggleColour
+              no-underline
+              hover:no-underline
+              font-bold
+              text-2xl
+              lg:text-4xl
+            "
+          >
+            <div class="flex max-w-xs p-2 items-center">
+              <img src="assets/icons/logo-noah.png" class="z-50 w-20" />
+              <div class="text-xs font-bold uppercase tracking-wider p-2 z-50">
+                Nationwide Operational Assessment of Hazards
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div id="menu" class="text-gray-800" (click)="isMenu = true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="icon icon-tabler icon-tabler-menu-2"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+        </svg>
+      </div>
+    </div>
+  </div>
+  <!--Mobile responsive sidebar-->
+  <div
+    *ngIf="isMenu"
+    class="w-56 z-40 lg:hidden fixed top-0 bottom-0 right-0"
+    id="mobile-nav"
+  >
+    <div
+      class="bg-black opacity-30 lg:hidden fixed top-0 left-0 right-0 bottom-0"
+      (click)="isMenu = false"
+    ></div>
+    <div
+      class="
+        w-64
+        z-40
+        fixed
+        overflow-y-auto
+        top-0
+        bg-white
+        shadow
+        h-full
+        flex-col
+        justify-between
+        xl:hidden
+        pb-0
+        transition
+        duration-150
+        ease-in-out
+      "
+    >
+      <div class="px-6 h-full">
+        <div class="flex flex-col justify-between h-full w-full">
+          <div>
+            <div class="mt-6 flex w-full items-center justify-between">
+              <div id="cross" class="text-gray-800" (click)="isMenu = false">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="icon icon-tabler icon-tabler-x"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z"></path>
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </div>
+              <div class="flex items-center justify-between w-full">
+                <div class="pl-0 flex items-center">
+                  <div
+                    class="
+                      w-full
+                      container
+                      mx-auto
+                      flex flex-wrap
+                      items-center
+                      justify-between
+                      mt-0
+                      py-2
+                    "
+                  >
+                    <div class="flex items-center">
+                      <a
+                        class="
+                          toggleColour
+                          no-underline
+                          hover:no-underline
+                          font-bold
+                          text-2xl
+                          lg:text-4xl
+                        "
+                      >
+                        <div class="flex max-w-xs p-2 items-center">
+                          <img
+                            src="assets/icons/logo-noah.png"
+                            class="z-50 w-32"
+                          />
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ul class="f-m-m">
+              <a class="cursor-pointer">
+                <li class="text-gray-800 pt-8">
+                  <div class="flex items-center">
+                    <p class="text-black-700 xl:text-base text-base ml-3">
+                      About
+                    </p>
+                  </div>
+                </li>
+              </a>
+              <a class="cursor-pointer">
+                <li class="text-gray-800 pt-8">
+                  <div class="flex items-center">
+                    <p class="text-black-700 xl:text-base text-base ml-3">
+                      Downloads
+                    </p>
+                  </div>
+                </li>
+              </a>
+              <a class="cursor-pointer">
+                <li class="text-gray-800 pt-8">
+                  <div class="flex items-center">
+                    <p class="text-black-700 xl:text-base text-base ml-3">
+                      Blog
+                    </p>
+                  </div>
+                </li>
+              </a>
+              <a class="cursor-pointer">
+                <li class="text-gray-800 pt-8">
+                  <div class="flex items-center">
+                    <p class="text-black-700 xl:text-base text-base ml-3">
+                      Noah Playground
+                    </p>
+                  </div>
+                </li>
+              </a>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- Sidebar ends -->
