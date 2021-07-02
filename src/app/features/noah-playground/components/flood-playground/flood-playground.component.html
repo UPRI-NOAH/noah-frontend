@@ -75,21 +75,8 @@
             </div>
           </div>
 
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
+          <div class="pt-4">
+            <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
           </div>
 
           <div class="flex items-center pt-4">
@@ -196,20 +183,7 @@
           </div>
 
           <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-m f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
+            <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
           </div>
 
           <div class="flex items-center pt-4">
