@@ -13,6 +13,7 @@ import { MapPlaygroundComponent } from './components/map-playground/map-playgrou
 import { SearchPlaygroundComponent } from './components/search-playground/search-playground.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { HazardLegendComponent } from './components/hazard-legend/hazard-legend.component';
+import { HazardLevelComponent } from './components/hazard-level/hazard-level.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { HazardLegendComponent } from './components/hazard-legend/hazard-legend.
     SearchPlaygroundComponent,
     SliderComponent,
     HazardLegendComponent,
+    HazardLevelComponent,
   ],
   imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
 })

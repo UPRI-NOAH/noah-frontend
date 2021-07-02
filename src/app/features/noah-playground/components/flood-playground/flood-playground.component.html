@@ -63,254 +63,27 @@
   <div [ngClass]="isOpenedList ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
     <div class="pl-6">
-      <div class="items-center">
-        <!-- 5 YEARS RETURN PERIOD -->
-        <div class="text-m f-f-r py-2 pl-4">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">5-Year Return Period</div>
-            </div>
-          </div>
+      <!-- 5 YEARS RETURN PERIOD -->
+      <noah-hazard-level
+        id="flood-5year"
+        name="5-Year Return Period"
+      ></noah-hazard-level>
+      <!-- 5 YEARS RETURN PERIOD -->
+      <hr class="p-2" />
 
-          <div class="pt-4">
-            <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
-          </div>
-
-          <div class="pt-4">
-            <noah-hazard-legend></noah-hazard-legend>
-          </div>
-        </div>
-        <!-- 5 YEARS RETURN PERIOD -->
-        <hr class="p-2" />
-      </div>
       <!-- 25 YEARS RETURN PERIOD -->
-      <div class="items-center py-2 pl-4">
-        <div class="text-m f-f-r">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">25-Year Return Period</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-high"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">High</div>
-                </div>
-              </div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-medium"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Medium</div>
-                </div>
-              </div>
-
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-low"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">low</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-m f-f-r">Choose Color</div>
-              <div class="flex items-center">
-                <div>
-                  <div
-                    class="
-                      grid
-                      gap-1
-                      grid-cols-3
-                      sm:grid-cols-6
-                      md:grid-cols-6
-                      lg:grid-cols-6
-                    "
-                  >
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color1"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color2"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color3"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color4"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color5"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-high"
-                        role="button"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <noah-hazard-level
+        id="flood-25year"
+        name="25-Year Return Period"
+      ></noah-hazard-level>
       <!-- 25 YEARS RETURN PERIOD -->
       <hr class="p-2" />
+
       <!-- 100 YEARS RETURN PERIOD -->
-      <div class="items-center pl-4">
-        <div class="text-m f-f-r">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">100-Year Return Period</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-m f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-high"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">High</div>
-                </div>
-              </div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-medium"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Medium</div>
-                </div>
-              </div>
-
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div class="h-6 w-6 mx-auto rounded-md bg-low"></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">low</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-m f-f-r">Choose Color</div>
-              <div class="flex items-center">
-                <div>
-                  <div
-                    class="
-                      grid
-                      gap-1
-                      grid-cols-3
-                      sm:grid-cols-6
-                      md:grid-cols-6
-                      lg:grid-cols-6
-                    "
-                  >
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color1"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color2"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color3"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color4"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-color5"
-                        role="button"
-                      ></div>
-                    </div>
-                    <div>
-                      <div
-                        class="h-6 w-6 mx-auto rounded-md bg-high"
-                        role="button"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <noah-hazard-level
+        id="flood-100year"
+        name="100-Year Return Period"
+      ></noah-hazard-level>
       <!-- 100 YEARS RETURN PERIOD -->
     </div>
   </div>
