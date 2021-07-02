@@ -222,7 +222,7 @@
                       max="100"
                       step="1"
                       value="50"
-                      (change)="getSliderValue($event)"
+                      [formControl]="sliderCtrl"
                     />
 
                     <div
