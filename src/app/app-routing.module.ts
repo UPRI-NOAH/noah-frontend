@@ -3,9 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'mvp1',
     loadChildren: () =>
-      import('@features/home/home.module').then((m) => m.HomeModule),
+      import('@features/home-mvp1/home.module').then((m) => m.HomeModule),
   },
   {
     path: 'personal',
@@ -20,6 +20,11 @@ const routes: Routes = [
       import('@features/playground/playground.module').then(
         (m) => m.PlaygroundModule
       ),
+  },
+  {
+    path: '',
+    loadChildren: () =>
+      import('@features/home/home.module').then((m) => m.HomeModule),
   },
   {
     path: '**',
