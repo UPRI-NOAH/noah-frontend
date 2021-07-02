@@ -12,6 +12,7 @@ import { CriticalFacilitiesPlaygroundComponent } from './components/critical-fac
 import { MapPlaygroundComponent } from './components/map-playground/map-playground.component';
 import { SearchPlaygroundComponent } from './components/search-playground/search-playground.component';
 import { SliderComponent } from './components/slider/slider.component';
+import { HazardLegendComponent } from './components/hazard-legend/hazard-legend.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SliderComponent } from './components/slider/slider.component';
     MapPlaygroundComponent,
     SearchPlaygroundComponent,
     SliderComponent,
+    HazardLegendComponent,
   ],
   imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
 })
