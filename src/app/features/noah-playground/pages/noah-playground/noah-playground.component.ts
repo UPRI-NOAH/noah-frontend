@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlaygroundService } from '@features/playground/services/playground.service';
+import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -15,6 +16,8 @@ export class NoahPlaygroundComponent implements OnInit {
   isMenu: boolean = true;
 
   isOpenedList: boolean = true;
+
+  hazardTypes = HAZARDS;
 
   constructor(private playgroundService: PlaygroundService) {}
 
