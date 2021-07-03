@@ -1,0 +1,41 @@
+<div class="px-6">
+  <div class="flex flex-col">
+    <div class="text-lg f-f-r mb-2">Legend</div>
+    <div class="flex items-center mb-1" *ngFor="let level of levels">
+      <label class="inline-flex items-center">
+        <div
+          class="h-6 w-6 mx-auto rounded-md"
+          ngClass="bg-{{ selectedColor }}-{{ level }}"
+        ></div>
+      </label>
+      <div class="flex flex-col ml-3">
+        <div class="text-m leading-none capitalize">{{ level }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col mt-3">
+    <div class="text-sm uppercase f-f-r mb-1">Choose Color</div>
+    <div class="flex items-center">
+      <div
+        class="
+          grid
+          gap-1
+          grid-cols-3
+          sm:grid-cols-6
+          md:grid-cols-6
+          lg:grid-cols-6
+        "
+      >
+        <div *ngFor="let noahColor of noahColors">
+          <button
+            class="h-6 w-6 mx-auto rounded-md"
+            ngClass="bg-{{ noahColor }}-high"
+            (click)="selectedColor = noahColor"
+            role="button"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

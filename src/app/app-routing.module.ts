@@ -15,6 +15,13 @@ const routes: Routes = [
       ).then((m) => m.PersonalizedRiskAssessmentModule),
   },
   {
+    path: 'know-your-hazards',
+    loadChildren: () =>
+      import('@features/know-your-hazards/know-your-hazards.module').then(
+        (m) => m.KnowYourHazardsModule
+      ),
+  },
+  {
     path: 'playground',
     loadChildren: () =>
       import('@features/playground/playground.module').then(
@@ -25,6 +32,13 @@ const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('@features/home/home.module').then((m) => m.HomeModule),
+  },
+  {
+    path: 'noah-playground',
+    loadChildren: () =>
+      import('@features/noah-playground/noah-playground.module').then(
+        (m) => m.NoahPlaygroundModule
+      ),
   },
   {
     path: '**',

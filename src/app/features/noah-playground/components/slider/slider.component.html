@@ -1,0 +1,26 @@
+<div class="px-6">
+  <div class="flex items-center pb-2">
+    <div class="text-m f-f-r">{{ label }}</div>
+  </div>
+  <div class="flex">
+    <div class="w-10/12">
+      <input
+        class="w-full"
+        type="range"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [value]="initialValue"
+        [formControl]="sliderCtrl"
+      />
+
+      <div class="flex justify-between text-xs text-gray-600 mx-1">
+        <span class="w-8 text-left">{{ min }}</span>
+        <span class="w-8 text-right">{{ max }}</span>
+      </div>
+    </div>
+    <div class="pl-2 w-2/12">
+      {{ sliderCtrl.value }}
+    </div>
+  </div>
+</div>
