@@ -9,11 +9,17 @@ import {
   ExaggerationState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NoahPlaygroundService {
+  get exagerration$(): Observable<ExaggerationState> {
+    return this.store.state$.pipe(map((state) => state.exaggeration));
+  }
+
   constructor(private store: NoahPlaygroundStore) {}
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
