@@ -82,7 +82,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   flood: {
     shown: true,
-    expanded: false,
+    expanded: true,
     levels: {
       'flood-return-period-5': {
         opacity: 100,

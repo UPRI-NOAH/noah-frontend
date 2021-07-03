@@ -76,24 +76,37 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       h.levels.forEach((l) => {
         this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
+        console.log(h.type, l.id);
         // opacity
         this.pgService
           .getHazardLevel$(h.type, l.id)
-          .pipe(takeUntil(this._unsub), distinctUntilChanged())
-          .subscribe(
-            (level) => {}
-            // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
+          .pipe(
+            takeUntil(this._unsub),
+            distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(l.id, 'fill-opacity', level.opacity / 100)
           );
 
         // shown
-        // this.pgService.getHazardLevel$(h.type, l.id)
-        //   .pipe(
-        //     takeUntil(this._unsub),
-        //     distinctUntilChanged(),
-        //   )
-        //   .subscribe((level) => {}
-        //     // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
-        //   );
+        this.pgService
+          .getHazardLevel$(h.type, l.id)
+          .pipe(
+            takeUntil(this._unsub),
+            distinctUntilChanged((x, y) => x.shown !== y.shown)
+          )
+          .subscribe((level) => {
+            if (level.shown) {
+              this.map.setPaintProperty(
+                l.id,
+                'fill-opacity',
+                level.opacity / 100
+              );
+              return;
+            }
+
+            this.map.setPaintProperty(l.id, 'fill-opacity', 0);
+          });
 
         // color
         // this.pgService.getHazardLevel$(h.type, l.id)
