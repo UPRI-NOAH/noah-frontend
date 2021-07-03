@@ -5,9 +5,9 @@ import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
-import { getHazardLayer } from '@shared/mocks/flood';
+import { getHazardColor, getHazardLayer } from '@shared/mocks/flood';
 
 @Component({
   selector: 'noah-map-playground',
@@ -109,14 +109,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
 
         // color
-        // this.pgService.getHazardLevel$(h.type, l.id)
-        //   .pipe(
-        //     takeUntil(this._unsub),
-        //     distinctUntilChanged(),
-        //   )
-        //   .subscribe((level) => {}
-        //     // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
-        //   );
+        this.pgService
+          .getHazardLevel$(h.type, l.id)
+          .pipe(
+            takeUntil(this._unsub),
+            tap((c) => console.log(c)),
+            distinctUntilChanged((x, y) => x.color !== y.color)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(
+              l.id,
+              'fill-color',
+              getHazardColor(h.type, level.color)
+            )
+          );
       });
     });
   }

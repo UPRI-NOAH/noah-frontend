@@ -1,4 +1,4 @@
-import { FillLayer } from 'mapbox-gl';
+import { Expression, FillLayer, FillPaint } from 'mapbox-gl';
 import { NoahColor, NOAH_COLORS } from './noah-colors';
 
 export const LEYTE_FLOOD: FillLayer = {
@@ -114,20 +114,24 @@ export const getHazardLayer = (
   },
   'source-layer': sourceLayer,
   paint: {
-    'fill-color': [
-      'interpolate',
-      ['linear'],
-      ['get', HAZARD_VARIABLES[type]],
-      1,
-      NOAH_COLORS[color].low,
-      2,
-      NOAH_COLORS[color].medium,
-      3,
-      NOAH_COLORS[color].high,
-    ],
+    'fill-color': getHazardColor(type, color),
     'fill-opacity': 0.75,
   },
 });
+
+export const getHazardColor = (type: string, color: NoahColor): Expression => {
+  return [
+    'interpolate',
+    ['linear'],
+    ['get', HAZARD_VARIABLES[type]],
+    1,
+    NOAH_COLORS[color].low,
+    2,
+    NOAH_COLORS[color].medium,
+    3,
+    NOAH_COLORS[color].high,
+  ] as Expression;
+};
 
 const HAZARD_VARIABLES = {
   flood: 'Var',
