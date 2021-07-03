@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,7 +17,8 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   @Input() name: string;
   @Input() type: HazardType;
 
-  initialValue: number = 75;
+  initialColorValue: NoahColor = 'noah-red';
+  initialOpacityValue: number = 75;
   shownCtrl: FormControl;
 
   private _unsub = new Subject();
@@ -24,7 +26,8 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.initialValue = this.pgService.getOpacity(this.type, this.id);
+    this.initialColorValue = this.pgService.getColor(this.type, this.id);
+    this.initialOpacityValue = this.pgService.getOpacity(this.type, this.id);
 
     this.shownCtrl = new FormControl(false);
     this.shownCtrl.valueChanges
@@ -35,6 +38,10 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  changeColor(color: NoahColor) {
+    this.pgService.setColor(color, this.type, this.id);
   }
 
   changeOpacity(opacity: number) {

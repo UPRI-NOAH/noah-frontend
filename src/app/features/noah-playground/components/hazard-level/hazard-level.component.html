@@ -15,12 +15,15 @@
   <div class="pt-4">
     <noah-slider
       label="Opacity"
-      [initialValue]="initialValue"
+      [initialValue]="initialOpacityValue"
       (valueChange)="changeOpacity($event)"
     ></noah-slider>
   </div>
 
   <div class="pt-4">
-    <noah-hazard-legend></noah-hazard-legend>
+    <noah-hazard-legend
+      [selectedColor]="initialColorValue"
+      (valueChange)="changeColor($event)"
+    ></noah-hazard-legend>
   </div>
 </div>

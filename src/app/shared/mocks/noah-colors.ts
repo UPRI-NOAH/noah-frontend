@@ -31,7 +31,9 @@ export const NOAH_COLORS = {
   },
 };
 
-export const NOAH_COLORS_ARRAY: string[] = [...Object.keys(NOAH_COLORS)];
+export const NOAH_COLORS_ARRAY: NoahColor[] = [
+  ...Object.keys(NOAH_COLORS).map((c) => c as NoahColor),
+];
 // To investigate why this works and direct `as const` doesn't
 // const constNoahColors = [...NOAH_COLORS_ARRAY] as const;
 // export type NoahColor = typeof constNoahColors[];

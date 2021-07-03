@@ -29,12 +29,17 @@ import {
   HazardLevel,
 } from '../store/noah-playground.store';
 import { LngLatLike } from 'mapbox-gl';
+import { NoahColor } from '@shared/mocks/noah-colors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NoahPlaygroundService {
   constructor(private store: NoahPlaygroundStore) {}
+
+  getColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
+    return this.store.state[hazardType].levels[hazardLevel].color;
+  }
 
   getHazard$(
     hazardType: HazardType
@@ -60,6 +65,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { [hazardType]: hazard },
       `opacity ${opacity}, ${hazardType}, ${hazardLevel}`
+    );
+  }
+
+  setColor(
+    color: NoahColor,
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): void {
+    const hazard: FloodState | LandslideState | StormSurgeState = {
+      ...this.store.state[hazardType],
+    };
+    hazard.levels[hazardLevel].color = color;
+    this.store.patch(
+      { [hazardType]: hazard },
+      `color ${color}, ${hazardType}, ${hazardLevel}`
     );
   }
 }
