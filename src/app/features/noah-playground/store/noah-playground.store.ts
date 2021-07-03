@@ -82,7 +82,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   flood: {
     shown: true,
-    expanded: true,
+    expanded: false,
     levels: {
       'flood-return-period-5': {
         opacity: 100,
@@ -103,7 +103,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   landslide: {
     shown: true,
-    expanded: true,
+    expanded: false,
     levels: {
       'landslide-hazard': {
         opacity: 100,
@@ -124,7 +124,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   'storm-surge': {
     shown: true,
-    expanded: true,
+    expanded: false,
     levels: {
       'storm-surge-advisory-1': {
         opacity: 100,
