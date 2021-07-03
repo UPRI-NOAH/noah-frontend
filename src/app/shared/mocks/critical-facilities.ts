@@ -1,5 +1,12 @@
 import { LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
 
+export const CRITICAL_FACILITIES_ARR = [
+  'police-station',
+  'fire-station',
+  'hospital',
+  'school',
+] as const;
+
 export type SampleMarker = {
   coords: LngLatLike;
   name: string;

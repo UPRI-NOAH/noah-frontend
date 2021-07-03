@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
 
 @Component({
   selector: 'noah-critical-facilities-playground',
@@ -7,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CriticalFacilitiesPlaygroundComponent implements OnInit {
   isOpenedList;
+
+  facilityList = CRITICAL_FACILITIES_ARR;
+
   openMenu(source) {
     this.isOpenedList = source;
   }

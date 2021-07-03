@@ -1,5 +1,14 @@
 <div
-  class="flex flex-col p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-2xl mt-6"
+  class="
+    flex flex-col
+    p-5
+    w-full
+    bg-sidebar
+    shadow-md
+    hover:shodow-lg
+    rounded-2xl
+    mt-6
+  "
 >
   <div class="flex items-center justify-between">
     <div class="flex items-center">
@@ -12,7 +21,15 @@
     </div>
     <div class="cursor-pointer">
       <button
-        class="w-6 h-6 focus:outline-none flex items-center justify-center rounded-full"
+        class="
+          w-6
+          h-6
+          focus:outline-none
+          flex
+          items-center
+          justify-center
+          rounded-full
+        "
       >
         <svg
           (click)="openMenu(5)"
@@ -47,195 +64,14 @@
     <hr class="pb-4" />
     <div class="pl-6">
       <div class="items-center">
-        <!-- HOSPITALS -->
-        <div class="text-m f-f-r py-2 pl-4">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">Hospitals</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <img src="assets/map-sprites/hospital.png" />
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Hospitals</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- HOSPITALS -->
+        <!-- CRITICAL FACILITY START -->
+        <noah-facility
+          *ngFor="let facility of facilityList"
+          [name]="facility"
+        ></noah-facility>
+        <!-- CRITICAL FACILITY END -->
         <hr class="p-2" />
       </div>
-      <!-- SCHOOL -->
-      <div class="items-center py-2 pl-4">
-        <div class="text-m f-f-r">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">Schools</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <img src="assets/map-sprites/school.png" />
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Schools</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- SCHOOL -->
-      <hr class="p-2" />
-      <!-- POLICE STATIONS -->
-      <div class="items-center py-2 pl-4">
-        <div class="text-m f-f-r">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">Police Stations</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <img
-                    src="assets/map-sprites/police-station.png"
-                    class="w-8 object-cover"
-                  />
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Police Stations</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- POLICE STATIONS -->
-
-      <hr class="p-2" />
-      <!-- FIRE STATIONS -->
-      <div class="items-center pl-4">
-        <div class="text-m f-f-r">
-          <div class="flex items-center">
-            <label class="inline-flex items-center checkbox">
-              <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
-            </label>
-            <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r">Fire Stations</div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r">Opacity</div>
-              <div class="flex items-center">
-                <input
-                  id="width"
-                  type="range"
-                  value="0"
-                  min="0"
-                  max="1"
-                  (change)="getSliderValue($event)"
-                  (oninput)="getSliderValue($event)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center pt-4">
-            <div class="flex flex-col ml-8">
-              <div class="text-lg f-f-r mb-2">Legend</div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <img
-                    src="assets/map-sprites/fire-station.png"
-                    class="w-8 object-cover"
-                  />
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none">Fire Stations</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- FIRE STATIONS -->
     </div>
   </div>
 </div>
