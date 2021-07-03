@@ -23,7 +23,7 @@ export type StormSurgeAdvisory =
 export type LandslideHazards =
   | 'landslide-hazard'
   | 'alluvial-fan-hazard'
-  | 'debris-flow'
+  // | 'debris-flow'
   | 'unstable-slopes-maps';
 
 export type CriticalFacilityLayer =
@@ -55,20 +55,30 @@ export type StormSurgeState = HazardState & {
   levels: Record<StormSurgeAdvisory, HazardLevelState>;
 };
 
+export type TerrainState = {
+  shown: boolean;
+  expanded: boolean;
+  exaggeration: number;
+};
+
 type HazardLevelState = {
   opacity: number;
   color: NoahColor;
 };
 
 type NoahPlaygroundState = {
-  // terrain: {
-  //   shown: boolean,
-  //   expanded: boolean,
-  // },
+  terrain: TerrainState;
   flood: FloodState;
+  landslide: LandslideState;
+  'storm-surge': StormSurgeState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
+  terrain: {
+    shown: true,
+    expanded: true,
+    exaggeration: 2.8,
+  },
   flood: {
     shown: true,
     expanded: true,
@@ -82,6 +92,46 @@ const createInitialValue = (): NoahPlaygroundState => ({
         color: 'noah-red',
       },
       'flood-return-period-100': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+    },
+  },
+  landslide: {
+    shown: true,
+    expanded: true,
+    levels: {
+      'landslide-hazard': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'alluvial-fan-hazard': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'unstable-slopes-maps': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+    },
+  },
+  'storm-surge': {
+    shown: true,
+    expanded: true,
+    levels: {
+      'storm-surge-advisory-1': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'storm-surge-advisory-2': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'storm-surge-advisory-3': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'storm-surge-advisory-4': {
         opacity: 100,
         color: 'noah-red',
       },

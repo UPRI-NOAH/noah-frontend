@@ -69,14 +69,14 @@ export const HAZARDS = [
     type: 'flood' as HazardType,
     levels: FLOOD_HAZARD_LEVELS,
   },
-  // {
-  //   name: 'Landslide Hazard',
-  //   type: 'landslide' as HazardType,
-  //   levels: LANDSLIDE_HAZARD_TYPES,
-  // },
-  // {
-  //   name: 'Storm Surge Hazard',
-  //   type: 'storm-surge' as HazardType,
-  //   levels: STORM_SURGE_HAZARD_LEVELS,
-  // },
+  {
+    name: 'Landslide Hazard',
+    type: 'landslide' as HazardType,
+    levels: LANDSLIDE_HAZARD_TYPES,
+  },
+  {
+    name: 'Storm Surge Hazard',
+    type: 'storm-surge' as HazardType,
+    levels: STORM_SURGE_HAZARD_LEVELS,
+  },
 ];
