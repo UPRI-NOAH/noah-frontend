@@ -1,27 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-  LEYTE_FLOOD_5,
-  LEYTE_FLOOD_25,
-  LEYTE_FLOOD_100,
-} from '@shared/mocks/flood';
-import {
-  LEYTE_STORM_SURGE_ADVISORY_1,
-  LEYTE_STORM_SURGE_ADVISORY_2,
-  LEYTE_STORM_SURGE_ADVISORY_3,
-  LEYTE_STORM_SURGE_ADVISORY_4,
-} from '@shared/mocks/storm-surges';
-import {
-  LEYTE_PROVINCE_LANDSLIDE,
-  LEYTE_PROVINCE_ALLUVIAL,
-  LEYTE_PROVINCE_UNSTABLE_SLOPES,
-} from '@shared/mocks/landslide';
-import { from, Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
-import {
-  FloodReturnPeriod,
   NoahPlaygroundStore,
-  StormSurgeAdvisory,
-  LandslideHazards,
   HazardType,
   FloodState,
   StormSurgeState,
@@ -29,7 +8,6 @@ import {
   HazardLevel,
   ExaggerationState,
 } from '../store/noah-playground.store';
-import { LngLatLike } from 'mapbox-gl';
 import { NoahColor } from '@shared/mocks/noah-colors';
 
 @Injectable({
@@ -54,6 +32,13 @@ export class NoahPlaygroundService {
 
   getHazardOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
     return this.store.state[hazardType].levels[hazardLevel].opacity;
+  }
+
+  getHazardLevelShown(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): boolean {
+    return this.store.state[hazardType].levels[hazardLevel].shown;
   }
 
   setHazardOpacity(
@@ -110,6 +95,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { [hazardType]: hazardState },
       `shown ${hazardState.shown}, ${hazardType}`
+    );
+  }
+
+  setHazardLevelShown(
+    shown: boolean,
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ) {
+    const hazard: FloodState | LandslideState | StormSurgeState = {
+      ...this.store.state[hazardType],
+    };
+    hazard.levels[hazardLevel].shown = shown;
+    this.store.patch(
+      { [hazardType]: hazard },
+      `shown ${shown}, ${hazardType}, ${hazardLevel}`
     );
   }
 }

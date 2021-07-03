@@ -64,6 +64,7 @@ export type ExaggerationState = {
 type HazardLevelState = {
   opacity: number;
   color: NoahColor;
+  shown: boolean;
 };
 
 type NoahPlaygroundState = {
@@ -86,14 +87,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'flood-return-period-5': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'flood-return-period-25': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'flood-return-period-100': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
     },
   },
@@ -104,14 +108,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'landslide-hazard': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'alluvial-fan-hazard': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'unstable-slopes-maps': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
     },
   },
@@ -122,18 +129,22 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'storm-surge-advisory-1': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'storm-surge-advisory-2': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'storm-surge-advisory-3': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
       'storm-surge-advisory-4': {
         opacity: 100,
         color: 'noah-red',
+        shown: false,
       },
     },
   },
