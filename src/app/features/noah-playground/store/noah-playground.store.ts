@@ -55,10 +55,10 @@ export type StormSurgeState = HazardState & {
   levels: Record<StormSurgeAdvisory, HazardLevelState>;
 };
 
-export type TerrainState = {
+export type ExaggerationState = {
   shown: boolean;
   expanded: boolean;
-  exaggeration: number;
+  level: number;
 };
 
 type HazardLevelState = {
@@ -67,17 +67,17 @@ type HazardLevelState = {
 };
 
 type NoahPlaygroundState = {
-  terrain: TerrainState;
+  exaggeration: ExaggerationState;
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
-  terrain: {
+  exaggeration: {
     shown: true,
     expanded: true,
-    exaggeration: 2.8,
+    level: 2.8,
   },
   flood: {
     shown: true,
