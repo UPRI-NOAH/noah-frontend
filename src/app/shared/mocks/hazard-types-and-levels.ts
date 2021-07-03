@@ -19,38 +19,38 @@ export const FLOOD_100RRP = {
 
 // LANDSLIDE
 export const LANDSLIDE = {
-  id: 'landslide-hazard',
+  id: 'landslide-hazard' as HazardLevel,
   name: 'Landslides',
 };
 
 export const ALLUVIAL_FAN = {
-  id: 'alluvial-fan-hazard',
+  id: 'alluvial-fan-hazard' as HazardLevel,
   name: 'Alluvial Fan',
 };
 
 export const UNSTABLE_SLOPES = {
-  id: 'unstable-slopes-maps',
+  id: 'unstable-slopes-maps' as HazardLevel,
   name: 'Unstable Slopes',
 };
 
 // STORM SURGE
 export const SSA1 = {
-  id: 'storm-surge-advisory-1',
+  id: 'storm-surge-advisory-1' as HazardLevel,
   name: 'Storm Surge Advisory 1',
 };
 
 export const SSA2 = {
-  id: 'storm-surge-advisory-2',
+  id: 'storm-surge-advisory-2' as HazardLevel,
   name: 'Storm Surge Advisory 2',
 };
 
 export const SSA3 = {
-  id: 'storm-surge-advisory-3',
+  id: 'storm-surge-advisory-3' as HazardLevel,
   name: 'Storm Surge Advisory 3',
 };
 
 export const SSA4 = {
-  id: 'storm-surge-advisory-4',
+  id: 'storm-surge-advisory-4' as HazardLevel,
   name: 'Storm Surge Advisory 4',
 };
 

@@ -46,15 +46,13 @@ export class NoahPlaygroundService {
     return this.store.state.exaggeration;
   }
 
-  getHazard$(
+  getHazard(
     hazardType: HazardType
-  ): Observable<FloodState | StormSurgeState | LandslideState> {
-    return this.store.state$.pipe(pluck(hazardType));
+  ): FloodState | StormSurgeState | LandslideState {
+    return this.store.state[hazardType];
   }
 
   getHazardOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
-    console.log(hazardType);
-    // return this.store.state$.pipe(map(state => state[hazardType].levels[hazardLevel].opacity));
     return this.store.state[hazardType].levels[hazardLevel].opacity;
   }
 
@@ -92,6 +90,26 @@ export class NoahPlaygroundService {
     this.store.patch(
       { exaggeration },
       'updated 3D Terrain - Exaggeration level'
+    );
+  }
+
+  setHazardExpansion(
+    hazardType: HazardType,
+    hazardState: FloodState | LandslideState | StormSurgeState
+  ) {
+    this.store.patch(
+      { [hazardType]: hazardState },
+      `expanded ${hazardState.expanded}, ${hazardType}`
+    );
+  }
+
+  setHazardShown(
+    hazardType: HazardType,
+    hazardState: FloodState | LandslideState | StormSurgeState
+  ) {
+    this.store.patch(
+      { [hazardType]: hazardState },
+      `shown ${hazardState.shown}, ${hazardType}`
     );
   }
 }
