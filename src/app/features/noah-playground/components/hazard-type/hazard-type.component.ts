@@ -1,4 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import {
+  FloodState,
+  HazardType,
+  LandslideState,
+  StormSurgeState,
+} from '@features/noah-playground/store/noah-playground.store';
+import { Observable } from 'rxjs';
 
 // type HazardType = 'flood' | 'landslide' | 'storm-surge';
 type HazardLevel = {
@@ -8,7 +16,7 @@ type HazardLevel = {
 
 type Hazard = {
   name: string;
-  type: string; // TO DO: turn to HazardType
+  type: HazardType;
   levels: HazardLevel[];
 };
 
@@ -21,10 +29,13 @@ export class HazardTypeComponent implements OnInit {
   @Input() hazard: Hazard;
 
   isOpenedList: boolean = true;
+  hazard$: Observable<FloodState | StormSurgeState | LandslideState>;
 
-  constructor() {}
+  constructor(private pgService: NoahPlaygroundService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.hazard$ = this.pgService.getHazard$(this.hazard.type);
+  }
 
   openMenu() {
     this.isOpenedList = true;

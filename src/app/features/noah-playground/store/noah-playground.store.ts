@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
+import { NoahColor } from '@shared/mocks/noah-colors';
 
 export const PH_DEFAULT_CENTER = {
   lat: 11.968179,
   lng: 121.918612,
 };
+
+export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -29,22 +32,61 @@ export type CriticalFacilityLayer =
   | 'leyte_firestation'
   | 'leyte_police';
 
+export type HazardLevel =
+  | FloodReturnPeriod
+  | StormSurgeAdvisory
+  | LandslideHazards
+  | CriticalFacilityLayer;
+
+type HazardState = {
+  shown: boolean;
+  expanded: boolean;
+};
+
+export type FloodState = HazardState & {
+  levels: Record<FloodReturnPeriod, HazardLevelState>;
+};
+
+export type LandslideState = HazardState & {
+  levels: Record<LandslideHazards, HazardLevelState>;
+};
+
+export type StormSurgeState = HazardState & {
+  levels: Record<StormSurgeAdvisory, HazardLevelState>;
+};
+
+type HazardLevelState = {
+  opacity: number;
+  color: NoahColor;
+};
+
 type NoahPlaygroundState = {
-  currentFloodReturnPeriod: FloodReturnPeriod;
-  currentStormSurgeAdvisory: StormSurgeAdvisory;
-  currentLandslideHazards: LandslideHazards;
-  currentCriticalFacilityLayer: CriticalFacilityLayer;
-  currentLocationPg: string;
-  center: { lng: number; lat: number };
+  // terrain: {
+  //   shown: boolean,
+  //   expanded: boolean,
+  // },
+  flood: FloodState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
-  currentFloodReturnPeriod: 'flood-return-period-5',
-  currentStormSurgeAdvisory: 'storm-surge-advisory-1',
-  currentLandslideHazards: 'landslide-hazard',
-  currentCriticalFacilityLayer: 'leyte_schools',
-  currentLocationPg: '-------',
-  center: PH_DEFAULT_CENTER,
+  flood: {
+    shown: true,
+    expanded: true,
+    levels: {
+      'flood-return-period-5': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'flood-return-period-25': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+      'flood-return-period-100': {
+        opacity: 100,
+        color: 'noah-red',
+      },
+    },
+  },
 });
 
 @Injectable({

@@ -1,16 +1,19 @@
+import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
+import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+
 // FLOOD
 export const FLOOD_5RRP = {
-  id: 'flood-return-period-5',
+  id: 'flood-return-period-5' as HazardLevel,
   name: '5-Year Return Period',
 };
 
 export const FLOOD_25RRP = {
-  id: 'flood-return-period-25',
+  id: 'flood-return-period-25' as HazardLevel,
   name: '25-Year Return Period',
 };
 
 export const FLOOD_100RRP = {
-  id: 'flood-return-period-100',
+  id: 'flood-return-period-100' as HazardLevel,
   name: '100-Year Return Period',
 };
 
@@ -63,17 +66,17 @@ export const STORM_SURGE_HAZARD_LEVELS = [SSA1, SSA2, SSA3, SSA4];
 export const HAZARDS = [
   {
     name: 'Flood Hazard',
-    type: 'flood',
+    type: 'flood' as HazardType,
     levels: FLOOD_HAZARD_LEVELS,
   },
-  {
-    name: 'Landslide Hazard',
-    type: 'landslide',
-    levels: LANDSLIDE_HAZARD_TYPES,
-  },
-  {
-    name: 'Storm Surge Hazard',
-    type: 'storm-surge',
-    levels: STORM_SURGE_HAZARD_LEVELS,
-  },
+  // {
+  //   name: 'Landslide Hazard',
+  //   type: 'landslide' as HazardType,
+  //   levels: LANDSLIDE_HAZARD_TYPES,
+  // },
+  // {
+  //   name: 'Storm Surge Hazard',
+  //   type: 'storm-surge' as HazardType,
+  //   levels: STORM_SURGE_HAZARD_LEVELS,
+  // },
 ];

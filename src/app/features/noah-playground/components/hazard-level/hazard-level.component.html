@@ -13,7 +13,11 @@
   </div>
 
   <div class="pt-4">
-    <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
+    <noah-slider
+      label="Opacity"
+      [initialValue]="initialValue"
+      (valueChange)="changeOpacity($event)"
+    ></noah-slider>
   </div>
 
   <div class="pt-4">

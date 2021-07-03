@@ -66,6 +66,7 @@
       <noah-hazard-level
         *ngFor="let level of hazard.levels"
         [id]="level.id"
+        [type]="hazard.type"
         [name]="level.name"
       ></noah-hazard-level>
     </div>

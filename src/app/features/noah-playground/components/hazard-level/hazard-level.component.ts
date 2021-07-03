@@ -1,6 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
+import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -9,16 +12,20 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./hazard-level.component.scss'],
 })
 export class HazardLevelComponent implements OnInit, OnDestroy {
-  @Input() id: string;
+  @Input() id: HazardLevel;
   @Input() name: string;
+  @Input() type: HazardType;
 
+  initialValue: number = 75;
   shownCtrl: FormControl;
 
   private _unsub = new Subject();
 
-  constructor() {}
+  constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
+    this.initialValue = this.pgService.getOpacity(this.type, this.id);
+
     this.shownCtrl = new FormControl(false);
     this.shownCtrl.valueChanges
       .pipe(takeUntil(this._unsub))
@@ -28,5 +35,9 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  changeOpacity(opacity: number) {
+    this.pgService.setOpacity(opacity, this.type, this.id);
   }
 }

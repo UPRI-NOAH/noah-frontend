@@ -16,12 +16,17 @@ import {
   LEYTE_PROVINCE_UNSTABLE_SLOPES,
 } from '@shared/mocks/landslide';
 import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import {
   FloodReturnPeriod,
   NoahPlaygroundStore,
   StormSurgeAdvisory,
   LandslideHazards,
+  HazardType,
+  FloodState,
+  StormSurgeState,
+  LandslideState,
+  HazardLevel,
 } from '../store/noah-playground.store';
 import { LngLatLike } from 'mapbox-gl';
 
@@ -29,139 +34,32 @@ import { LngLatLike } from 'mapbox-gl';
   providedIn: 'root',
 })
 export class NoahPlaygroundService {
-  constructor(private NoahPlaygroundStore: NoahPlaygroundStore) {}
+  constructor(private store: NoahPlaygroundStore) {}
 
-  get center(): LngLatLike {
-    return this.NoahPlaygroundStore.state.center;
+  getHazard$(
+    hazardType: HazardType
+  ): Observable<FloodState | StormSurgeState | LandslideState> {
+    return this.store.state$.pipe(pluck(hazardType));
   }
 
-  get center$(): Observable<LngLatLike> {
-    return this.NoahPlaygroundStore.state$.pipe(map((state) => state.center));
+  getOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
+    console.log(hazardType);
+    // return this.store.state$.pipe(map(state => state[hazardType].levels[hazardLevel].opacity));
+    return this.store.state[hazardType].levels[hazardLevel].opacity;
   }
 
-  get floodLayer$(): Observable<string> {
-    return this.currentFloodReturnPeriod$.pipe(
-      map((returnPeriod: FloodReturnPeriod) => {
-        switch (returnPeriod) {
-          case 'flood-return-period-5':
-            return LEYTE_FLOOD_5['source-layer'];
-          case 'flood-return-period-25':
-            return LEYTE_FLOOD_25['source-layer'];
-          case 'flood-return-period-100':
-            return LEYTE_FLOOD_100['source-layer'];
-          default:
-            return LEYTE_FLOOD_5['source-layer'];
-        }
-      })
+  setOpacity(
+    opacity: number,
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): void {
+    const hazard: FloodState | LandslideState | StormSurgeState = {
+      ...this.store.state[hazardType],
+    };
+    hazard.levels[hazardLevel].opacity = opacity;
+    this.store.patch(
+      { [hazardType]: hazard },
+      `opacity ${opacity}, ${hazardType}, ${hazardLevel}`
     );
-  }
-
-  get stormsurgeLayer$(): Observable<string> {
-    return this.currentStormSurgeAdvisory$.pipe(
-      map((stormsurgeAdvisory: StormSurgeAdvisory) => {
-        switch (stormsurgeAdvisory) {
-          case 'storm-surge-advisory-1':
-            return LEYTE_STORM_SURGE_ADVISORY_1['source-layer'];
-          case 'storm-surge-advisory-2':
-            return LEYTE_STORM_SURGE_ADVISORY_2['source-layer'];
-          case 'storm-surge-advisory-3':
-            return LEYTE_STORM_SURGE_ADVISORY_3['source-layer'];
-          case 'storm-surge-advisory-4':
-            return LEYTE_STORM_SURGE_ADVISORY_4['source-layer'];
-          default:
-            return LEYTE_STORM_SURGE_ADVISORY_1['source-layer'];
-        }
-      })
-    );
-  }
-
-  get landslideLayer$(): Observable<string> {
-    return this.currentLandslideHazards$.pipe(
-      map((landslideHazards: LandslideHazards) => {
-        switch (landslideHazards) {
-          case 'landslide-hazard':
-            return LEYTE_PROVINCE_LANDSLIDE['source-layer'];
-          case 'alluvial-fan-hazard':
-            return LEYTE_PROVINCE_ALLUVIAL['source-layer'];
-          case 'unstable-slopes-maps':
-            return LEYTE_PROVINCE_UNSTABLE_SLOPES['source-layer'];
-          default:
-            return LEYTE_PROVINCE_LANDSLIDE['source-layer'];
-        }
-      })
-    );
-  }
-
-  get currentFloodReturnPeriod$(): Observable<FloodReturnPeriod> {
-    return this.NoahPlaygroundStore.state$.pipe(
-      map((state) => state.currentFloodReturnPeriod)
-    );
-  }
-
-  get currentLocationPg$(): Observable<string> {
-    return this.NoahPlaygroundStore.state$.pipe(
-      map((state) => state.currentLocationPg)
-    );
-  }
-
-  get currentStormSurgeAdvisory$(): Observable<StormSurgeAdvisory> {
-    return this.NoahPlaygroundStore.state$.pipe(
-      map((state) => state.currentStormSurgeAdvisory)
-    );
-  }
-
-  get currentLandslideHazards$(): Observable<LandslideHazards> {
-    return this.NoahPlaygroundStore.state$.pipe(
-      map((state) => state.currentLandslideHazards)
-    );
-  }
-
-  get floodReturnPeriods(): FloodReturnPeriod[] {
-    return [
-      'flood-return-period-5',
-      'flood-return-period-25',
-      'flood-return-period-100',
-    ];
-  }
-
-  get stormsurgeAdvisory(): StormSurgeAdvisory[] {
-    return [
-      'storm-surge-advisory-1',
-      'storm-surge-advisory-2',
-      'storm-surge-advisory-3',
-      'storm-surge-advisory-4',
-    ];
-  }
-
-  get landslideHazards(): LandslideHazards[] {
-    return [
-      'landslide-hazard',
-      'alluvial-fan-hazard',
-      'debris-flow',
-      'unstable-slopes-maps',
-    ];
-  }
-
-  setCenter(center: { lat: number; lng: number }) {
-    this.NoahPlaygroundStore.patch({ center });
-  }
-
-  setCurrentFloodReturnPeriod(currentFloodReturnPeriod: FloodReturnPeriod) {
-    this.NoahPlaygroundStore.patch({ currentFloodReturnPeriod });
-  }
-
-  setCurrentLocationPg(currentLocationPg: string): void {
-    this.NoahPlaygroundStore.patch(
-      { currentLocationPg },
-      'Update Current Location'
-    );
-  }
-
-  setCurrentStormSurgeAdvisory(currentStormSurgeAdvisory: StormSurgeAdvisory) {
-    this.NoahPlaygroundStore.patch({ currentStormSurgeAdvisory });
-  }
-
-  setCurrentLandslideHazards(currentLandslideHazards: LandslideHazards) {
-    this.NoahPlaygroundStore.patch({ currentLandslideHazards });
   }
 }
