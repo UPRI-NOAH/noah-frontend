@@ -11,16 +11,14 @@ export class CriticalFacilitiesPlaygroundComponent implements OnInit {
 
   facilityList = CRITICAL_FACILITIES_ARR;
 
+  constructor() {}
+
+  ngOnInit(): void {}
+
   openMenu(source) {
     this.isOpenedList = source;
   }
   closeMenu() {
     this.isOpenedList = -1;
   }
-  getSliderValue(event) {
-    console.log(event.target.value);
-  }
-  constructor() {}
-
-  ngOnInit(): void {}
 }
