@@ -13,7 +13,5 @@ export class HazardLegendComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.noahColors);
-  }
+  ngOnInit(): void {}
 }
