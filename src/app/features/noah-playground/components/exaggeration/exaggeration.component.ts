@@ -8,8 +8,19 @@ import { ExaggerationState } from '@features/noah-playground/store/noah-playgrou
   styleUrls: ['./exaggeration.component.scss'],
 })
 export class ExaggerationComponent implements OnInit {
-  isOpenedList: boolean = true;
   exaggeration: ExaggerationState;
+
+  get expanded(): boolean {
+    return this.exaggeration.expanded;
+  }
+
+  get level(): number {
+    return this.exaggeration.level;
+  }
+
+  get shown(): boolean {
+    return this.exaggeration.shown;
+  }
 
   constructor(private pgService: NoahPlaygroundService) {}
 
@@ -17,17 +28,6 @@ export class ExaggerationComponent implements OnInit {
     // The only time we get the value from the state directly is when we're
     // initializing the value
     this.exaggeration = this.pgService.getExaggeration();
-  }
-
-  openMenu() {
-    this.isOpenedList = true;
-
-    this.exaggeration = {
-      ...this.exaggeration,
-      expanded: this.isOpenedList,
-    };
-
-    this.pgService.setExaggeration(this.exaggeration);
   }
 
   changeExaggerationLevel(level: number) {
@@ -40,11 +40,28 @@ export class ExaggerationComponent implements OnInit {
   }
 
   closeMenu() {
-    this.isOpenedList = false;
-
     this.exaggeration = {
       ...this.exaggeration,
-      expanded: this.isOpenedList,
+      expanded: false,
+    };
+
+    this.pgService.setExaggeration(this.exaggeration);
+  }
+
+  openMenu() {
+    this.exaggeration = {
+      ...this.exaggeration,
+      expanded: true,
+    };
+
+    this.pgService.setExaggeration(this.exaggeration);
+  }
+
+  toggle() {
+    const shown = !this.shown;
+    this.exaggeration = {
+      ...this.exaggeration,
+      shown,
     };
 
     this.pgService.setExaggeration(this.exaggeration);

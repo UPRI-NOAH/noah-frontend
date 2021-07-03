@@ -13,7 +13,12 @@
   <div class="flex items-center justify-between">
     <div class="flex items-center">
       <label class="inline-flex items-center checkbox">
-        <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+        <input
+          type="checkbox"
+          class="checkbox h-5 w-5 text-blue-600"
+          [value]="shown"
+          (click)="toggle()"
+        />
       </label>
       <div class="flex flex-col ml-3">
         <div class="text-xl leading-none font-bold">3D Terrain</div>
@@ -22,7 +27,7 @@
     <div class="cursor-pointer">
       <button
         (click)="openMenu()"
-        [class.hidden]="isOpenedList"
+        [class.hidden]="expanded"
         class="
           w-6
           h-6
@@ -46,7 +51,7 @@
       </button>
       <button
         (click)="closeMenu()"
-        [class.hidden]="!isOpenedList"
+        [class.hidden]="!expanded"
         class="
           w-6
           h-6
@@ -72,12 +77,12 @@
       </button>
     </div>
   </div>
-  <div [ngClass]="isOpenedList ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="expanded ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
     <div class="pl-6">
       <noah-slider
         label="Exaggeration"
-        [initialValue]="exaggeration.level"
+        [initialValue]="level"
         [min]="0"
         [max]="10"
         [step]="0.1"

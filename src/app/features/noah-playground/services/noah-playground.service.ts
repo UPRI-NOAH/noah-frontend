@@ -89,6 +89,9 @@ export class NoahPlaygroundService {
   }
 
   setExaggeration(exaggeration: ExaggerationState) {
-    this.store.patch({ exaggeration });
+    this.store.patch(
+      { exaggeration },
+      'updated 3D Terrain - Exaggeration level'
+    );
   }
 }
