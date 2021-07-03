@@ -38,7 +38,7 @@ import { NoahColor } from '@shared/mocks/noah-colors';
 export class NoahPlaygroundService {
   constructor(private store: NoahPlaygroundStore) {}
 
-  getColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
+  getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
   }
 
@@ -52,13 +52,13 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(pluck(hazardType));
   }
 
-  getOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
+  getHazardOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
     console.log(hazardType);
     // return this.store.state$.pipe(map(state => state[hazardType].levels[hazardLevel].opacity));
     return this.store.state[hazardType].levels[hazardLevel].opacity;
   }
 
-  setOpacity(
+  setHazardOpacity(
     opacity: number,
     hazardType: HazardType,
     hazardLevel: HazardLevel
@@ -73,7 +73,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  setColor(
+  setHazardColor(
     color: NoahColor,
     hazardType: HazardType,
     hazardLevel: HazardLevel

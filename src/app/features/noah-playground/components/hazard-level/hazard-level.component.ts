@@ -26,8 +26,11 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.initialColorValue = this.pgService.getColor(this.type, this.id);
-    this.initialOpacityValue = this.pgService.getOpacity(this.type, this.id);
+    this.initialColorValue = this.pgService.getHazardColor(this.type, this.id);
+    this.initialOpacityValue = this.pgService.getHazardOpacity(
+      this.type,
+      this.id
+    );
 
     this.shownCtrl = new FormControl(false);
     this.shownCtrl.valueChanges
@@ -41,10 +44,10 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   }
 
   changeColor(color: NoahColor) {
-    this.pgService.setColor(color, this.type, this.id);
+    this.pgService.setHazardColor(color, this.type, this.id);
   }
 
   changeOpacity(opacity: number) {
-    this.pgService.setOpacity(opacity, this.type, this.id);
+    this.pgService.setHazardOpacity(opacity, this.type, this.id);
   }
 }
