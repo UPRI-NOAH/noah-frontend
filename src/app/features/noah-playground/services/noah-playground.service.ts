@@ -7,6 +7,7 @@ import {
   LandslideState,
   HazardLevel,
   ExaggerationState,
+  HazardLevelState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable } from 'rxjs';
@@ -34,6 +35,15 @@ export class NoahPlaygroundService {
     hazardType: HazardType
   ): FloodState | StormSurgeState | LandslideState {
     return this.store.state[hazardType];
+  }
+
+  getHazardLevel$(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): Observable<HazardLevelState> {
+    return this.store.state$.pipe(
+      map((state) => state[hazardType].levels[hazardLevel])
+    );
   }
 
   getHazardLevelOpacity(

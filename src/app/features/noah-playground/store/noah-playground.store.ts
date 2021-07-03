@@ -61,7 +61,7 @@ export type ExaggerationState = {
   level: number;
 };
 
-type HazardLevelState = {
+export type HazardLevelState = {
   opacity: number;
   color: NoahColor;
   shown: boolean;

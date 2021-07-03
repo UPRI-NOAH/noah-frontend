@@ -6,6 +6,8 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
+import { getHazardLayer } from '@shared/mocks/flood';
 
 @Component({
   selector: 'noah-map-playground',
@@ -29,6 +31,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.initExaggeration();
+        this.initHazardLayers();
       });
   }
 
@@ -68,16 +71,54 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
   }
 
+  initHazardLayers() {
+    HAZARDS.forEach((h) => {
+      h.levels.forEach((l) => {
+        this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
+
+        // opacity
+        this.pgService
+          .getHazardLevel$(h.type, l.id)
+          .pipe(takeUntil(this._unsub), distinctUntilChanged())
+          .subscribe(
+            (level) => {}
+            // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
+          );
+
+        // shown
+        // this.pgService.getHazardLevel$(h.type, l.id)
+        //   .pipe(
+        //     takeUntil(this._unsub),
+        //     distinctUntilChanged(),
+        //   )
+        //   .subscribe((level) => {}
+        //     // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
+        //   );
+
+        // color
+        // this.pgService.getHazardLevel$(h.type, l.id)
+        //   .pipe(
+        //     takeUntil(this._unsub),
+        //     distinctUntilChanged(),
+        //   )
+        //   .subscribe((level) => {}
+        //     // this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
+        //   );
+      });
+    });
+  }
+
   initMap() {
     this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      zoom: 5,
+      // zoom: 5,
+      zoom: 10,
       touchZoomRotate: true,
       center: {
-        lat: 11.968179,
-        lng: 121.918612,
+        lat: 10.872407621178079,
+        lng: 124.93480374252101,
       },
     });
   }
