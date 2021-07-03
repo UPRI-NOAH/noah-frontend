@@ -30,7 +30,10 @@ export class NoahPlaygroundService {
     return this.store.state[hazardType];
   }
 
-  getHazardOpacity(hazardType: HazardType, hazardLevel: HazardLevel): number {
+  getHazardLevelOpacity(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): number {
     return this.store.state[hazardType].levels[hazardLevel].opacity;
   }
 
@@ -41,7 +44,7 @@ export class NoahPlaygroundService {
     return this.store.state[hazardType].levels[hazardLevel].shown;
   }
 
-  setHazardOpacity(
+  setHazardLevelOpacity(
     opacity: number,
     hazardType: HazardType,
     hazardLevel: HazardLevel
@@ -56,7 +59,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  setHazardColor(
+  setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
     hazardLevel: HazardLevel
@@ -88,7 +91,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  setHazardShown(
+  setHazardTypeShown(
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {

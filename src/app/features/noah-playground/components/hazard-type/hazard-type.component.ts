@@ -61,6 +61,6 @@ export class HazardTypeComponent implements OnInit {
       shown,
     };
 
-    this.pgService.setHazardShown(this.hazard.type, this.hazardState);
+    this.pgService.setHazardTypeShown(this.hazard.type, this.hazardState);
   }
 }

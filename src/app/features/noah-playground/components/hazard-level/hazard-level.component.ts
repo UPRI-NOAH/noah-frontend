@@ -25,7 +25,7 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initialColorValue = this.pgService.getHazardColor(this.type, this.id);
-    this.initialOpacityValue = this.pgService.getHazardOpacity(
+    this.initialOpacityValue = this.pgService.getHazardLevelOpacity(
       this.type,
       this.id
     );
@@ -39,11 +39,11 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   }
 
   changeColor(color: NoahColor) {
-    this.pgService.setHazardColor(color, this.type, this.id);
+    this.pgService.setHazardTypeColor(color, this.type, this.id);
   }
 
   changeOpacity(opacity: number) {
-    this.pgService.setHazardOpacity(opacity, this.type, this.id);
+    this.pgService.setHazardLevelOpacity(opacity, this.type, this.id);
   }
 
   toggleShown() {
