@@ -77,7 +77,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   exaggeration: {
     shown: true,
     expanded: true,
-    level: 2.8,
+    level: 1.8,
   },
   flood: {
     shown: true,

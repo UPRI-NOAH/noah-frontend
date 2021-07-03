@@ -27,6 +27,7 @@ import {
   StormSurgeState,
   LandslideState,
   HazardLevel,
+  ExaggerationState,
 } from '../store/noah-playground.store';
 import { LngLatLike } from 'mapbox-gl';
 import { NoahColor } from '@shared/mocks/noah-colors';
@@ -39,6 +40,10 @@ export class NoahPlaygroundService {
 
   getColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
+  }
+
+  getExaggeration(): ExaggerationState {
+    return this.store.state.exaggeration;
   }
 
   getHazard$(
@@ -81,5 +86,9 @@ export class NoahPlaygroundService {
       { [hazardType]: hazard },
       `color ${color}, ${hazardType}, ${hazardLevel}`
     );
+  }
+
+  setExaggeration(exaggeration: ExaggerationState) {
+    this.store.patch({ exaggeration });
   }
 }
