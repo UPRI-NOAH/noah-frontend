@@ -12,7 +12,7 @@ import {
   CriticalFacilityTypeState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
-import { Observable } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 
@@ -32,6 +32,14 @@ export class NoahPlaygroundService {
 
   getCriticalFacility(type: CriticalFacility): CriticalFacilityTypeState {
     return this.store.state.criticalFacilities.types[type];
+  }
+
+  getCriticalFacility$(
+    type: CriticalFacility
+  ): Observable<CriticalFacilityTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.criticalFacilities.types[type])
+    );
   }
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {

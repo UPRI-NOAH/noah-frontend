@@ -108,6 +108,9 @@ export const getSymbolLayer = (id: string): SymbolLayer => ({
     url: MAPBOX_CRIT_FAC[id].url,
   },
   'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
+  paint: {
+    'icon-opacity': 1,
+  },
   layout: {
     'icon-image': id,
     'text-anchor': 'top',

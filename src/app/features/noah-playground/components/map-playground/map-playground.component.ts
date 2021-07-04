@@ -158,6 +158,41 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       if (error) throw error;
       _this.map.addImage(name, image);
       _this.map.addLayer(getSymbolLayer(name));
+
+      // opacity
+      this.pgService
+        .getCriticalFacility$(name)
+        .pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+        )
+        .subscribe((facility) =>
+          this.map.setPaintProperty(
+            name,
+            'icon-opacity',
+            facility.opacity / 100
+          )
+        );
+
+      // shown
+      this.pgService
+        .getCriticalFacility$(name)
+        .pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown !== y.shown)
+        )
+        .subscribe((facility) => {
+          if (facility.shown) {
+            this.map.setPaintProperty(
+              name,
+              'icon-opacity',
+              facility.opacity / 100
+            );
+            return;
+          }
+
+          this.map.setPaintProperty(name, 'icon-opacity', 0);
+        });
     });
   }
 }
