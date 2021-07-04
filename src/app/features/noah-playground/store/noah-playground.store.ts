@@ -68,18 +68,22 @@ export type HazardLevelState = {
   shown: boolean;
 };
 
-export type CriticalFacilityTypeState = Record<
-  CriticalFacility,
-  {
-    shown: boolean;
-    opacity: number;
-  }
->;
+export type CriticalFacilityTypeState = {
+  shown: boolean;
+  opacity: number;
+};
+
+export type CriticalFacilityTypesState = {
+  'fire-station': CriticalFacilityTypeState;
+  'police-station': CriticalFacilityTypeState;
+  hospital: CriticalFacilityTypeState;
+  school: CriticalFacilityTypeState;
+};
 
 export type CriticalFacilitiesState = {
   shown: boolean;
   expanded: boolean;
-  types: CriticalFacilityTypeState;
+  types: CriticalFacilityTypesState;
 };
 
 type NoahPlaygroundState = {

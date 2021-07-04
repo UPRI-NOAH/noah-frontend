@@ -1,7 +1,12 @@
 <div class="text-m f-f-r py-2 pl-4">
   <div class="flex items-center">
     <label class="inline-flex items-center checkbox">
-      <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+      <input
+        type="checkbox"
+        class="checkbox h-5 w-5 text-blue-600"
+        [checked]="shown"
+        (click)="toggleShown()"
+      />
     </label>
     <div class="flex flex-col ml-3">
       <div class="text-lg f-f-r">{{ name }}</div>
@@ -9,7 +14,11 @@
   </div>
 
   <div class="flex items-center pt-4">
-    <noah-slider name="Opacity"></noah-slider>
+    <noah-slider
+      name="Opacity"
+      [initialValue]="initialOpacityValue"
+      (valueChange)="changeOpacity($event)"
+    ></noah-slider>
   </div>
 
   <div class="flex items-center pt-4">

@@ -9,10 +9,12 @@ import {
   ExaggerationState,
   HazardLevelState,
   CriticalFacilitiesState,
+  CriticalFacilityTypeState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CriticalFacility } from '@shared/mocks/critical-facilities';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,10 @@ export class NoahPlaygroundService {
 
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
+  }
+
+  getCriticalFacility(type: CriticalFacility): CriticalFacilityTypeState {
+    return this.store.state.criticalFacilities.types[type];
   }
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
@@ -149,6 +155,30 @@ export class NoahPlaygroundService {
     this.store.patch(
       { criticalFacilities },
       `CriticalFacility ${property}, ${value}`
+    );
+  }
+
+  setCriticalFacilityOpacity(value: number, type: CriticalFacility) {
+    const criticalFacilities: CriticalFacilitiesState = {
+      ...this.store.state.criticalFacilities,
+    };
+
+    criticalFacilities.types[type].opacity = value;
+    this.store.patch(
+      { criticalFacilities },
+      `CriticalFacility - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setCriticalFacilityShown(value: boolean, type: CriticalFacility) {
+    const criticalFacilities: CriticalFacilitiesState = {
+      ...this.store.state.criticalFacilities,
+    };
+
+    criticalFacilities.types[type].shown = value;
+    this.store.patch(
+      { criticalFacilities },
+      `CriticalFacility - update ${type}'s shown to ${value}`
     );
   }
 }
