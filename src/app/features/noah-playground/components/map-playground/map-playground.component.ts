@@ -8,6 +8,11 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { getHazardColor, getHazardLayer } from '@shared/mocks/flood';
+import {
+  CriticalFacility,
+  CRITICAL_FACILITIES_ARR,
+  getSymbolLayer,
+} from '@shared/mocks/critical-facilities';
 
 @Component({
   selector: 'noah-map-playground',
@@ -31,6 +36,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.initExaggeration();
+        this.initCriticalFacilityLayers();
         this.initHazardLayers();
       });
   }
@@ -38,6 +44,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  initCriticalFacilityLayers() {
+    CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
   }
 
   initExaggeration() {
@@ -139,6 +149,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         lat: 10.872407621178079,
         lng: 124.93480374252101,
       },
+    });
+  }
+
+  private _loadCriticalFacilityIcon(name: CriticalFacility) {
+    const _this = this;
+    this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
+      if (error) throw error;
+      _this.map.addImage(name, image);
+      _this.map.addLayer(getSymbolLayer(name));
     });
   }
 }

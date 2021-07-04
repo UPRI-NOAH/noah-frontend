@@ -99,3 +99,41 @@ export type CriticalFacilityLayer =
   | 'leyte_hospitals'
   | 'leyte_firestation'
   | 'leyte_police';
+
+export const getSymbolLayer = (id: string): SymbolLayer => ({
+  id,
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: MAPBOX_CRIT_FAC[id].url,
+  },
+  'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
+  layout: {
+    'icon-image': id,
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+});
+
+export const getCriticalFacility = () => {};
+
+export const MAPBOX_CRIT_FAC = {
+  school: {
+    url: 'mapbox://jadurani.ckq7u49zi010o20nrjlynz9jo-5cez5',
+    sourceLayer: 'leyte_schools',
+  },
+  hospital: {
+    url: 'mapbox://jadurani.ckq7ua4aq1yh328qncf078jpv-9xhtt',
+    sourceLayer: 'leyte_hospitals',
+  },
+  'fire-station': {
+    url: 'mapbox://jadurani.ckq7u97310bbw28lg0yxolcv2-1gmiz',
+    sourceLayer: 'leyte_firestation',
+  },
+  'police-station': {
+    url: 'mapbox://jadurani.ckq7uatvk04kq21pqtks7rj3m-0n4tz',
+    sourceLayer: 'leyte_police',
+  },
+};
