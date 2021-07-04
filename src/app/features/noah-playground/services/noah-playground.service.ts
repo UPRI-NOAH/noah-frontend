@@ -8,6 +8,7 @@ import {
   HazardLevel,
   ExaggerationState,
   HazardLevelState,
+  CriticalFacilitiesState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable } from 'rxjs';
@@ -22,6 +23,10 @@ export class NoahPlaygroundService {
   }
 
   constructor(private store: NoahPlaygroundStore) {}
+
+  getCriticalFacilities(): CriticalFacilitiesState {
+    return this.store.state.criticalFacilities;
+  }
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
@@ -129,6 +134,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { [hazardType]: hazard },
       `shown ${shown}, ${hazardType}, ${hazardLevel}`
+    );
+  }
+
+  setCriticalFacilitiesProperty(
+    value: boolean,
+    property: 'expanded' | 'shown'
+  ) {
+    const criticalFacilities: CriticalFacilitiesState = {
+      ...this.store.state.criticalFacilities,
+    };
+
+    criticalFacilities[property] = value;
+    this.store.patch(
+      { criticalFacilities },
+      `CriticalFacility ${property}, ${value}`
     );
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
+import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
 
 export const PH_DEFAULT_CENTER = {
@@ -67,11 +68,26 @@ export type HazardLevelState = {
   shown: boolean;
 };
 
+export type CriticalFacilityTypeState = Record<
+  CriticalFacility,
+  {
+    shown: boolean;
+    opacity: number;
+  }
+>;
+
+export type CriticalFacilitiesState = {
+  shown: boolean;
+  expanded: boolean;
+  types: CriticalFacilityTypeState;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
+  criticalFacilities: CriticalFacilitiesState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -145,6 +161,28 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 100,
         color: 'noah-red',
         shown: false,
+      },
+    },
+  },
+  criticalFacilities: {
+    shown: true,
+    expanded: false,
+    types: {
+      'fire-station': {
+        shown: true,
+        opacity: 100,
+      },
+      'police-station': {
+        shown: true,
+        opacity: 100,
+      },
+      school: {
+        shown: true,
+        opacity: 100,
+      },
+      hospital: {
+        shown: true,
+        opacity: 100,
       },
     },
   },

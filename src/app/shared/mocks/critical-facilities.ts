@@ -7,6 +7,8 @@ export const CRITICAL_FACILITIES_ARR = [
   'school',
 ] as const;
 
+export type CriticalFacility = typeof CRITICAL_FACILITIES_ARR[number];
+
 export type SampleMarker = {
   coords: LngLatLike;
   name: string;

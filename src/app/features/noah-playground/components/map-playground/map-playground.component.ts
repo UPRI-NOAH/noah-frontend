@@ -76,7 +76,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       h.levels.forEach((l) => {
         this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
-        console.log(h.type, l.id);
+        // console.log(h.type, l.id);
         // opacity
         this.pgService
           .getHazardLevel$(h.type, l.id)
