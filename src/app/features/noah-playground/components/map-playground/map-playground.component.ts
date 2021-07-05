@@ -166,13 +166,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           takeUntil(this._unsub),
           distinctUntilChanged((x, y) => x.opacity !== y.opacity)
         )
-        .subscribe((facility) =>
+        .subscribe((facility) => {
           this.map.setPaintProperty(
             name,
             'icon-opacity',
             facility.opacity / 100
-          )
-        );
+          );
+          this.map.setPaintProperty(
+            name,
+            'text-opacity',
+            facility.opacity / 100
+          );
+        });
 
       // shown
       this.pgService
@@ -188,10 +193,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'icon-opacity',
               facility.opacity / 100
             );
+            this.map.setPaintProperty(
+              name,
+              'text-opacity',
+              facility.opacity / 100
+            );
             return;
           }
 
           this.map.setPaintProperty(name, 'icon-opacity', 0);
+          this.map.setPaintProperty(name, 'text-opacity', 0);
         });
     });
   }
