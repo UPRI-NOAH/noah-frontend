@@ -35,6 +35,8 @@ import {
   LEYTE_SCHOOLS,
 } from '@shared/mocks/critical-facilities';
 
+type MapStyle = 'terrain' | 'satellite';
+
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -43,6 +45,7 @@ import {
 export class MapPlaygroundComponent implements OnInit {
   map!: Map;
   pgLocation: string = '';
+  mapStyle: MapStyle = 'terrain';
 
   constructor(
     private mapService: MapService,
@@ -184,10 +187,19 @@ export class MapPlaygroundComponent implements OnInit {
     this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: environment.mapbox.styles.terrain,
+      style: environment.mapbox.styles[this.mapStyle],
       zoom: 5,
       touchZoomRotate: true,
       center: this.playgroundService.center,
     });
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+    }
   }
 }
