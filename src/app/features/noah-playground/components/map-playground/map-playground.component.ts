@@ -14,6 +14,8 @@ import {
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
+type MapStyle = 'terrain' | 'satellite';
+
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -22,6 +24,7 @@ import {
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
   pgLocation: string = '';
+  mapStyle: MapStyle = 'terrain';
 
   private _unsub = new Subject();
 
@@ -223,5 +226,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.map.setPaintProperty(name, 'text-opacity', 0);
         });
     });
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+    }
   }
 }
