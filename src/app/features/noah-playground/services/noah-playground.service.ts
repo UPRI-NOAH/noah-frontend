@@ -56,6 +56,12 @@ export class NoahPlaygroundService {
     return this.store.state[hazardType];
   }
 
+  getHazard$(
+    hazardType: HazardType
+  ): Observable<FloodState | StormSurgeState | LandslideState> {
+    return this.store.state$.pipe(map((state) => state[hazardType]));
+  }
+
   getHazardLevel$(
     hazardType: HazardType,
     hazardLevel: HazardLevel
@@ -121,7 +127,7 @@ export class NoahPlaygroundService {
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
     this.store.patch(
-      { [hazardType]: hazardState },
+      { [hazardType]: { ...hazardState } },
       `expanded ${hazardState.expanded}, ${hazardType}`
     );
   }
@@ -131,7 +137,7 @@ export class NoahPlaygroundService {
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
     this.store.patch(
-      { [hazardType]: hazardState },
+      { [hazardType]: { ...hazardState } },
       `shown ${hazardState.shown}, ${hazardType}`
     );
   }

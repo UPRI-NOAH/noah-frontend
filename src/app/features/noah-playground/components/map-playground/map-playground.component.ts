@@ -3,7 +3,7 @@ import { MapService } from '@core/services/map.service';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { fromEvent, Subject } from 'rxjs';
+import { combineLatest, fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
@@ -86,7 +86,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       h.levels.forEach((l) => {
         this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
-        // console.log(h.type, l.id);
         // opacity
         this.pgService
           .getHazardLevel$(h.type, l.id)
@@ -99,18 +98,37 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           );
 
         // shown
-        this.pgService
-          .getHazardLevel$(h.type, l.id)
+        const hazardType$ = this.pgService.getHazard$(h.type).pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown === y.shown)
+        );
+
+        const hazardLevel$ = this.pgService.getHazardLevel$(h.type, l.id).pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown !== y.shown)
+        );
+
+        combineLatest([hazardType$, hazardLevel$])
           .pipe(
-            takeUntil(this._unsub),
-            distinctUntilChanged((x, y) => x.shown !== y.shown)
+            tap(([hazardType, hazardLevel]) => {
+              if (h.type === 'flood') {
+                console.log(
+                  'hazardTypeShown',
+                  hazardType.shown,
+                  'hazardLevelShown',
+                  hazardLevel.shown,
+                  h.name,
+                  l.name
+                );
+              }
+            })
           )
-          .subscribe((level) => {
-            if (level.shown) {
+          .subscribe(([hazardType, hazardLevel]) => {
+            if (hazardType.shown && hazardLevel.shown) {
               this.map.setPaintProperty(
                 l.id,
                 'fill-opacity',
-                level.opacity / 100
+                hazardLevel.opacity / 100
               );
               return;
             }
