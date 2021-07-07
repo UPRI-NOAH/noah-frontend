@@ -1,13 +1,13 @@
 export const NOAH_COLORS = {
-  'noah-pink': {
-    low: '#FDACB2',
-    medium: '#FA5F96',
-    high: '#C21D7D',
-  },
   'noah-red': {
     low: '#F2C94C',
     medium: '#F2994A',
     high: '#EB5757',
+  },
+  'noah-pink': {
+    low: '#FDACB2',
+    medium: '#FA5F96',
+    high: '#C21D7D',
   },
   'noah-violet': {
     low: '#A9C6DE',
@@ -39,8 +39,8 @@ export const NOAH_COLORS_ARRAY: NoahColor[] = [
 // export type NoahColor = typeof constNoahColors[];
 
 export type NoahColor =
-  | 'noah-pink'
   | 'noah-red'
+  | 'noah-pink'
   | 'noah-violet'
   | 'noah-blue'
   | 'noah-green'
