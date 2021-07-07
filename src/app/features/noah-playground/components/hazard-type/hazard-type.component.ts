@@ -54,7 +54,10 @@ export class HazardTypeComponent implements OnInit {
     this.pgService.setHazardExpansion(this.hazard.type, this.hazardState);
   }
 
-  toggleShown() {
+  toggleShown(event: Event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
     const shown = !this.shown;
     this.hazardState = {
       ...this.hazardState,
