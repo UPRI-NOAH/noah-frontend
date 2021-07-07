@@ -10,23 +10,25 @@
     mt-8
   "
 >
-  <div class="flex items-center justify-between">
+  <div
+    class="select-none flex items-center justify-between cursor-pointer"
+    (click)="toggleExpand()"
+  >
     <div class="flex items-center">
       <label class="inline-flex items-center checkbox">
         <input
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
           [checked]="shown"
-          (click)="toggle()"
+          (click)="toggleShown($event)"
         />
       </label>
       <div class="flex flex-col ml-3">
         <div class="text-xl leading-none font-bold">3D Terrain</div>
       </div>
     </div>
-    <div class="cursor-pointer">
+    <div>
       <button
-        (click)="openMenu()"
         [class.hidden]="expanded"
         class="
           w-6
@@ -50,7 +52,6 @@
         </svg>
       </button>
       <button
-        (click)="closeMenu()"
         [class.hidden]="!expanded"
         class="
           w-6
@@ -88,6 +89,12 @@
         [step]="0.1"
         (valueChange)="changeExaggerationLevel($event)"
       ></noah-slider>
+    </div>
+    <div class="pl-12 pr-10 italic text-gray-600">
+      <small>
+        Press <code>CTRL</code>, then left click on the map and drag around to
+        change the view angle.
+      </small>
     </div>
   </div>
 </div>

@@ -39,25 +39,20 @@ export class ExaggerationComponent implements OnInit {
     this.pgService.setExaggeration(this.exaggeration);
   }
 
-  closeMenu() {
+  toggleExpand() {
+    const expanded = !this.expanded;
     this.exaggeration = {
       ...this.exaggeration,
-      expanded: false,
+      expanded: expanded,
     };
 
     this.pgService.setExaggeration(this.exaggeration);
   }
 
-  openMenu() {
-    this.exaggeration = {
-      ...this.exaggeration,
-      expanded: true,
-    };
+  toggleShown(event: Event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
 
-    this.pgService.setExaggeration(this.exaggeration);
-  }
-
-  toggle() {
     const shown = !this.shown;
     this.exaggeration = {
       ...this.exaggeration,
