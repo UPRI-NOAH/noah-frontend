@@ -9,13 +9,13 @@
       />
     </label>
     <div class="flex flex-col ml-3">
-      <div class="text-lg f-f-r">{{ name }}</div>
+      <div class="text-lg f-f-r capitalize">{{ displayName }}</div>
     </div>
   </div>
 
   <div class="flex items-center pt-4">
     <noah-slider
-      name="Opacity"
+      label="Opacity"
       [initialValue]="initialOpacityValue"
       (valueChange)="changeOpacity($event)"
     ></noah-slider>
@@ -29,7 +29,7 @@
           <img src="assets/map-sprites/{{ name }}.png" />
         </label>
         <div class="flex flex-col ml-3">
-          <div class="text-m leading-none">{{ name }}</div>
+          <div class="text-m leading-none capitalize">{{ displayName }}</div>
         </div>
       </div>
     </div>
