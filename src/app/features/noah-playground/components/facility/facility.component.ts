@@ -14,6 +14,10 @@ export class FacilityComponent implements OnInit {
   initialOpacityValue: number = 75;
   shown = false;
 
+  get displayName(): string {
+    return this.name.replace('-', ' ');
+  }
+
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
