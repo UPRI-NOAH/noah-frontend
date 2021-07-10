@@ -31,7 +31,8 @@
           <button
             class="h-6 w-6 mx-auto rounded-md"
             ngClass="bg-{{ noahColor }}-high"
-            (click)="selectedColor = noahColor"
+            [class.selected]="selectedColor === noahColor"
+            (click)="this.selectColor(noahColor)"
             role="button"
           ></button>
         </div>

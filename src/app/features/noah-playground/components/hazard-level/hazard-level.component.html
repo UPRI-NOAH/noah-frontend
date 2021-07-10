@@ -2,7 +2,8 @@
   <div class="flex items-center">
     <label class="inline-flex items-center checkbox">
       <input
-        [formControl]="shownCtrl"
+        [checked]="shown"
+        (click)="toggleShown()"
         type="checkbox"
         class="checkbox h-5 w-5 text-blue-600"
       />
@@ -13,10 +14,17 @@
   </div>
 
   <div class="pt-4">
-    <noah-slider label="Opacity" [initialValue]="75"></noah-slider>
+    <noah-slider
+      label="Opacity"
+      [initialValue]="initialOpacityValue"
+      (valueChange)="changeOpacity($event)"
+    ></noah-slider>
   </div>
 
   <div class="pt-4">
-    <noah-hazard-legend></noah-hazard-legend>
+    <noah-hazard-legend
+      [selectedColor]="initialColorValue"
+      (valueChange)="changeColor($event)"
+    ></noah-hazard-legend>
   </div>
 </div>

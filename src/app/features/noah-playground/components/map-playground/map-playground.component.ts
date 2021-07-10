@@ -1,38 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import { environment } from '@env/environment';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { combineLatest, fromEvent, Subject } from 'rxjs';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
+import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
+import { getHazardColor, getHazardLayer } from '@shared/mocks/flood';
 import {
-  LEYTE_FLOOD_100,
-  LEYTE_FLOOD_25,
-  LEYTE_FLOOD_5,
-} from '@shared/mocks/flood';
-import {
-  LEYTE_STORM_SURGE_ADVISORY_1,
-  LEYTE_STORM_SURGE_ADVISORY_2,
-  LEYTE_STORM_SURGE_ADVISORY_3,
-  LEYTE_STORM_SURGE_ADVISORY_4,
-} from '@shared/mocks/storm-surges';
-import {
-  LEYTE_PROVINCE_LANDSLIDE,
-  LEYTE_PROVINCE_ALLUVIAL,
-  LEYTE_PROVINCE_UNSTABLE_SLOPES,
-  LEYTE_PROVINCE_DEBRIS_FLOW,
-} from '@shared/mocks/landslide';
-import { PlaygroundService } from '@features/playground/services/playground.service';
-import {
-  FloodReturnPeriod,
-  StormSurgeAdvisory,
-  LandslideHazards,
-} from '@features/playground/store/playground.store';
-import { skip } from 'rxjs/operators';
-import {
-  LEYTE_FIRESTATIONS,
-  LEYTE_HOSPITALS,
-  LEYTE_POLICESTATIONS,
-  LEYTE_SCHOOLS,
+  CriticalFacility,
+  CRITICAL_FACILITIES_ARR,
+  getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
 @Component({
@@ -40,144 +19,140 @@ import {
   templateUrl: './map-playground.component.html',
   styleUrls: ['./map-playground.component.scss'],
 })
-export class MapPlaygroundComponent implements OnInit {
+export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
   pgLocation: string = '';
 
+  private _unsub = new Subject();
+
   constructor(
     private mapService: MapService,
-    private playgroundService: PlaygroundService
+    private pgService: NoahPlaygroundService
   ) {}
 
   ngOnInit(): void {
     this.initMap();
-    this.map.on('load', () => {
-      this.initLayers();
-      this.initMarkers();
-      this.initCenterListener();
-      this.initFloodReturnPeriodListener();
-      this.initStormSurgeAdvisoryListener();
-      this.initLandslideHazardsListener();
+    fromEvent(this.map, 'load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initExaggeration();
+        this.initCriticalFacilityLayers();
+        this.initHazardLayers();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._unsub.next();
+    this._unsub.complete();
+  }
+
+  initCriticalFacilityLayers() {
+    CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+  }
+
+  initExaggeration() {
+    this.map.addSource('mapbox-dem', {
+      type: 'raster-dem',
+      url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
     });
-  }
 
-  hideFloodLayers() {
-    this.playgroundService.floodReturnPeriods.forEach(
-      (returnPeriod: FloodReturnPeriod) => {
-        this.map.setLayoutProperty(returnPeriod, 'visibility', 'none');
-      }
-    );
-  }
+    this.pgService.exagerration$
+      .pipe(
+        takeUntil(this._unsub),
+        distinctUntilChanged(),
+        map((exaggeration) => exaggeration.level)
+      )
+      .subscribe((level) =>
+        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
+      );
 
-  hideLandslideLayers() {
-    this.playgroundService.landslideHazards.forEach(
-      (landslideHazards: LandslideHazards) => {
-        this.map.setLayoutProperty(landslideHazards, 'visibility', 'none');
-        if (landslideHazards === 'alluvial-fan-hazard') {
-          this.map.setLayoutProperty('debris-flow', 'visibility', 'none');
+    this.pgService.exagerration$
+      .pipe(takeUntil(this._unsub), distinctUntilChanged())
+      .subscribe((exaggeration) => {
+        if (exaggeration.shown) {
+          this.map.setTerrain({
+            source: 'mapbox-dem',
+            exaggeration: exaggeration.level,
+          });
+          return;
         }
-      }
-    );
+
+        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: 0 });
+      });
   }
 
-  hideStormSurgeLayers() {
-    this.playgroundService.stormsurgeAdvisory.forEach(
-      (stormsurgeAdvisory: StormSurgeAdvisory) => {
-        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'none');
-      }
-    );
-  }
+  initHazardLayers() {
+    HAZARDS.forEach((h) => {
+      h.levels.forEach((l) => {
+        this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
-  initFloodReturnPeriodListener() {
-    this.playgroundService.currentFloodReturnPeriod$.subscribe(
-      (returnPeriod) => {
-        this.hideFloodLayers();
-        this.map.setLayoutProperty(returnPeriod, 'visibility', 'visible');
-      }
-    );
-  }
+        // opacity
+        this.pgService
+          .getHazardLevel$(h.type, l.id)
+          .pipe(
+            takeUntil(this._unsub),
+            distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(l.id, 'fill-opacity', level.opacity / 100)
+          );
 
-  initLandslideHazardsListener() {
-    this.playgroundService.currentLandslideHazards$.subscribe(
-      (landslideHazards) => {
-        this.hideLandslideLayers();
-        this.map.setLayoutProperty(landslideHazards, 'visibility', 'visible');
-        if (landslideHazards === 'alluvial-fan-hazard') {
-          this.map.setLayoutProperty('debris-flow', 'visibility', 'visible');
-        }
-      }
-    );
-  }
+        // shown
+        const hazardType$ = this.pgService.getHazard$(h.type).pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown === y.shown)
+        );
 
-  initMarkers() {
-    const _this = this;
-    this.map.loadImage('assets/map-sprites/hospital.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-hospital', image);
-      _this.map.addLayer(LEYTE_HOSPITALS);
-    });
+        const hazardLevel$ = this.pgService.getHazardLevel$(h.type, l.id).pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown !== y.shown)
+        );
 
-    this.map.loadImage(
-      'assets/map-sprites/fire-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-firestation', image);
-        _this.map.addLayer(LEYTE_FIRESTATIONS);
-      }
-    );
+        combineLatest([hazardType$, hazardLevel$])
+          .pipe(
+            tap(([hazardType, hazardLevel]) => {
+              if (h.type === 'flood') {
+                console.log(
+                  'hazardTypeShown',
+                  hazardType.shown,
+                  'hazardLevelShown',
+                  hazardLevel.shown,
+                  h.name,
+                  l.name
+                );
+              }
+            })
+          )
+          .subscribe(([hazardType, hazardLevel]) => {
+            if (hazardType.shown && hazardLevel.shown) {
+              this.map.setPaintProperty(
+                l.id,
+                'fill-opacity',
+                hazardLevel.opacity / 100
+              );
+              return;
+            }
 
-    this.map.loadImage(
-      'assets/map-sprites/police-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-policestation', image);
-        _this.map.addLayer(LEYTE_POLICESTATIONS);
-      }
-    );
+            this.map.setPaintProperty(l.id, 'fill-opacity', 0);
+          });
 
-    this.map.loadImage('assets/map-sprites/school.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-school', image);
-      _this.map.addLayer(LEYTE_SCHOOLS);
-    });
-  }
-
-  initStormSurgeAdvisoryListener() {
-    this.playgroundService.currentStormSurgeAdvisory$.subscribe(
-      (stormsurgeAdvisory) => {
-        this.hideStormSurgeLayers();
-        this.map.setLayoutProperty(stormsurgeAdvisory, 'visibility', 'visible');
-      }
-    );
-  }
-
-  initCenterListener() {
-    this.playgroundService.center$.pipe(skip(1)).subscribe((center) => {
-      this.map.flyTo({
-        center,
-        zoom: 11,
-        essential: true,
+        // color
+        this.pgService
+          .getHazardLevel$(h.type, l.id)
+          .pipe(
+            takeUntil(this._unsub),
+            tap((c) => console.log(c)),
+            distinctUntilChanged((x, y) => x.color !== y.color)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(
+              l.id,
+              'fill-color',
+              getHazardColor(h.type, level.color)
+            )
+          );
       });
     });
-  }
-
-  initLayers() {
-    this.map.addLayer(LEYTE_FLOOD_5);
-    this.map.addLayer(LEYTE_FLOOD_25);
-    this.map.addLayer(LEYTE_FLOOD_100);
-    this.hideFloodLayers();
-
-    this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_1);
-    this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_2);
-    this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_3);
-    this.map.addLayer(LEYTE_STORM_SURGE_ADVISORY_4);
-    this.hideStormSurgeLayers();
-
-    this.map.addLayer(LEYTE_PROVINCE_LANDSLIDE);
-    this.map.addLayer(LEYTE_PROVINCE_ALLUVIAL);
-    this.map.addLayer(LEYTE_PROVINCE_DEBRIS_FLOW);
-    this.map.addLayer(LEYTE_PROVINCE_UNSTABLE_SLOPES);
-    this.hideLandslideLayers();
   }
 
   initMap() {
@@ -185,9 +160,68 @@ export class MapPlaygroundComponent implements OnInit {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      zoom: 5,
+      // zoom: 5,
+      zoom: 10,
       touchZoomRotate: true,
-      center: this.playgroundService.center,
+      center: {
+        lat: 10.872407621178079,
+        lng: 124.93480374252101,
+      },
+    });
+  }
+
+  private _loadCriticalFacilityIcon(name: CriticalFacility) {
+    const _this = this;
+    this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
+      if (error) throw error;
+      _this.map.addImage(name, image);
+      _this.map.addLayer(getSymbolLayer(name));
+
+      // opacity
+      this.pgService
+        .getCriticalFacility$(name)
+        .pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+        )
+        .subscribe((facility) => {
+          this.map.setPaintProperty(
+            name,
+            'icon-opacity',
+            facility.opacity / 100
+          );
+          this.map.setPaintProperty(
+            name,
+            'text-opacity',
+            facility.opacity / 100
+          );
+        });
+
+      // shown
+      this.pgService
+        .getCriticalFacility$(name)
+        .pipe(
+          takeUntil(this._unsub),
+          distinctUntilChanged((x, y) => x.shown !== y.shown)
+        )
+        .subscribe((facility) => {
+          if (facility.shown) {
+            this.map.setPaintProperty(
+              name,
+              'icon-opacity',
+              facility.opacity / 100
+            );
+            this.map.setPaintProperty(
+              name,
+              'text-opacity',
+              facility.opacity / 100
+            );
+            return;
+          }
+
+          this.map.setPaintProperty(name, 'icon-opacity', 0);
+          this.map.setPaintProperty(name, 'text-opacity', 0);
+        });
     });
   }
 }

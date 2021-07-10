@@ -1,13 +1,13 @@
 export const NOAH_COLORS = {
-  'noah-pink': {
-    low: '#FDACB2',
-    medium: '#FA5F96',
-    high: '#C21D7D',
-  },
   'noah-red': {
     low: '#F2C94C',
     medium: '#F2994A',
     high: '#EB5757',
+  },
+  'noah-pink': {
+    low: '#FDACB2',
+    medium: '#FA5F96',
+    high: '#C21D7D',
   },
   'noah-violet': {
     low: '#A9C6DE',
@@ -31,4 +31,17 @@ export const NOAH_COLORS = {
   },
 };
 
-export const NOAH_COLORS_ARRAY = Object.keys(NOAH_COLORS);
+export const NOAH_COLORS_ARRAY: NoahColor[] = [
+  ...Object.keys(NOAH_COLORS).map((c) => c as NoahColor),
+];
+// To investigate why this works and direct `as const` doesn't
+// const constNoahColors = [...NOAH_COLORS_ARRAY] as const;
+// export type NoahColor = typeof constNoahColors[];
+
+export type NoahColor =
+  | 'noah-red'
+  | 'noah-pink'
+  | 'noah-violet'
+  | 'noah-blue'
+  | 'noah-green'
+  | 'noah-black';

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
 
 @Component({
@@ -8,17 +9,26 @@ import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
 })
 export class CriticalFacilitiesPlaygroundComponent implements OnInit {
   isOpenedList;
-
   facilityList = CRITICAL_FACILITIES_ARR;
 
-  constructor() {}
+  expanded = true;
+  shown = true;
 
-  ngOnInit(): void {}
+  constructor(private pgService: NoahPlaygroundService) {}
 
-  openMenu(source) {
-    this.isOpenedList = source;
+  ngOnInit(): void {
+    const { expanded, shown } = this.pgService.getCriticalFacilities();
+    this.expanded = expanded;
+    this.shown = shown;
   }
-  closeMenu() {
-    this.isOpenedList = -1;
+
+  toggleShown() {
+    this.shown = !this.shown;
+    this.pgService.setCriticalFacilitiesProperty(this.shown, 'shown');
+  }
+
+  toggleExpanded() {
+    this.expanded = !this.expanded;
+    this.pgService.setCriticalFacilitiesProperty(this.expanded, 'expanded');
   }
 }

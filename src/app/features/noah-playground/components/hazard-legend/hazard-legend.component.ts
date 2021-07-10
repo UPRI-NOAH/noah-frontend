@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NOAH_COLORS_ARRAY } from '@shared/mocks/noah-colors';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NoahColor, NOAH_COLORS_ARRAY } from '@shared/mocks/noah-colors';
 
 @Component({
   selector: 'noah-hazard-legend',
@@ -7,11 +7,18 @@ import { NOAH_COLORS_ARRAY } from '@shared/mocks/noah-colors';
   styleUrls: ['./hazard-legend.component.scss'],
 })
 export class HazardLegendComponent implements OnInit {
-  noahColors: string[] = NOAH_COLORS_ARRAY;
+  @Input() selectedColor = 'noah-red';
+  @Output() valueChange = new EventEmitter();
+
+  noahColors = NOAH_COLORS_ARRAY;
   levels: string[] = ['high', 'medium', 'low'];
-  selectedColor = 'noah-red';
 
   constructor() {}
 
   ngOnInit(): void {}
+
+  selectColor(color: NoahColor) {
+    this.selectedColor = color;
+    this.valueChange.emit(color);
+  }
 }

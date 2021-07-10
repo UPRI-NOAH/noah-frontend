@@ -7,135 +7,14 @@ export const CRITICAL_FACILITIES_ARR = [
   'school',
 ] as const;
 
+export type CriticalFacility = typeof CRITICAL_FACILITIES_ARR[number];
+
 export type SampleMarker = {
   coords: LngLatLike;
   name: string;
   type: 'police-station' | 'fire-station' | 'hospital' | 'school';
   address: string;
 };
-
-export const MARKERS: SampleMarker[] = [
-  {
-    coords: [124.936797, 10.740987],
-    name: 'Javier Main Health Center',
-    type: 'hospital',
-    address: 'Javier, Leyte, Philippines',
-  },
-  {
-    coords: [124.93585, 10.794783],
-    name: 'Javier Rural Health Unit Birthing Home',
-    type: 'hospital',
-    address: 'Calzada Primary School, Leyte, Philippines',
-  },
-  {
-    coords: [124.93628, 10.826807],
-    name: 'Palale Barangay Health Station',
-    type: 'hospital',
-    address: 'La Paz Javier-Bito Road, MacArthur, Leyte, Philippines',
-  },
-  {
-    coords: [124.997822, 10.834688],
-    name: 'MacArthur  Rural Health Unit Birthing Home',
-    type: 'hospital',
-    address: 'MacArthur, Leyte, Philippines',
-  },
-  {
-    coords: [124.998611, 10.837104],
-    name: 'MacArthur Main Health Center',
-    type: 'hospital',
-    address: 'MacArthur, Leyte, Philippines',
-  },
-  {
-    coords: [124.94062, 10.78755],
-    name: 'Javier National High School',
-    type: 'school',
-    address: 'LaPaz-Javier-Bito Road, Javier,6511, Leyte, Philippines',
-  },
-  {
-    coords: [124.99529, 10.77539],
-    name: 'Batug Elementary School',
-    type: 'school',
-    address: 'Javier,6511, Leyte, Philippines',
-  },
-  {
-    coords: [124.99862, 10.79262],
-    name: 'Olmedo Elementary School',
-    type: 'school',
-    address: 'LaPaz-Javier-Bito Road, Javier,6511, Leyte, Philippines',
-  },
-  {
-    coords: [124.93968, 10.82005],
-    name: 'Palale National High School',
-    type: 'school',
-    address: 'MacArthur, Leyte, Philippines',
-  },
-  {
-    coords: [124.98113, 10.80227],
-    name: 'Villa Imelda Primary School',
-    type: 'school',
-    address: 'MacArthur, Leyte, Philippines',
-  },
-  {
-    coords: [124.4339214, 10.8994501],
-    name: 'PHILPHOS Fire Station',
-    type: 'fire-station',
-    address: 'Isabel, Leyte, Philippines',
-  },
-  {
-    coords: [124.6056596, 11.012203],
-    name: 'Central Fire Station',
-    type: 'fire-station',
-    address: 'Ormoc, Leyte, Philippines',
-  },
-  {
-    coords: [125.0025857, 11.2502558],
-    name: 'Tacloban Filipino-Chinese Volunteer Fire Brigade',
-    type: 'fire-station',
-    address: 'Tacloban, Leyte, Philippines',
-  },
-  {
-    coords: [124.6856627, 11.3025933],
-    name: 'Carigara Fire Station',
-    type: 'fire-station',
-    address: 'Carigara, Leyte, Philippines',
-  },
-  {
-    coords: [124.7368741, 11.3260037],
-    name: 'Barugo Fire Station',
-    type: 'fire-station',
-    address: 'Barugo, 6519 Leyte, Philippines',
-  },
-  {
-    coords: [124.6087324, 11.0057326],
-    name: 'Ormoc City Police Station 1',
-    type: 'police-station',
-    address: 'Ormoc, Leyte, Philippines',
-  },
-  {
-    coords: [124.6554668, 11.0954793],
-    name: '8th Regional Public Safety Battalion, Milagro Patrol Base',
-    type: 'police-station',
-    address: 'Ormoc, Leyte, Philippines',
-  },
-  {
-    coords: [125.0132229, 10.7470688],
-    name: 'Abuyog Police Station',
-    type: 'police-station',
-    address: 'Abuyog, Leyte, Philippines',
-  },
-  {
-    coords: [124.7346851, 11.325105],
-    name: 'Barugo Municipal Police Station',
-    type: 'police-station',
-    address: 'Barugo, Leyte, Philippines',
-  },
-  {
-    coords: [124.3705735, 11.3075124],
-    name: 'Tabango Police Station',
-    type: 'police-station',
-    address: 'Tabango, Leyte, Philippines',
-  },
-];
 
 export const LEYTE_SCHOOLS: SymbolLayer = {
   id: 'leyte_schools',
@@ -220,3 +99,45 @@ export type CriticalFacilityLayer =
   | 'leyte_hospitals'
   | 'leyte_firestation'
   | 'leyte_police';
+
+export const getSymbolLayer = (id: string): SymbolLayer => ({
+  id,
+  type: 'symbol',
+  source: {
+    type: 'vector',
+    url: MAPBOX_CRIT_FAC[id].url,
+  },
+  'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
+  paint: {
+    'icon-opacity': 1,
+    'text-opacity': 1,
+  },
+  layout: {
+    'icon-image': id,
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
+  },
+});
+
+export const getCriticalFacility = () => {};
+
+export const MAPBOX_CRIT_FAC = {
+  school: {
+    url: 'mapbox://jadurani.ckq7u49zi010o20nrjlynz9jo-5cez5',
+    sourceLayer: 'leyte_schools',
+  },
+  hospital: {
+    url: 'mapbox://jadurani.ckq7ua4aq1yh328qncf078jpv-9xhtt',
+    sourceLayer: 'leyte_hospitals',
+  },
+  'fire-station': {
+    url: 'mapbox://jadurani.ckq7u97310bbw28lg0yxolcv2-1gmiz',
+    sourceLayer: 'leyte_firestation',
+  },
+  'police-station': {
+    url: 'mapbox://jadurani.ckq7uatvk04kq21pqtks7rj3m-0n4tz',
+    sourceLayer: 'leyte_police',
+  },
+};

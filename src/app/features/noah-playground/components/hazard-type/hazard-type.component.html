@@ -10,16 +10,24 @@
     mt-6
   "
 >
-  <div class="flex items-center justify-between">
+  <div
+    class="select-none flex items-center justify-between cursor-pointer"
+    (click)="toggleExpansion()"
+  >
     <div class="flex items-center">
       <label class="inline-flex items-center checkbox">
-        <input type="checkbox" class="checkbox h-5 w-5 text-blue-600" />
+        <input
+          type="checkbox"
+          class="checkbox h-5 w-5 text-blue-600"
+          [checked]="shown"
+          (click)="toggleShown($event)"
+        />
       </label>
       <div class="flex flex-col ml-3">
         <h6 class="text-xl leading-none font-bold">{{ hazard.name }}</h6>
       </div>
     </div>
-    <div class="cursor-pointer">
+    <div>
       <button
         class="
           w-6
@@ -32,8 +40,7 @@
         "
       >
         <svg
-          (click)="openMenu()"
-          [class.hidden]="isOpenedList"
+          [class.hidden]="expanded"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1000 1000"
           width="18"
@@ -44,8 +51,7 @@
           />
         </svg>
         <svg
-          (click)="closeMenu()"
-          [class.hidden]="!isOpenedList"
+          [class.hidden]="!expanded"
           xmlns="http://www.w3.org/2000/svg"
           width="12"
           height="12"
@@ -60,12 +66,13 @@
       </button>
     </div>
   </div>
-  <div [ngClass]="isOpenedList ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="expanded ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
     <div class="pl-6">
       <noah-hazard-level
         *ngFor="let level of hazard.levels"
         [id]="level.id"
+        [type]="hazard.type"
         [name]="level.name"
       ></noah-hazard-level>
     </div>
