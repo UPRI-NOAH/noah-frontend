@@ -141,16 +141,16 @@
                         <button
                           [routerLink]="[
                             '/personal/base',
-                            getfixedForLeyte().center
+                            fixedForLeyte.center
                           ]"
-                          (click)="pickPlace(getfixedForLeyte)"
+                          (click)="pickPlace(fixedForLeyte)"
                           class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white group"
                         >
-                          {{ getfixedForLeyte().text }}
+                          {{ fixedForLeyte.text }}
                           <div
                             class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
                           >
-                            {{ getfixedForLeyte().place_name }}
+                            {{ fixedForLeyte.place_name }}
                           </div>
                         </button>
 

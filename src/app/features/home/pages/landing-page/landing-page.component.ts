@@ -47,7 +47,7 @@ export class LandingPageComponent implements OnInit {
       });
   }
 
-  getfixedForLeyte(): FixedLeyte {
+  get fixedForLeyte(): FixedLeyte {
     return {
       center: [124.881119, 10.862454],
       text: 'Leyte',
