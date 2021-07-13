@@ -1,39 +1,25 @@
 <div
-  class="
-    flex
-    h-full
-    antialiased
-    text-black
-    bg-black-100
-    dark:bg-dark dark:text-light
-  "
+  class="flex h-full antialiased text-black bg-black-100 dark:bg-dark dark:text-light"
 >
   <div class="h-full z-50">
     <button
       (click)="isMenu = !isMenu"
-      class="
-        fixed
-        p-2
-        z-20
-        text-white
-        bg-blue-700
-        top-7rounded-lg top-20
-        left-5
-      "
+      class="fixed p-2 z-20 text-white bg-gray-800 top-7rounded-lg top-20"
     >
       <svg
-        class="w-6 h-6"
         xmlns="http://www.w3.org/2000/svg"
-        fill="none"
+        class="icon icon-tabler icon-tabler-chevron-right"
+        width="28"
+        height="28"
         viewBox="0 0 24 24"
+        stroke-width="1.5"
         stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
+        <path stroke="none" d="M0 0h24v24H0z" />
+        <polyline points="9 6 15 12 9 18" />
       </svg>
       <span class="sr-only">Open menu</span>
     </button>
@@ -41,19 +27,7 @@
     <div
       *ngIf="isMenu"
       id="sidebar"
-      class="
-        fixed
-        inset-y-0
-        z-40
-        flex
-        w-96
-        bg-white
-        overflow-y-auto
-        lg:sticky
-        h-screen
-        top-0
-        pt-10
-      "
+      class="fixed inset-y-0 z-40 flex w-96 bg-white overflow-y-auto lg:sticky h-screen top-0 pt-10"
     >
       <div class="absolute inset-0">
         <img
@@ -64,7 +38,7 @@
       </div>
       <div class="px-4 relative">
         <div class="flex items-center justify-between">
-          <div class="w-full">
+          <div class="w-full" routerLink="/" role="button">
             <svg
               width="80"
               height="35"
@@ -142,12 +116,6 @@
       </div>
     </div>
   </div>
-  <div class="z-10 top-20 left-10 h-16 w-16">
-    <a class="flex max-w-s p-2 items-center" routerLink="/">
-      <img src="assets/icons/noah-logo.jpg" alt="Project NOAH" />
-    </a>
-  </div>
-
   <main class="flex flex-col items-center justify-center flex-1">
     <!-- Page content -->
     <noah-map-playground></noah-map-playground>
