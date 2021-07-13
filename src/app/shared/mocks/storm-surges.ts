@@ -20,7 +20,7 @@ export const LEYTE_STORM_SURGE: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 1,
+    'fill-opacity': 0.8,
   },
 };
 

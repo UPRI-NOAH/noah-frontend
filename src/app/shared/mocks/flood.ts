@@ -21,7 +21,7 @@ export const LEYTE_FLOOD: FillLayer = {
       3,
       '#eb5757',
     ],
-    'fill-opacity': 1,
+    'fill-opacity': 0.8,
   },
 };
 
