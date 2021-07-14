@@ -8,6 +8,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { PersonalizedRiskAssessmentModule } from '@features/personalized-risk-assessment/personalized-risk-assessment.module';
 import { PlaygroundModule } from '@features/playground/playground.module';
 import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-hazards.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [LandingPageComponent, NavigationComponent, FooterComponent],
@@ -17,6 +18,8 @@ import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-haz
     PersonalizedRiskAssessmentModule,
     PlaygroundModule,
     KnowYourHazardsModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
 })
 export class HomeModule {}
