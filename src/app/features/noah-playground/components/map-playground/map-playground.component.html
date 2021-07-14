@@ -1,1 +1,73 @@
 <div id="map"></div>
+<div class="bottom-3 fixed z-10 right-8 f py-2">
+  <div class="p-2">
+    <div class="dropdown inline-block relative">
+      <button
+        class="
+          bg-sidebar
+          text-gray-700
+          font-semibold
+          py-2
+          px-2
+          rounded
+          inline-flex
+          items-center
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 125"
+          width="35"
+          height="35"
+        >
+          <path
+            d="M9.375 92.55L37.5 78.489l25 12.5 28.125-14.062V7.44L62.5 21.504l-25-12.5L9.375 23.066zm56.25-10.109V26.926l18.75-9.375v55.515zm-6.25 0l-18.75-9.375V17.551l18.75 9.375zm-43.75 0V26.926l18.75-9.375v55.515zm0 0"
+          />
+        </svg>
+      </button>
+      <ul
+        class="
+          dropdown-menu
+          right-12
+          bottom-2
+          absolute
+          hidden
+          text-gray-700
+          pt-1
+        "
+      >
+        <li class="">
+          <a
+            class="
+              rounded-t
+              bg-gray-200
+              hover:bg-gray-400
+              py-2
+              px-4
+              block
+              whitespace-no-wrap
+            "
+            role="button"
+            (click)="switchMapStyle('terrain')"
+            >Terrain</a
+          >
+        </li>
+        <li class="">
+          <a
+            class="
+              bg-gray-200
+              hover:bg-gray-400
+              py-2
+              px-4
+              block
+              whitespace-no-wrap
+            "
+            role="button"
+            (click)="switchMapStyle('satellite')"
+            >Satellite</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

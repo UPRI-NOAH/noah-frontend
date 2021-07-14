@@ -14,6 +14,8 @@ import {
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
+type MapStyle = 'terrain' | 'satellite';
+
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -22,8 +24,10 @@ import {
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
   pgLocation: string = '';
+  mapStyle: MapStyle = 'terrain';
 
   private _unsub = new Subject();
+  private _changeStyle = new Subject();
 
   constructor(
     private mapService: MapService,
@@ -32,7 +36,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMap();
-    fromEvent(this.map, 'load')
+    fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.initExaggeration();
@@ -44,6 +48,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
+    this._changeStyle.next();
+    this._changeStyle.complete();
   }
 
   initCriticalFacilityLayers() {
@@ -59,6 +65,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
         distinctUntilChanged(),
         map((exaggeration) => exaggeration.level)
       )
@@ -67,7 +74,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
 
     this.pgService.exagerration$
-      .pipe(takeUntil(this._unsub), distinctUntilChanged())
+      .pipe(
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
+        distinctUntilChanged()
+      )
       .subscribe((exaggeration) => {
         if (exaggeration.shown) {
           this.map.setTerrain({
@@ -91,6 +102,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           .getHazardLevel$(h.type, l.id)
           .pipe(
             takeUntil(this._unsub),
+            takeUntil(this._changeStyle),
             distinctUntilChanged((x, y) => x.opacity !== y.opacity)
           )
           .subscribe((level) =>
@@ -100,11 +112,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         // shown
         const hazardType$ = this.pgService.getHazard$(h.type).pipe(
           takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
           distinctUntilChanged((x, y) => x.shown === y.shown)
         );
 
         const hazardLevel$ = this.pgService.getHazardLevel$(h.type, l.id).pipe(
           takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
           distinctUntilChanged((x, y) => x.shown !== y.shown)
         );
 
@@ -141,6 +155,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           .getHazardLevel$(h.type, l.id)
           .pipe(
             takeUntil(this._unsub),
+            takeUntil(this._changeStyle),
             tap((c) => console.log(c)),
             distinctUntilChanged((x, y) => x.color !== y.color)
           )
@@ -182,6 +197,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .getCriticalFacility$(name)
         .pipe(
           takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
           distinctUntilChanged((x, y) => x.opacity !== y.opacity)
         )
         .subscribe((facility) => {
@@ -202,6 +218,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .getCriticalFacility$(name)
         .pipe(
           takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
           distinctUntilChanged((x, y) => x.shown !== y.shown)
         )
         .subscribe((facility) => {
@@ -223,5 +240,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.map.setPaintProperty(name, 'text-opacity', 0);
         });
     });
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
+    }
   }
 }
