@@ -45,7 +45,12 @@
                       class="bg-white shadow overflow-hidden sm:rounded-lg pb-8"
                     >
                       <div
-                        class="border-t border-gray-200 text-center pt-7 sm:pt-14"
+                        class="
+                          border-t border-gray-200
+                          text-center
+                          pt-7
+                          sm:pt-14
+                        "
                       >
                         <h1 class="text-2xl sm:text-4xl font-bold p-2 pb-8">
                           Know Your Hazards
@@ -191,7 +196,16 @@
                       </div>
                       <!-- DROPDOWN -->
                       <div
-                        class="absolute mt-2 py-2 w-9/12 bg-white shadow-xl rounded-md z-10"
+                        class="
+                          absolute
+                          mt-2
+                          py-2
+                          w-9/12
+                          bg-white
+                          shadow-xl
+                          rounded-md
+                          z-10
+                        "
                         *ngIf="isDropdownOpen && (places$ | async)?.length"
                       >
                         <button
@@ -200,11 +214,25 @@
                             fixedForLeyte.center
                           ]"
                           (click)="pickPlace(fixedForLeyte)"
-                          class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white group"
+                          class="
+                            block
+                            w-full
+                            px-4
+                            py-2
+                            text-left text-gray-800
+                            hover:bg-primary hover:text-white
+                            group
+                          "
                         >
                           {{ fixedForLeyte.text }}
                           <div
-                            class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                            class="
+                              text-xs text-gray-400
+                              group-hover:text-gray-100
+                              overflow-ellipsis
+                              whitespace-nowrap
+                              overflow-hidden
+                            "
                           >
                             {{ fixedForLeyte.place_name }}
                           </div>
@@ -214,11 +242,25 @@
                           [routerLink]="['/personal/base', place.center]"
                           (click)="pickPlace(place)"
                           *ngFor="let place of places$ | async"
-                          class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white group"
+                          class="
+                            block
+                            w-full
+                            px-4
+                            py-2
+                            text-left text-gray-800
+                            hover:bg-primary hover:text-white
+                            group
+                          "
                         >
                           {{ place.text }}
                           <div
-                            class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                            class="
+                              text-xs text-gray-400
+                              group-hover:text-gray-100
+                              overflow-ellipsis
+                              whitespace-nowrap
+                              overflow-hidden
+                            "
                           >
                             {{ place.place_name }}
                           </div>
@@ -229,7 +271,15 @@
                       <div
                         (click)="isDropdownOpen = false"
                         *ngIf="isDropdownOpen"
-                        class="fixed h-full w-full top-0 right-0 bottom-0 left-0"
+                        class="
+                          fixed
+                          h-full
+                          w-full
+                          top-0
+                          right-0
+                          bottom-0
+                          left-0
+                        "
                       ></div>
                     </div>
                   </div>
@@ -255,6 +305,7 @@
             <b>flooding due to ranfall as heavy as Ondoy,</b> how likely are you
             to be affected
           </p>
+
           <button
             class="
               mx-auto
@@ -328,6 +379,7 @@
           >
             Find out more
           </button>
+
         </div>
       </div>
     </div>
@@ -350,13 +402,13 @@
           mx-auto
           lg:mx-0
           hover:underline
-          bg-primary
+          bg-white
+          text-gray-800
           font-bold
           rounded-full
-          text-white
           my-6
-          py-2
-          px-4
+          py-4
+          px-8
           shadow-lg
         "
         routerLink="noah-playground"
@@ -554,7 +606,7 @@
             </a>
             <a
               class="flex items-center hover:text-blue-600 no-underline"
-              href="https://gmail.com/resilience.institute@up.edu.ph"
+              href="mailto:resilience.institute@up.edu.ph"
               target="_blank"
             >
               <svg
