@@ -18,11 +18,28 @@
           <div class="container mx-auto py-72 px-4 h-full">
             <div class="flex content-center items-center justify-center h-full">
               <div
-                class="relative flex flex-col min-w-0 break-words mb-6 rounded-lg border-0"
+                class="
+                  relative
+                  flex flex-col
+                  min-w-0
+                  break-words
+                  mb-6
+                  rounded-lg
+                  border-0
+                "
               >
                 <div class="flex-auto">
                   <div
-                    class="w-9/12 m-auto py-16 min-h-screen flex items-center justify-center z-50"
+                    class="
+                      w-9/12
+                      m-auto
+                      py-16
+                      min-h-screen
+                      flex
+                      items-center
+                      justify-center
+                      z-50
+                    "
                   >
                     <div
                       class="bg-white shadow overflow-hidden sm:rounded-lg pb-8"
@@ -40,7 +57,14 @@
                           <div class="md:flex-shrink-1 w-full">
                             <div class="p-1 px-4 pb-2 pt-4">
                               <div
-                                class="bg-white flex items-center justify-center rounded-full shadow-xl"
+                                class="
+                                  bg-white
+                                  flex
+                                  items-center
+                                  justify-center
+                                  rounded-full
+                                  shadow-xl
+                                "
                               >
                                 <div class="pl-3">
                                   <svg
@@ -71,7 +95,15 @@
                                   (keyup)="isDropdownOpen = true"
                                   (focus)="isDropdownOpen = true"
                                   autocomplete="off"
-                                  class="rounded-l-full w-full py-4 px-7 text-gray-700 leading-tight focus:outline-none"
+                                  class="
+                                    rounded-l-full
+                                    w-full
+                                    py-4
+                                    px-7
+                                    text-gray-700
+                                    leading-tight
+                                    focus:outline-none
+                                  "
                                   id="search"
                                   type="text"
                                   placeholder="Where do you live?"
@@ -129,6 +161,26 @@
                                   </svg>
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                          <div class="mt-4 md:mt-0 md:ml-0">
+                            <div class="px-4 pb-2 pt-4">
+                              <button
+                                class="
+                                  w-full
+                                  px-4
+                                  py-2
+                                  font-bold
+                                  text-white
+                                  bg-blue-500
+                                  rounded-full
+                                  hover:bg-blue-700
+                                  focus:outline-none focus:shadow-outline
+                                "
+                                type="button"
+                              >
+                                Search
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -200,7 +252,19 @@
             to be affected
           </p>
           <button
-            class="mx-auto lg:mx-0 hover:underline bg-white text-blue-600 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
+            class="
+              mx-auto
+              lg:mx-0
+              hover:underline
+              bg-white
+              text-blue-600
+              font-bold
+              rounded-full
+              my-6
+              py-4
+              px-8
+              shadow-lg
+            "
             routerLink="personal"
           >
             Find out more
@@ -244,7 +308,19 @@
             those caused by the typhoon Yolanda?
           </p>
           <button
-            class="mx-auto lg:mx-0 hover:underline bg-white text-blue-600 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
+            class="
+              mx-auto
+              lg:mx-0
+              hover:underline
+              bg-white
+              text-blue-600
+              font-bold
+              rounded-full
+              my-6
+              py-4
+              px-8
+              shadow-lg
+            "
           >
             Find out more
           </button>
@@ -260,12 +336,26 @@
         Are you a Researcher or a Policy Maker?
       </h2>
       <p class="max-w-lg mx-auto mt-4 pb-4">
-        Check out the NOAH PLAYGROUND for a more granular assessment of natural
-        hazards in a wider area.
+        Check out the
+        <a routerLink="noah-playground" class="text-primary">NOAH Playground</a>
+        for a more granular assessment of natural hazards in a wider area.
       </p>
 
       <button
-        class="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg"
+        class="
+          mx-auto
+          lg:mx-0
+          hover:underline
+          bg-primary
+          font-bold
+          rounded-full
+          text-white
+          my-6
+          py-2
+          px-4
+          shadow-lg
+        "
+        routerLink="noah-playground"
       >
         NOAH PLAYGROUND
       </button>
@@ -311,11 +401,26 @@
 
   <footer class="bg-gray-300 pt-12 pb-8 px-4">
     <div
-      class="mx-auto px-4 container overflow-hidden flex flex-col lg:flex-row justify-between"
+      class="
+        mx-auto
+        px-4
+        container
+        overflow-hidden
+        flex flex-col
+        lg:flex-row
+        justify-between
+      "
     >
       <div class="w-full lg:w-2/6 lg:mx-4 lg:pr-8">
         <a
-          class="flex title-font font-medium items-center md:justify-start justify-center"
+          class="
+            flex
+            title-font
+            font-medium
+            items-center
+            md:justify-start
+            justify-center
+          "
         >
           <img src="assets/icons/logo-noah.png" class="z-50 w-24" />
           <span class="ml-3 text-s">
@@ -325,7 +430,14 @@
         <form class="flex items-center mt-6 justify-center">
           <div class="w-full">
             <label
-              class="block uppercase tracking-wide text-gray-600 text-sm font-bold mb-2"
+              class="
+                block
+                uppercase
+                tracking-wide
+                text-gray-600 text-sm
+                font-bold
+                mb-2
+              "
               for="grid-last-name"
             >
               noah is a project of:
@@ -342,7 +454,15 @@
 
       <div class="w-2/3 block sm:flex text-sm mt-6 lg:mt-0">
         <ul
-          class="text-gray-700 list-none p-0 font-thin flex flex-col text-left w-full"
+          class="
+            text-gray-700
+            list-none
+            p-0
+            font-thin
+            flex flex-col
+            text-left
+            w-full
+          "
         >
           <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
             Related Project:
@@ -371,14 +491,32 @@
           <li>
             <a
               href="#"
-              class="inline-block py-2 px-3 hover:text-blue-600 no-underline pb-5"
+              class="
+                inline-block
+                py-2
+                px-3
+                hover:text-blue-600
+                no-underline
+                pb-5
+              "
               >Safer U</a
             >
           </li>
         </ul>
 
         <ul
-          class="text-gray-700 list-none p-0 font-thin flex flex-col text-left w-full md:pl-20 lg:pl-24 xl:pl-0"
+          class="
+            text-gray-700
+            list-none
+            p-0
+            font-thin
+            flex flex-col
+            text-left
+            w-full
+            md:pl-20
+            lg:pl-24
+            xl:pl-0
+          "
         >
           <div class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
             Follow Us:

@@ -22,7 +22,10 @@ export class CriticalFacilitiesPlaygroundComponent implements OnInit {
     this.shown = shown;
   }
 
-  toggleShown() {
+  toggleShown(event: Event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
     this.shown = !this.shown;
     this.pgService.setCriticalFacilitiesProperty(this.shown, 'shown');
   }
