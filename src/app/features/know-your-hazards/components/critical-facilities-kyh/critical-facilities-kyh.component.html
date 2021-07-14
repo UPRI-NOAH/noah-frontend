@@ -1,1 +1,19 @@
-<p>critical-facilities-kyh works!</p>
+<h4 class="text-2xl font-bold leading-tight mt-6 pb-2">
+  Critical Facilities Near You
+</h4>
+
+<button
+  class="text-left shadow flex rounded w-full p-3 my-3"
+  *ngFor="let facility of criticalFacilities"
+  (click)="focus(facility)"
+>
+  <span class="w-1/6">
+    <img class="h-auto" src="assets/map-sprites/{{ facility.type }}.png" />
+  </span>
+  <span class="w-5/6 pl-3">
+    <div class="text-sm font-bold">{{ facility.name }}</div>
+    <small class="text-gray-500" *ngIf="facility.distance">
+      {{ facility.distance | number: '1.1-2' }} km away</small
+    >
+  </span>
+</button>

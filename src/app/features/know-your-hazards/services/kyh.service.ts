@@ -44,50 +44,72 @@ export class KyhService {
     return this.kyhStore.state$.pipe(map((state) => state.currentPage));
   }
 
-  get riskLevel$(): Observable<RiskLevel> {
-    return this.kyhStore.state$.pipe(map((state) => state.riskLevel));
+  get currentHazard(): HazardType {
+    return this.kyhStore.state.currentHazard;
   }
 
-  get hazardTypes(): string[] {
+  get currentHazard$(): Observable<HazardType> {
+    return this.kyhStore.state$.pipe(map((state) => state.currentHazard));
+  }
+
+  get floodRiskLevel$(): Observable<RiskLevel> {
+    return this.kyhStore.state$.pipe(map((state) => state.floodRiskLevel));
+  }
+
+  get stormsurgeRiskLevel$(): Observable<RiskLevel> {
+    return this.kyhStore.state$.pipe(map((state) => state.stormsurgeRiskLevel));
+  }
+
+  get landslideRiskLevel$(): Observable<RiskLevel> {
+    return this.kyhStore.state$.pipe(map((state) => state.landslideRiskLevel));
+  }
+
+  get hazardTypes(): HazardType[] {
     return ['flood', 'landslide', 'storm-surge'];
   }
 
-  async assessRisk(hazardType: HazardType): Promise<void> {
+  async assessRisk(): Promise<void> {
     this.kyhStore.patch({ isLoading: true }, 'loading risk level...');
 
-    const payload = {
+    const payloadFlood = {
       coords: this.kyhStore.state.center,
-      tilesetName: this._getTilesetName(hazardType),
+      tilesetName: this._getTilesetName('flood'),
+    };
+    const payloadStormSurge = {
+      coords: this.kyhStore.state.center,
+      tilesetName: this._getTilesetName('storm-surge'),
+    };
+    const payloadLandslide = {
+      coords: this.kyhStore.state.center,
+      tilesetName: this._getTilesetName('landslide'),
     };
 
-    const riskLevel = await this.hazardsService.assess(payload).toPromise();
-
+    const floodRiskLevel = await this.hazardsService
+      .assess(payloadFlood)
+      .toPromise();
+    const stormsurgeRiskLevel = await this.hazardsService
+      .assess(payloadStormSurge)
+      .toPromise();
+    const landslideRiskLevel = await this.hazardsService
+      .assess(payloadLandslide)
+      .toPromise();
     this.kyhStore.patch(
       {
         isLoading: false,
-        riskLevel: riskLevel as RiskLevel,
+        floodRiskLevel: floodRiskLevel as RiskLevel,
+        stormsurgeRiskLevel: stormsurgeRiskLevel as RiskLevel,
+        landslideRiskLevel: landslideRiskLevel as RiskLevel,
       },
-      `updated risk level -- ${hazardType}`
+      `updated risk level --`
     );
   }
 
   init() {
-    this.currentPage$
-      .pipe(
-        distinctUntilChanged(),
-        tap((page) => {
-          if (this.isHazardPage(page)) {
-            const hazard = page as HazardType;
-            this.assessRisk(hazard);
-            this.setMapCenter(PH_DEFAULT_CENTER);
-          }
-        })
-      )
-      .subscribe();
+    this.assessRisk();
   }
 
-  isHazardPage(currentPage: KYHPage): boolean {
-    return this.hazardTypes.includes(currentPage);
+  isHazardLayer(currentHazard: HazardType): boolean {
+    return this.hazardTypes.includes(currentHazard);
   }
 
   setCenter(center: { lat: number; lng: number }) {
@@ -106,13 +128,17 @@ export class KyhService {
     this.kyhStore.patch({ currentPage }, 'update current page');
   }
 
+  setCurrentHazard(currentHazard: HazardType) {
+    this.kyhStore.patch({ currentHazard }, 'update current hazard');
+  }
+
   setMapCenter(coords: { lat: number; lng: number }) {
     this.kyhStore.patch({ center: coords }, 'update map center');
   }
 
   // Temporary
-  private _getTilesetName(hazardType: HazardType): string {
-    switch (hazardType) {
+  private _getTilesetName(hazardTypes: HazardType): string {
+    switch (hazardTypes) {
       case 'flood':
         return 'jadurani.3tg2ae87';
       // return LEYTE_FLOOD.source?.url || "";

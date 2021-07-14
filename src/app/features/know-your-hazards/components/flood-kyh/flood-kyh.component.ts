@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { KyhService } from '@features/know-your-hazards/services/kyh.service';
+import { RiskLevel } from '@features/personalized-risk-assessment/store/pra.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-flood-kyh',
@@ -6,7 +9,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./flood-kyh.component.scss'],
 })
 export class FloodKyhComponent implements OnInit {
-  constructor() {}
+  @Input() isFlood: boolean = false;
+  floodRiskLevel$: Observable<RiskLevel>;
+
+  constructor(private kyhService: KyhService) {
+    this.floodRiskLevel$ = this.kyhService.floodRiskLevel$;
+  }
 
   ngOnInit(): void {}
 }

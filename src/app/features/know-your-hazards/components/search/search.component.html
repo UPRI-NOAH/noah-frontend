@@ -1,1 +1,107 @@
-<p>search works!</p>
+<!-- SEARCH CONTAINER -->
+<div class="relative">
+  <div class="pb-4">
+    <div
+      class="
+        relative
+        border-solid border-gray-300 border-2
+        bg-white
+        flex
+        justify-center
+        items-center
+        rounded-full
+        shadow-xl
+        z-10
+      "
+    >
+      <input
+        type="search"
+        [formControl]="searchTermCtrl"
+        (keyup)="isDropdownOpen = true"
+        (focus)="isDropdownOpen = true"
+        placeholder="Search Location"
+        autocomplete="off"
+        class="
+          rounded-l-full
+          w-full
+          py-2
+          px-4
+          text-gray-700
+          leading-tight
+          focus:outline-none
+        "
+      />
+      <button
+        type="submit"
+        class="
+          border-solid border-gray-300 border-2
+          rounded-r-full
+          bg-primary
+          text-white
+          p-4
+          w-16
+          h-8
+          hover:bg-blue-400
+          focus:outline-none
+          flex
+          items-center
+          justify-center
+        "
+      >
+        <span class="w-auto flex justify-end items-center">
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            class="w-6 h-6"
+          >
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DROPDOWN -->
+  <div
+    class="absolute mt-2 py-2 w-full bg-white shadow-xl rounded-md z-10"
+    *ngIf="isDropdownOpen && (places$ | async)?.length"
+  >
+    <button
+      (click)="pickPlace(place)"
+      *ngFor="let place of places$ | async"
+      class="
+        block
+        w-full
+        px-4
+        py-2
+        text-left text-gray-800
+        hover:bg-primary hover:text-white
+        group
+      "
+    >
+      {{ place.text }}
+      <div
+        class="
+          text-xs text-gray-400
+          group-hover:text-gray-100
+          overflow-ellipsis
+          whitespace-nowrap
+          overflow-hidden
+        "
+      >
+        {{ place.place_name }}
+      </div>
+    </button>
+  </div>
+
+  <!-- BACKDROP -->
+  <div
+    (click)="isDropdownOpen = false"
+    *ngIf="isDropdownOpen"
+    class="fixed h-full bg-black opacity-30 top-0 right-0 bottom-0 left-0"
+  ></div>
+</div>
