@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { PraService } from '@features/personalized-risk-assessment/services/pra.service';
+import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 
 type FixedLeyte = {
   center: [number, number];
@@ -23,10 +23,10 @@ export class LandingPageComponent implements OnInit {
 
   isDropdownOpen = false;
 
-  constructor(private mapService: MapService, private praService: PraService) {}
+  constructor(private mapService: MapService, private kyhService: KyhService) {}
 
   ngOnInit(): void {
-    this.praService.init();
+    this.kyhService.init();
     this.searchTermCtrl = new FormControl();
     this.places$ = new BehaviorSubject([]);
 
@@ -62,10 +62,10 @@ export class LandingPageComponent implements OnInit {
     console.log(place);
 
     //fly to
-    this.praService.setCurrentCoords(place.text);
+    this.kyhService.setCurrentLocation(place.text);
     const [lng, lat] = place.center;
-    this.praService.setCenter({ lat, lng });
-    this.praService.setCurrentCoords({ lat, lng });
+    this.kyhService.setCenter({ lat, lng });
+    this.kyhService.setCurrentCoords({ lat, lng });
   }
   gotoTop() {
     window.scroll({
