@@ -189,10 +189,7 @@
                                 "
                               >
                                 <button
-                                  [routerLink]="[
-                                    '/know-your-hazards',
-                                    fixedForLeyte.center
-                                  ]"
+                                  [routerLink]="['/know-your-hazards']"
                                   (click)="pickPlace(fixedForLeyte)"
                                   class="
                                     block
@@ -223,10 +220,7 @@
                                 </button>
 
                                 <button
-                                  [routerLink]="[
-                                    '/know-your-hazards',
-                                    place.center
-                                  ]"
+                                  [routerLink]="['/know-your-hazards']"
                                   (click)="pickPlace(place)"
                                   *ngFor="let place of places$ | async"
                                   class="
