@@ -16,7 +16,7 @@ export class KnowYourHazardsComponent implements OnInit {
   searchTerm: string;
   currentLocation$: Observable<string>;
   floodRiskLevel$: Observable<RiskLevel>;
-  stormsurgeRiskLevel$: Observable<RiskLevel>;
+  stormSurgeRiskLevel$: Observable<RiskLevel>;
   landslideRiskLevel$: Observable<RiskLevel>;
   currentHazard$: Observable<HazardType>;
   isFlood: boolean = false;
@@ -25,7 +25,7 @@ export class KnowYourHazardsComponent implements OnInit {
 
   constructor(private kyhService: KyhService) {
     this.floodRiskLevel$ = this.kyhService.floodRiskLevel$;
-    this.stormsurgeRiskLevel$ = this.kyhService.stormsurgeRiskLevel$;
+    this.stormSurgeRiskLevel$ = this.kyhService.stormSurgeRiskLevel$;
     this.landslideRiskLevel$ = this.kyhService.landslideRiskLevel$;
     this.currentHazard$ = this.kyhService.currentHazard$;
   }
