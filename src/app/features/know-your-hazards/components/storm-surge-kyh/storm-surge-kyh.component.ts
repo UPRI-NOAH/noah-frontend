@@ -16,4 +16,8 @@ export class StormSurgeKyhComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  back() {
+    this.kyhService.setCurrentPage('know-your-hazards');
+  }
 }

@@ -17,4 +17,8 @@ export class LandslideKyhComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  back() {
+    this.kyhService.setCurrentPage('know-your-hazards');
+  }
 }

@@ -16,4 +16,8 @@ export class FloodKyhComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  back() {
+    this.kyhService.setCurrentPage('know-your-hazards');
+  }
 }

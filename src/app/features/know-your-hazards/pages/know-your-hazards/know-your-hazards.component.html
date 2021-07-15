@@ -66,7 +66,7 @@
               rounded-2xl
               hover:bg-blue-300
             "
-            (click)="isFlood = true; viewHazardLayer('flood')"
+            (click)="viewHazardLayer('flood')"
             id="menu"
             role="button"
           >
@@ -129,7 +129,7 @@
               rounded-2xl
               hover:bg-blue-300
             "
-            (click)="islandSlide = true; viewHazardLayer('landslide')"
+            (click)="viewHazardLayer('landslide')"
             id="menu"
             role="button"
           >
@@ -192,7 +192,7 @@
               rounded-2xl
               hover:bg-blue-300
             "
-            (click)="isStorm = true; viewHazardLayer('storm-surge')"
+            (click)="viewHazardLayer('storm-surge')"
             id="menu"
             role="button"
           >
@@ -256,11 +256,11 @@
   <!-- SIDEBAR START HERE -->
 
   <!-- FLOODING -->
-  <noah-flood-kyh *ngIf="isFlood"></noah-flood-kyh>
+  <noah-flood-kyh *ngIf="isFlood$ | async"></noah-flood-kyh>
 
   <!-- LANDSLIDE -->
-  <noah-landslide-kyh *ngIf="islandSlide"></noah-landslide-kyh>
+  <noah-landslide-kyh *ngIf="isLandSlide$ | async"></noah-landslide-kyh>
 
   <!-- STORMSURGE -->
-  <noah-storm-surge-kyh *ngIf="isStorm"></noah-storm-surge-kyh>
+  <noah-storm-surge-kyh *ngIf="isStormSurge$ | async"></noah-storm-surge-kyh>
 </div>
