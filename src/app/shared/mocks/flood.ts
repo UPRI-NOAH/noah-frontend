@@ -114,12 +114,30 @@ export const getHazardLayer = (
   },
   'source-layer': sourceLayer,
   paint: {
-    'fill-color': getHazardColor(type, color),
+    'fill-color': getHazardColor(type, color, id), // TO DO: Handle id properly
     'fill-opacity': 0.75,
   },
 });
 
-export const getHazardColor = (type: string, color: NoahColor): Expression => {
+// TO DO: Handle 3rd parameter properly
+// We need a way to check if the hazard we're getting the colors for only has a certain number of
+// hazard levels in it. Debris Flow only has 3 (highest level) in its dataset. If we add 1 and 2,
+// The color we designate for it won't render
+export const getHazardColor = (
+  type: string,
+  color: NoahColor,
+  hazardID: string
+): Expression => {
+  if (hazardID === 'debris-flow') {
+    return [
+      'interpolate',
+      ['linear'],
+      ['get', HAZARD_VARIABLES[type]],
+      3,
+      NOAH_COLORS[color].high,
+    ] as Expression;
+  }
+
   return [
     'interpolate',
     ['linear'],
