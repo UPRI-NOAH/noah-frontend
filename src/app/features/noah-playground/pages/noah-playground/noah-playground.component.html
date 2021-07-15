@@ -1,25 +1,41 @@
 <div
-  class="flex h-full antialiased text-black bg-black-100 dark:bg-dark dark:text-light"
+  class="
+    flex
+    h-full
+    antialiased
+    text-black
+    bg-black-100
+    dark:bg-dark dark:text-light
+  "
 >
   <div class="h-full z-50">
     <button
       (click)="isMenu = !isMenu"
-      class="fixed p-2 z-20 text-white bg-gray-800 top-7rounded-lg top-20"
+      class="
+        fixed
+        p-2
+        z-20
+        bg-white
+        text-gray-800
+        shadow-2xl
+        drop-shadow-2xl
+        rounded-r-lg
+        top-4
+      "
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="icon icon-tabler icon-tabler-chevron-right"
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
+        class="h-6 w-6"
         fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
-        <path stroke="none" d="M0 0h24v24H0z" />
-        <polyline points="9 6 15 12 9 18" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"
+        />
       </svg>
       <span class="sr-only">Open menu</span>
     </button>
@@ -27,7 +43,19 @@
     <div
       *ngIf="isMenu"
       id="sidebar"
-      class="fixed inset-y-0 z-40 flex w-96 bg-white overflow-y-auto lg:sticky h-screen top-0 pt-10"
+      class="
+        fixed
+        inset-y-0
+        z-40
+        flex
+        w-96
+        bg-white
+        overflow-y-auto
+        lg:sticky
+        h-screen
+        top-0
+        pt-4
+      "
     >
       <div class="absolute inset-0">
         <img
@@ -77,26 +105,45 @@
             (click)="isMenu = !isMenu"
             class="text-black ml-8 cursor-pointer"
           >
-            <svg
-              class="w-6 h-6"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <button
+              class="
+                fixed
+                p-2
+                z-20
+                bg-white
+                shadow-lg
+                drop-shadow-2xl
+                text-gray-800
+                rounded-l-lg
+                left-80
+                top-4
+              "
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
           </div>
         </div>
         <ul class="my-2 flex w-full flex-wrap">
           <!-- SEARCH -->
-          <noah-search-playground class="w-full mt-8"></noah-search-playground>
+          <noah-search-playground
+            class="w-full mt-4"
+            [searchTerm]="searchTerm"
+            (selectPlace)="selectPlace($event)"
+          >
+          </noah-search-playground>
 
           <!-- 3D -->
           <noah-exaggeration class="w-full"></noah-exaggeration>

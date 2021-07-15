@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaygroundService } from '@features/playground/services/playground.service';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
 
@@ -17,15 +17,16 @@ export class NoahPlaygroundComponent implements OnInit {
 
   hazardTypes = HAZARDS;
 
-  constructor(private playgroundService: PlaygroundService) {}
+  constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.currentLocationPg$ = this.playgroundService.currentLocationPg$;
+    this.currentLocationPg$ = this.pgService.currentLocation$;
   }
 
   selectPlace(selectedPlace) {
-    this.playgroundService.setCurrentLocationPg(selectedPlace.text);
+    this.pgService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;
-    this.playgroundService.setCenter({ lat, lng });
+    this.pgService.setCenter({ lat, lng });
+    this.pgService.setCurrentCoords({ lat, lng });
   }
 }

@@ -67,4 +67,11 @@ export class LandingPageComponent implements OnInit {
     this.praService.setCenter({ lat, lng });
     this.praService.setCurrentCoords({ lat, lng });
   }
+  gotoTop() {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
 }

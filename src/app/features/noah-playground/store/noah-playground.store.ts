@@ -4,8 +4,8 @@ import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
 
 export const PH_DEFAULT_CENTER = {
-  lat: 11.968179,
-  lng: 121.918612,
+  lat: 10.872407621178079,
+  lng: 124.93480374252101,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
@@ -92,6 +92,9 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   criticalFacilities: CriticalFacilitiesState;
+  center: { lng: number; lat: number };
+  currentCoords: { lng: number; lat: number };
+  currentLocation: string;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -195,6 +198,9 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+  center: PH_DEFAULT_CENTER,
+  currentCoords: PH_DEFAULT_CENTER,
+  currentLocation: '-----',
 });
 
 @Injectable({

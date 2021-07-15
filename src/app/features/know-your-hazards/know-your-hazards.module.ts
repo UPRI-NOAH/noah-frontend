@@ -15,6 +15,7 @@ import { MapKyhComponent } from './components/map-kyh/map-kyh.component';
 import { StormSurgeKyhComponent } from './components/storm-surge-kyh/storm-surge-kyh.component';
 import { SearchComponent } from './components/search/search.component';
 import { SharedModule } from '@shared/shared.module';
+import { SurvivalKitComponent } from './components/survival-kit/survival-kit.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SharedModule } from '@shared/shared.module';
     MapKyhComponent,
     StormSurgeKyhComponent,
     SearchComponent,
+    SurvivalKitComponent,
   ],
   imports: [CommonModule, KnowYourHazardsRoutingModule, SharedModule],
 })

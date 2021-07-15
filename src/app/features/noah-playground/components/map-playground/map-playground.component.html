@@ -1,51 +1,69 @@
 <div id="map"></div>
-<div class="bottom-3 fixed z-10 right-8 f py-2">
+<div class="bottom-6 fixed z-10 right-0">
   <div class="p-2">
     <div class="dropdown inline-block relative">
       <button
         class="
-          bg-sidebar
-          text-gray-700
+          bg-white
+          text-gray-800
           font-semibold
-          py-2
-          px-2
+          py-1
+          px-1
+          ml-2
           rounded
           inline-flex
           items-center
+          hover:bg-gray-200
+          focus:outline-none
+          focus:ring-2
+          focus:ring-gray-600
+          focus:ring-opacity-50
         "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 100 125"
-          width="35"
-          height="35"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
           <path
-            d="M9.375 92.55L37.5 78.489l25 12.5 28.125-14.062V7.44L62.5 21.504l-25-12.5L9.375 23.066zm56.25-10.109V26.926l18.75-9.375v55.515zm-6.25 0l-18.75-9.375V17.551l18.75 9.375zm-43.75 0V26.926l18.75-9.375v55.515zm0 0"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
           />
         </svg>
       </button>
       <ul
         class="
           dropdown-menu
-          right-12
-          bottom-2
+          rounded-lg
+          shadow-2xl
+          drop-shadow-xl
+          bg-white
+          right-9
+          bottom-0
           absolute
           hidden
-          text-gray-700
-          pt-1
+          text-sm text-gray-700
         "
       >
         <li class="">
           <a
             class="
-              rounded-t
-              bg-gray-200
-              hover:bg-gray-400
-              py-2
-              px-4
+              rounded-lg
               block
-              whitespace-no-wrap
+              px-4
+              py-2
+              text-sm
+              leading-5
+              text-gray-700
+              transition
+              duration-150
+              ease-in-out
+              hover:bg-gray-100
+              focus:outline-none focus:bg-gray-100
             "
             role="button"
             (click)="switchMapStyle('terrain')"
@@ -55,12 +73,18 @@
         <li class="">
           <a
             class="
-              bg-gray-200
-              hover:bg-gray-400
-              py-2
-              px-4
+              rounded-lg
               block
-              whitespace-no-wrap
+              px-4
+              py-2
+              text-sm
+              leading-5
+              text-gray-700
+              transition
+              duration-150
+              ease-in-out
+              hover:bg-gray-100
+              focus:outline-none focus:bg-gray-100
             "
             role="button"
             (click)="switchMapStyle('satellite')"

@@ -26,6 +26,22 @@ export class NoahPlaygroundService {
 
   constructor(private store: NoahPlaygroundStore) {}
 
+  get center$(): Observable<{ lng: number; lat: number }> {
+    return this.store.state$.pipe(map((state) => state.center));
+  }
+
+  get currentCoords$(): Observable<{ lng: number; lat: number }> {
+    return this.store.state$.pipe(map((state) => state.currentCoords));
+  }
+
+  get currentCoords(): { lng: number; lat: number } {
+    return this.store.state.currentCoords;
+  }
+
+  get currentLocation$(): Observable<string> {
+    return this.store.state$.pipe(map((state) => state.currentLocation));
+  }
+
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
   }
@@ -194,5 +210,17 @@ export class NoahPlaygroundService {
       { criticalFacilities },
       `CriticalFacility - update ${type}'s shown to ${value}`
     );
+  }
+
+  setCenter(center: { lat: number; lng: number }) {
+    this.store.patch({ center });
+  }
+
+  setCurrentCoords(currentCoords: { lat: number; lng: number }) {
+    this.store.patch({ currentCoords });
+  }
+
+  setCurrentLocation(currentLocation: string): void {
+    this.store.patch({ currentLocation }, 'update current location');
   }
 }

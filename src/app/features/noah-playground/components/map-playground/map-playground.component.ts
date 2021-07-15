@@ -1,11 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
-import mapboxgl, { Map, Marker } from 'mapbox-gl';
+import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { distinctUntilChanged, map, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { getHazardColor, getHazardLayer } from '@shared/mocks/flood';
 import {
@@ -13,6 +19,8 @@ import {
   CRITICAL_FACILITIES_ARR,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -23,6 +31,8 @@ type MapStyle = 'terrain' | 'satellite';
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
+  geolocateControl!: GeolocateControl;
+  centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
 
@@ -36,9 +46,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMap();
+
+    fromEvent(this.map, 'load')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(() => {
+        this.initGeocoder();
+        this.initGeolocation();
+        this.initCenterListener();
+        this.initGeolocationListener();
+      });
+
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        this.initMarkers();
         this.initExaggeration();
         this.initCriticalFacilityLayers();
         this.initHazardLayers();
@@ -50,6 +71,70 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this._unsub.complete();
     this._changeStyle.next();
     this._changeStyle.complete();
+  }
+
+  initGeocoder() {
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: {
+        color: 'orange',
+      },
+      flyTo: {
+        padding: 15,
+        easing: function (t) {
+          return t;
+        },
+        maxZoom: 13,
+      },
+    });
+    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    geocoder.on('result', (e) => {
+      this.pgService.setCurrentLocation(e.result['place_name']);
+      console.log(e.result);
+    });
+  }
+
+  initGeolocation() {
+    this.geolocateControl = this.mapService.getNewGeolocateControl();
+    this.map.addControl(this.geolocateControl, 'top-right');
+  }
+
+  initCenterListener() {
+    this.pgService.center$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .subscribe((center) => {
+        this.map.flyTo({
+          center,
+          zoom: 13,
+          essential: true,
+        });
+      });
+  }
+
+  initGeolocationListener() {
+    const _this = this;
+
+    fromEvent(this.geolocateControl, 'geolocate')
+      .pipe(takeUntil(this._unsub), debounceTime(2500))
+      .subscribe(locateUser);
+
+    async function locateUser(e) {
+      try {
+        const { latitude, longitude } = e.coords;
+        const myPlace = await _this.mapService.reverseGeocode(
+          latitude,
+          longitude
+        );
+        _this.pgService.setCurrentLocation(myPlace);
+      } catch (error) {
+        // temporary
+        alert(
+          'Unable to retrieve your location, please manually input your city / brgy'
+        );
+      }
+    }
   }
 
   initCriticalFacilityLayers() {
@@ -178,11 +263,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       // zoom: 5,
       zoom: 10,
       touchZoomRotate: true,
-      center: {
-        lat: 10.872407621178079,
-        lng: 124.93480374252101,
-      },
+      center: this.pgService.currentCoords,
     });
+  }
+
+  initMarkers() {
+    this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+      .setLngLat(this.pgService.currentCoords)
+      .addTo(this.map);
+
+    this.pgService.currentCoords$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((currentCoords) => {
+        this.centerMarker.setLngLat(currentCoords);
+      });
   }
 
   private _loadCriticalFacilityIcon(name: CriticalFacility) {

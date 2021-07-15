@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-between w-full">
   <div>
-    <div class="mt-6 flex w-full items-center justify-between">
+    <div class="flex w-full items-center justify-between">
       <button id="cross" class="text-gray-800" (click)="back()">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -206,6 +206,40 @@
           </p>
         </div>
       </div>
+      <div class="py-2 max-w-xl w-full flex flex-row">
+        <div class="flex-1">
+          <p class="text-black my-2">
+            Stay away from damaged power lines and report them immediately.
+          </p>
+        </div>
+        <div class="ml-4 md:mt-0 items-center flex">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="
+              w-16
+              h-16
+              rounded-2xl
+              p-3
+              border border-blue-100
+              text-blue-400
+              bg-blue-50
+            "
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="items-start mx-8">
+      <noah-survival-kit></noah-survival-kit>
     </div>
   </div>
 </div>

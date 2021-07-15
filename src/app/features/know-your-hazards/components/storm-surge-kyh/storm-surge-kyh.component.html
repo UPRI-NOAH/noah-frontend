@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-between w-full">
   <div>
-    <div class="mt-6 flex w-full items-center justify-between">
+    <div class="flex w-full items-center justify-between">
       <button id="cross" class="text-gray-800" (click)="back()">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@
             <span [ngClass]="'text-' + (stormSurgeRiskLevel$ | async)">{{
               stormSurgeRiskLevel$ | async
             }}</span
-            >. Evacuate immediately and move to a more elevated area when
+            >. <b>Evacuate immediately and move to a more elevated area</b> when
             there’s an alert for strong typhoons.
           </p>
         </div>
@@ -99,7 +99,8 @@
         </div>
         <div class="flex-1">
           <p class="text-black my-2">
-            Listen for emergency information and alerts.
+            <b>Always hava a survival kit ready and accessible.</b> Ideally this
+            is near your exit doors, ready for grabbing when in a rush.
           </p>
         </div>
       </div>
@@ -136,7 +137,6 @@
         </div>
       </div>
     </div>
-
     <div class="items-start mx-8">
       <h4 class="text-xl font-bold leading-tight my-2 pt-2">
         Surviving A Storm Suges
@@ -173,6 +173,9 @@
           </p>
         </div>
       </div>
+    </div>
+    <div class="items-start mx-8">
+      <noah-survival-kit></noah-survival-kit>
     </div>
   </div>
 </div>
