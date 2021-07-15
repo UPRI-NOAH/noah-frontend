@@ -19,7 +19,7 @@ type KYHState = {
   currentPage: KYHPage;
   currentHazard: HazardType;
   floodRiskLevel: RiskLevel;
-  stormsurgeRiskLevel: RiskLevel;
+  stormSurgeRiskLevel: RiskLevel;
   landslideRiskLevel: RiskLevel;
   currentLocation: string;
 };
@@ -32,7 +32,7 @@ const createInitialValue = (): KYHState => {
     currentPage: 'know-your-hazards',
     currentHazard: 'flood',
     floodRiskLevel: 'unavailable',
-    stormsurgeRiskLevel: 'unavailable',
+    stormSurgeRiskLevel: 'unavailable',
     landslideRiskLevel: 'unavailable',
     currentLocation: '------',
   };

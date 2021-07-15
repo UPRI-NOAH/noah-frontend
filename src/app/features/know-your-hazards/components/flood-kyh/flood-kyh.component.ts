@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
   styleUrls: ['./flood-kyh.component.scss'],
 })
 export class FloodKyhComponent implements OnInit {
-  @Input() isFlood: boolean = false;
   floodRiskLevel$: Observable<RiskLevel>;
 
   constructor(private kyhService: KyhService) {
@@ -17,4 +16,8 @@ export class FloodKyhComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  back() {
+    this.kyhService.setCurrentPage('know-your-hazards');
+  }
 }

@@ -6,6 +6,7 @@ import {
   RiskLevel,
 } from '@features/know-your-hazards/store/kyh.store';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-know-your-hazards',
@@ -16,18 +17,35 @@ export class KnowYourHazardsComponent implements OnInit {
   searchTerm: string;
   currentLocation$: Observable<string>;
   floodRiskLevel$: Observable<RiskLevel>;
-  stormsurgeRiskLevel$: Observable<RiskLevel>;
+  stormSurgeRiskLevel$: Observable<RiskLevel>;
   landslideRiskLevel$: Observable<RiskLevel>;
-  currentHazard$: Observable<HazardType>;
-  isFlood: boolean = false;
-  islandSlide: boolean = false;
-  isStorm: boolean = false;
+
+  get isKYHPage$(): Observable<boolean> {
+    return this.kyhService.currentPage$.pipe(
+      map((page) => page === 'know-your-hazards')
+    );
+  }
+
+  get isFlood$(): Observable<boolean> {
+    return this.kyhService.currentPage$.pipe(map((page) => page === 'flood'));
+  }
+
+  get isLandSlide$(): Observable<boolean> {
+    return this.kyhService.currentPage$.pipe(
+      map((page) => page === 'landslide')
+    );
+  }
+
+  get isStormSurge$(): Observable<boolean> {
+    return this.kyhService.currentPage$.pipe(
+      map((page) => page === 'storm-surge')
+    );
+  }
 
   constructor(private kyhService: KyhService) {
     this.floodRiskLevel$ = this.kyhService.floodRiskLevel$;
-    this.stormsurgeRiskLevel$ = this.kyhService.stormsurgeRiskLevel$;
+    this.stormSurgeRiskLevel$ = this.kyhService.stormSurgeRiskLevel$;
     this.landslideRiskLevel$ = this.kyhService.landslideRiskLevel$;
-    this.currentHazard$ = this.kyhService.currentHazard$;
   }
 
   ngOnInit(): void {
@@ -35,14 +53,12 @@ export class KnowYourHazardsComponent implements OnInit {
     this.kyhService.setCurrentPage('know-your-hazards');
     this.currentLocation$ = this.kyhService.currentLocation$;
   }
+
   viewHazardLayer(currentHazard: HazardType) {
     this.kyhService.setCurrentHazard(currentHazard);
+    this.kyhService.setCurrentPage(currentHazard);
   }
-  // viewAllLayer(currentPage: KYHPage) {
-  //   console.log(currentPage);
-  //   this.kyhService.init();
-  //   this.kyhService.setCurrentPage(currentPage);
-  // }
+
   selectPlace(selectedPlace) {
     this.kyhService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;

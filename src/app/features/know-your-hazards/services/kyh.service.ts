@@ -56,8 +56,8 @@ export class KyhService {
     return this.kyhStore.state$.pipe(map((state) => state.floodRiskLevel));
   }
 
-  get stormsurgeRiskLevel$(): Observable<RiskLevel> {
-    return this.kyhStore.state$.pipe(map((state) => state.stormsurgeRiskLevel));
+  get stormSurgeRiskLevel$(): Observable<RiskLevel> {
+    return this.kyhStore.state$.pipe(map((state) => state.stormSurgeRiskLevel));
   }
 
   get landslideRiskLevel$(): Observable<RiskLevel> {
@@ -87,7 +87,7 @@ export class KyhService {
     const floodRiskLevel = await this.hazardsService
       .assess(payloadFlood)
       .toPromise();
-    const stormsurgeRiskLevel = await this.hazardsService
+    const stormSurgeRiskLevel = await this.hazardsService
       .assess(payloadStormSurge)
       .toPromise();
     const landslideRiskLevel = await this.hazardsService
@@ -97,7 +97,7 @@ export class KyhService {
       {
         isLoading: false,
         floodRiskLevel: floodRiskLevel as RiskLevel,
-        stormsurgeRiskLevel: stormsurgeRiskLevel as RiskLevel,
+        stormSurgeRiskLevel: stormSurgeRiskLevel as RiskLevel,
         landslideRiskLevel: landslideRiskLevel as RiskLevel,
       },
       `updated risk level --`
