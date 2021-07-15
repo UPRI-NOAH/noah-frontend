@@ -57,7 +57,7 @@ export class MapKyhComponent implements OnInit {
         this.initLayers();
         this.initMarkers();
         this.hideAllLayers();
-        this.initHazardLayerListener();
+        this.initPageListener();
 
         const page = this.kyhService.currentPage;
         this.showLayers(page);
@@ -139,8 +139,8 @@ export class MapKyhComponent implements OnInit {
     this.map.addLayer(LEYTE_STORM_SURGE);
   }
 
-  initHazardLayerListener() {
-    this.kyhService.currentHazard$
+  initPageListener() {
+    this.kyhService.currentPage$
       .pipe(takeUntil(this._unsub))
       .subscribe((page) => {
         this.showLayers(page);
