@@ -4,6 +4,7 @@ import { MapService } from '@core/services/map.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
+
 type FixedLeyte = {
   center: [number, number];
   text: string;
