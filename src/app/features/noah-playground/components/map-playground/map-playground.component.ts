@@ -163,7 +163,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             this.map.setPaintProperty(
               l.id,
               'fill-color',
-              getHazardColor(h.type, level.color)
+              getHazardColor(h.type, level.color, l.id) // TO DO: Handle l.id properly
             )
           );
       });

@@ -23,8 +23,8 @@ export type StormSurgeAdvisory =
 
 export type LandslideHazards =
   | 'landslide-hazard'
-  | 'alluvial-fan-hazard'
-  // | 'debris-flow'
+  // | 'alluvial-fan-hazard'
+  | 'debris-flow'
   | 'unstable-slopes-maps';
 
 export type CriticalFacilityLayer =
@@ -130,7 +130,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
         color: 'noah-red',
         shown: false,
       },
-      'alluvial-fan-hazard': {
+      // 'alluvial-fan-hazard': {
+      //   opacity: 100,
+      //   color: 'noah-red',
+      //   shown: false,
+      // },
+      'debris-flow': {
         opacity: 100,
         color: 'noah-red',
         shown: false,

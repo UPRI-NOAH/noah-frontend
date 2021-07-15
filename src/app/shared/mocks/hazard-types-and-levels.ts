@@ -31,9 +31,16 @@ export const LANDSLIDE = {
   url: 'mapbox://jadurani.boxlw5qe',
 };
 
-export const ALLUVIAL_FAN = {
-  id: 'alluvial-fan-hazard' as HazardLevel,
-  name: 'Alluvial Fan',
+// export const ALLUVIAL_FAN = {
+//   id: 'alluvial-fan-hazard' as HazardLevel,
+//   name: 'Alluvial Fan',
+//   sourceLayer: 'Leyte_Merged_AFDF_1-4dfa9e',
+//   url: 'mapbox://jadurani.5z50jk2x',
+// };
+
+export const DEBRIS_FLOW = {
+  id: 'debris-flow' as HazardLevel,
+  name: 'Debris Flow',
   sourceLayer: 'Leyte_Merged_AFDF_1-4dfa9e',
   url: 'mapbox://jadurani.5z50jk2x',
 };
@@ -78,7 +85,8 @@ export const SSA4 = {
 export const FLOOD_HAZARD_LEVELS = [FLOOD_5RRP, FLOOD_25RRP, FLOOD_100RRP];
 export const LANDSLIDE_HAZARD_TYPES = [
   LANDSLIDE,
-  ALLUVIAL_FAN,
+  // ALLUVIAL_FAN,
+  DEBRIS_FLOW,
   UNSTABLE_SLOPES,
 ];
 export const STORM_SURGE_HAZARD_LEVELS = [SSA1, SSA2, SSA3, SSA4];
