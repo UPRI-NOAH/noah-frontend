@@ -42,6 +42,12 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.currentLocation));
   }
 
+  get criticalFacilitiesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.criticalFacilities.shown)
+    );
+  }
+
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
   }
