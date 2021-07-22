@@ -18,39 +18,17 @@
           <div class="container mx-auto py-72 px-4 h-full">
             <div class="flex content-center items-center justify-center h-full">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  mb-6
-                  rounded-lg
-                  border-0
-                "
+                class="relative flex flex-col min-w-0 break-words mb-6 rounded-lg border-0"
               >
                 <div class="flex-auto">
                   <div
-                    class="
-                      w-9/12
-                      m-auto
-                      py-16
-                      min-h-screen
-                      flex
-                      items-center
-                      justify-center
-                      z-50
-                    "
+                    class="w-9/12 m-auto py-16 min-h-screen flex items-center justify-center z-50"
                   >
                     <div
                       class="bg-white shadow overflow-hidden sm:rounded-lg pb-8"
                     >
                       <div
-                        class="
-                          border-t border-gray-200
-                          text-center
-                          pt-7
-                          sm:pt-14
-                        "
+                        class="border-t border-gray-200 text-center pt-7 sm:pt-14"
                       >
                         <h1 class="text-2xl sm:text-4xl font-bold p-2 pb-8">
                           Know Your Hazards
@@ -64,17 +42,7 @@
                           <div class="md:flex-shrink-1 w-full">
                             <div class="p-1 px-4 sm:px-20 pb-2 pt-4">
                               <div
-                                class="
-                                  relative
-                                  border-solid border-gray-300 border-2
-                                  bg-white
-                                  flex
-                                  justify-center
-                                  items-center
-                                  rounded-full
-                                  shadow-xl
-                                  z-10
-                                "
+                                class="relative border-solid border-gray-300 border-2 bg-white flex justify-center items-center rounded-full shadow-xl z-10"
                               >
                                 <div class="pl-3">
                                   <svg
@@ -105,15 +73,7 @@
                                   (keyup)="isDropdownOpen = true"
                                   (focus)="isDropdownOpen = true"
                                   autocomplete="off"
-                                  class="
-                                    rounded-l-full
-                                    w-full
-                                    py-4
-                                    px-7
-                                    text-gray-700
-                                    leading-tight
-                                    focus:outline-none
-                                  "
+                                  class="rounded-l-full w-full py-4 px-7 text-gray-700 leading-tight focus:outline-none"
                                   id="search"
                                   type="text"
                                   placeholder="Where do you live?"
@@ -175,15 +135,7 @@
                               </div>
                               <!-- DROPDOWN -->
                               <div
-                                class="
-                                  relative
-                                  mt-2
-                                  py-2
-                                  bg-white
-                                  shadow-xl
-                                  rounded-md
-                                  z-10
-                                "
+                                class="relative mt-2 py-2 bg-white shadow-xl rounded-md z-10"
                                 *ngIf="
                                   isDropdownOpen && (places$ | async)?.length
                                 "
@@ -191,29 +143,11 @@
                                 <button
                                   [routerLink]="['/know-your-hazards']"
                                   (click)="pickPlace(fixedForLeyte)"
-                                  class="
-                                    block
-                                    w-full
-                                    px-4
-                                    py-2
-                                    text-left text-gray-800
-                                    hover:bg-primary hover:text-white
-                                    transition
-                                    duration-150
-                                    ease-in-out
-                                    focus:outline-none
-                                    group
-                                  "
+                                  class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white transition duration-150 ease-in-out focus:outline-none group"
                                 >
                                   {{ fixedForLeyte.text }}
                                   <div
-                                    class="
-                                      text-xs text-gray-400
-                                      group-hover:text-gray-100
-                                      overflow-ellipsis
-                                      whitespace-nowrap
-                                      overflow-hidden
-                                    "
+                                    class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
                                   >
                                     {{ fixedForLeyte.place_name }}
                                   </div>
@@ -223,29 +157,11 @@
                                   [routerLink]="['/know-your-hazards']"
                                   (click)="pickPlace(place)"
                                   *ngFor="let place of places$ | async"
-                                  class="
-                                    block
-                                    w-full
-                                    px-4
-                                    py-2
-                                    text-left text-gray-800
-                                    hover:bg-primary hover:text-white
-                                    transition
-                                    duration-150
-                                    ease-in-out
-                                    focus:outline-none
-                                    group
-                                  "
+                                  class="block w-full px-4 py-2 text-left text-gray-800 hover:bg-primary hover:text-white transition duration-150 ease-in-out focus:outline-none group"
                                 >
                                   {{ place.text }}
                                   <div
-                                    class="
-                                      text-xs text-gray-400
-                                      group-hover:text-gray-100
-                                      overflow-ellipsis
-                                      whitespace-nowrap
-                                      overflow-hidden
-                                    "
+                                    class="text-xs text-gray-400 group-hover:text-gray-100 overflow-ellipsis whitespace-nowrap overflow-hidden"
                                   >
                                     {{ place.place_name }}
                                   </div>
@@ -256,14 +172,7 @@
                               <div
                                 (click)="isDropdownOpen = false"
                                 *ngIf="isDropdownOpen"
-                                class="
-                                  fixed
-                                  h-full
-                                  top-0
-                                  right-0
-                                  bottom-0
-                                  left-0
-                                "
+                                class="fixed h-full top-0 right-0 bottom-0 left-0"
                               ></div>
                             </div>
                           </div>
@@ -295,27 +204,7 @@
           </p>
 
           <button
-            class="
-              mx-auto
-              lg:mx-0
-              transform
-              transition
-              hover:scale-110
-              duration-700
-              ease-in-out
-              bg-white
-              text-primary
-              font-bold
-              rounded-full
-              border
-              text-xs
-              border-primary
-              my-6
-              py-2
-              px-8
-              shadow-lg
-              uppercase
-            "
+            class="mx-auto lg:mx-0 transform transition hover:scale-110 duration-700 ease-in-out bg-white text-primary font-bold rounded-full border text-xs border-primary my-6 py-2 px-8 shadow-lg uppercase"
             (click)="gotoTop()"
           >
             Find out now
@@ -359,27 +248,7 @@
             those caused by the typhoon Yolanda?
           </p>
           <button
-            class="
-              mx-auto
-              lg:mx-0
-              transform
-              transition
-              hover:scale-110
-              duration-700
-              ease-in-out
-              bg-white
-              text-primary
-              font-bold
-              rounded-full
-              border
-              text-xs
-              border-primary
-              my-6
-              py-2
-              px-8
-              shadow-lg
-              uppercase
-            "
+            class="mx-auto lg:mx-0 transform transition hover:scale-110 duration-700 ease-in-out bg-white text-primary font-bold rounded-full border text-xs border-primary my-6 py-2 px-8 shadow-lg uppercase"
             (click)="gotoTop()"
           >
             Find out now
@@ -402,20 +271,7 @@
       </p>
 
       <button
-        class="
-          mx-auto
-          lg:mx-0
-          hover:underline
-          bg-primary
-          text-white
-          font-bold
-          rounded-full
-          my-4
-          py-2
-          px-8
-          shadow-lg
-          uppercase
-        "
+        class="mx-auto lg:mx-0 hover:underline bg-primary text-white font-bold rounded-full my-4 py-2 px-8 shadow-lg uppercase"
         routerLink="noah-playground"
       >
         NOAH Playground
@@ -458,190 +314,5 @@
       </g>
     </g>
   </svg>
-
-  <footer class="bg-gray-300 pt-12 pb-8 px-4">
-    <div
-      class="
-        mx-auto
-        px-4
-        container
-        overflow-hidden
-        flex flex-col
-        lg:flex-row
-        justify-between
-      "
-    >
-      <div class="w-full lg:w-2/6 lg:mx-4 lg:pr-8">
-        <a
-          class="
-            flex
-            title-font
-            font-medium
-            items-center
-            md:justify-start
-            justify-center
-          "
-        >
-          <img src="assets/icons/logo-noah.png" class="z-50 w-24" />
-          <span class="ml-3 text-s">
-            Nationwide Operational<br />Assessment of Hazards (NOAH)</span
-          >
-        </a>
-        <form class="flex items-center mt-6 justify-center">
-          <div class="w-full">
-            <label
-              class="
-                block
-                uppercase
-                tracking-wide
-                text-gray-600 text-sm
-                font-bold
-                mb-2
-              "
-              for="grid-last-name"
-            >
-              noah is a project of:
-            </label>
-            <div class="relative flex">
-              <a href="https://up.edu.ph/" target="_blank"
-                ><img src="assets/icons/up.png"
-              /></a>
-
-              <a
-                href="https://www.facebook.com/UPResilienceInstitute/"
-                target="_blank"
-              >
-                <img src="assets/icons/upri.png" class="pl-2"
-              /></a>
-              <a
-                class="ml-4 pt-2 text-s"
-                href="https://www.facebook.com/UPResilienceInstitute/"
-                target="_blank"
-                >UP Resilience Institute</a
-              >
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div class="w-2/3 block sm:flex text-sm mt-6 lg:mt-0">
-        <ul
-          class="
-            text-gray-700
-            list-none
-            p-0
-            font-thin
-            flex flex-col
-            text-left
-            w-full
-          "
-        >
-          <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
-            Related Project
-          </li>
-          <li>
-            <a
-              href="https://endcov.ph/"
-              target="_blank"
-              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-              >Endcov.ph</a
-            >
-          </li>
-          <li>
-            <a
-              href="https://rebuild.noah.up.edu.ph/"
-              target="_blank"
-              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-              >ReBUILD</a
-            >
-          </li>
-          <li>
-            <a
-              href="http://noah.up.edu.ph/#/websafe"
-              target="_blank"
-              class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-              >WebSAFE</a
-            >
-          </li>
-          <!-- <li>
-            <a href="#" class="inline-block py-2 px-3 hover:text-blue-600 no-underline pb-5">Safer U</a>
-          </li> -->
-        </ul>
-
-        <ul
-          class="
-            text-gray-700
-            list-none
-            p-0
-            font-thin
-            flex flex-col
-            text-left
-            w-full
-            md:pl-20
-            lg:pl-24
-            xl:pl-0
-          "
-        >
-          <div class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
-            Contact Us
-          </div>
-          <div class="flex pl-4 justify-start mt-2 pb-4">
-            <a
-              class="flex items-center hover:text-blue-600 mr-6 no-underline"
-              href="https://www.facebook.com/UPNOAH"
-              target="_blank"
-            >
-              <svg viewBox="0 0 24 24" class="fill-current w-5 h-5">
-                <path
-                  d="M23.998 12c0-6.628-5.372-12-11.999-12C5.372 0 0 5.372 0 12c0 5.988 4.388 10.952 10.124 11.852v-8.384H7.078v-3.469h3.046V9.356c0-3.008 1.792-4.669 4.532-4.669 1.313 0 2.686.234 2.686.234v2.953H15.83c-1.49 0-1.955.925-1.955 1.874V12h3.328l-.532 3.469h-2.796v8.384c5.736-.9 10.124-5.864 10.124-11.853z"
-                />
-              </svg>
-            </a>
-            <a
-              class="flex items-center hover:text-blue-600 mr-6 no-underline"
-              href="https://twitter.com/nababaha"
-              target="_blank"
-            >
-              <svg viewBox="0 0 24 24" class="fill-current w-5 h-5">
-                <path
-                  d="M23.954 4.569a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.691 8.094 4.066 6.13 1.64 3.161a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.061a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63a9.936 9.936 0 002.46-2.548l-.047-.02z"
-                />
-              </svg>
-            </a>
-            <a
-              class="flex items-center hover:text-blue-600 no-underline"
-              href="mailto:resilience.institute@up.edu.ph"
-              target="_blank"
-            >
-              <svg
-                fill="none"
-                class="h-6 w-6 mr-6"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </a>
-          </div>
-        </ul>
-
-        <div class="text-gray-700 flex flex-col w-full md:pl-6 pr-4">
-          <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
-            About
-          </li>
-          <p class="text-black-400 py-2 px-5 sm:w-72 lg:w-64 xl:w-96 md:w-96">
-            UP NOAH seeks to assist the country in disaster risk reduction and
-            management, climate change adaptation and mitigation efforts and
-            related activities through reserach, development and extension
-            services.
-          </p>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <noah-footer></noah-footer>
 </body>

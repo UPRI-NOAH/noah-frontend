@@ -17,6 +17,7 @@ module.exports = {
         'light-blue': colors.lightBlue,
         cyan: colors.cyan,
         sidebar: 'var(--color-sidebar)',
+        footer: 'var(--color-6)',
 
         // CHOOSE COLORS
         color1: 'var(--color-1)',
