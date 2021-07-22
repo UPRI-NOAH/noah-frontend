@@ -159,6 +159,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
     });
 
+    // Watch exaggeration level
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
@@ -170,6 +171,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
       );
 
+    // Watch exaggeration visibility
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
@@ -190,24 +192,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initHazardLayers() {
-    // Loop through each of the hazard layers for each hazard level
-
-    // Loop through all the hazard levels (flood: 5-year, 25-year, 100-year, etc)
-    // const viewHazardLevels = (hazard) => {
-    //   hazard.levels.forEach((hazardLevel) => {
-    //     this.map.addLayer(getHazardLayer(hazardLevel.id, hazardLevel.url, hazardLevel.sourceLayer, hazard.type));
-    //   })
-    // }
-
     // Loop through all the hazard types (floods, landslides, storm surges)
     HAZARDS.forEach((h) => {
-      // viewHazardLevels(h)
-
+      // Loop through all the hazard levels (flood: 5-year, 25-year, 100-year, etc)
       h.levels.forEach((hl) => {
+        // Loop through each of the hazard layers for each hazard level
         hl.layers.forEach((l) => {
           this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
-          // opacity
+          // Watch changes in opacity
           this.pgService
             .getHazardLevel$(h.type, l.id)
             .pipe(
@@ -223,7 +216,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               )
             );
 
-          // shown
+          // Watch changes in visibility
           const hazardType$ = this.pgService.getHazard$(h.type).pipe(
             takeUntil(this._unsub),
             takeUntil(this._changeStyle),
@@ -266,7 +259,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.setPaintProperty(l.id, 'fill-opacity', 0);
             });
 
-          // color
+          // Watch changes in color
           this.pgService
             .getHazardLevel$(h.type, l.id)
             .pipe(
