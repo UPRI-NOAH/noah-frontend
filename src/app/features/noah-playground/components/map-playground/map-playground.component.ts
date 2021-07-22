@@ -50,8 +50,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     fromEvent(this.map, 'load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        this.initGeocoder();
-        this.initGeolocation();
+        this.addNavigationControls();
+        this.addGeolocationControls();
         this.initCenterListener();
         this.initGeolocationListener();
       });
@@ -60,8 +60,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.initMarkers();
-        this.initExaggeration();
-        this.initCriticalFacilityLayers();
+        this.addExaggerationControl();
+        this.addCriticalFacilityLayers();
         this.initHazardLayers();
       });
   }
@@ -73,34 +73,24 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this._changeStyle.complete();
   }
 
-  initGeocoder() {
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
-      marker: {
-        color: 'orange',
-      },
-      flyTo: {
-        padding: 15,
-        easing: function (t) {
-          return t;
-        },
-        maxZoom: 13,
-      },
-    });
+  /**
+   * Adds the plus and minus zoom map controls
+   */
+  addNavigationControls() {
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    geocoder.on('result', (e) => {
-      this.pgService.setCurrentLocation(e.result['place_name']);
-      console.log(e.result);
-    });
   }
 
-  initGeolocation() {
+  /**
+   * Adds the geolocation map control
+   */
+  addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
   }
 
+  /**
+   * Listen to the changes in the page state's center
+   */
   initCenterListener() {
     this.pgService.center$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
@@ -112,6 +102,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
       });
   }
+
+  /**
+   * Initializes reverse geocoder.
+   *
+   * Reverse Geocoding is the process of identifying the human-friendly format of an address
+   * given a valid latitude and longitude pair.
+   *
+   * We always set the current location to the result of the reverse geocoder function.
+   */
 
   initGeolocationListener() {
     const _this = this;
@@ -127,6 +126,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           latitude,
           longitude
         );
+
         _this.pgService.setCurrentLocation(myPlace);
       } catch (error) {
         // temporary
@@ -137,11 +137,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     }
   }
 
-  initCriticalFacilityLayers() {
+  /**
+   * Add the layers for the critical facilities.
+   *
+   * Note that each critical facility type has its own layer in mapbox as of the current
+   * implementation.
+   */
+  addCriticalFacilityLayers() {
     CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
   }
 
-  initExaggeration() {
+  /**
+   * Manually update the exaggeration of the map.
+   *
+   * Reference:
+   * https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
+   */
+  addExaggerationControl() {
     this.map.addSource('mapbox-dem', {
       type: 'raster-dem',
       url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -277,10 +289,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   initMap() {
     this.mapService.init();
+
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      // zoom: 5,
       zoom: 10,
       touchZoomRotate: true,
       center: this.pgService.currentCoords,
@@ -297,6 +309,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
       });
+  }
+
+  switchMapStyle(style: MapStyle) {
+    if (this.mapStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.mapStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
+    }
   }
 
   private _loadCriticalFacilityIcon(name: CriticalFacility) {
@@ -361,15 +383,5 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         }
       );
     });
-  }
-
-  switchMapStyle(style: MapStyle) {
-    if (this.mapStyle === style) return;
-
-    if (style in environment.mapbox.styles) {
-      this.mapStyle = style;
-      this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
-    }
   }
 }
