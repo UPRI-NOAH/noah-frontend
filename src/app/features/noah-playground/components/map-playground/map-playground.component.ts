@@ -178,79 +178,99 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initHazardLayers() {
+    // Loop through each of the hazard layers for each hazard level
+
+    // Loop through all the hazard levels (flood: 5-year, 25-year, 100-year, etc)
+    // const viewHazardLevels = (hazard) => {
+    //   hazard.levels.forEach((hazardLevel) => {
+    //     this.map.addLayer(getHazardLayer(hazardLevel.id, hazardLevel.url, hazardLevel.sourceLayer, hazard.type));
+    //   })
+    // }
+
+    // Loop through all the hazard types (floods, landslides, storm surges)
     HAZARDS.forEach((h) => {
-      h.levels.forEach((l) => {
-        this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
+      // viewHazardLevels(h)
 
-        // opacity
-        this.pgService
-          .getHazardLevel$(h.type, l.id)
-          .pipe(
-            takeUntil(this._unsub),
-            takeUntil(this._changeStyle),
-            distinctUntilChanged((x, y) => x.opacity !== y.opacity)
-          )
-          .subscribe((level) =>
-            this.map.setPaintProperty(l.id, 'fill-opacity', level.opacity / 100)
-          );
+      h.levels.forEach((hl) => {
+        hl.layers.forEach((l) => {
+          this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
 
-        // shown
-        const hazardType$ = this.pgService.getHazard$(h.type).pipe(
-          takeUntil(this._unsub),
-          takeUntil(this._changeStyle),
-          distinctUntilChanged((x, y) => x.shown === y.shown)
-        );
-
-        const hazardLevel$ = this.pgService.getHazardLevel$(h.type, l.id).pipe(
-          takeUntil(this._unsub),
-          takeUntil(this._changeStyle),
-          distinctUntilChanged((x, y) => x.shown !== y.shown)
-        );
-
-        combineLatest([hazardType$, hazardLevel$])
-          .pipe(
-            tap(([hazardType, hazardLevel]) => {
-              if (h.type === 'flood') {
-                console.log(
-                  'hazardTypeShown',
-                  hazardType.shown,
-                  'hazardLevelShown',
-                  hazardLevel.shown,
-                  h.name,
-                  l.name
-                );
-              }
-            })
-          )
-          .subscribe(([hazardType, hazardLevel]) => {
-            if (hazardType.shown && hazardLevel.shown) {
+          // opacity
+          this.pgService
+            .getHazardLevel$(h.type, l.id)
+            .pipe(
+              takeUntil(this._unsub),
+              takeUntil(this._changeStyle),
+              distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+            )
+            .subscribe((level) =>
               this.map.setPaintProperty(
                 l.id,
                 'fill-opacity',
-                hazardLevel.opacity / 100
-              );
-              return;
-            }
+                level.opacity / 100
+              )
+            );
 
-            this.map.setPaintProperty(l.id, 'fill-opacity', 0);
-          });
-
-        // color
-        this.pgService
-          .getHazardLevel$(h.type, l.id)
-          .pipe(
+          // shown
+          const hazardType$ = this.pgService.getHazard$(h.type).pipe(
             takeUntil(this._unsub),
             takeUntil(this._changeStyle),
-            tap((c) => console.log(c)),
-            distinctUntilChanged((x, y) => x.color !== y.color)
-          )
-          .subscribe((level) =>
-            this.map.setPaintProperty(
-              l.id,
-              'fill-color',
-              getHazardColor(h.type, level.color, l.id) // TO DO: Handle l.id properly
-            )
+            distinctUntilChanged((x, y) => x.shown === y.shown)
           );
+
+          const hazardLevel$ = this.pgService
+            .getHazardLevel$(h.type, l.id)
+            .pipe(
+              takeUntil(this._unsub),
+              takeUntil(this._changeStyle),
+              distinctUntilChanged((x, y) => x.shown !== y.shown)
+            );
+
+          combineLatest([hazardType$, hazardLevel$])
+            .pipe(
+              tap(([hazardType, hazardLevel]) => {
+                if (h.type === 'flood') {
+                  console.log(
+                    'hazardTypeShown',
+                    hazardType.shown,
+                    'hazardLevelShown',
+                    hazardLevel.shown,
+                    h.name,
+                    hl.name
+                  );
+                }
+              })
+            )
+            .subscribe(([hazardType, hazardLevel]) => {
+              if (hazardType.shown && hazardLevel.shown) {
+                this.map.setPaintProperty(
+                  l.id,
+                  'fill-opacity',
+                  hazardLevel.opacity / 100
+                );
+                return;
+              }
+
+              this.map.setPaintProperty(l.id, 'fill-opacity', 0);
+            });
+
+          // color
+          this.pgService
+            .getHazardLevel$(h.type, l.id)
+            .pipe(
+              takeUntil(this._unsub),
+              takeUntil(this._changeStyle),
+              tap((c) => console.log(c)),
+              distinctUntilChanged((x, y) => x.color !== y.color)
+            )
+            .subscribe((level) =>
+              this.map.setPaintProperty(
+                l.id,
+                'fill-color',
+                getHazardColor(h.type, level.color, l.id) // TO DO: Handle l.id properly
+              )
+            );
+        });
       });
     });
   }
