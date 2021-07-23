@@ -202,7 +202,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
           // Watch changes in opacity
           this.pgService
-            .getHazardLevel$(h.type, l.id)
+            .getHazardLevel$(h.type, hl.id)
             .pipe(
               takeUntil(this._unsub),
               takeUntil(this._changeStyle),
@@ -224,7 +224,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           );
 
           const hazardLevel$ = this.pgService
-            .getHazardLevel$(h.type, l.id)
+            .getHazardLevel$(h.type, hl.id)
             .pipe(
               takeUntil(this._unsub),
               takeUntil(this._changeStyle),
@@ -261,7 +261,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
           // Watch changes in color
           this.pgService
-            .getHazardLevel$(h.type, l.id)
+            .getHazardLevel$(h.type, hl.id)
             .pipe(
               takeUntil(this._unsub),
               takeUntil(this._changeStyle),

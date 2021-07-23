@@ -1,5 +1,6 @@
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+import { FLOOD_25_ALL } from './fh_25yr';
 
 // FLOOD
 export const FLOOD_5RRP = {
@@ -17,13 +18,14 @@ export const FLOOD_5RRP = {
 export const FLOOD_25RRP = {
   id: 'flood-return-period-25' as HazardLevel,
   name: '25-Year Return Period',
-  layers: [
-    {
-      id: 'flood-return-period-25' as HazardLevel,
-      sourceLayer: 'Leyte_25year_Flood-cquuxm',
-      url: 'mapbox://jadurani.60qgk1hq',
-    },
-  ],
+  layers: FLOOD_25_ALL,
+  // layers: [
+  //   {
+  //     id: 'flood-return-period-25' as HazardLevel,
+  //     sourceLayer: 'Leyte_25year_Flood-cquuxm',
+  //     url: 'mapbox://jadurani.60qgk1hq',
+  //   },
+  // ],
 };
 
 export const FLOOD_100RRP = {
