@@ -198,7 +198,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       h.levels.forEach((hl) => {
         // Loop through each of the hazard layers for each hazard level
         hl.layers.forEach((l) => {
-          this.map.addLayer(getHazardLayer(l.id, l.url, l.sourceLayer, h.type));
+          this.map.addLayer(
+            getHazardLayer(l.sourceLayer, l.url, l.sourceLayer, h.type)
+          );
 
           // Watch changes in opacity
           this.pgService
@@ -210,7 +212,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             )
             .subscribe((level) =>
               this.map.setPaintProperty(
-                l.id,
+                l.sourceLayer,
                 'fill-opacity',
                 level.opacity / 100
               )
@@ -234,7 +236,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           combineLatest([hazardType$, hazardLevel$])
             .pipe(
               tap(([hazardType, hazardLevel]) => {
-                if (h.type === 'flood') {
+                if (h.type === 'flood' && !environment.production) {
                   console.log(
                     'hazardTypeShown',
                     hazardType.shown,
@@ -249,14 +251,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .subscribe(([hazardType, hazardLevel]) => {
               if (hazardType.shown && hazardLevel.shown) {
                 this.map.setPaintProperty(
-                  l.id,
+                  l.sourceLayer,
                   'fill-opacity',
                   hazardLevel.opacity / 100
                 );
                 return;
               }
 
-              this.map.setPaintProperty(l.id, 'fill-opacity', 0);
+              this.map.setPaintProperty(l.sourceLayer, 'fill-opacity', 0);
             });
 
           // Watch changes in color
@@ -265,14 +267,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .pipe(
               takeUntil(this._unsub),
               takeUntil(this._changeStyle),
-              tap((c) => console.log(c)),
               distinctUntilChanged((x, y) => x.color !== y.color)
             )
             .subscribe((level) =>
               this.map.setPaintProperty(
-                l.id,
+                l.sourceLayer,
                 'fill-color',
-                getHazardColor(h.type, level.color, l.id) // TO DO: Handle l.id properly
+                getHazardColor(h.type, level.color, l.sourceLayer) // TO DO: Handle l.sourceLayer properly
               )
             );
         });
