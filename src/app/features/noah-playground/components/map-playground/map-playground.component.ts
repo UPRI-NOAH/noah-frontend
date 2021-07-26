@@ -267,7 +267,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .pipe(
               takeUntil(this._unsub),
               takeUntil(this._changeStyle),
-              tap((c) => console.log(c)),
+              // tap((c) => console.log(c)),
               distinctUntilChanged((x, y) => x.color !== y.color)
             )
             .subscribe((level) =>
