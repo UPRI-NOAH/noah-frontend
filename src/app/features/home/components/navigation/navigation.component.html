@@ -81,46 +81,13 @@
           z-20
         "
         id="nav-content"
-      >
-        <ul class="list-reset lg:flex justify-end flex-1 items-center">
-          <li class="mr-3">
-            <a class="inline-block py-2 px-4 text-black no-underline">About</a>
-          </li>
-          <li class="mr-3">
-            <a
-              class="
-                inline-block
-                text-black
-                no-underline
-                hover:text-gray-800 hover:text-underline
-                py-2
-                px-4
-              "
-              >Downloads</a
-            >
-          </li>
-          <li class="mr-3">
-            <a
-              class="
-                inline-block
-                text-black
-                no-underline
-                hover:text-gray-800 hover:text-underline
-                py-2
-                px-4
-              "
-              >Blog</a
-            >
-          </li>
-        </ul>
-      </div>
+      ></div>
       <button
         type="button"
         class="
           text-xs
           uppercase
           font-bold
-          tracking-wider
           bg-white
           rounded-full
           px-10
@@ -130,16 +97,13 @@
           items-center
           justify-center
           text-gray-800
-          focus:outline-none focus:ring-2 focus:ring-inset
+          focus:outline-none
           mx-auto
           lg:mx-0
-          transform
-          transition
-          hover:scale-105
-          duration-700
-          ease-in-out
-          shadow-lg
-          border-gray-400 border
+          tracking-widest
+          hover:bg-gray-100
+          focus:ring-opacity-50
+          border-gray-600 border-2
         "
         routerLink="noah-playground"
       >
@@ -324,45 +288,34 @@
             </div>
 
             <ul class="f-m-m">
-              <a class="cursor-pointer">
-                <li class="text-gray-800 pt-8">
-                  <div class="flex items-center">
-                    <p class="text-black-700 xl:text-base text-base ml-3">
-                      About
-                    </p>
-                  </div>
-                </li>
-              </a>
-              <a class="cursor-pointer">
-                <li class="text-gray-800 pt-8">
-                  <div class="flex items-center">
-                    <p class="text-black-700 xl:text-base text-base ml-3">
-                      Downloads
-                    </p>
-                  </div>
-                </li>
-              </a>
-              <a class="cursor-pointer">
-                <li class="text-gray-800 pt-8">
-                  <div class="flex items-center">
-                    <p class="text-black-700 xl:text-base text-base ml-3">
-                      Blog
-                    </p>
-                  </div>
-                </li>
-              </a>
-              <a class="cursor-pointer">
-                <li class="text-gray-800 pt-8">
-                  <div class="flex items-center">
-                    <p
-                      class="text-black-700 xl:text-base text-base ml-3"
-                      routerLink="noah-playground"
-                    >
-                      Noah Playground
-                    </p>
-                  </div>
-                </li>
-              </a>
+              <button
+                type="button"
+                class="
+                  text-xs
+                  uppercase
+                  font-bold
+                  tracking-widest
+                  bg-white
+                  rounded-full
+                  px-6
+                  py-2
+                  my-4
+                  inline-flex
+                  items-center
+                  justify-center
+                  text-gray-800
+                  focus:outline-none
+                  mx-auto
+                  lg:mx-0
+                  hover:bg-gray-100
+                  focus:ring-opacity-50
+                  shadow-lg
+                  border-gray-600 border
+                "
+                routerLink="noah-playground"
+              >
+                NOAH Playground
+              </button>
             </ul>
           </div>
         </div>

@@ -71,6 +71,35 @@
     *ngIf="isDropdownOpen && (places$ | async)?.length"
   >
     <button
+      (click)="pickPlace(fixedForLeyte)"
+      class="
+        block
+        w-full
+        px-4
+        py-2
+        text-left text-gray-800
+        hover:bg-primary hover:text-white
+        transition
+        duration-150
+        ease-in-out
+        focus:outline-none
+        group
+      "
+    >
+      {{ fixedForLeyte.text }}
+      <div
+        class="
+          text-xs text-gray-400
+          group-hover:text-gray-100
+          overflow-ellipsis
+          whitespace-nowrap
+          overflow-hidden
+        "
+      >
+        {{ fixedForLeyte.place_name }}
+      </div>
+    </button>
+    <button
       (click)="pickPlace(place)"
       *ngFor="let place of places$ | async"
       class="

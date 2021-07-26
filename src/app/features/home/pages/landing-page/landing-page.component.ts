@@ -49,9 +49,9 @@ export class LandingPageComponent implements OnInit {
 
   get fixedForLeyte(): FixedLeyte {
     return {
-      center: [124.881119, 10.862454],
+      center: [124.98707397619495, 10.777080241395213],
       text: 'Leyte',
-      place_name: 'Leyte',
+      place_name: 'Leyte, Philippines',
     };
   }
 
