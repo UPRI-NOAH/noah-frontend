@@ -129,15 +129,15 @@ export const MAPBOX_CRIT_FAC = {
     sourceLayer: 'leyte_schools',
   },
   hospital: {
-    url: 'mapbox://jadurani.ckq7ua4aq1yh328qncf078jpv-9xhtt',
-    sourceLayer: 'leyte_hospitals',
+    url: 'mapbox://upri-noah.2a8zm5hu',
+    sourceLayer: 'ph_hospitals-44uwvx',
   },
   'fire-station': {
-    url: 'mapbox://jadurani.ckq7u97310bbw28lg0yxolcv2-1gmiz',
-    sourceLayer: 'leyte_firestation',
+    url: 'mapbox://upri-noah.cbkp0ozh',
+    sourceLayer: 'ph_fire_stations-15tnbr',
   },
   'police-station': {
-    url: 'mapbox://jadurani.ckq7uatvk04kq21pqtks7rj3m-0n4tz',
-    sourceLayer: 'leyte_police',
+    url: 'mapbox://upri-noah.0u1pnlwz',
+    sourceLayer: 'ph_police_stations-5h217v',
   },
 };
