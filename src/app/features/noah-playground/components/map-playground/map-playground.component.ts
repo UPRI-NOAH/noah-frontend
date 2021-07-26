@@ -236,7 +236,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           combineLatest([hazardType$, hazardLevel$])
             .pipe(
               tap(([hazardType, hazardLevel]) => {
-                if (h.type === 'flood') {
+                if (h.type === 'flood' && !environment.production) {
                   console.log(
                     'hazardTypeShown',
                     hazardType.shown,
