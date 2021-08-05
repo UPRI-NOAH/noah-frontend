@@ -18,39 +18,17 @@
           <div class="container mx-auto py-72 px-4 h-full">
             <div class="flex content-center items-center justify-center h-full">
               <div
-                class="
-                  relative
-                  flex flex-col
-                  min-w-0
-                  break-words
-                  mb-6
-                  rounded-lg
-                  border-0
-                "
+                class="relative flex flex-col min-w-0 break-words mb-6 rounded-lg border-0"
               >
                 <div class="flex-auto">
                   <div
-                    class="
-                      w-9/12
-                      m-auto
-                      py-16
-                      min-h-screen
-                      flex
-                      items-center
-                      justify-center
-                      z-50
-                    "
+                    class="w-9/12 m-auto py-16 min-h-screen flex items-center justify-center z-50"
                   >
                     <div
                       class="bg-white shadow overflow-hidden sm:rounded-lg pb-8"
                     >
                       <div
-                        class="
-                          border-t border-gray-200
-                          text-center
-                          pt-7
-                          sm:pt-14
-                        "
+                        class="border-t border-gray-200 text-center pt-7 sm:pt-14"
                       >
                         <h1 class="text-2xl sm:text-4xl font-bold p-2 pb-8">
                           Know Your Hazards
@@ -64,17 +42,7 @@
                           <div class="md:flex-shrink-1 w-full">
                             <div class="p-1 px-4 sm:px-20 pb-2 pt-4">
                               <div
-                                class="
-                                  relative
-                                  border-solid border-gray-300 border-2
-                                  bg-white
-                                  flex
-                                  justify-center
-                                  items-center
-                                  rounded-full
-                                  shadow-xl
-                                  z-10
-                                "
+                                class="relative border-solid border-gray-300 border-2 bg-white flex justify-center items-center rounded-full shadow-xl z-10"
                               >
                                 <div class="pl-3">
                                   <svg
@@ -105,15 +73,7 @@
                                   (keyup)="isDropdownOpen = true"
                                   (focus)="isDropdownOpen = true"
                                   autocomplete="off"
-                                  class="
-                                    rounded-l-full
-                                    w-full
-                                    py-4
-                                    px-7
-                                    text-gray-700
-                                    leading-tight
-                                    focus:outline-none
-                                  "
+                                  class="rounded-l-full w-full py-4 px-7 text-gray-700 leading-tight focus:outline-none"
                                   id="search"
                                   type="text"
                                   placeholder="Where do you live?"
@@ -125,95 +85,95 @@
                               </div>
                               <!-- DROPDOWN -->
                               <div
-                                class="
-                                  relative
-                                  mt-2
-                                  py-2
-                                  bg-white
-                                  shadow-xl
-                                  rounded-md
-                                  z-10
-                                "
+                                class="relative mt-2 py-2 bg-white shadow-xl rounded-md z-10"
                                 *ngIf="
                                   isDropdownOpen && (places$ | async)?.length
                                 "
                               >
-                                <button
-                                  [routerLink]="['/know-your-hazards']"
-                                  (click)="pickPlace(fixedForLeyte)"
-                                  class="
-                                    block
-                                    w-full
-                                    px-4
-                                    py-2
-                                    text-left text-gray-800
-                                    hover:bg-primary hover:text-white
-                                    transition
-                                    duration-150
-                                    ease-in-out
-                                    focus:outline-none
-                                    group
-                                  "
-                                >
-                                  {{ fixedForLeyte.text }}
+                                <div class="p-2 w-full text-left">
                                   <div
-                                    class="
-                                      text-xs text-gray-400
-                                      group-hover:text-gray-100
-                                      overflow-ellipsis
-                                      whitespace-nowrap
-                                      overflow-hidden
-                                    "
+                                    class="flex items-center p-2 shadow-xs cursor-pointer hover:bg-gray-100 hover:text-black"
+                                    [routerLink]="['/know-your-hazards']"
+                                    (click)="pickPlace(fixedMyLocation)"
                                   >
-                                    {{ fixedForLeyte.place_name }}
-                                  </div>
-                                </button>
+                                    <!-- 
+                                    <svg class="text-blue-500 fill-current hover:fill-current hover:text-white mt-4"
+                                      xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 100 125">
 
-                                <button
-                                  [routerLink]="['/know-your-hazards']"
-                                  (click)="pickPlace(place)"
-                                  *ngFor="let place of places$ | async"
-                                  class="
-                                    block
-                                    w-full
-                                    px-4
-                                    py-2
-                                    text-left text-gray-800
-                                    hover:bg-primary hover:text-white
-                                    transition
-                                    duration-150
-                                    ease-in-out
-                                    focus:outline-none
-                                    group
-                                  "
-                                >
-                                  {{ place.text }}
-                                  <div
-                                    class="
-                                      text-xs text-gray-400
-                                      group-hover:text-gray-100
-                                      overflow-ellipsis
-                                      whitespace-nowrap
-                                      overflow-hidden
-                                    "
-                                  >
-                                    {{ place.place_name }}
+                                      <path
+                                        d="M846.3 512c0 9.6-.4 19.2-1.1 28.7-.3 4.4-.8 8.7-1.3 13.1-.2 2-1.6 10.2-.2 1.6-.5 2.7-.8 5.4-1.2 8.1-2.9 17.8-7.2 35.4-12.7 52.6-2.8 8.7-6 17.2-9.4 25.7-.7 1.7-2.3 5 .7-1.7-.5 1-.9 2-1.3 3.1-.8 1.8-1.6 3.6-2.4 5.5-2 4.4-4.1 8.8-6.3 13.1-8 15.7-17.1 30.8-27.2 45.1-2.5 3.6-5.2 7-7.8 10.6 4.9-6.9.2-.3-.9 1.1-1.5 1.9-3 3.7-4.6 5.6-5.7 6.9-11.7 13.6-18 20-6.1 6.3-12.4 12.3-18.9 18.2-3.3 2.9-6.6 5.8-9.9 8.6-1.7 1.4-3.4 2.8-5.1 4.1-.7.5-1.4 1.1-2.1 1.6-3.3 2.6-1.2.8.9-.7-14.8 10.4-29.3 20.7-45.2 29.5-7.7 4.3-15.6 8.2-23.6 11.9-2 .9-4 1.8-6.1 2.7-6.3 2.7 5-2-1.4.6-4.1 1.7-8.3 3.3-12.4 4.8-17.3 6.3-35.1 11.3-53.2 14.9-4.5.9-9 1.7-13.4 2.4-2 .3-4.1.6-6.1.9-3.4.5 6.8-.9 1.9-.3-1.4.2-2.7.3-4.1.5-9.2 1.1-18.5 1.8-27.7 2.1-19.1.7-38.3 0-57.2-2.3l-2.7-.3c-5.2-.6 6.4.9 1.2.2-2.3-.3-4.5-.7-6.8-1-4.5-.7-9-1.5-13.4-2.4-8.8-1.8-17.6-3.9-26.3-6.4-9-2.6-18-5.5-26.8-8.7-3.8-1.4-7.5-2.8-11.2-4.4-1.6-.7-6.1-2.8 1.1.5-.8-.4-1.6-.7-2.4-1.1-2.4-1.1-4.9-2.1-7.3-3.3-16.2-7.5-31.8-16.2-46.7-26-3.5-2.3-6.9-4.6-10.3-7-1.8-1.3-3.6-2.5-5.3-3.8-1.6-1.2-9-7.1-2.3-1.6-6.8-5.5-13.6-11-20.1-16.8-13.2-11.8-25.4-24.6-36.7-38.3-1.3-1.5-2.5-3-3.7-4.6-1.2-1.5-5.8-7.9-.9-1.1-2.8-3.9-5.8-7.7-8.5-11.6-5-7.2-9.8-14.5-14.3-22.1-4.5-7.6-8.8-15.3-12.7-23.1-2-3.9-3.9-7.9-5.7-11.9-.9-2-1.8-4-2.7-6.1-.4-.8-.7-1.6-1.1-2.4 3.3 7.3.9 2.2.2.4-6.8-16.8-12.4-34.1-16.6-51.7-2.1-8.8-3.9-17.8-5.3-26.7-.4-2.3-.7-4.5-1-6.8 1.4 8.8.1.3-.2-1.6-.6-4.8-1-9.6-1.4-14.5-1.4-18.9-1.4-37.9.2-56.7.4-4.6.8-9.2 1.4-13.8l.3-2.7c.6-5-.8 5.3-.3 1.9.4-2.5.7-5 1.1-7.5 1.5-9.2 3.3-18.3 5.6-27.3 4.3-17.6 10-34.8 16.8-51.6 1.8-4.5-2.1 4.7-.7 1.7.5-1 .9-2 1.3-3 .9-2 1.8-4 2.7-6.1 1.9-4 3.8-8 5.8-11.9 4.1-8 8.5-15.9 13.2-23.7 4.7-7.7 9.6-15.2 14.8-22.5 1.3-1.8 2.6-3.6 3.9-5.3.7-1 4.8-6.3 2-2.7-2.8 3.6 1.3-1.7 2.1-2.6 1.6-2 3.3-4.1 5-6.1 11.4-13.6 23.7-26.3 36.9-38.1 3.1-2.8 6.2-5.5 9.4-8.1 1.7-1.4 3.4-2.8 5.1-4.1.9-.7 1.7-1.4 2.6-2 4.6-3.6-4.2 3.1-.4.3 7-5.2 14.1-10.3 21.5-15.1 15-9.7 30.6-18.3 46.9-25.7 1.8-.8 3.6-1.6 5.5-2.4 1.6-.7 6.2-2.4-1.1.4.8-.3 1.6-.7 2.5-1 4.5-1.9 9.1-3.6 13.7-5.3 8.4-3 16.9-5.8 25.6-8.2 8.7-2.4 17.5-4.5 26.4-6.3 4.5-.9 9-1.7 13.4-2.4 2.3-.4 4.5-.6 6.8-1-8.7 1.5.1 0 2.2-.2 18.8-2.1 37.7-2.8 56.6-2 9.3.4 18.5 1.1 27.7 2.2 1.4.2 2.7.4 4.1.5-.2 0-6.7-1-2.6-.3 2.3.3 4.5.7 6.8 1 4.7.8 9.4 1.6 14.1 2.6 17.8 3.6 35.4 8.6 52.4 15 4.2 1.5 8.3 3.2 12.4 4.9 1.5.6 4.2 2-2.3-1 1.2.6 2.4 1 3.7 1.6 2 .9 4 1.8 6.1 2.7 8.2 3.8 16.3 7.9 24.2 12.3 7.9 4.4 15.6 9.1 23.1 14 3.5 2.3 6.9 4.6 10.3 7.1 1.6 1.1 3.2 2.3 4.8 3.5 1.7 1.2 9 7 2.3 1.6 13.8 11.2 27.1 22.7 39.4 35.5 6.2 6.5 12.2 13.2 17.8 20.1 1.4 1.7 2.8 3.4 4.1 5.1.5.7 1.1 1.4 1.6 2.1 3 3.7-3-4.1-1.1-1.4 2.7 3.7 5.5 7.4 8.1 11.1 10.4 14.7 19.6 30.3 27.7 46.4 1.8 3.6 3.5 7.1 5.1 10.8.9 2 1.8 4 2.7 6.1.7 1.6 2.4 6.2-.4-1.1.5 1.2 1 2.5 1.5 3.7 3.3 8.3 6.4 16.7 9.1 25.1 5.6 17.6 9.9 35.7 12.7 54 .2 1.3 1.2 8.2.5 3.5-.6-4.7.3 2.2.4 3.5.5 4.6 1 9.2 1.3 13.8.4 8.9.8 18.3.8 27.6 0 13.1 11.5 25.6 25 25 13.5-.6 25-11 25-25-.2-78.6-24.4-157.1-70.1-221.2-46-64.4-109.8-113.3-184.1-140.4-74.7-27.3-158.8-29.8-235.3-8.1-73.6 21-141.2 64.6-189.9 123.7-51.2 62.1-82 137.7-88.1 218-6.1 78.9 13.4 159.7 54.5 227.3 39.5 64.9 98.7 118.4 168 149.8 74.9 33.9 158.2 43.5 238.9 27.2 75.6-15.3 146.3-54.9 199.5-110.6 53.2-55.8 89.9-127.9 101.6-204.2 3.1-20.4 5-40.8 5-61.4 0-13.1-11.5-25.6-25-25-13.6.5-25 10.9-25 24.9z" />
+                                      <path
+                                        d="M646.3 512c0 4.2-.2 8.4-.5 12.6-.1 1.8-.3 3.7-.5 5.5-.2 1.7-.8 4.7.4-2.6-.2 1.4-.4 2.7-.6 4.1-1.3 7.8-3.2 15.5-5.6 23-1.2 3.6-2.5 7.1-3.9 10.7-1.5 3.7.9-2.1 1-2.3-.4.7-.7 1.6-1.1 2.4-.9 2-1.9 4-2.9 6-3.6 7-7.7 13.8-12.2 20.3-1 1.4-2.1 2.8-3.1 4.2 4.3-6.4 1.2-1.5-.2.1-2.6 3.2-5.4 6.3-8.3 9.3-2.6 2.7-5.2 5.2-8 7.7-1.3 1.2-2.6 2.3-3.9 3.4-.7.6-1.3 1.1-2 1.7-.7.6-1.4 1.1-2 1.6 1-.8 2-1.5 3-2.3-6.6 4.3-12.8 9-19.8 12.9-3.1 1.7-6.2 3.3-9.4 4.8-1 .5-2 .9-3 1.4-2.8 1.4 5.2-2 2.3-1-2.1.8-4.1 1.6-6.2 2.4-7.4 2.7-15 4.8-22.7 6.3-2 .4-4 .8-6 1.1-.9.1-1.8.3-2.7.4-3.2.5 5.8-.7 2.6-.4-4.4.4-8.7.8-13.1 1-8.2.3-16.3-.2-24.4-1-3.2-.3 5.7.9 2.6.4-1.1-.2-2.3-.3-3.4-.5-1.8-.3-3.6-.6-5.4-1-4-.8-7.9-1.8-11.8-2.9-3.7-1-7.3-2.2-10.8-3.5-1.9-.7-3.7-1.4-5.6-2.1-1.6-.6-3.6-2.1 2.3 1-1.2-.6-2.4-1.1-3.6-1.6-7-3.2-13.7-7-20.1-11.2-3.1-2-6-4.4-9.1-6.4.2.1 5 4 2 1.5-.7-.6-1.4-1.1-2-1.7-1.7-1.4-3.3-2.8-5-4.3-5.8-5.2-11.3-10.9-16.3-17-1.3-1.6-4.5-6.5-.2-.1-1-1.4-2.1-2.8-3.1-4.2-2.4-3.4-4.7-6.9-6.8-10.4-1.9-3.2-3.7-6.5-5.4-9.8-.8-1.6-1.6-3.2-2.3-4.8-.4-.8-.7-1.6-1.1-2.4-2-4.4 2.1 5.3.4 1.1-2.9-7.5-5.5-15.1-7.3-23-.8-3.5-1.6-7.1-2.1-10.7-.1-.9-.3-1.8-.4-2.7-.8-4.9.6 5.3.3 1.9-.2-2.3-.5-4.6-.7-6.9-.6-8.1-.6-16.3.1-24.5.1-1.8.4-3.7.5-5.5.5-5-.8 5.3-.3 1.9.1-.9.3-1.8.4-2.7.7-4.2 1.5-8.5 2.6-12.6 1.8-7.4 4.3-14.6 7-21.6 1.8-4.5-2.1 4.7-.7 1.7.4-.8.7-1.6 1.1-2.4.8-1.8 1.7-3.6 2.6-5.4 1.8-3.5 3.7-7 5.8-10.4 1.9-3.2 4-6.3 6.1-9.3 1.1-1.6 2.4-3.1 3.5-4.8-.1.2-4 5-1.5 2 .8-1 1.6-2 2.5-3 4.8-5.7 9.9-11 15.5-16 1.5-1.3 2.9-2.6 4.5-3.9 1.6-1.3 7.2-5.1.6-.6 3.3-2.2 6.3-4.6 9.6-6.8 6.4-4.2 13.2-7.9 20.2-11.1 1-.5 2.1-.8 3-1.4-.2.1-6 2.4-2.3 1 1.7-.6 3.3-1.3 5-1.9 3.8-1.4 7.6-2.6 11.5-3.7 3.9-1.1 7.8-2.1 11.8-2.9 1.8-.4 3.6-.7 5.4-1 .9-.1 1.8-.3 2.7-.4 5.1-.8-6.4.7-1.2.2 8.1-.8 16.2-1.2 24.4-.9 3.9.2 7.8.5 11.8.9 4.1.4-2.3-.3-2.6-.4.9.2 1.8.3 2.7.4 2.2.4 4.5.8 6.7 1.2 7.9 1.6 15.7 3.8 23.3 6.6 1.7.6 3.3 1.3 5 1.9 3.7 1.5-2.1-.9-2.3-1 1 .5 2 .9 3 1.4 3.6 1.7 7.1 3.5 10.6 5.4 6.8 3.7 12.9 8.2 19.2 12.6-6.8-4.6-.9-.6.6.6 1.5 1.3 3 2.5 4.5 3.9 2.9 2.6 5.7 5.4 8.5 8.2 2.6 2.7 5 5.4 7.4 8.3.6.7 4.6 5.8 1.7 2.1-2.8-3.7 1.7 2.3 2.3 3.3 4.4 6.3 8.4 12.9 11.9 19.7.9 1.8 1.8 3.6 2.6 5.4.4.8.7 1.6 1.1 2.4 1.4 3-2.5-6.2-.7-1.7 1.5 3.7 2.9 7.5 4.1 11.3 2.4 7.5 4.2 15.2 5.5 23 .2 1.1.3 2.3.5 3.4 0-.2-.8-6.7-.4-2.6.2 1.8.4 3.7.5 5.5-.4 3.8-.2 8-.2 12.2.1 13.1 11.5 25.6 25 25 13.5-.6 25.1-11 25-25-.2-37.2-11.4-74.9-33.1-105.3-22.6-31.5-53.2-55-89.6-68.4-70.5-25.8-154.7-3-202.4 55-25 30.5-39.9 66.7-42.9 106.1-2.9 37.1 6.6 75.6 25.8 107.5 18.7 31 47 57.1 80 72 36.7 16.5 76.6 21.3 116.2 13.4 72.2-14.5 132.2-76.4 143.3-149.4 1.6-10.3 2.7-20.5 2.7-30.9.1-13.1-11.5-25.6-25-25-13.6.6-25 11-25 25zM487 871.3V930c0 13.1 11.5 25.6 25 25 13.5-.6 25-11 25-25v-58.7c0-13.1-11.5-25.6-25-25-13.5.6-25 11-25 25zM487 94v58.7c0 13.1 11.5 25.6 25 25 13.5-.6 25-11 25-25V94c0-13.1-11.5-25.6-25-25-13.5.6-25 11-25 25zM871.3 537H930c13.1 0 25.6-11.5 25-25-.6-13.5-11-25-25-25h-58.7c-13.1 0-25.6 11.5-25 25 .6 13.5 11 25 25 25zM94 537h58.7c13.1 0 25.6-11.5 25-25-.6-13.5-11-25-25-25H94c-13.1 0-25.6 11.5-25 25 .6 13.5 11 25 25 25z" />
+
+                                    </svg> -->
+
+                                    <svg
+                                      class="text-blue-500 fill-current mt-2"
+                                      width="30"
+                                      height="30"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 100 125"
+                                    >
+                                      <path
+                                        d="M50 64.806c8.164 0 14.806-6.642 14.806-14.806S58.164 35.194 50 35.194 35.194 41.836 35.194 50 41.836 64.806 50 64.806zm0-21.612A6.813 6.813 0 0156.806 50c0 3.752-3.053 6.806-6.806 6.806S43.194 53.752 43.194 50A6.813 6.813 0 0150 43.194z"
+                                      />
+                                      <path
+                                        d="M12.01 54h9.223C23.008 66.822 33.178 76.992 46 78.767v9.222a4 4 0 008 0v-9.222C66.822 76.992 76.992 66.822 78.767 54h9.222a4 4 0 000-8h-9.222C76.992 33.178 66.822 23.008 54 21.233v-9.222a4 4 0 00-8 0v9.222C33.178 23.008 23.008 33.178 21.233 46h-9.222a4 4 0 000 8zM50 28.951c11.606 0 21.049 9.443 21.049 21.049S61.606 71.049 50 71.049 28.951 61.606 28.951 50 38.394 28.951 50 28.951z"
+                                      />
+                                    </svg>
+
+                                    <div>
+                                      <p
+                                        class="text-s font-medium ml-3 text-left"
+                                      >
+                                        {{ fixedMyLocation.place_name }}
+                                      </p>
+                                    </div>
                                   </div>
-                                </button>
+                                </div>
+
+                                <div class="p-2 w-full text-left -mt-5">
+                                  <div
+                                    class="flex items-center p-3 shadow-xs cursor-pointer hover:bg-gray-100 hover:text-black"
+                                    [routerLink]="['/know-your-hazards']"
+                                    (click)="pickPlace(place)"
+                                    *ngFor="let place of places$ | async"
+                                  >
+                                    <svg
+                                      class="mt-4 text-red-500 fill-current"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="35"
+                                      height="35"
+                                      viewBox="0 0 100 125"
+                                    >
+                                      <path
+                                        d="M56 27C56 13.7 45 3 32 3 18.7 3 8 13.7 8 27v1c0 .1.4 3.6.8 5.1C11.6 44.8 21.1 53.7 32 62c10.9-8.3 20.4-17.2 23.2-28.9.4-1.5.8-4.9.8-5.1v-1zM32 37c-5.5 0-10-4.5-10-10s4.5-10 10-10 10 4.5 10 10-4.5 10-10 10z"
+                                      />
+                                    </svg>
+
+                                    <div
+                                      class="w-full block overflow-ellipsis whitespace-nowrap overflow-hidden"
+                                    >
+                                      <p
+                                        class="text-s font-medium ml-2 text-left"
+                                      >
+                                        {{ place.text }}
+                                      </p>
+                                      <p
+                                        class="text-xs font-medium ml-2 text-left"
+                                      >
+                                        {{ place.place_name }}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
 
                               <!-- BACKDROP -->
                               <div
                                 (click)="isDropdownOpen = false"
                                 *ngIf="isDropdownOpen"
-                                class="
-                                  fixed
-                                  h-full
-                                  top-0
-                                  right-0
-                                  bottom-0
-                                  left-0
-                                "
+                                class="fixed h-full top-0 right-0 bottom-0 left-0"
                               ></div>
                             </div>
                           </div>
@@ -245,23 +205,7 @@
           </p>
 
           <button
-            class="
-              tracking-widest
-              mx-auto
-              lg:mx-0
-              hover:bg-gray-100
-              bg-white
-              text-primary
-              font-bold
-              rounded-full
-              border-2
-              text-xs
-              border-primary
-              my-6
-              py-2
-              px-8
-              uppercase
-            "
+            class="tracking-widest mx-auto lg:mx-0 hover:bg-gray-100 bg-white text-primary font-bold rounded-full border-2 text-xs border-primary my-6 py-2 px-8 uppercase"
             (click)="gotoTop()"
           >
             Find out now
@@ -305,23 +249,7 @@
             those caused by the typhoon Yolanda?
           </p>
           <button
-            class="
-              tracking-widest
-              mx-auto
-              lg:mx-0
-              hover:bg-gray-100
-              bg-white
-              text-primary
-              font-bold
-              rounded-full
-              border-2
-              text-xs
-              border-primary
-              my-6
-              py-2
-              px-8
-              uppercase
-            "
+            class="tracking-widest mx-auto lg:mx-0 hover:bg-gray-100 bg-white text-primary font-bold rounded-full border-2 text-xs border-primary my-6 py-2 px-8 uppercase"
             (click)="gotoTop()"
           >
             Find out now
@@ -344,22 +272,7 @@
       </p>
 
       <button
-        class="
-          tracking-widest
-          text-xs
-          mx-auto
-          lg:mx-0
-          hover:bg-blue-500
-          bg-primary
-          text-white
-          font-bold
-          rounded-full
-          my-4
-          py-2
-          px-6
-          shadow-lg
-          uppercase
-        "
+        class="tracking-widest text-xs mx-auto lg:mx-0 hover:bg-blue-500 bg-primary text-white font-bold rounded-full my-4 py-2 px-6 shadow-lg uppercase"
         routerLink="noah-playground"
       >
         NOAH Playground

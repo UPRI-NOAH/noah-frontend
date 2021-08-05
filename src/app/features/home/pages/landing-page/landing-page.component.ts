@@ -5,9 +5,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 
-type FixedLeyte = {
+type FixedMyLocation = {
   center: [number, number];
-  text: string;
   place_name: string;
 };
 @Component({
@@ -47,11 +46,29 @@ export class LandingPageComponent implements OnInit {
       });
   }
 
-  get fixedForLeyte(): FixedLeyte {
+  get fixedMyLocation(): FixedMyLocation {
+    // GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
+    function locationSuccess(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const coords = { lng: longitude, lat: latitude };
+      localStorage.setItem('userLocation', JSON.stringify(coords));
+      const retrievedObject = localStorage.getItem('coords');
+      console.log('retrievedObject: ', JSON.parse(retrievedObject));
+    }
+    function locationError(error) {
+      const message = error.message;
+      alert(message);
+    }
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+    //GETTING COORDINATES FROM LOCAL STORAGE
+    const user = localStorage.getItem('userLocation');
+    const userCoords = JSON.parse(user);
+    console.log(userCoords.lng);
+    console.log(userCoords.lat);
     return {
-      center: [124.98707397619495, 10.777080241395213],
-      text: 'Leyte',
-      place_name: 'Leyte, Philippines',
+      center: [userCoords.lng, userCoords.lat],
+      place_name: 'Your Current Location',
     };
   }
 
