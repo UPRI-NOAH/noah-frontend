@@ -125,19 +125,19 @@ export const getCriticalFacility = () => {};
 
 export const MAPBOX_CRIT_FAC = {
   school: {
-    url: 'mapbox://jadurani.ckq7u49zi010o20nrjlynz9jo-5cez5',
-    sourceLayer: 'leyte_schools',
+    url: 'mapbox://upri-noah.schools_tls',
+    sourceLayer: 'schools',
   },
   hospital: {
-    url: 'mapbox://upri-noah.2a8zm5hu',
-    sourceLayer: 'ph_hospitals-44uwvx',
+    url: 'mapbox://upri-noah.hospitals_tls',
+    sourceLayer: 'hospitals',
   },
   'fire-station': {
-    url: 'mapbox://upri-noah.cbkp0ozh',
-    sourceLayer: 'ph_fire_stations-15tnbr',
+    url: 'mapbox://upri-noah.fire_station_tls',
+    sourceLayer: 'fire_station',
   },
   'police-station': {
-    url: 'mapbox://upri-noah.0u1pnlwz',
-    sourceLayer: 'ph_police_stations-5h217v',
+    url: 'mapbox://upri-noah.police_station_tls',
+    sourceLayer: 'police_station',
   },
 };
