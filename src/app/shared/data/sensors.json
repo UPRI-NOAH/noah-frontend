@@ -1,0 +1,4482 @@
+{
+  "type": "FeatureCollection",
+  "generator": "https://philsensors.asti.dost.gov.ph",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 596,
+        "location": "ALAMADA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.535, 7.43]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 725,
+        "location": "BE DUJALI",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.689365, 7.448416]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1168,
+        "location": "MAIMBUNG MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.025633, 5.933017]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1744,
+        "location": "BINAYAN ES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.39856, 7.92088]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 70,
+        "location": "WMSU COMPOUND",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.923, 7.008]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 821,
+        "location": "PIO VALENZUELA ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.96037, 14.7062921]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 425,
+        "location": "DISILUAD BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.6299444, 16.46858333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1516,
+        "location": "PSHS - EVC",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.00339, 11.180377]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1554,
+        "location": "SEMONG BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.6507, 7.63717]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1892,
+        "location": "BRGY. MALASIN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.23135, 17.3828]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1893,
+        "location": "MACONACON MUNICIPAL GROUND",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.237807, 17.386955]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1266,
+        "location": "CAUPLASAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.712772, 18.094664]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1972,
+        "location": "BRGY. HALL GEN. CLIMACO (MALUBOG)",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.72, 10.37]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2019,
+        "location": "SAN VICENTE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.66019, 13.02868]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 954,
+        "location": "BRGY. MATINA PANGI",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.557903, 7.085774]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1087,
+        "location": "DA-CES LANISE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.94765, 8.61711]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 435,
+        "location": "BARANGAY HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.83602, 13.99506]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1873,
+        "location": "SAN FERNANDO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.9936117, 10.7127564]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1973,
+        "location": "BRGY. HALL DON ANDRES SORIANO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.71, 10.31]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1366,
+        "location": "CORDON MUNICIPAL GROUND",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.466219, 16.669564]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 447,
+        "location": "RIZAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.4045, 14.11031]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1555,
+        "location": "CALUBIAN MUNICIPAL GROUNDS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.425916, 11.448102]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1974,
+        "location": "BRGY. HALL MANIPIS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.78626, 10.32141]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2605,
+        "location": "ANAO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.626389, 15.730278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 443,
+        "location": "MAJAYJAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.50517, 14.11461]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 480,
+        "location": "PARACELIS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.403552, 17.18108]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 388,
+        "location": "VILLA VERDE MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1868889, 16.59086111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2672,
+        "location": "GUINDULUNGAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.38631, 6.97615]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 468,
+        "location": "MANKAYAN",
+        "rain_value_sum": 0.4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.79345, 16.85724]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1638,
+        "location": "BRGY. AZUSANO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.5062, 7.8863]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 471,
+        "location": "CONNER",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.322266, 17.795214]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1590,
+        "location": "MALAPATAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.28825, 5.97076]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1641,
+        "location": "MT. TIMOLAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.2377, 7.8119]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 475,
+        "location": "ALFONSO LISTA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.487043, 16.922825]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 474,
+        "location": "PUDTOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.345066, 18.127294]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2190,
+        "location": "MA-AO ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.990717, 10.48998]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2028,
+        "location": "BRGY. HALL SIMBO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.95816, 6.24811]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 501,
+        "location": "PHILRICE FIELD OFFICE MUSUAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.050214, 7.848431]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 515,
+        "location": "SULAT PUBLIC PLAZA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.45303, 11.81493]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1657,
+        "location": "LA LIBERTAD NATIONAL HIGH SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5244, 8.4725]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1783,
+        "location": "BRGY. BUGBUGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.49147, 17.07668]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1872,
+        "location": "LILOAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.285416, 11.658257]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1963,
+        "location": "CABRARAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.59204, 13.0883]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 530,
+        "location": "PUBLIC PLAZA CABUCGAYAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.574814, 11.473636]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2001,
+        "location": "NORTHERN KABUNTALAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.442, 7.1776]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 81,
+        "location": "PAGASA TACLOBAN STATION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.003728, 11.178872]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1281,
+        "location": "LICUAN-BAAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.901617, 17.571259]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 311,
+        "location": "CDO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.6405139, 8.4715139]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2744,
+        "location": "PIGSALUHAN INTEGRATED SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.027953, 8.832399]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 619,
+        "location": "PARANAS MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.0225, 11.768889]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2163,
+        "location": "BRGY. CURVADA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.786483, 7.8986]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 792,
+        "location": "GUIMBA TOWN HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.767194, 15.66]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2591,
+        "location": "Matula-tula Elementary School",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.387, 13.134861]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1493,
+        "location": "BRGY. POBLACION - BINDOY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.148722, 9.750833]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1650,
+        "location": "MAUSWAGON BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.8108, 8.0552]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2376,
+        "location": "SITIO IMELDA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.434864, 7.637324]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 811,
+        "location": "RAGAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.790217, 13.8193]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1773,
+        "location": "TAGAYTAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.5538228, 11.18863]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1424,
+        "location": "SEN. NINOY AQUINO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.32153, 6.45933]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1476,
+        "location": "PDRRM OFFICE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.779748, 7.45242]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1761,
+        "location": "CAPINAHAN ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.468917, 11.578583]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1110,
+        "location": "ANTIPAS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.055946, 7.250011]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 488,
+        "location": "HEALTH CENTER",
+        "rain_value_sum": 0.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.99824, 8.29574]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1529,
+        "location": "PIT-TABANGO (MRV) CAMPUS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.37901, 11.300202]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1898,
+        "location": "BUKAL ILAYA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.53813, 14.01648]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1984,
+        "location": "BRGY. HALL TALTAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.947558, 15.574442]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1289,
+        "location": "LAAK MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.792719, 7.819065]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2035,
+        "location": "MOTHER KABUNTALAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.36423, 7.11779]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 102,
+        "location": "LGU AROROY MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.885775, 12.014722]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1099,
+        "location": "PANLIMA SUGALA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.8853958, 5.0728519]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 611,
+        "location": "MAT-I Evacuation and Training Center",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.5895, 8.714417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1810,
+        "location": "BANAYBANAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.11235, 13.93417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 673,
+        "location": "CALINOG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.538939, 11.119667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1521,
+        "location": "PSHS - Central Luzon",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.534744, 15.192326]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 810,
+        "location": "RAPU-RAPU ROOFDECK MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.128205, 13.186681]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 497,
+        "location": "NOMIARC",
+        "rain_value_sum": 0.6000000000000001
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.035854, 8.217286]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2491,
+        "location": "BRGY. DIBARAYBAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.927782, 16.159444]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 123,
+        "location": "PAGASA MALAYBALAY STATION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.132528, 8.152028]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 129,
+        "location": "PANABO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.68346, 7.32599]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 962,
+        "location": "GMA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0068, 14.295547]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 960,
+        "location": "COMPOSTELA - MANGAYON NHS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.10832, 7.70599]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2232,
+        "location": "PUP STA. MESA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.004225, 14.597669]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 504,
+        "location": "LEMERY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.91284, 13.89663]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 281,
+        "location": "PIGSAG-AN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.492011, 8.349875]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2188,
+        "location": "BRGY. ROBLES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.0230489, 10.3244322]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1740,
+        "location": "SAN ROQUE ES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.42871, 8.55452]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1841,
+        "location": "MDRRMC",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.525, 7.90637]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2184,
+        "location": "BRGY. SAN MIGUEL ",
+        "rain_value_sum": 35.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.011553, 10.4189483]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2186,
+        "location": "BRGY. MANSALANAO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.1060942, 10.3598638]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 852,
+        "location": "TALIWASA BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.482, 6.77237]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1779,
+        "location": "BRGY. CARUSIPAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.49695, 17.77262]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1115,
+        "location": "POBLACION KABACAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.823791, 7.108643]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 484,
+        "location": "TANAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.28285, 14.4999]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1964,
+        "location": "PALAPAS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.46903, 13.11541]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 842,
+        "location": "MANICAHAN SPILLWAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.175933, 7.03625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 92,
+        "location": "PSTC PALO - IDP",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.003715, 11.178882]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2421,
+        "location": "BATO SCHOOL OF FISHERIES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.791076, 10.3220567]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2027,
+        "location": "BRGY. HALL LUN PADIDU ",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.29477, 6.03808]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2466,
+        "location": "AURORA NATIONAL SCIENCE HIGH SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.550534, 15.760298]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 955,
+        "location": "BRGY. PANAG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.100521, 7.572987]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2037,
+        "location": "PSTC MARINDUQUE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.828078, 13.440927]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 745,
+        "location": "SPILLWAY UPPER PASONANCA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.07647, 6.950074]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 709,
+        "location": "MAINIT MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.523452, 9.540541]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2094,
+        "location": "BRGY. TAY-AC",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.451, 17.60277]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 708,
+        "location": "TUBOD MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.56975, 9.55373]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 566,
+        "location": "ALEGRIA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.01145, 8.506214]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 742,
+        "location": "DOST PSTC BOHOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.85, 9.65]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 565,
+        "location": "ROSARIO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.00091, 8.38282]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 567,
+        "location": "VERUELA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.95547, 8.0693]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1062,
+        "location": "MSU MAGUINDANAO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.319433, 7.008533]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1624,
+        "location": "LORETO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.57843, 10.359748]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2210,
+        "location": "MACAPAYA PUMPING STATION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.671427, 8.452333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1592,
+        "location": "BANGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.77589573, 6.42410871]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2427,
+        "location": "BRGY. HAPPY VALLEY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.410392, 12.648308]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 22,
+        "location": "JOLO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.002, 6.05425]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 64,
+        "location": "LUNA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.372444, 18.330861]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2776,
+        "location": "GABU ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.5219, 8.008917]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 50,
+        "location": "SABTANG MUNICIPAL GROUNDS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.873333, 20.333108]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 651,
+        "location": "MAGBALLO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.750981, 9.785875]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 124,
+        "location": "DA ANIMAL BREEDING STATION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7875, 9.157778]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 118,
+        "location": "BUTUAN PAGASA COMPOUND",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.516667, 8.933333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2426,
+        "location": "BRGY. LIBERTAD",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.474057, 12.614917]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1787,
+        "location": "GURUYAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.97945, 12.750617]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2392,
+        "location": "Brgy. Baybayin",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.258458, 13.826906]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 167,
+        "location": "CITY AGRICULTURE OFFICE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.3465732, 8.5838992]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 150,
+        "location": "UNIVERSITY OF RIZAL SYSTEM",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.235467, 14.5174]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 166,
+        "location": "PALAWAN STATE UNIVERSITY-QUEZON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [118.392942, 9.44623]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 145,
+        "location": "NEW BILIBID PRISON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.03373, 14.38371]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 198,
+        "location": "UNISAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.97835, 13.838067]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 156,
+        "location": "BRGY. ATONG-ATONG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.904518, 6.662183]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 510,
+        "location": "MAGALLANES BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.737167, 16.013417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 313,
+        "location": "BUBUNAWAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.698414, 8.312625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 420,
+        "location": "GANANO BRIDGE - ALICIA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.6978436, 16.7696978]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 419,
+        "location": "SAN PABLO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.7795, 17.439667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 405,
+        "location": "STA. PRAXEDES GYMNASIUM",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.990606, 18.563678]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 461,
+        "location": "MANABO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.692053, 17.433662]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 478,
+        "location": "ITOGON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.67493, 16.36575]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 500,
+        "location": "MARAMAG MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.01137, 7.78138]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 496,
+        "location": "BFAR KISOLON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.97808, 8.33425]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 514,
+        "location": "PSU-Asingan Campus",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.632472, 15.984833]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 467,
+        "location": "SAGADA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.90047, 17.08451]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 394,
+        "location": "MAGAPIT BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.672706, 18.122414]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 481,
+        "location": "CALAUAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.28722, 14.11911]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 506,
+        "location": "Longlive Pharma - Malanay",
+        "rain_value_sum": 0.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.413222, 16.015194]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 541,
+        "location": "LEYTE-LEYTE MUNICIPAL GROUNDS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.486444, 11.371111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 575,
+        "location": "SAN JUAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.961061, 8.221173]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 563,
+        "location": "SIBAGAT MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.694033, 8.82325]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1671,
+        "location": "BRGY. TULA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.41695, 8.43365]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 562,
+        "location": "TUPI MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.9507785, 6.330907]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 579,
+        "location": "PSTC PANGASINAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.233028, 16.034306]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 599,
+        "location": "POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.648139, 9.275281]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 581,
+        "location": "BRGY. CALABUANAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.542, 15.7517]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1782,
+        "location": "POBLACION SUR-G.Del Pilar",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.60991, 17.14817]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2423,
+        "location": "ROOF DECK OF EVACUATION CENTER",
+        "rain_value_sum": 2.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.909139, 15.434198]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 181,
+        "location": "DEBEMSCAT MANDAON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.355556, 12.280278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 446,
+        "location": "STA. ROSA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1111, 14.31833]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1196,
+        "location": "CALINAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.452416, 7.185895]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1596,
+        "location": "NORALA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.65746, 6.51859]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1822,
+        "location": "AMNAY BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.89327, 12.95691]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 675,
+        "location": "JALAUR BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.650389, 10.847614]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 656,
+        "location": "TAPAZ BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.546683, 11.2648]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2706,
+        "location": "PAGLAT MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.78481, 6.781006]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 695,
+        "location": "SAPANG BATO BRGY HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.514944, 15.170944]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 386,
+        "location": "SOLANO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1926667, 16.52280556]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 401,
+        "location": "ALLACAPAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.555117, 18.226111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1679,
+        "location": "SIOCON BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.138267, 7.710983]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 768,
+        "location": "H2K BUILDING QUEZON BOULEVARD",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.137778, 6.658056]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 751,
+        "location": "IRIGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.4128537, 13.4199745]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 755,
+        "location": "PASACAO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.0416473, 13.5080261]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 732,
+        "location": "MANAY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.5505, 7.229167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 769,
+        "location": "DICALUNGAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.4563, 6.8352053]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 284,
+        "location": "BAYOG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.035861, 7.8615]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 552,
+        "location": "KAULANGUHAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.555889, 11.589105]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 495,
+        "location": "HECTOR MENDOZA BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.500743, 15.8351]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1362,
+        "location": "RIZAL MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3462, 17.8459]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1345,
+        "location": "STA. MARIA.",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.346674, 12.566339]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1402,
+        "location": "FARMER AND AGRICULTURAL CENTER",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.02515, 10.325616]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1359,
+        "location": "IVANA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.91462, 20.36726]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 713,
+        "location": "JAGUPIT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.55945, 9.24156]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 699,
+        "location": "MABALACAT MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.564556, 15.244278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 761,
+        "location": "CAPAS MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.592778, 15.34625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 863,
+        "location": "BAGBAG BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.74925, 18.119639]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 775,
+        "location": "SOLANA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.691356, 17.65015]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 799,
+        "location": "SAN FELIPE TOWN HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.070361, 15.061417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 841,
+        "location": "CABANCALAN-CANDUMAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.927333, 10.360944]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 417,
+        "location": "ARKON BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.8267616, 17.273823]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 683,
+        "location": "NORTH POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.65746, 9.19837]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 684,
+        "location": "NEGROS ORIENTAL STATE UNIVERSITY SIATON CAMPUS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.034417, 9.06005]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 694,
+        "location": "PANDI MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.958265, 14.865818]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1595,
+        "location": "TAMPAKAN",
+        "rain_value_sum": 7.366
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.92648, 6.44378]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 739,
+        "location": "AGUSAN DEL SUR PROVINCIAL CAPITOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.94108, 8.550003]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 728,
+        "location": "BOSTON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.375944, 7.869846]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 850,
+        "location": "POBLACION EAST-Rosario LU",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.487639, 16.23075]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 888,
+        "location": "BRGY. CALANGCUASAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.1053, 16.27066]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 976,
+        "location": "SARIAYA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5022695, 13.9962517]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 788,
+        "location": "MUYO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.990556, 7.777222]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 956,
+        "location": "MENZI BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.62144, 7.51597]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 935,
+        "location": "AMBAGUIO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0283611, 16.53163889]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 971,
+        "location": "BRGY. Mayasang",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.8628, 14.01604]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1116,
+        "location": "MIDSAYAP",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.531333, 7.190306]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1104,
+        "location": "LAMUT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.22131, 16.65136]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1111,
+        "location": "MATALAM",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.901352, 7.08288]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1076,
+        "location": "GUINALABAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.822944, 8.864889]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1150,
+        "location": "KABAYAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.837797, 16.623466]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1147,
+        "location": "RIZAL KALINGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.489107, 16.920685]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1158,
+        "location": "ALMERIA CENTRAL SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.38805, 11.611076]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1149,
+        "location": "SADANGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.026382, 17.168152]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1145,
+        "location": "PASIL KALINGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.159776, 17.389611]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1157,
+        "location": "GIPORLOS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.45, 11.12049]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1191,
+        "location": "DON MARCELINO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.6947, 6.197813]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1222,
+        "location": "PASIL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.355056, 9.426722]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1204,
+        "location": "GIGAQUIT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.69779, 9.59577]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1195,
+        "location": "MINTAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.501694, 7.094917]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1216,
+        "location": "MALINGAO CENTRAL SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.855645, 7.987106]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1188,
+        "location": "PIDIGAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.5893, 17.556999]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1203,
+        "location": "MALIMONO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.40162, 9.61856]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1211,
+        "location": "Pacific Farms Inc",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.920194, 16.256819]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1246,
+        "location": "PUBLIC MARKET POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.95533, 13.49865]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1220,
+        "location": "PINAMUNGAJAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.588333, 10.280444]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1261,
+        "location": "PUTING BUHANGIN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.959, 13.454]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1256,
+        "location": "BINGAWAN PUBLIC MARKET",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.56605, 11.23405]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1117,
+        "location": "PIGCAWAYAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.423783, 7.279343]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 985,
+        "location": "BRGY.  BANSAYAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.342317, 7.84075]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1067,
+        "location": "UYUGAN MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.938889, 20.350278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1120,
+        "location": "LIBUNGAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.513056, 7.245556]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1276,
+        "location": "KAGLAWAAN MUNICIPAL NURSERY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7833, 11.195]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1304,
+        "location": "LA PAZ",
+        "rain_value_sum": 0.254
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.699588, 17.706207]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 912,
+        "location": "TAGUDIN HEALTH CENTER",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.445067, 16.934033]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1278,
+        "location": "BITO-ON",
+        "rain_value_sum": 0.762
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.587556, 10.752667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1258,
+        "location": "LEMERY PLAZA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.929017, 11.225583]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1285,
+        "location": "AGUSAN BRIDGE MARAGUSAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.143663, 7.315]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1307,
+        "location": "ANINI-Y",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.926033, 10.430517]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1363,
+        "location": "BARANGAY SAN VICENTE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.87454, 17.47471]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1341,
+        "location": "LANGIDEN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.567849, 17.578742]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1358,
+        "location": "ROXAS CITY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.755095, 11.585049]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 455,
+        "location": "PADRE GARCIA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.21284, 13.87983]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 431,
+        "location": "ARITAO DEMO FARM",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0433056, 16.31197222]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 429,
+        "location": "BATU BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1124167, 16.43311111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1368,
+        "location": "QUEZON MUNICIPAL HALL",
+        "rain_value_sum": 6.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.60446, 17.3117]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 553,
+        "location": "CATARMAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.627667, 12.385389]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1283,
+        "location": "PENARUBIA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.650767, 17.564114]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 473,
+        "location": "STA. MARCELA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.433333, 18.283333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 701,
+        "location": "BRGY MABOLO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.18285, 13.6149]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1439,
+        "location": "TAGAYTAY BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.63917, 13.16655]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1425,
+        "location": "ALULING BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.74741, 16.98843]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1394,
+        "location": "CITY AGRICULTURE OFFICE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.30019, 10.95721]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1455,
+        "location": "PSHS-SMC MINTAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.508112, 7.084133]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1437,
+        "location": "KILICAO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.71708, 13.1585]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 485,
+        "location": "PILILIA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3151, 14.47689]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1442,
+        "location": "KINALE BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.4672667, 13.2925167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 702,
+        "location": "TRIANGULO NAGA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.1883, 13.6173]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 773,
+        "location": "QUEZON MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2639167, 16.48933333]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1460,
+        "location": "MAGUPISING BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.749679, 7.438699]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1458,
+        "location": "BRGY. IBA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.113144, 6.829236]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1440,
+        "location": "SAN FRANCISCO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.6039667, 13.1880167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1494,
+        "location": "CATMON SEASIDE PARK FLORES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.014417, 10.718667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1438,
+        "location": "BUSAY BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.69765, 13.16265]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 402,
+        "location": "AMULUNG MUNICIPAL DISASTER OPERATION CENTER",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.722778, 17.836111]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1474,
+        "location": "MOALBOAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.391972, 9.93475]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 312,
+        "location": "SAN SIMON BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.568806, 8.440736]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 391,
+        "location": "HINGYON",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.099006, 16.852347]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 444,
+        "location": "NAGCARLAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.41523, 14.13332]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1523,
+        "location": "BASAY NATIONAL HIGH SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.658167, 9.413583]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 399,
+        "location": "LASAM MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.598942, 18.063239]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1528,
+        "location": "NANGKA - ASTI",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.109448, 14.673763]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1520,
+        "location": "MUNICIPAL GROUNDS STA. FE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.9175, 11.18556]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1565,
+        "location": "BRGY. HAMIGUITAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.34303, 8.924192]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 463,
+        "location": "ASIN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.493856, 16.443097]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 564,
+        "location": "BAYUGAN CITY HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.7514, 8.713]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1561,
+        "location": "Carmen Municipal Hall",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.017343, 9.229546]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 584,
+        "location": "HELEN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.59467, 9.24862]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 487,
+        "location": "SAN LUIS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.937331, 8.537376]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 606,
+        "location": "TALACOGON MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.784946, 8.449327]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1580,
+        "location": "MUNICIPAL HALL COMPOUND",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [117.8388, 8.7744]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1594,
+        "location": "STO. NINO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.67961717, 6.42814786]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 138,
+        "location": "ABUNO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.2439, 8.16245]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1676,
+        "location": "BRGY. SAN JOSE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.10526, 18.35901]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1632,
+        "location": "San Roque Power Corporation",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.67964, 16.13232]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1634,
+        "location": "CULIANAN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.144697, 6.978748]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 764,
+        "location": "BANGAR GYM",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.4235, 16.894167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1684,
+        "location": "BRGY. ISCA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.97697, 18.23633]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1666,
+        "location": "MADRID MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.96407, 9.26147]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1687,
+        "location": "BRGY. SANTA CLARA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.04581, 18.24199]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1741,
+        "location": "LA VICTORIA ES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.55375, 8.43806]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1742,
+        "location": "GUMAY ES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.45026, 8.42565]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1729,
+        "location": "LIBBO ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.49291, 16.57429]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1752,
+        "location": "PANLUAN ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.460593, 12.739506]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1735,
+        "location": "DAMIT ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.00678, 7.81807]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1774,
+        "location": "TINGIB",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.82655, 11.117278]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1771,
+        "location": "DANAO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.703021, 11.061828]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1792,
+        "location": "BRGY. LA UNION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.1004924, 10.8079514]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1793,
+        "location": "BUGO BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.1248335, 10.8744895]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1813,
+        "location": "TOONG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.75797, 14.05916]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1811,
+        "location": "MATAAS NA PULO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.72865, 14.08789]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1772,
+        "location": "PAGSANGA-AN BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.545978, 11.041396]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1831,
+        "location": "BALAYBAY RESETTLEMENT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.200833, 14.894167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1073,
+        "location": "PSHS BICOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.467, 13.695]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1843,
+        "location": "CANATUAN ES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.26631, 7.74097]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1187,
+        "location": "POBLACION-CALASIAO",
+        "rain_value_sum": 1.6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.35651, 16.00882]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1901,
+        "location": "BARANGAY VILLA ROBLES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.40381, 17.01305]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 981,
+        "location": "TANJAY BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.145694, 9.510194]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 450,
+        "location": "BAKUN",
+        "rain_value_sum": 2.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.727664, 16.783353]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 780,
+        "location": "TINA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.038571, 8.94671]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 779,
+        "location": "CARAGA STATE UNIVERSITY",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.59641, 8.95917]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1626,
+        "location": "LIBJO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.533495, 10.195108]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1925,
+        "location": "MALBOG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.80187, 12.97837]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1905,
+        "location": "BRGY. VILLAFONT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.084603, 10.7875191]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1934,
+        "location": "TULAY NA LUPA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.78558, 14.09381]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1941,
+        "location": "SAN ROQUE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.08812, 12.74061]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1944,
+        "location": "BRGY. PEDRO VERA (SUMMIT)",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.26983, 13.79027]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1990,
+        "location": "CALUASAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.289931, 9.900519]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1969,
+        "location": "ALNO",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.580301, 16.495445]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2052,
+        "location": "BARANGAY DIMALUADE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.2724, 16.56163]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2055,
+        "location": "GOOD-YEAR BANKER BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.777171, 7.829993]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2169,
+        "location": "NAGA BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9841111, 14.46513889]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2173,
+        "location": "BRGY. PANDANON SILOS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.139164, 10.559469]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2176,
+        "location": "BRGY. SAN JOSE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.1767128, 11.7445367]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2212,
+        "location": "SOUTH UPI",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.145568, 6.855248]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2375,
+        "location": "UNGKA II ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.5388807, 10.7514662]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2398,
+        "location": "DANGAY ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.96889, 9.65421]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2408,
+        "location": "CAMAMAN-AN NATIONAL HIGH SHCOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.660571, 8.459062]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2532,
+        "location": "TAGBUYACAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.57901, 9.31648]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 965,
+        "location": "KIBUNGSOD BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.203295, 9.005353]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 913,
+        "location": "BUHI",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.517767, 13.434983]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1643,
+        "location": "GUMAHAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5469, 8.21467]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2783,
+        "location": "PUROK 2 BRGY. PAMONORAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.925546, 15.792417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1557,
+        "location": "SAN MIGUEL MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.33, 9.89]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 151,
+        "location": "BRGY. LALO-IDP",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.535139, 14.050773]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1867,
+        "location": "SAPANGAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.36909, 13.77833]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1063,
+        "location": "LURISA NATIONAL HIGH SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.09854, 8.74779]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2782,
+        "location": "PUROK3 BRGY. HALL, TUBO TUBO SOUTH",
+        "rain_value_sum": 0.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [119.930529, 15.740535]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1639,
+        "location": "BRGY. GITUAN",
+        "rain_value_sum": 3.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.5995, 7.805]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1991,
+        "location": "NARRA NATIONAL HIGH SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.88283, 9.45141]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2539,
+        "location": "QUEZON INTEGRATED SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.14199, 8.49379]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1405,
+        "location": "ISABELA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.11743, 10.93315]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1816,
+        "location": "PINA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2169, 13.73911]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 760,
+        "location": "ARCH BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.882608, 8.538966]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1467,
+        "location": "SANTA MARIA MUNICIPAL GROUNDS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.751558, 17.469531]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1654,
+        "location": "BUENAVISTA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5308, 8.285]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1593,
+        "location": "SURALLAH",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.74772386, 6.37533565]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1688,
+        "location": "BRGY. CABIRAOAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.1104, 18.30702]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 110,
+        "location": "J.H. CERILLES State College",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.353016, 8.154602]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1823,
+        "location": "PINAGTURILAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.84806, 13.00239]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1950,
+        "location": "SAN RAFAEL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.99651, 13.91797]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1976,
+        "location": "BAGONG SILANG",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.64424, 14.17173]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 2049,
+        "location": "BARANGAY BUCAL NORTE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.26274, 16.54531]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 609,
+        "location": "ESPERANZA POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.657983, 8.67789]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 32,
+        "location": "IGANG ELEMENTARY SCHOOL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.524087, 10.5126816]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 644,
+        "location": "SUYO MUNICIPAL OFFICE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.513806, 16.983639]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 961,
+        "location": "LAWANG BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.75814, 7.5343]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 424,
+        "location": "CABARROGUIS MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5284167, 16.50969444]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1125,
+        "location": "SULTAN SA BARONGIS MUNICIPAL HAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.6024913, 6.8840627]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 157,
+        "location": "PARANG MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.266861, 7.36919]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 135,
+        "location": "CARMEN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.79518, 7.20496]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 387,
+        "location": "DALTON PASS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.93, 16.13297222]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 422,
+        "location": "GAMU BRIDGE",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.843028, 17.069861]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 711,
+        "location": "CABADBARAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.546283, 9.117172]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 754,
+        "location": "TUNGGOL BRIDGE",
+        "rain_value_sum": 11.61
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7407377, 7.0776456]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 756,
+        "location": "BULA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.2777, 13.469067]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 404,
+        "location": "ALCALA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.655556, 17.903056]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 406,
+        "location": "GONZAGA PUBLIC MARKET",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.997864, 18.261267]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 707,
+        "location": "DUGYAMAN",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.692575, 9.014844]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 813,
+        "location": "SAN VICENTE LGU ROOFDECK MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.873, 14.106667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1257,
+        "location": "SAN DIONISIO MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.0949, 11.271117]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1574,
+        "location": "TAGO POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.233591, 9.016448]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1506,
+        "location": "PSHS-CENTRAL VISAYAS CAMPUS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.58582, 9.899082]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1346,
+        "location": "VILLA CELESTIAL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.482517, 12.561517]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1562,
+        "location": "DINAGAT",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.604433, 9.954167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1563,
+        "location": "BASILISA POBLACION",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.596733, 10.065417]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1541,
+        "location": "OVAL AREA",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.198863, 9.095736]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1564,
+        "location": "BUENAVISTA MUNICIPAL HALL",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.40895, 8.97455]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1532,
+        "location": "STA RITA MUNICIPAL GROUNDS",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.94148, 11.449397]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": 1670,
+        "location": "DOST PSTC BATANES",
+        "rain_value_sum": 0.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.9685, 20.45128]
+      }
+    }
+  ]
+}

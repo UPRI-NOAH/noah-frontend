@@ -22,6 +22,8 @@ import {
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+import SENSOR_DATA from '@shared/data/sensors.json';
+
 type MapStyle = 'terrain' | 'satellite';
 
 @Component({
@@ -63,6 +65,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
+        this.initRainfallData();
       });
   }
 
@@ -303,6 +306,55 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
       });
+  }
+
+  initRainfallData() {
+    // this.map.addLayer({
+    //   id: 'sensors-bbsddb',
+    //   type: 'symbol',
+    //   source: {
+    //     type: 'vector',
+    //     url: "mapbox://jadurani.asse9xyo",
+    //   },
+    //   'source-layer': 'sensors-bbsddb',
+    //   paint: {
+    //     'icon-opacity': 1,
+    //     'text-opacity': 1,
+    //   },
+    //   // layout: {
+    //   //   'icon-image': id,
+    //   //   'text-anchor': 'top',
+    //   //   'text-field': ['get', 'name'],
+    //   //   'text-offset': [0, 2],
+    //   //   'text-size': 10,
+    //   // },
+    // })
+
+    const _this = this;
+    SENSOR_DATA.features.forEach(function (marker) {
+      // create a HTML element for each feature
+      // const el = document.createElement('div');
+      // el.className = 'marker';
+
+      // make a marker for each feature and add to the map
+      // new mapboxgl.Marker()
+      //   .setLngLat(marker.geometry.coordinates as [number, number])
+      //   .addTo(_this.map);
+      // console.log(marker);
+      new mapboxgl.Marker()
+        .setLngLat(marker.geometry.coordinates as [number, number])
+        .setPopup(
+          new mapboxgl.Popup().setHTML(
+            `
+          <div>
+            <div>#${marker.properties.station_id} - ${marker.properties.location}</div>
+            <small>Rain Value Sum: ${marker.properties.rain_value_sum}</small>
+          </div>
+        `
+          )
+        )
+        .addTo(_this.map);
+    });
   }
 
   switchMapStyle(style: MapStyle) {
