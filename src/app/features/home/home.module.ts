@@ -9,6 +9,7 @@ import { PersonalizedRiskAssessmentModule } from '@features/personalized-risk-as
 import { PlaygroundModule } from '@features/playground/playground.module';
 import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-hazards.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [LandingPageComponent, NavigationComponent, FooterComponent],
@@ -20,6 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     KnowYourHazardsModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule,
   ],
 })
 export class HomeModule {}

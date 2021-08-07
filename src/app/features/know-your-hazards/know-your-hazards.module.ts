@@ -13,7 +13,6 @@ import { FloodKyhComponent } from './components/flood-kyh/flood-kyh.component';
 import { LandslideKyhComponent } from './components/landslide-kyh/landslide-kyh.component';
 import { MapKyhComponent } from './components/map-kyh/map-kyh.component';
 import { StormSurgeKyhComponent } from './components/storm-surge-kyh/storm-surge-kyh.component';
-import { SearchComponent } from './components/search/search.component';
 import { SharedModule } from '@shared/shared.module';
 import { SurvivalKitComponent } from './components/survival-kit/survival-kit.component';
 
@@ -25,7 +24,6 @@ import { SurvivalKitComponent } from './components/survival-kit/survival-kit.com
     LandslideKyhComponent,
     MapKyhComponent,
     StormSurgeKyhComponent,
-    SearchComponent,
     SurvivalKitComponent,
   ],
   imports: [CommonModule, KnowYourHazardsRoutingModule, SharedModule],

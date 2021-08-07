@@ -138,12 +138,13 @@
         </div>
         <ul class="my-2 flex w-full flex-wrap">
           <!-- SEARCH -->
-          <noah-search-playground
-            class="w-full mt-4"
-            [searchTerm]="searchTerm"
-            (selectPlace)="selectPlace($event)"
-          >
-          </noah-search-playground>
+          <div class="w-full">
+            <noah-search
+              [searchTerm]="searchTerm"
+              (selectPlace)="selectPlace($event)"
+            >
+            </noah-search>
+          </div>
 
           <!-- 3D -->
           <noah-exaggeration class="w-full"></noah-exaggeration>
