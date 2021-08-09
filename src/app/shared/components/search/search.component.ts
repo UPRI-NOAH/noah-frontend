@@ -5,6 +5,10 @@ import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
+type FixedMyLocation = {
+  center: [number, number];
+  place_name: string;
+};
 @Component({
   selector: 'noah-search',
   templateUrl: './search.component.html',
@@ -41,6 +45,37 @@ export class SearchComponent implements OnInit {
       .subscribe((value: any) => {
         this.places$.next(value.features);
       });
+  }
+  get fixedMyLocation(): FixedMyLocation {
+    // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
+    function locationSuccess(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      var coords = { lng: longitude, lat: latitude };
+      localStorage.setItem('userLocation', JSON.stringify(coords));
+      var retrievedObject = localStorage.getItem('coords');
+      console.log('retrievedObject: ', JSON.parse(retrievedObject));
+    }
+
+    function locationError(error) {
+      const code = error.code;
+      const message = error.message;
+
+      // read the code and message and decide how you want to handle this!
+      alert(message);
+    }
+
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+
+    //GETTING COORDINATES TO LOCAL STORAGE
+    const user = localStorage.getItem('userLocation');
+    const userCoords = JSON.parse(user);
+    console.log(userCoords.lng);
+    console.log(userCoords.lat);
+    return {
+      center: [userCoords.lng, userCoords.lat],
+      place_name: 'Your Current Location',
+    };
   }
 
   pickPlace(place) {
