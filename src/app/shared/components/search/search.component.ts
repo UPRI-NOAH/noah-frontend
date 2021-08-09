@@ -5,12 +5,6 @@ import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
-// temporary code for leyte
-type FixedLeyte = {
-  center: [number, number];
-  text: string;
-  place_name: string;
-};
 @Component({
   selector: 'noah-search',
   templateUrl: './search.component.html',
@@ -49,23 +43,9 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  // temporary code for leyte
-  get fixedForLeyte(): FixedLeyte {
-    return {
-      center: [124.98707397619495, 10.777080241395213],
-      text: 'Leyte',
-      place_name: 'Leyte, Philippines',
-    };
-  }
-
   pickPlace(place) {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
-
-    this.kyhService.setCurrentLocation(place.text);
-    const [lng, lat] = place.center;
-    this.kyhService.setCenter({ lat, lng });
-    this.kyhService.setCurrentCoords({ lat, lng });
   }
 }

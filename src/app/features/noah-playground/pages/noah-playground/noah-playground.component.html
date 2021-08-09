@@ -33,12 +33,12 @@
     <span class="sr-only">Open menu</span>
   </button>
 
-  <noah-search-playground
+  <noah-search
     class="fixed p-2 z-20 md:rounded-r-lg rounded-t-lg md:top-4 self-center md:hidden w-2/3"
     [searchTerm]="searchTerm"
     (selectPlace)="selectPlace($event)"
   >
-  </noah-search-playground>
+  </noah-search>
 
   <nav
     class="block h-96 bottom-0 fixed w-full md:w-96 md:order-first p-4 bg-gray-50 shadow-2xl rounded-t-lg md:rounded-none flex-none md:min-h-screen z-50 md:h-full overflow-y-auto"
@@ -53,7 +53,7 @@
       />
     </div>
 
-    <div class="relative flex items-center justify-between mb-6">
+    <div class="relative flex items-center justify-between mb-2">
       <div class="w-full" routerLink="/" role="button">
         <svg
           width="80"
@@ -122,12 +122,12 @@
       </div>
     </div>
     <div class="relative">
-      <noah-search-playground
-        class="w-full mt-4 hidden md:block relative"
+      <noah-search
+        class="w-full hidden md:block relative"
         [searchTerm]="searchTerm"
         (selectPlace)="selectPlace($event)"
       >
-      </noah-search-playground>
+      </noah-search>
       <noah-exaggeration class="w-full"></noah-exaggeration>
       <noah-hazard-type
         class="w-full"
