@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
 type FixedMyLocation = {
@@ -17,11 +17,13 @@ type FixedMyLocation = {
 export class SearchComponent implements OnInit {
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
+  currentLocation$: Observable<string>;
 
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
 
   isDropdownOpen = false;
+  isCurrent = false;
 
   constructor(private mapService: MapService, private kyhService: KyhService) {}
 
@@ -29,6 +31,7 @@ export class SearchComponent implements OnInit {
     this.kyhService.init();
     this.searchTermCtrl = new FormControl();
     this.places$ = new BehaviorSubject([]);
+    this.currentLocation$ = this.kyhService.currentLocation$;
 
     this.searchTermCtrl.valueChanges
       .pipe(
@@ -83,4 +86,11 @@ export class SearchComponent implements OnInit {
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
   }
+
+  // selectPlace(selectedPlace) {
+  //   this.kyhService.setCurrentLocation(selectedPlace.text);
+  //   const [lng, lat] = selectedPlace.center;
+  //   this.kyhService.setCenter({ lat, lng });
+  //   this.kyhService.setCurrentCoords({ lat, lng });
+  // }
 }
