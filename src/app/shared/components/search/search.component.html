@@ -2,16 +2,7 @@
 <div class="relative">
   <div class="pt-2">
     <div
-      class="
-        relative
-        border-solid border-gray-400 border
-        bg-white
-        flex
-        justify-center
-        items-center
-        rounded-full
-        z-10
-      "
+      class="relative border-solid border-gray-400 border bg-white flex justify-center items-center rounded-full z-10"
     >
       <div class="pl-3">
         <svg
@@ -34,32 +25,11 @@
         (focus)="isDropdownOpen = true"
         placeholder="Search location"
         autocomplete="off"
-        class="
-          rounded-l-full
-          w-full
-          py-2
-          px-2
-          text-gray-700
-          leading-tight
-          focus:outline-none
-        "
+        class="rounded-l-full w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none"
       />
       <button
         type="submit"
-        class="
-          rounded-full
-          bg-primary
-          text-white
-          p-2
-          m-1
-          w-auto
-          h-auto
-          hover:bg-blue-400
-          focus:outline-none
-          flex
-          items-center
-          justify-center
-        "
+        class="rounded-full bg-primary text-white p-2 m-1 w-auto h-auto hover:bg-blue-400 focus:outline-none flex items-center justify-center"
       >
         <span class="w-auto flex justify-end items-center">
           <svg
@@ -80,39 +50,12 @@
 
   <!-- DROPDOWN -->
   <div
-    class="
-      z-40
-      absolute
-      mt-2
-      py-2
-      w-full
-      bg-white
-      shadow-xl
-      rounded-md
-      transition
-      duration-300
-      ease-in-out
-    "
+    class="z-40 absolute mt-2 py-2 w-full bg-white shadow-xl rounded-md transition duration-300 ease-in-out"
     *ngIf="isDropdownOpen && (places$ | async)?.length"
   >
     <ul class="list-none">
       <li
-        class="
-          block
-          w-full
-          px-4
-          py-4
-          font-bold
-          text-sm
-          cursor-pointer
-          text-left text-gray-700
-          hover:bg-gray-100 hover:text-gray-900
-          transition
-          duration-300
-          ease-in-out
-          focus:outline-none
-          group
-        "
+        class="block w-full px-4 py-4 font-bold text-sm cursor-pointer text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group"
       >
         <span>
           <svg
@@ -169,27 +112,7 @@
       <li
         (click)="pickPlace(place)"
         *ngFor="let place of places$ | async"
-        class="
-          flex-row
-          block
-          w-full
-          px-4
-          py-0
-          cursor-pointer
-          text-left
-          hover:bg-gray-100 hover:text-gray-900
-          transition
-          duration-300
-          ease-in-out
-          focus:outline-none
-          group
-          overflow:
-          hidden;
-          text-overflow:
-          ellipsis;
-          white-space:
-          wrap;
-        "
+        class="flex-row block w-full px-4 py-0 cursor-pointer text-left hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group overflow: hidden; text-overflow: ellipsis; white-space: wrap;"
       >
         <div class="py-2 max-w-xl w-full flex flex-row">
           <div class="md:mt-0 items-center flex">
