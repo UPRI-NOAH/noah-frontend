@@ -1,37 +1,85 @@
-<div id="map-kyh"></div>
+<div id="map-kyh" (click)="isOpenedList = 0"></div>
 
-<div class="bottom-0 fixed z-10 left-0 h-16 w-16 flex flex-row py-4">
+<div class="top-36 absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-4">
   <a class="flex max-w-xs p-2 items-center space-x-3">
     <div class="switch">
-      <div class="inline-flex">
+      <div class="dropdown inline-block relative">
         <button
-          class="
-            bg-gray-200
-            hover:bg-gray-400
-            text-gray-800
-            font-bold
-            py-2
-            px-4
-            rounded-l
-          "
-          (click)="switchMapStyle('terrain')"
+          class="bg-white text-gray-800 font-semibold py-1 px-1 ml-2 rounded inline-flex items-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50"
         >
-          Mapbox
+          <svg
+            (click)="isOpenedList = 0"
+            xmlns="http://www.w3.org/2000/svg"
+            [ngClass]="
+              isOpenedList === 2
+                ? 'icon icon-tabler icon-tabler-chevron-up'
+                : 'hidden'
+            "
+            width="25"
+            height="25"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 
+            00-.553-.894L15 4m0 13V4m0 0L9 7"
+            />
+          </svg>
+          <svg
+            (click)="isOpenedList = 2"
+            xmlns="http://www.w3.org/2000/svg"
+            [ngClass]="
+              isOpenedList === 2
+                ? 'hidden'
+                : 'icon icon-tabler icon-tabler-chevron-down'
+            "
+            width="23"
+            height="23"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 
+            00-.553-.894L15 4m0 13V4m0 0L9 7"
+            />
+          </svg>
         </button>
-        <button
-          class="
-            bg-gray-200
-            hover:bg-gray-400
-            text-gray-800
-            font-bold
-            py-2
-            px-4
-            rounded-r
-          "
-          (click)="switchMapStyle('satellite')"
+
+        <ul
+          class="dropdown-menu rounded-lg shadow-2xl drop-shadow-xl bg-white right-9 bottom-0 absolute text-sm text-gray-700"
+          *ngIf="isOpenedList === 2"
         >
-          Satellite
-        </button>
+          <li class="">
+            <a
+              class="rounded-lg block px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+              role="button"
+              (click)="switchMapStyle('terrain')"
+              >Terrain</a
+            >
+          </li>
+          <li class="">
+            <a
+              class="rounded-lg block px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+              role="button"
+              (click)="switchMapStyle('satellite')"
+              >Satellite</a
+            >
+          </li>
+        </ul>
       </div>
     </div>
   </a>

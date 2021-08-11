@@ -19,6 +19,8 @@ export class KnowYourHazardsComponent implements OnInit {
   floodRiskLevel$: Observable<RiskLevel>;
   stormSurgeRiskLevel$: Observable<RiskLevel>;
   landslideRiskLevel$: Observable<RiskLevel>;
+  isMenu: boolean = true;
+  isOpen: boolean = true;
 
   get isKYHPage$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(
