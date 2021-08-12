@@ -21,9 +21,7 @@ import {
 } from '@shared/mocks/critical-facilities';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
 type MapStyle = 'terrain' | 'satellite';
-
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -144,7 +142,65 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    * implementation.
    */
   addCriticalFacilityLayers() {
-    CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+    //  CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+    this.map.on('load', () => {
+      this.map.addSource('critical-facilities', {
+        type: 'geojson',
+        data: 'assets/geojson/fire_station.geojson', //assets/geojson/fire_station.geojson
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+      this.map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'critical-facilities',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#51bbd6',
+            100,
+            '#f1f075',
+            750,
+            '#f28cb1',
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+        },
+      });
+      this.map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'critical-facilities',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+        },
+      });
+      this.map.addLayer({
+        id: 'unclustered-points',
+        type: 'circle',
+        source: 'critical-facilities',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#11b4da', //unclustered must be a photo
+          'circle-radius': 10,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff',
+        },
+      });
+    });
   }
 
   /**
