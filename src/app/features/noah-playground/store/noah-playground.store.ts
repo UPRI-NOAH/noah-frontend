@@ -108,17 +108,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: true,
     levels: {
       'flood-return-period-5': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
       'flood-return-period-25': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: true,
       },
       'flood-return-period-100': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
@@ -129,7 +129,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     levels: {
       'landslide-hazard': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
@@ -139,12 +139,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
       //   shown: false,
       // },
       'debris-flow': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
       'unstable-slopes-maps': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
@@ -155,22 +155,22 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     levels: {
       'storm-surge-advisory-1': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
       'storm-surge-advisory-2': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
       'storm-surge-advisory-3': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },
       'storm-surge-advisory-4': {
-        opacity: 100,
+        opacity: 85,
         color: 'noah-red',
         shown: false,
       },

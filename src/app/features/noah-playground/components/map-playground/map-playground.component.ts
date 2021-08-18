@@ -287,7 +287,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      zoom: 10,
+      zoom: 5,
       touchZoomRotate: true,
       center: this.pgService.currentCoords,
     });
