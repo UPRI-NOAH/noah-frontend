@@ -34,7 +34,7 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
-
+  isOpenedList;
   private _unsub = new Subject();
 
   constructor(private mapService: MapService, private kyhService: KyhService) {}
