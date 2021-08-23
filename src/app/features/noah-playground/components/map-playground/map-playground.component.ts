@@ -143,29 +143,48 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    */
   addCriticalFacilityLayers() {
     //  CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+    const hospital = 'assets/geojson/hospitals.geojson';
+    const fire = 'assets/geojson/fire_station.geojson';
+    const police = 'assets/geojson/police_station.geojson';
+    const school = 'assets/geojson/schools.geojson';
+
     this.map.on('load', () => {
-      this.map.addSource('critical-facilities', {
+      this.map.addSource('fireStations', {
         type: 'geojson',
-        data: 'assets/geojson/fire_station.geojson', //assets/geojson/fire_station.geojson
+        data: fire,
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 50,
       });
+      this.map.addSource('hospitals', {
+        type: 'geojson',
+        data: hospital,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+      this.map.addSource('policeStations', {
+        type: 'geojson',
+        data: police,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+      this.map.addSource('schools', {
+        type: 'geojson',
+        data: school,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+
+      //form points
       this.map.addLayer({
-        id: 'clusters',
+        id: 'fireStations-critical',
         type: 'circle',
-        source: 'critical-facilities',
+        source: 'fireStations',
         filter: ['has', 'point_count'],
         paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#51bbd6',
-            100,
-            '#f1f075',
-            750,
-            '#f28cb1',
-          ],
           'circle-radius': [
             'step',
             ['get', 'point_count'],
@@ -175,12 +194,76 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             750,
             40,
           ],
+          'circle-stroke-width': 1,
+          'circle-color': '#fb5f5f',
+          'circle-stroke-color': '#fb5f5f',
         },
       });
+
+      this.map.addLayer({
+        id: 'hospitals-critical',
+        type: 'circle',
+        source: 'hospitals',
+        paint: {
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+          'circle-stroke-width': 1,
+          'circle-color': '#5fa2fb',
+          'circle-stroke-color': '#5fa2fb',
+        },
+      });
+
+      this.map.addLayer({
+        id: 'police-critical',
+        type: 'circle',
+        source: 'policeStations',
+        paint: {
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+          'circle-stroke-width': 1,
+          'circle-color': '#eccb57',
+          'circle-stroke-color': '#eccb57',
+        },
+      });
+
+      this.map.addLayer({
+        id: 'schools-critical',
+        type: 'circle',
+        source: 'schools',
+        paint: {
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+          'circle-stroke-width': 1,
+          'circle-color': '#05bc08',
+          'circle-stroke-color': '#05bc08',
+        },
+      });
+      //for cluster count
       this.map.addLayer({
         id: 'cluster-count',
         type: 'symbol',
-        source: 'critical-facilities',
+        source: 'fireStations',
         filter: ['has', 'point_count'],
         layout: {
           'text-field': '{point_count_abbreviated}',
@@ -188,16 +271,93 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'text-size': 12,
         },
       });
+
       this.map.addLayer({
-        id: 'unclustered-points',
+        id: 'cluster-count-hospi',
+        type: 'symbol',
+        source: 'hospitals',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+        },
+      });
+
+      this.map.addLayer({
+        id: 'cluster-count-police',
+        type: 'symbol',
+        source: 'policeStations',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+        },
+      });
+
+      this.map.addLayer({
+        id: 'cluster-count-school',
+        type: 'symbol',
+        source: 'schools',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+        },
+      });
+
+      // unclustered/single point
+      this.map.addLayer({
+        id: 'unclustered-fire',
         type: 'circle',
-        source: 'critical-facilities',
+        source: 'fireStations',
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#11b4da', //unclustered must be a photo
-          'circle-radius': 10,
+          'circle-color': '#fb5f5f', //unclustered must be a photo
+          'circle-radius': 3,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
+          'circle-stroke-color': '#fb5f5f',
+        },
+      });
+
+      this.map.addLayer({
+        id: 'unclustered-hospital',
+        type: 'circle',
+        source: 'hospitals',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#5fa2fb', //unclustered must be a photo
+          'circle-radius': 3,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#5fa2fb',
+        },
+      });
+
+      this.map.addLayer({
+        id: 'unclustered-police',
+        type: 'circle',
+        source: 'policeStations',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#eccb57', //unclustered must be a photo
+          'circle-radius': 3,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#eccb57',
+        },
+      });
+
+      this.map.addLayer({
+        id: 'unclustered-school',
+        type: 'circle',
+        source: 'schools',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#05bc08', //unclustered must be a photo
+          'circle-radius': 3,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#05bc08',
         },
       });
     });
