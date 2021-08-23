@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
+const user = localStorage.getItem('userLocation');
+const userCoords = JSON.parse(user);
+
 export const PH_DEFAULT_CENTER = {
-  lat: 10.777080241395213,
-  lng: 124.98707397619495,
+  lat: userCoords.lat,
+  lng: userCoords.lng,
 };
 
 export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;

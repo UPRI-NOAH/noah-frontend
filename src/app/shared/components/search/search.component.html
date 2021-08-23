@@ -77,9 +77,9 @@
       </button>
     </div>
   </div>
-
   <!-- DROPDOWN -->
   <div
+<<<<<<< HEAD
     class="
       z-40
       absolute
@@ -93,10 +93,14 @@
       duration-300
       ease-in-out
     "
+=======
+    class="z-40 absolute mt-2 py-2 w-full bg-white shadow-xl rounded-md transition duration-300 ease-in-out"
+>>>>>>> 88fc806... User location search center coords
     *ngIf="isCurrent"
   >
     <ul class="list-none">
       <li
+<<<<<<< HEAD
         class="
           block
           w-full
@@ -114,6 +118,10 @@
           group
         "
         (click)="pickPlace(fixedMyLocation)"
+=======
+        class="block w-full px-4 py-4 font-bold text-sm cursor-pointer text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group"
+        (click)="userFixedLocation()"
+>>>>>>> 88fc806... User location search center coords
       >
         <span>
           <svg
@@ -164,7 +172,7 @@
               stroke-linecap="round"
               stroke-linejoin="round"
             /></svg
-          >{{ fixedMyLocation.place_name }}</span
+          >Your Current Location</span
         >
       </li>
     </ul>
@@ -191,6 +199,7 @@
         class="block w-full px-4 py-4 font-bold text-sm cursor-pointer text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
         class="
@@ -215,6 +224,9 @@
 =======
         (click)="pickPlace(fixedMyLocation)"
 >>>>>>> 65801c9... merge userlocation search
+=======
+        (click)="userFixedLocation()"
+>>>>>>> 88fc806... User location search center coords
       >
         <span>
           <svg
@@ -265,7 +277,7 @@
               stroke-linecap="round"
               stroke-linejoin="round"
             /></svg
-          >{{ fixedMyLocation.place_name }}</span
+          >Your Current Location</span
         >
       </li>
       <li
