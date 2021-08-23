@@ -1,20 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-
-type FixedMyLocation = {
-  center: [number, number];
-  place_name: string;
-};
 @Component({
   selector: 'noah-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
+  center: [number, number];
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   currentLocation$: Observable<string>;
@@ -25,7 +22,11 @@ export class SearchComponent implements OnInit {
   isDropdownOpen = false;
   isCurrent = false;
 
-  constructor(private mapService: MapService, private kyhService: KyhService) {}
+  constructor(
+    private mapService: MapService,
+    private kyhService: KyhService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.kyhService.init();
@@ -49,35 +50,33 @@ export class SearchComponent implements OnInit {
         this.places$.next(value.features);
       });
   }
-  get fixedMyLocation(): FixedMyLocation {
+
+  userFixedLocation() {
     // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
     function locationSuccess(position) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-      var coords = { lng: longitude, lat: latitude };
+      const coords = { lng: longitude, lat: latitude };
       localStorage.setItem('userLocation', JSON.stringify(coords));
-      var retrievedObject = localStorage.getItem('coords');
+      const retrievedObject = localStorage.getItem('userLocation');
       console.log('retrievedObject: ', JSON.parse(retrievedObject));
     }
 
     function locationError(error) {
-      const code = error.code;
       const message = error.message;
-
       // read the code and message and decide how you want to handle this!
       alert(message);
     }
-
     navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
 
     //GETTING COORDINATES TO LOCAL STORAGE
     const user = localStorage.getItem('userLocation');
     const userCoords = JSON.parse(user);
-    console.log(userCoords.lng);
-    console.log(userCoords.lat);
+    const myPlace = [userCoords.lng, userCoords.lat];
+    console.log(myPlace);
+    this.router.navigate(['/know-your-hazards']);
     return {
-      center: [userCoords.lng, userCoords.lat],
-      place_name: 'Your Current Location',
+      center: myPlace,
     };
   }
 
