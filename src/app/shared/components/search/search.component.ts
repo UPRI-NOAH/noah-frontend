@@ -5,6 +5,8 @@ import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
+import { UP_ARROW, DOWN_ARROW, ENTER } from '@angular/cdk/keycodes';
+import { userCoords } from '@features/know-your-hazards/store/kyh.store';
 @Component({
   selector: 'noah-search',
   templateUrl: './search.component.html',
@@ -15,9 +17,12 @@ export class SearchComponent implements OnInit {
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   currentLocation$: Observable<string>;
-
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
+
+  placeHolder: string = '';
+  isExist = false;
+  kyhPlaceholder: string;
 
   isDropdownOpen = false;
   isCurrent = false;
@@ -30,6 +35,8 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.kyhService.init();
+    this.placeHolder = this.kyhService.allPlaceHolder;
+
     this.searchTermCtrl = new FormControl();
     this.places$ = new BehaviorSubject([]);
     this.currentLocation$ = this.kyhService.currentLocation$;
@@ -64,7 +71,6 @@ export class SearchComponent implements OnInit {
 
     function locationError(error) {
       const message = error.message;
-      // read the code and message and decide how you want to handle this!
       alert(message);
     }
     navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
@@ -84,5 +90,17 @@ export class SearchComponent implements OnInit {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
+  }
+
+  onKeydown(event) {
+    if (event.keyCode === DOWN_ARROW) {
+      this.searchTermCtrl.setValue([userCoords.lng, userCoords.lat]);
+      console.log('Down', event.keyCode);
+    } else if (event.keyCode === UP_ARROW) {
+      // this.dropdownNotActive()
+      console.log('Up', event.keyCode);
+    } else if (event.keyCode === ENTER) {
+      console.log('Enter', event.keyCode);
+    }
   }
 }
