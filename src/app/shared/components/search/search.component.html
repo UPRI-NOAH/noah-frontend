@@ -1,5 +1,5 @@
 <!-- SEARCH CONTAINER -->
-<div class="relative">
+<div class="relative select">
   <div class="pt-2">
     <div
       class="
@@ -32,7 +32,7 @@
         [formControl]="searchTermCtrl"
         (keyup)="isDropdownOpen = true"
         (focus)="isCurrent = true"
-        placeholder="Search location"
+        placeholder="{{ placeHolder }}"
         autocomplete="off"
         class="
           rounded-l-full
@@ -43,6 +43,10 @@
           leading-tight
           focus:outline-none
         "
+<<<<<<< HEAD
+=======
+        (keydown)="onKeydown($event)"
+>>>>>>> b94740e... WIP: User Location and changing placeholder
       />
       <button
         type="submit"
@@ -77,9 +81,13 @@
       </button>
     </div>
   </div>
+
   <!-- DROPDOWN -->
   <div
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
     class="
       z-40
       absolute
@@ -93,14 +101,20 @@
       duration-300
       ease-in-out
     "
+<<<<<<< HEAD
 =======
     class="z-40 absolute mt-2 py-2 w-full bg-white shadow-xl rounded-md transition duration-300 ease-in-out"
 >>>>>>> 88fc806... User location search center coords
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
     *ngIf="isCurrent"
   >
     <ul class="list-none">
       <li
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
         class="
           block
           w-full
@@ -117,9 +131,12 @@
           focus:outline-none
           group
         "
+<<<<<<< HEAD
         (click)="pickPlace(fixedMyLocation)"
 =======
         class="block w-full px-4 py-4 font-bold text-sm cursor-pointer text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group"
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
         (click)="userFixedLocation()"
 >>>>>>> 88fc806... User location search center coords
       >
@@ -192,9 +209,11 @@
       ease-in-out
     "
     *ngIf="isDropdownOpen && (places$ | async)?.length"
+    id="dropdown-place"
   >
     <ul class="list-none">
       <li
+<<<<<<< HEAD
 <<<<<<< HEAD
         class="block w-full px-4 py-4 font-bold text-sm cursor-pointer text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-300 ease-in-out focus:outline-none group"
 <<<<<<< HEAD
@@ -202,6 +221,8 @@
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
         class="
           block
           w-full
@@ -218,6 +239,7 @@
           focus:outline-none
           group
         "
+<<<<<<< HEAD
 >>>>>>> 93e9e43... Add on focus for input current location
         (click)="pickPlace(fixedMyLocation)"
 >>>>>>> c7a6fd2... userlocation search
@@ -225,6 +247,8 @@
         (click)="pickPlace(fixedMyLocation)"
 >>>>>>> 65801c9... merge userlocation search
 =======
+=======
+>>>>>>> b94740e... WIP: User Location and changing placeholder
         (click)="userFixedLocation()"
 >>>>>>> 88fc806... User location search center coords
       >

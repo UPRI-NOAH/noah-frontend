@@ -21,6 +21,7 @@ export class KnowYourHazardsComponent implements OnInit {
   landslideRiskLevel$: Observable<RiskLevel>;
   isMenu: boolean = true;
   isOpen: boolean = true;
+  kyhPlaceHolderText = 'Search Locationsssss';
 
   get isKYHPage$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(
@@ -54,6 +55,7 @@ export class KnowYourHazardsComponent implements OnInit {
     this.kyhService.init();
     this.kyhService.setCurrentPage('know-your-hazards');
     this.currentLocation$ = this.kyhService.currentLocation$;
+    this.kyhPlaceHolderText = this.kyhService.allPlaceHolder;
   }
 
   viewHazardLayer(currentHazard: HazardType) {

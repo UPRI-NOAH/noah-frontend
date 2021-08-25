@@ -20,6 +20,10 @@ export class KyhService {
     private hazardsService: HazardsService
   ) {}
 
+  get allPlaceHolder(): string {
+    return this.kyhStore.state.allPlaceHolder;
+  }
+
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.kyhStore.state$.pipe(map((state) => state.center));
   }
@@ -134,6 +138,10 @@ export class KyhService {
 
   setMapCenter(coords: { lat: number; lng: number }) {
     this.kyhStore.patch({ center: coords }, 'update map center');
+  }
+
+  setPlaceHolder(allPlaceHolder: string) {
+    this.kyhStore.patch({ allPlaceHolder }, 'update placeholder');
   }
 
   // Temporary
