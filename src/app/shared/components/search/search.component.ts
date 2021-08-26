@@ -1,12 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { UP_ARROW, DOWN_ARROW, ENTER } from '@angular/cdk/keycodes';
-import { userCoords } from '@features/know-your-hazards/store/kyh.store';
+import { ArrowKeysDirective } from '@shared/arrow-keys.directive';
+import { ENTER } from '@angular/cdk/keycodes';
+
 @Component({
   selector: 'noah-search',
   templateUrl: './search.component.html',
@@ -21,11 +30,12 @@ export class SearchComponent implements OnInit {
   places$: BehaviorSubject<any[]>;
 
   placeHolder: string = '';
-  isExist = false;
-  kyhPlaceholder: string;
 
   isDropdownOpen = false;
   isCurrent = false;
+
+  column: number = 1;
+  @ViewChildren(ArrowKeysDirective) inputs: QueryList<ArrowKeysDirective>;
 
   constructor(
     private mapService: MapService,
@@ -34,9 +44,13 @@ export class SearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.kyhService.init();
+    this.kyhService.keyBoard.subscribe((res) => {
+      this.moveByArrowkey(res);
+    });
+
     this.placeHolder = this.kyhService.allPlaceHolder;
 
+    this.kyhService.init();
     this.searchTermCtrl = new FormControl();
     this.places$ = new BehaviorSubject([]);
     this.currentLocation$ = this.kyhService.currentLocation$;
@@ -79,11 +93,17 @@ export class SearchComponent implements OnInit {
     const user = localStorage.getItem('userLocation');
     const userCoords = JSON.parse(user);
     const myPlace = [userCoords.lng, userCoords.lat];
-    console.log(myPlace);
     this.router.navigate(['/know-your-hazards']);
+    console.log(myPlace);
     return {
       center: myPlace,
     };
+  }
+  onEnterUser(event) {
+    if (event.keyCode === ENTER) {
+      this.router.navigate(['/know-your-hazards']);
+      console.log('User Location Enter', event.keyCode);
+    }
   }
 
   pickPlace(place) {
@@ -92,15 +112,34 @@ export class SearchComponent implements OnInit {
     this.selectPlace.emit(place);
   }
 
-  onKeydown(event) {
-    if (event.keyCode === DOWN_ARROW) {
-      this.searchTermCtrl.setValue([userCoords.lng, userCoords.lat]);
-      console.log('Down', event.keyCode);
-    } else if (event.keyCode === UP_ARROW) {
-      // this.dropdownNotActive()
-      console.log('Up', event.keyCode);
-    } else if (event.keyCode === ENTER) {
-      console.log('Enter', event.keyCode);
+  onKeyEnterPicked(place, event) {
+    if (event.keyCode === ENTER) {
+      this.selectPlace.emit(place);
+      console.log('Picked Place Enter', event.keyCode);
+    }
+  }
+
+  moveByArrowkey(object) {
+    const inputToArray = this.inputs.toArray();
+    let index = inputToArray.findIndex((x) => x.element == object.element);
+
+    switch (object.action) {
+      case 'UP':
+        index -= this.column;
+        console.log('UP');
+        clearInterval(object);
+        break;
+      case 'DOWN':
+        index += this.column;
+        console.log('DOWN');
+        clearInterval(object);
+        break;
+      case 'ENTER':
+        index == this.column;
+        clearInterval(object);
+    }
+    if (index >= 0 && index < this.inputs.length) {
+      inputToArray[index].element.nativeElement.focus();
     }
   }
 }
