@@ -1,6 +1,6 @@
 import { state } from '@angular/animations';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import {
   HazardType,
@@ -19,6 +19,11 @@ export class KyhService {
     private kyhStore: KyhStore,
     private hazardsService: HazardsService
   ) {}
+
+  keyBoard: Subject<any> = new Subject<any>();
+  sendMessage(message: any) {
+    this.keyBoard.next(message);
+  }
 
   get allPlaceHolder(): string {
     return this.kyhStore.state.allPlaceHolder;
