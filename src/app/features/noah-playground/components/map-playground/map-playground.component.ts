@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
-import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
+import mapboxgl, {
+  AnySourceData,
+  GeolocateControl,
+  Map,
+  Marker,
+} from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
@@ -21,6 +26,8 @@ import {
 } from '@shared/mocks/critical-facilities';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
+import PH_MULTILAYER from '@shared/data/ph_multilayer.json';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -62,7 +69,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initMarkers();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
-        this.initHazardLayers();
+        // this.initHazardLayers();
+        this.initMultiLayers();
       });
   }
 
@@ -276,6 +284,42 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 getHazardColor(h.type, level.color, l.sourceLayer) // TO DO: Handle l.sourceLayer properly
               )
             );
+        });
+      });
+    });
+  }
+
+  initMultiLayers() {
+    PH_MULTILAYER.forEach((obj) => {
+      const sourceID = obj.sourceLayer.toLowerCase();
+      const sourceData = {
+        type: 'vector',
+        url: obj.url,
+      } as AnySourceData;
+
+      this.map.addSource(sourceID, sourceData);
+
+      obj.hazards.forEach((hazard) => {
+        hazard.levels.forEach((hazardLevel) => {
+          // getHazardLayer(l.sourceLayer, l.url, l.sourceLayer, h.type)
+          const layerID = `${sourceID}_${hazard.type}_${hazardLevel}`;
+          const hazardTypes = {
+            fh: 'flood',
+            lh: 'landslide',
+            ssh: 'storm-surge',
+          };
+          const hazardType = hazardTypes[hazard.type];
+          const sourceLayer = `${sourceID}_${hazard.type}_${hazardLevel}`;
+          this.map.addLayer({
+            id: layerID,
+            type: 'fill',
+            source: sourceID,
+            'source-layer': sourceLayer,
+            paint: {
+              'fill-color': getHazardColor(hazardType, 'noah-red', hazardType),
+              'fill-opacity': 0.75,
+            },
+          });
         });
       });
     });
