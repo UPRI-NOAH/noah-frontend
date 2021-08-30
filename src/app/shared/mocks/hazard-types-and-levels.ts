@@ -1,15 +1,15 @@
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
-import FLOOD_5_ALL from '../data/fh_5yr.json';
-import FLOOD_25_ALL from '../data/fh_25yr.json';
-import FLOOD_100_ALL from '../data/fh_100yr.json';
+import FLOOD_5_ALL from '../data/multisource/fh_5yr.json';
+import FLOOD_25_ALL from '../data/multisource/fh_25yr.json';
+import FLOOD_100_ALL from '../data/multisource/fh_100yr.json';
 
-import LANDSLIDE_ALL from '../data/lh_landslide.json';
+import LANDSLIDE_ALL from '../data/multisource/lh_landslide.json';
 
-import SSA1_ALL from '../data/ssh_ssa1.json';
-import SSA2_ALL from '../data/ssh_ssa2.json';
-import SSA3_ALL from '../data/ssh_ssa3.json';
-import SSA4_ALL from '../data/ssh_ssa4.json';
+import SSA1_ALL from '../data/multisource/ssh_ssa1.json';
+import SSA2_ALL from '../data/multisource/ssh_ssa2.json';
+import SSA3_ALL from '../data/multisource/ssh_ssa3.json';
+import SSA4_ALL from '../data/multisource/ssh_ssa4.json';
 
 // FLOOD
 export const FLOOD_5RRP = {
