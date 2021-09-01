@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
+import { SensorType } from '../services/sensor.service';
 
 export const PH_DEFAULT_CENTER = {
   lat: 10.872407621178079,
@@ -86,6 +87,11 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type SensorsState = {
+  shown: boolean;
+  types: Record<SensorType, { shown: boolean }>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -95,6 +101,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
+  sensors: SensorsState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -201,6 +208,23 @@ const createInitialValue = (): NoahPlaygroundState => ({
   center: PH_DEFAULT_CENTER,
   currentCoords: PH_DEFAULT_CENTER,
   currentLocation: '-----',
+  sensors: {
+    shown: false,
+    types: {
+      arg: {
+        shown: false,
+      },
+      wlms: {
+        shown: false,
+      },
+      aws: {
+        shown: false,
+      },
+      wlmsarg: {
+        shown: false,
+      },
+    },
+  },
 });
 
 @Injectable({
