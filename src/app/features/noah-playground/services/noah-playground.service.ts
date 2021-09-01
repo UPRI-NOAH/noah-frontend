@@ -15,6 +15,7 @@ import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
+import { SensorType } from './sensor.service';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.criticalFacilities.shown)
     );
+  }
+
+  get sensorsGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
 
   getCriticalFacilities(): CriticalFacilitiesState {
@@ -119,6 +124,12 @@ export class NoahPlaygroundService {
     this.store.patch(
       { [hazardType]: hazard },
       `opacity ${opacity}, ${hazardType}, ${hazardLevel}`
+    );
+  }
+
+  getSensorTypeShown$(sensorType: SensorType): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.sensors[sensorType].shown)
     );
   }
 
@@ -228,5 +239,17 @@ export class NoahPlaygroundService {
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+  }
+
+  setSensorTypeShown(sensorType: SensorType, shown: boolean): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    sensors.types[sensorType].shown = shown;
+    this.store.patch(
+      { sensors },
+      `change sensor ${sensorType}'visibility to ${shown}`
+    );
   }
 }
