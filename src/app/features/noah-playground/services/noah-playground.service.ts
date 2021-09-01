@@ -273,15 +273,16 @@ export class NoahPlaygroundService {
     );
   }
 
-  setSensorTypeShown(sensorType: SensorType, shown: boolean): void {
+  setSensorTypeShown(sensorType: SensorType): void {
     const sensors = {
       ...this.store.state.sensors,
     };
 
-    sensors.types[sensorType].shown = shown;
+    const { shown } = sensors.types[sensorType];
+    sensors.types[sensorType].shown = !shown;
     this.store.patch(
       { sensors },
-      `change sensor ${sensorType}'visibility to ${shown}`
+      `change sensor ${sensorType}'visibility to ${!shown}`
     );
   }
 }

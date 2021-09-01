@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { SensorsState } from '@features/noah-playground/store/noah-playground.store';
+import { SensorType } from '@features/noah-playground/services/sensor.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-sensors-group',
@@ -10,6 +9,8 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./sensors-group.component.scss'],
 })
 export class SensorsGroupComponent implements OnInit {
+  sensorTypes: SensorType[] = ['arg', 'aws', 'wlms', 'wlmsarg'];
+
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
 

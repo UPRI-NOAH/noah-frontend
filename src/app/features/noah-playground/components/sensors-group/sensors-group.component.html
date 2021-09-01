@@ -68,8 +68,8 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
-    <div class="pl-6">
-      <noah-sensor-solo></noah-sensor-solo>
+    <div class="pl-6" *ngFor="let sensorType of sensorTypes">
+      <noah-sensor-solo [sensorType]="sensorType"></noah-sensor-solo>
     </div>
   </div>
 </div>

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 export type SensorType =
-  | 'arg' // Auomated Rain Gauge
-  | 'wlms' // Water LEvel Monitoring System
+  | 'arg' // Automated Rain Gauge
+  | 'wlms' // Water Level Monitoring System
   | 'aws' // Automated Weather Stations
   | 'wlmsarg'; // Waterlevel & Rain
 
