@@ -26,6 +26,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
   SENSORS,
   SensorService,
+  SensorType,
 } from '@features/noah-playground/services/sensor.service';
 import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
 
@@ -49,6 +50,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
 
+  private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
 
@@ -170,6 +172,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             paint: {
               'circle-color': SENSOR_COLORS[sensorType],
               'circle-radius': 4,
+              'circle-opacity': 0,
             },
           });
 
@@ -193,78 +196,81 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             });
 
           // show mouse event listeners
-          // this.showDataPoints(sensorType);
+          this.showDataPoints(sensorType);
         });
     });
   }
 
-  // showDataPoints(sensorLayer: string) {
-  //   const graphDiv = document.getElementById("graph-dom");
-  //   let popUp = new mapboxgl.Popup({
-  //     closeButton: true,
-  //     closeOnClick: false
-  //   })
+  showDataPoints(sensorType: SensorType) {
+    //   const graphDiv = document.getElementById("graph-dom");
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+    });
 
-  //   const _this = this;
-  //   this.map.on('mouseover', sensorLayer, (e) => {
-  //     console.log(e);
-  //      _this.map.getCanvas().style.cursor = 'pointer';
+    const _this = this;
+    this.map.on('mouseover', sensorType, (e) => {
+      console.log(e);
+      _this.map.getCanvas().style.cursor = 'pointer';
 
-  //     const coordinates = (e.features[0].geometry as any).coordinates.slice();
-  //     const location = e.features[0].properties.location;
-  //     const stationID = e.features[0].properties.station_id;
-  //     const typeName = e.features[0].properties.type_name;
-  //     const status = e.features[0].properties.status_description;
-  //     const dateInstalled = e.features[0].properties.date_installed;
-  //     const province = e.features[0].properties.province;
+      const coordinates = (e.features[0].geometry as any).coordinates.slice();
+      const location = e.features[0].properties.location;
+      const stationID = e.features[0].properties.station_id;
+      const typeName = e.features[0].properties.type_name;
+      const status = e.features[0].properties.status_description;
+      const dateInstalled = e.features[0].properties.date_installed;
+      const province = e.features[0].properties.province;
 
-  //     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-  //       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-  //     }
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
 
-  //     popUp.setLngLat(coordinates).setHTML(
-  //       `
-  //         <div style="color: #333333;">
-  //           <div><strong>#${stationID} - ${location}</strong></div>
-  //           <div>Type: ${typeName}</div>
-  //           <div>Status: ${status}</div>
-  //           <div>Date Installed: ${dateInstalled}</div>
-  //           <div>Province: ${province}</div>
-  //         </div>
-  //       `
-  //     ).addTo(_this.map);
-  //   });
+      popUp
+        .setLngLat(coordinates)
+        .setHTML(
+          `
+          <div style="color: #333333;">
+            <div><strong>#${stationID} - ${location}</strong></div>
+            <div>Type: ${typeName}</div>
+            <div>Status: ${status}</div>
+            <div>Date Installed: ${dateInstalled}</div>
+            <div>Province: ${province}</div>
+          </div>
+        `
+        )
+        .addTo(_this.map);
+    });
 
-  //   this.map.on('click', sensorLayer, function(e) {
-  //     graphDiv.hidden = false;
-  //     _this.map.flyTo({
-  //       center: (e.features[0].geometry as any).coordinates.slice(),
-  //       zoom: 11,
-  //       essential: true,
-  //     });
+    //   this.map.on('click', sensorType, function(e) {
+    //     graphDiv.hidden = false;
+    //     _this.map.flyTo({
+    //       center: (e.features[0].geometry as any).coordinates.slice(),
+    //       zoom: 11,
+    //       essential: true,
+    //     });
 
-  //     const stationID = e.features[0].properties.station_id;
-  //     const location = e.features[0].properties.location;
-  //     const pk = e.features[0].properties.pk;
+    //     const stationID = e.features[0].properties.station_id;
+    //     const location = e.features[0].properties.location;
+    //     const pk = e.features[0].properties.pk;
 
-  //     popUp
-  //       .setDOMContent(graphDiv)
-  //       .setMaxWidth("900px");
+    //     popUp
+    //       .setDOMContent(graphDiv)
+    //       .setMaxWidth("900px");
 
-  //     _this.showChart(+stationID, location, sensorLayer)
+    //     _this.showChart(+stationID, location, sensorType)
 
-  //     _this.graphShown = true;
-  //   });
+    //     _this._graphShown = true;
+    //   });
 
-  //   popUp.on('close', () => _this.graphShown = false);
+    //   popUp.on('close', () => _this._graphShown = false);
 
-  //   this.map.on('mouseleave', sensorLayer, function() {
-  //     if (_this.graphShown) return;
+    this.map.on('mouseleave', sensorType, function () {
+      if (_this._graphShown) return;
 
-  //     _this.map.getCanvas().style.cursor = '';
-  //     popUp.remove();
-  //   });
-  // }
+      _this.map.getCanvas().style.cursor = '';
+      popUp.remove();
+    });
+  }
 
   /**
    * Add the layers for the critical facilities.
