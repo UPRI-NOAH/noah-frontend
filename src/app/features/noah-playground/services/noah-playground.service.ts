@@ -53,6 +53,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
 
+  get sensorsGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.sensors.expanded));
+  }
+
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
   }
@@ -239,6 +243,34 @@ export class NoahPlaygroundService {
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+  }
+
+  toggleSensorsGroupExpanded(): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    const { expanded } = sensors;
+    sensors.expanded = !expanded;
+
+    this.store.patch(
+      { sensors },
+      `update sensor group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleSensorsGroupShown(): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    const { shown } = sensors;
+    sensors.shown = !shown;
+
+    this.store.patch(
+      { sensors },
+      `update sensor group state shown to ${!shown}`
+    );
   }
 
   setSensorTypeShown(sensorType: SensorType, shown: boolean): void {

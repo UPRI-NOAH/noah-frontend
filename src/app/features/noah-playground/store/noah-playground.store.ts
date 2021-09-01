@@ -89,6 +89,7 @@ export type CriticalFacilitiesState = {
 
 export type SensorsState = {
   shown: boolean;
+  expanded: boolean;
   types: Record<SensorType, { shown: boolean }>;
 };
 
@@ -209,7 +210,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
   currentCoords: PH_DEFAULT_CENTER,
   currentLocation: '-----',
   sensors: {
-    shown: false,
+    shown: true,
+    expanded: true,
     types: {
       arg: {
         shown: false,
