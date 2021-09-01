@@ -15,6 +15,8 @@ import { HazardLevelComponent } from './components/hazard-level/hazard-level.com
 import { HazardTypeComponent } from './components/hazard-type/hazard-type.component';
 import { ExaggerationComponent } from './components/exaggeration/exaggeration.component';
 import { FacilityComponent } from './components/facility/facility.component';
+import { SensorsGroupComponent } from './components/sensors-group/sensors-group.component';
+import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { FacilityComponent } from './components/facility/facility.component';
     HazardTypeComponent,
     ExaggerationComponent,
     FacilityComponent,
+    SensorsGroupComponent,
+    SensorSoloComponent,
   ],
   imports: [
     CommonModule,
