@@ -9,6 +9,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   takeUntil,
   tap,
@@ -19,6 +20,14 @@ import {
   CRITICAL_FACILITIES_ARR,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
+
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import {
+  SENSORS,
+  SensorService,
+} from '@features/noah-playground/services/sensor.service';
+import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
@@ -45,7 +54,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   constructor(
     private mapService: MapService,
-    private pgService: NoahPlaygroundService
+    private pgService: NoahPlaygroundService,
+    private sensorService: SensorService
   ) {}
 
   ngOnInit(): void {
@@ -63,10 +73,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        this.initMarkers();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
+        // this.initMarkers();
+        // this.addExaggerationControl();
+        // this.addCriticalFacilityLayers();
+        // this.initHazardLayers();
+        this.initSensors();
       });
   }
 
@@ -140,6 +151,120 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  initSensors() {
+    SENSORS.forEach((sensorType) => {
+      this.sensorService
+        .getSensors(sensorType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: sensorType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-color': SENSOR_COLORS[sensorType],
+              'circle-radius': 4,
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.sensorsGroupShown$,
+            this.pgService.getSensorTypeShown$(sensorType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              console.log(
+                sensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                sensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+
+          // show mouse event listeners
+          // this.showDataPoints(sensorType);
+        });
+    });
+  }
+
+  // showDataPoints(sensorLayer: string) {
+  //   const graphDiv = document.getElementById("graph-dom");
+  //   let popUp = new mapboxgl.Popup({
+  //     closeButton: true,
+  //     closeOnClick: false
+  //   })
+
+  //   const _this = this;
+  //   this.map.on('mouseover', sensorLayer, (e) => {
+  //     console.log(e);
+  //      _this.map.getCanvas().style.cursor = 'pointer';
+
+  //     const coordinates = (e.features[0].geometry as any).coordinates.slice();
+  //     const location = e.features[0].properties.location;
+  //     const stationID = e.features[0].properties.station_id;
+  //     const typeName = e.features[0].properties.type_name;
+  //     const status = e.features[0].properties.status_description;
+  //     const dateInstalled = e.features[0].properties.date_installed;
+  //     const province = e.features[0].properties.province;
+
+  //     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+  //       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  //     }
+
+  //     popUp.setLngLat(coordinates).setHTML(
+  //       `
+  //         <div style="color: #333333;">
+  //           <div><strong>#${stationID} - ${location}</strong></div>
+  //           <div>Type: ${typeName}</div>
+  //           <div>Status: ${status}</div>
+  //           <div>Date Installed: ${dateInstalled}</div>
+  //           <div>Province: ${province}</div>
+  //         </div>
+  //       `
+  //     ).addTo(_this.map);
+  //   });
+
+  //   this.map.on('click', sensorLayer, function(e) {
+  //     graphDiv.hidden = false;
+  //     _this.map.flyTo({
+  //       center: (e.features[0].geometry as any).coordinates.slice(),
+  //       zoom: 11,
+  //       essential: true,
+  //     });
+
+  //     const stationID = e.features[0].properties.station_id;
+  //     const location = e.features[0].properties.location;
+  //     const pk = e.features[0].properties.pk;
+
+  //     popUp
+  //       .setDOMContent(graphDiv)
+  //       .setMaxWidth("900px");
+
+  //     _this.showChart(+stationID, location, sensorLayer)
+
+  //     _this.graphShown = true;
+  //   });
+
+  //   popUp.on('close', () => _this.graphShown = false);
+
+  //   this.map.on('mouseleave', sensorLayer, function() {
+  //     if (_this.graphShown) return;
+
+  //     _this.map.getCanvas().style.cursor = '';
+  //     popUp.remove();
+  //   });
+  // }
 
   /**
    * Add the layers for the critical facilities.

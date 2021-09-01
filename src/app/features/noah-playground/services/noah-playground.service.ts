@@ -13,9 +13,9 @@ import {
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
-import { SensorType } from './sensor.service';
+import { SENSORS, SensorService, SensorType } from './sensor.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
-  constructor(private store: NoahPlaygroundStore) {}
+  constructor(
+    private sensorService: SensorService,
+    private store: NoahPlaygroundStore
+  ) {}
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
@@ -133,7 +136,7 @@ export class NoahPlaygroundService {
 
   getSensorTypeShown$(sensorType: SensorType): Observable<boolean> {
     return this.store.state$.pipe(
-      map((state) => state.sensors[sensorType].shown)
+      map((state) => state.sensors.types[sensorType].shown)
     );
   }
 

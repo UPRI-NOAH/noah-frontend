@@ -7,6 +7,8 @@ export type SensorType =
   | 'aws' // Automated Weather Stations
   | 'wlmsarg'; // Waterlevel & Rain
 
+export const SENSORS: SensorType[] = ['arg', 'aws', 'wlms', 'wlmsarg'];
+
 @Injectable({
   providedIn: 'root',
 })

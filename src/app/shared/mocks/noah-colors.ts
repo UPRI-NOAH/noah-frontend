@@ -1,3 +1,5 @@
+import { SensorType } from '@features/noah-playground/services/sensor.service';
+
 export const NOAH_COLORS = {
   'noah-red': {
     low: '#F2C94C',
@@ -45,3 +47,11 @@ export type NoahColor =
   | 'noah-blue'
   | 'noah-green'
   | 'noah-black';
+
+// SENSOR COLORS
+export const SENSOR_COLORS: Record<SensorType, string> = {
+  arg: '#3498DB',
+  wlms: '#F64747',
+  aws: '#00B16A',
+  wlmsarg: '#e9d460',
+};
