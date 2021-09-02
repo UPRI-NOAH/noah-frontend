@@ -408,10 +408,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       type: 'image',
       url: `assets/sample-contour-maps/${contourMapImages[3]}`,
       coordinates: [
-        [115.25, 21.55], // top-left
-        [128.42, 21.55], // top-right
-        [128.42, 3.85], // bottom-right
-        [115.25, 3.85], // bottom-left
+        [115.35, 21.55], // top-left
+        [128.25, 21.55], // top-right
+        [128.25, 3.85], // bottom-right
+        [115.35, 3.85], // bottom-left
       ],
     });
 
