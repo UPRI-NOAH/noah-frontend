@@ -55,7 +55,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.addNavigationControls();
         this.addGeolocationControls();
-        this.initCenterListener();
+        // this.initCenterListener();
         this.initGeolocationListener();
       });
 
@@ -67,6 +67,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initWeatherLayer();
+        this.showContourMaps();
       });
   }
 
@@ -392,6 +393,36 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         this.map.setPaintProperty(layerID, 'raster-opacity', 0);
       });
+    }
+
+  showContourMaps() {
+    const contourMapImages = [
+      '12hr_latest_rainfall_contour_31-Aug-2021_03-02.png',
+      '1hr_latest_rainfall_contour_31-Aug-2021_02-43.png',
+      '24hr_latest_rainfall_contour_31-Aug-2021_03-03.png',
+      '3hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
+      '6hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
+    ];
+
+    this.map.addSource('radar', {
+      type: 'image',
+      url: `assets/sample-contour-maps/${contourMapImages[3]}`,
+      coordinates: [
+        [115.25, 21.55], // top-left
+        [128.42, 21.55], // top-right
+        [128.42, 3.85], // bottom-right
+        [115.25, 3.85], // bottom-left
+      ],
+    });
+
+    this.map.addLayer({
+      id: 'radar-layer',
+      type: 'raster',
+      source: 'radar',
+      paint: {
+        'raster-fade-duration': 0,
+      },
+    });
   }
 
   switchMapStyle(style: MapStyle) {
