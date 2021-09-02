@@ -427,13 +427,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
 
       combineLatest([
-        this.pgService.contourMapGroupShown$,
-        this.pgService.selectedContourMap$,
+        this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
+        this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
       ])
         .pipe(
           takeUntil(this._unsub),
           takeUntil(this._changeStyle),
-          distinctUntilChanged(),
           map(([groupShown, selectedContourMap]) => {
             return +(groupShown && selectedContourMap === contourType);
           })

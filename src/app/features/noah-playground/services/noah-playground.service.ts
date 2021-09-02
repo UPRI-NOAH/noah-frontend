@@ -53,6 +53,9 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.weather));
   }
 
+  get contourMapGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.expanded));
+  }
 
   get contourMapGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.contourMaps.shown));

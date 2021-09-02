@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
+import { ContourMapType } from '@features/noah-playground/store/noah-playground.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-contour-maps',
@@ -8,30 +9,32 @@ import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
   styleUrls: ['./contour-maps.component.scss'],
 })
 export class ContourMapsComponent implements OnInit {
-  isOpenedList;
-  facilityList = CRITICAL_FACILITIES_ARR;
+  contourMaps: ContourMapType[] = ['1hr', '3hr', '6hr', '12hr', '24hr'];
 
-  expanded = true;
-  shown = true;
+  expanded$: Observable<boolean>;
+  selectedContourMap$: Observable<ContourMapType>;
+  shown$: Observable<boolean>;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    const { expanded, shown } = this.pgService.getCriticalFacilities();
-    this.expanded = expanded;
-    this.shown = shown;
+    this.expanded$ = this.pgService.contourMapGroupShown$;
+    this.selectedContourMap$ = this.pgService.selectedContourMap$;
+    this.shown$ = this.pgService.contourMapGroupShown$;
   }
 
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    this.shown = !this.shown;
-    this.pgService.setCriticalFacilitiesProperty(this.shown, 'shown');
+    this.pgService.toggleContourMapGroupVisibility();
   }
 
   toggleExpanded() {
-    this.expanded = !this.expanded;
-    this.pgService.setCriticalFacilitiesProperty(this.expanded, 'expanded');
+    this.pgService.toggleContourMapGroupExpansion();
+  }
+
+  selectContourMap(type: ContourMapType) {
+    this.pgService.selectContourMapType(type);
   }
 }

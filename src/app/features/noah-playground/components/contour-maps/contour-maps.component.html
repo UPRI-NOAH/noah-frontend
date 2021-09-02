@@ -19,12 +19,12 @@
         <input
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
-          [checked]="shown"
+          [checked]="shown$ | async"
           (click)="toggleShown($event)"
         />
       </label>
       <div class="flex flex-col ml-3">
-        <div class="text-xl leading-none font-bold">Critical Facilities</div>
+        <div class="text-xl leading-none font-bold">Contour Maps</div>
       </div>
     </div>
     <div class="cursor-pointer">
@@ -40,7 +40,7 @@
         "
       >
         <svg
-          [ngClass]="expanded ? ' hidden ' : ' '"
+          [ngClass]="(expanded$ | async) ? ' hidden ' : ' '"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1000 1000"
           width="18"
@@ -51,7 +51,7 @@
           />
         </svg>
         <svg
-          [ngClass]="expanded ? ' ' : ' hidden '"
+          [ngClass]="(expanded$ | async) ? ' ' : ' hidden '"
           xmlns="http://www.w3.org/2000/svg"
           width="12"
           height="12"
@@ -66,16 +66,31 @@
       </button>
     </div>
   </div>
-  <div [ngClass]="expanded ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
     <div class="pl-6">
       <div class="items-center">
-        <!-- CRITICAL FACILITY START -->
-        <noah-facility
-          *ngFor="let facility of facilityList"
-          [name]="facility"
-        ></noah-facility>
-        <!-- CRITICAL FACILITY END -->
+        <!-- CONTOUR MAP SOLO START -->
+        <div
+          class="text-m f-f-r py-2 pl-4"
+          *ngFor="let contourMap of contourMaps"
+        >
+          <div class="flex items-center">
+            <label class="inline-flex items-center radio">
+              <input
+                type="radio"
+                class="radio h-5 w-5 text-blue-600"
+                name="selected-contour-map"
+                [checked]="(selectedContourMap$ | async) === contourMap"
+                (click)="selectContourMap(contourMap)"
+              />
+            </label>
+            <div class="flex flex-col ml-3">
+              <div class="text-lg f-f-r capitalize">{{ contourMap }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- CONTOUR MAP SOLO END -->
         <hr class="p-2" />
       </div>
     </div>
