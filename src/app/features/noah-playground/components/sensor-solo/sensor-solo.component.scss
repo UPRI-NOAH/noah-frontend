@@ -1,0 +1,35 @@
+.arg {
+  --color: #3498db;
+  background-color: #3498db;
+  &,
+  input {
+    border-radius: 100% !important;
+  }
+}
+
+.wlms {
+  --color: #f64747;
+  background-color: #f64747;
+  &,
+  input {
+    border-radius: 100% !important;
+  }
+}
+
+.aws {
+  --color: #00b16a;
+  background-color: #00b16a;
+  &,
+  input {
+    border-radius: 100% !important;
+  }
+}
+
+.wlmsarg {
+  --color: #e9d460;
+  background-color: #e9d460;
+  &,
+  input {
+    border-radius: 100% !important;
+  }
+}

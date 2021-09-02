@@ -17,6 +17,8 @@ export class SensorChartService {
     switch (sensorType) {
       case 'arg':
         return this._getRainfallChartOpts();
+      case 'wlmsarg':
+        return this._getRainfallChartOpts();
       default:
         return this._getWaterlevelChartOtps();
     }
