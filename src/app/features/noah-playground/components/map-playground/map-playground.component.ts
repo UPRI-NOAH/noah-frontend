@@ -30,6 +30,7 @@ import {
 } from '@features/noah-playground/services/sensor.service';
 import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
+import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
@@ -58,6 +59,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
+    private sensorChartService: SensorChartService,
     private sensorService: SensorService
   ) {}
 
@@ -172,7 +174,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             paint: {
               'circle-color': SENSOR_COLORS[sensorType],
-              'circle-radius': 4,
+              'circle-radius': 5,
               'circle-opacity': 0,
             },
           });
@@ -256,7 +258,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       popUp.setDOMContent(graphDiv).setMaxWidth('900px');
 
-      _this.showChart(+stationID, location, sensorType);
+      _this.showChart(+pk, +stationID, location, sensorType);
 
       _this._graphShown = true;
     });
@@ -271,150 +273,38 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  showChart(stationID: number, location: string, sensorType: string) {
+  async showChart(
+    pk: number,
+    stationID: number,
+    location: string,
+    sensorType: SensorType
+  ) {
     const options: any = {
-      chart: {
-        type: 'area',
-        // type: 'spline',
-      },
       title: {
         text: `#${stationID} - ${location}`,
       },
       credits: {
         enabled: false,
       },
-      yAxis: {
-        alignTicks: false,
-        // tickInterval: 0.5,
-      },
-      series: [
-        {
-          name: 'Waterlevel',
-          data: [],
-        },
-      ],
-    };
-
-    const options2: any = {
-      chart: {
-        type: 'spline',
-      },
-      title: {
-        text: `#${stationID} - ${location}`,
-      },
-      credits: {
-        enabled: false,
-      },
-      yAxis: {
-        alignTicks: false,
-        tickInterval: 0.5,
-        plotBands: [
-          {
-            from: 0,
-            to: 2.5,
-            // color: 'light blue',
-            color: '#4ac6ff',
-            label: {
-              text: 'Light',
-              // style: {
-              //   color: 'black'
-              // }
-            },
-          },
-          {
-            from: 2.5,
-            to: 7.75,
-            // color: 'blue',
-            color: '#0073ff',
-            label: {
-              text: 'Moderate',
-              style: {
-                color: 'white',
-              },
-            },
-          },
-          {
-            from: 7.5,
-            to: 15,
-            // color: 'dark blue',
-            color: '#0011ad',
-            label: {
-              text: 'Heavy',
-              style: {
-                color: 'white',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            // color: 'orange',
-            color: '#fcba03',
-            label: {
-              text: 'Intense',
-              style: {
-                color: 'black',
-              },
-            },
-          },
-
-          {
-            from: 30,
-            to: 100,
-            // color: 'red',
-            color: '#fc3d03',
-            label: {
-              text: 'Torrential',
-              style: {
-                color: 'black',
-              },
-            },
-          },
-        ],
-      },
-      series: [
-        {
-          name: 'Rainfall',
-          data: [],
-        },
-      ],
+      ...this.sensorChartService.getChartOpts(sensorType),
     };
 
     const chart = Highcharts.chart('graph-dom', options);
     chart.showLoading();
 
-    this.sensorService
-      .getSensorData(stationID)
+    const response: any = await this.sensorService
+      .getSensorData(pk)
       .pipe(first())
-      .toPromise()
-      .then((response: any) => {
-        chart.hideLoading();
-        // chart.series.push({
-        //   name: 'Waterlevel',
-        //   data: response.results.map(d => +d.waterlevel)
-        // })
-        chart.series[0].setData(
-          response.results.map((d) => +d.waterlevel),
-          true
-        );
-        // it hasn't been raining so it won't work
-        // chart.series[0].setData(response.results.map(d => +d.rain_value), true);
-        // chart.series[0].setData(response.results.map(d => Math.random() / 2 * 100), true);
+      .toPromise();
 
-        // chart.addAxis({
-        //   categories: response.results.map(d => d.dateTimeRead),
-        //   tickInterval: 10,
-        // }, true, true);
+    chart.hideLoading();
 
-        // chart.xAxis[0].setCategories(response.results.map(d => d.dateTimeRead))
-        chart.xAxis[0].update(
-          {
-            categories: response.results.map((d) => d.dateTimeRead),
-            tickInterval: 5,
-          },
-          true
-        );
-      });
+    const sensorChartOpts = {
+      data: response.results,
+      sensorType,
+    };
+
+    this.sensorChartService.showChart(chart, sensorChartOpts);
   }
 
   /**
