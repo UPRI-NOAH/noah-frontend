@@ -29,6 +29,7 @@ import {
   SensorType,
 } from '@features/noah-playground/services/sensor.service';
 import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
+import * as Highcharts from 'highcharts';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
@@ -202,7 +203,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   showDataPoints(sensorType: SensorType) {
-    //   const graphDiv = document.getElementById("graph-dom");
+    const graphDiv = document.getElementById('graph-dom');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -241,28 +242,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .addTo(_this.map);
     });
 
-    //   this.map.on('click', sensorType, function(e) {
-    //     graphDiv.hidden = false;
-    //     _this.map.flyTo({
-    //       center: (e.features[0].geometry as any).coordinates.slice(),
-    //       zoom: 11,
-    //       essential: true,
-    //     });
+    this.map.on('click', sensorType, function (e) {
+      graphDiv.hidden = false;
+      _this.map.flyTo({
+        center: (e.features[0].geometry as any).coordinates.slice(),
+        zoom: 11,
+        essential: true,
+      });
 
-    //     const stationID = e.features[0].properties.station_id;
-    //     const location = e.features[0].properties.location;
-    //     const pk = e.features[0].properties.pk;
+      const stationID = e.features[0].properties.station_id;
+      const location = e.features[0].properties.location;
+      const pk = e.features[0].properties.pk;
 
-    //     popUp
-    //       .setDOMContent(graphDiv)
-    //       .setMaxWidth("900px");
+      popUp.setDOMContent(graphDiv).setMaxWidth('900px');
 
-    //     _this.showChart(+stationID, location, sensorType)
+      _this.showChart(+stationID, location, sensorType);
 
-    //     _this._graphShown = true;
-    //   });
+      _this._graphShown = true;
+    });
 
-    //   popUp.on('close', () => _this._graphShown = false);
+    popUp.on('close', () => (_this._graphShown = false));
 
     this.map.on('mouseleave', sensorType, function () {
       if (_this._graphShown) return;
@@ -270,6 +269,152 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       _this.map.getCanvas().style.cursor = '';
       popUp.remove();
     });
+  }
+
+  showChart(stationID: number, location: string, sensorType: string) {
+    const options: any = {
+      chart: {
+        type: 'area',
+        // type: 'spline',
+      },
+      title: {
+        text: `#${stationID} - ${location}`,
+      },
+      credits: {
+        enabled: false,
+      },
+      yAxis: {
+        alignTicks: false,
+        // tickInterval: 0.5,
+      },
+      series: [
+        {
+          name: 'Waterlevel',
+          data: [],
+        },
+      ],
+    };
+
+    const options2: any = {
+      chart: {
+        type: 'spline',
+      },
+      title: {
+        text: `#${stationID} - ${location}`,
+      },
+      credits: {
+        enabled: false,
+      },
+      yAxis: {
+        alignTicks: false,
+        tickInterval: 0.5,
+        plotBands: [
+          {
+            from: 0,
+            to: 2.5,
+            // color: 'light blue',
+            color: '#4ac6ff',
+            label: {
+              text: 'Light',
+              // style: {
+              //   color: 'black'
+              // }
+            },
+          },
+          {
+            from: 2.5,
+            to: 7.75,
+            // color: 'blue',
+            color: '#0073ff',
+            label: {
+              text: 'Moderate',
+              style: {
+                color: 'white',
+              },
+            },
+          },
+          {
+            from: 7.5,
+            to: 15,
+            // color: 'dark blue',
+            color: '#0011ad',
+            label: {
+              text: 'Heavy',
+              style: {
+                color: 'white',
+              },
+            },
+          },
+          {
+            from: 15,
+            to: 30,
+            // color: 'orange',
+            color: '#fcba03',
+            label: {
+              text: 'Intense',
+              style: {
+                color: 'black',
+              },
+            },
+          },
+
+          {
+            from: 30,
+            to: 100,
+            // color: 'red',
+            color: '#fc3d03',
+            label: {
+              text: 'Torrential',
+              style: {
+                color: 'black',
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'Rainfall',
+          data: [],
+        },
+      ],
+    };
+
+    const chart = Highcharts.chart('graph-dom', options);
+    chart.showLoading();
+
+    this.sensorService
+      .getSensorData(stationID)
+      .pipe(first())
+      .toPromise()
+      .then((response: any) => {
+        chart.hideLoading();
+        // chart.series.push({
+        //   name: 'Waterlevel',
+        //   data: response.results.map(d => +d.waterlevel)
+        // })
+        chart.series[0].setData(
+          response.results.map((d) => +d.waterlevel),
+          true
+        );
+        // it hasn't been raining so it won't work
+        // chart.series[0].setData(response.results.map(d => +d.rain_value), true);
+        // chart.series[0].setData(response.results.map(d => Math.random() / 2 * 100), true);
+
+        // chart.addAxis({
+        //   categories: response.results.map(d => d.dateTimeRead),
+        //   tickInterval: 10,
+        // }, true, true);
+
+        // chart.xAxis[0].setCategories(response.results.map(d => d.dateTimeRead))
+        chart.xAxis[0].update(
+          {
+            categories: response.results.map((d) => d.dateTimeRead),
+            tickInterval: 5,
+          },
+          true
+        );
+      });
   }
 
   /**

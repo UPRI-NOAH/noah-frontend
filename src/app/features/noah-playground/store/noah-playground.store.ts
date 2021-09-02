@@ -214,16 +214,16 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: true,
     types: {
       arg: {
-        shown: false,
+        shown: true,
       },
       wlms: {
-        shown: false,
+        shown: true,
       },
       aws: {
-        shown: false,
+        shown: true,
       },
       wlmsarg: {
-        shown: false,
+        shown: true,
       },
     },
   },
