@@ -396,32 +396,51 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     }
 
   showContourMaps() {
-    const contourMapImages = [
-      '12hr_latest_rainfall_contour_31-Aug-2021_03-02.png',
-      '1hr_latest_rainfall_contour_31-Aug-2021_02-43.png',
-      '24hr_latest_rainfall_contour_31-Aug-2021_03-03.png',
-      '3hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
-      '6hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
-    ];
+    const contourMapImages = {
+      '12hr': '12hr_latest_rainfall_contour_31-Aug-2021_03-02.png',
+      '1hr': '1hr_latest_rainfall_contour_31-Aug-2021_02-43.png',
+      '24hr': '24hr_latest_rainfall_contour_31-Aug-2021_03-03.png',
+      '3hr': '3hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
+      '6hr': '6hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
+    };
 
-    this.map.addSource('radar', {
-      type: 'image',
-      url: `assets/sample-contour-maps/${contourMapImages[3]}`,
-      coordinates: [
-        [115.35, 21.55], // top-left
-        [128.25, 21.55], // top-right
-        [128.25, 3.85], // bottom-right
-        [115.35, 3.85], // bottom-left
-      ],
-    });
+    Object.keys(contourMapImages).forEach((contourType) => {
+      this.map.addSource(contourType, {
+        type: 'image',
+        url: `assets/sample-contour-maps/${contourMapImages[contourType]}`,
+        coordinates: [
+          [115.35, 21.55], // top-left
+          [128.25, 21.55], // top-right
+          [128.25, 3.85], // bottom-right
+          [115.35, 3.85], // bottom-left
+        ],
+      });
 
-    this.map.addLayer({
-      id: 'radar-layer',
-      type: 'raster',
-      source: 'radar',
-      paint: {
-        'raster-fade-duration': 0,
-      },
+      this.map.addLayer({
+        id: contourType,
+        type: 'raster',
+        source: contourType,
+        paint: {
+          'raster-fade-duration': 0,
+          'raster-opacity': 0,
+        },
+      });
+
+      combineLatest([
+        this.pgService.contourMapGroupShown$,
+        this.pgService.selectedContourMap$,
+      ])
+        .pipe(
+          takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
+          distinctUntilChanged(),
+          map(([groupShown, selectedContourMap]) => {
+            return +(groupShown && selectedContourMap === contourType);
+          })
+        )
+        .subscribe((opacity: number) => {
+          this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+        });
     });
   }
 
