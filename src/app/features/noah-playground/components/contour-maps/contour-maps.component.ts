@@ -18,7 +18,7 @@ export class ContourMapsComponent implements OnInit {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.expanded$ = this.pgService.contourMapGroupShown$;
+    this.expanded$ = this.pgService.contourMapGroupExpanded$;
     this.selectedContourMap$ = this.pgService.selectedContourMap$;
     this.shown$ = this.pgService.contourMapGroupShown$;
   }

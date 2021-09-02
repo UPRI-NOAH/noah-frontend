@@ -283,7 +283,7 @@ export class NoahPlaygroundService {
     };
 
     contourMaps.shown = !contourMaps.shown;
-    this.store.patch({ contourMaps });
+    this.store.patch({ contourMaps }, `toggle visibility`);
   }
 
   toggleContourMapGroupExpansion(): void {
@@ -292,6 +292,6 @@ export class NoahPlaygroundService {
     };
 
     contourMaps.expanded = !contourMaps.expanded;
-    this.store.patch({ contourMaps });
+    this.store.patch({ contourMaps }, `toggle expansion`);
   }
 }

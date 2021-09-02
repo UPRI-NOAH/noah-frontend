@@ -223,7 +223,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   contourMaps: {
     shown: true,
     expanded: true,
-    selectedType: '12hr',
+    selectedType: '1hr',
   },
 });
 
