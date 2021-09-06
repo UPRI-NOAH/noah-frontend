@@ -39,7 +39,7 @@ const createInitialValue = (): KYHState => {
     stormSurgeRiskLevel: 'unavailable',
     landslideRiskLevel: 'unavailable',
     currentLocation: '------',
-    allPlaceHolder: '------',
+    allPlaceHolder: 'Search Location',
   };
 };
 
