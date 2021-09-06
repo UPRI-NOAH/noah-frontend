@@ -15,6 +15,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { ArrowKeysDirective } from '@shared/arrow-keys.directive';
 import { ENTER } from '@angular/cdk/keycodes';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'noah-search',
@@ -72,7 +73,7 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  userFixedLocation() {
+  async userFixedLocation() {
     // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
     function locationSuccess(position) {
       const latitude = position.coords.latitude;
@@ -88,21 +89,23 @@ export class SearchComponent implements OnInit {
       alert(message);
     }
     navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
-
     //GETTING COORDINATES TO LOCAL STORAGE
     const user = localStorage.getItem('userLocation');
     const userCoords = JSON.parse(user);
-    const myPlace = [userCoords.lng, userCoords.lat];
+
+    let api_url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userCoords.lng},${userCoords.lat}.json?types=locality&access_token=${environment.mapbox.accessToken}`;
+    const response = await fetch(api_url);
+    const data = await response.json();
+    const userPlaceName = data.features[0].place_name;
+    localStorage.setItem('userPlaceName', userPlaceName);
     this.router.navigate(['/know-your-hazards']);
-    console.log(myPlace);
-    return {
-      center: myPlace,
-    };
+    this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
   }
   onEnterUser(event) {
     if (event.keyCode === ENTER) {
       this.router.navigate(['/know-your-hazards']);
       console.log('User Location Enter', event.keyCode);
+      this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
     }
   }
 
@@ -110,12 +113,16 @@ export class SearchComponent implements OnInit {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
+    this.kyhService.setPlaceHolder(place.text);
   }
 
   onKeyEnterPicked(place, event) {
     if (event.keyCode === ENTER) {
+      this.searchTermCtrl.setValue(place.text);
+      this.isDropdownOpen = false;
       this.selectPlace.emit(place);
       console.log('Picked Place Enter', event.keyCode);
+      this.kyhService.setPlaceHolder(place.text);
     }
   }
 

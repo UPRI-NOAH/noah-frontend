@@ -5,9 +5,8 @@ import {
   KYHPage,
   RiskLevel,
 } from '@features/know-your-hazards/store/kyh.store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
+import { fromEvent, Observable } from 'rxjs';
+import { map, takeLast } from 'rxjs/operators';
 @Component({
   selector: 'noah-know-your-hazards',
   templateUrl: './know-your-hazards.component.html',
@@ -15,13 +14,13 @@ import { map } from 'rxjs/operators';
 })
 export class KnowYourHazardsComponent implements OnInit {
   searchTerm: string;
+  allPlaceHolder$: Observable<string>;
   currentLocation$: Observable<string>;
   floodRiskLevel$: Observable<RiskLevel>;
   stormSurgeRiskLevel$: Observable<RiskLevel>;
   landslideRiskLevel$: Observable<RiskLevel>;
   isMenu: boolean = true;
   isOpen: boolean = true;
-  kyhPlaceHolderText = 'Search Locationsssss';
 
   get isKYHPage$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(
@@ -55,7 +54,6 @@ export class KnowYourHazardsComponent implements OnInit {
     this.kyhService.init();
     this.kyhService.setCurrentPage('know-your-hazards');
     this.currentLocation$ = this.kyhService.currentLocation$;
-    this.kyhPlaceHolderText = this.kyhService.allPlaceHolder;
   }
 
   viewHazardLayer(currentHazard: HazardType) {
