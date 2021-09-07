@@ -54,6 +54,7 @@ export class KnowYourHazardsComponent implements OnInit {
     this.kyhService.init();
     this.kyhService.setCurrentPage('know-your-hazards');
     this.currentLocation$ = this.kyhService.currentLocation$;
+    this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
   }
 
   viewHazardLayer(currentHazard: HazardType) {
@@ -66,5 +67,13 @@ export class KnowYourHazardsComponent implements OnInit {
     const [lng, lat] = selectedPlace.center;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+  }
+  selectUserPlace() {
+    console.log('asdsd');
+  }
+
+  placeHolderClear() {
+    this.kyhService.setPlaceHolder('Search Location');
+    console.log('ssdd');
   }
 }

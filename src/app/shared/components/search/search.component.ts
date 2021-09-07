@@ -97,15 +97,18 @@ export class SearchComponent implements OnInit {
     const response = await fetch(api_url);
     const data = await response.json();
     const userPlaceName = data.features[0].place_name;
-    localStorage.setItem('userPlaceName', userPlaceName);
+    localStorage.setItem('userPlaceName', userPlaceName); //storing place name in localstorage
     this.router.navigate(['/know-your-hazards']);
     this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
+    this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
   }
+
   onEnterUser(event) {
     if (event.keyCode === ENTER) {
       this.router.navigate(['/know-your-hazards']);
       console.log('User Location Enter', event.keyCode);
       this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
+      this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
     }
   }
 
