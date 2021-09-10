@@ -63,10 +63,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        this.initMarkers();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
+        // this.initMarkers();
+        // this.addExaggerationControl();
+        // this.addCriticalFacilityLayers();
+        // this.initHazardLayers();
       });
   }
 
@@ -331,13 +331,63 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initMap() {
     this.mapService.init();
 
+    const videoStyle: mapboxgl.Style = {
+      version: 8,
+      sources: {
+        satellite: {
+          type: 'raster',
+          url: 'mapbox://mapbox.satellite',
+          tileSize: 256,
+        },
+        video: {
+          type: 'video',
+          urls: [
+            'https://static-assets.mapbox.com/mapbox-gl-js/drone.mp4',
+            'https://static-assets.mapbox.com/mapbox-gl-js/drone.webm',
+          ],
+          coordinates: [
+            [-122.51596391201019, 37.56238816766053],
+            [-122.51467645168304, 37.56410183312965],
+            [-122.51309394836426, 37.563391708549425],
+            [-122.51423120498657, 37.56161849366671],
+          ],
+        },
+      },
+      layers: [
+        {
+          id: 'background',
+          type: 'background',
+          paint: {
+            'background-color': 'rgb(4,7,14)',
+          },
+        },
+        {
+          id: 'satellite',
+          type: 'raster',
+          source: 'satellite',
+        },
+        {
+          id: 'video',
+          type: 'raster',
+          source: 'video',
+        },
+      ],
+    };
+
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: environment.mapbox.styles.terrain,
-      zoom: 5,
-      touchZoomRotate: true,
-      center: this.pgService.currentCoords,
+      style: videoStyle,
+      minZoom: 14,
+      zoom: 17,
+      center: [-122.514426, 37.562984],
+      bearing: -96,
+      // style: environment.mapbox.styles.terrain,
+      // zoom: 5,
+      // touchZoomRotate: true,
+      // center: this.pgService.currentCoords,
     });
+
+    (this.map.getSource('video') as any).play();
   }
 
   initMarkers() {
