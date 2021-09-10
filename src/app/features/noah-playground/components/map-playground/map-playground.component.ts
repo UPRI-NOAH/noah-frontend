@@ -341,15 +341,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         },
         video: {
           type: 'video',
-          urls: [
-            'https://static-assets.mapbox.com/mapbox-gl-js/drone.mp4',
-            'https://static-assets.mapbox.com/mapbox-gl-js/drone.webm',
-          ],
+          urls: ['assets/videos/ph_himawari.webm'],
           coordinates: [
-            [-122.51596391201019, 37.56238816766053],
-            [-122.51467645168304, 37.56410183312965],
-            [-122.51309394836426, 37.563391708549425],
-            [-122.51423120498657, 37.56161849366671],
+            [100.0, 30.0], // top-left
+            [160.0, 30.0], // top-right
+            [160.0, 5.0], // bottom-right
+            [100.0, 5.0], // bottom-left
           ],
         },
       },
@@ -370,6 +367,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: 'video',
           type: 'raster',
           source: 'video',
+          // paint: {
+          //   "raster-opacity": .2
+          // }
         },
       ],
     };
@@ -377,14 +377,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: videoStyle,
-      minZoom: 14,
-      zoom: 17,
-      center: [-122.514426, 37.562984],
-      bearing: -96,
+      // minZoom: 14,
+      // zoom: 17,
+      // center: [-122.514426, 37.562984],
+      // bearing: -96,
       // style: environment.mapbox.styles.terrain,
-      // zoom: 5,
-      // touchZoomRotate: true,
-      // center: this.pgService.currentCoords,
+      zoom: 5,
+      touchZoomRotate: true,
+      center: this.pgService.currentCoords,
     });
 
     (this.map.getSource('video') as any).play();
