@@ -343,8 +343,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           type: 'video',
           urls: ['assets/videos/ph_himawari.webm'],
           coordinates: [
-            [100.0, 30.0], // top-left
-            [160.0, 30.0], // top-right
+            [100.0, 29.25], // top-left
+            [160.0, 29.25], // top-right
             [160.0, 5.0], // bottom-right
             [100.0, 5.0], // bottom-left
           ],
@@ -367,9 +367,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: 'video',
           type: 'raster',
           source: 'video',
-          // paint: {
-          //   "raster-opacity": .2
-          // }
+          paint: {
+            'raster-opacity': 0.2,
+          },
         },
       ],
     };
