@@ -11,7 +11,6 @@ import {
   filter,
   map,
   takeUntil,
-  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -67,6 +66,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
+        this.initWeatherLayer();
       });
   }
 
@@ -349,6 +349,47 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
+      });
+  }
+
+  initWeatherLayer() {
+    const layerID = 'himawari-satellite-image';
+
+    this.map.addLayer({
+      id: layerID,
+      type: 'raster',
+      source: {
+        type: 'video',
+        urls: ['assets/videos/ph_himawari.webm'],
+        coordinates: [
+          [100.0, 29.25], // top-left
+          [160.0, 29.25], // top-right
+          [160.0, 5.0], // bottom-right
+          [100.0, 5.0], // bottom-left
+        ],
+      },
+      paint: {
+        'raster-opacity': 0,
+      },
+    });
+
+    this.pgService.weather$
+      .pipe(
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
+        distinctUntilChanged()
+      )
+      .subscribe((weather) => {
+        if (weather.shown) {
+          this.map.setPaintProperty(
+            layerID,
+            'raster-opacity',
+            weather.opacity / 100
+          );
+          return;
+        }
+
+        this.map.setPaintProperty(layerID, 'raster-opacity', 0);
       });
   }
 

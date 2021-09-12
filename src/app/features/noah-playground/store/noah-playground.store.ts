@@ -73,6 +73,12 @@ export type CriticalFacilityTypeState = {
   opacity: number;
 };
 
+export type WeatherState = {
+  shown: boolean;
+  expanded: boolean;
+  opacity: number;
+};
+
 export type CriticalFacilityTypesState = {
   'fire-station': CriticalFacilityTypeState;
   'police-station': CriticalFacilityTypeState;
@@ -92,6 +98,7 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   criticalFacilities: CriticalFacilitiesState;
+  weather: WeatherState;
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
@@ -100,12 +107,12 @@ type NoahPlaygroundState = {
 const createInitialValue = (): NoahPlaygroundState => ({
   exaggeration: {
     shown: true,
-    expanded: true,
+    expanded: false,
     level: 1.8,
   },
   flood: {
     shown: true,
-    expanded: true,
+    expanded: false,
     levels: {
       'flood-return-period-5': {
         opacity: 85,
@@ -177,7 +184,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   criticalFacilities: {
-    shown: true,
+    shown: false,
     expanded: false,
     types: {
       'fire-station': {
@@ -197,6 +204,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 100,
       },
     },
+  },
+  weather: {
+    shown: false,
+    expanded: false,
+    opacity: 80,
   },
   center: PH_DEFAULT_CENTER,
   currentCoords: PH_DEFAULT_CENTER,

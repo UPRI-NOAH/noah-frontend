@@ -13,6 +13,7 @@ import { HazardLevelComponent } from './components/hazard-level/hazard-level.com
 import { HazardTypeComponent } from './components/hazard-type/hazard-type.component';
 import { ExaggerationComponent } from './components/exaggeration/exaggeration.component';
 import { FacilityComponent } from './components/facility/facility.component';
+import { WeatherComponent } from './components/weather/weather.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { FacilityComponent } from './components/facility/facility.component';
     HazardTypeComponent,
     ExaggerationComponent,
     FacilityComponent,
+    WeatherComponent,
   ],
   imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
 })
