@@ -1,7 +1,21 @@
 <div class="w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row">
   <button
     (click)="isMenu = !isMenu"
-    class="fixed p-2 z-20 bg-white text-gray-800 shadow-2xl drop-shadow-2xl md:rounded-r-lg md:rounded-t-none rounded-t-lg md:top-4 h-10 bottom-0 self-center"
+    class="
+      fixed
+      p-2
+      z-20
+      bg-white
+      text-gray-800
+      shadow-2xl
+      drop-shadow-2xl
+      md:rounded-r-lg md:rounded-t-none
+      rounded-t-lg
+      md:top-4
+      h-10
+      bottom-0
+      self-center
+    "
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -34,14 +48,41 @@
   </button>
 
   <noah-search
-    class="fixed p-2 z-20 md:rounded-r-lg rounded-t-lg md:top-4 self-center md:hidden w-2/3"
+    class="
+      fixed
+      p-2
+      z-20
+      md:rounded-r-lg
+      rounded-t-lg
+      md:top-4
+      self-center
+      md:hidden
+      w-2/3
+    "
     [searchTerm]="searchTerm"
     (selectPlace)="selectPlace($event)"
   >
   </noah-search>
 
   <nav
-    class="block h-96 bottom-0 fixed w-full md:w-96 md:order-first p-4 bg-gray-50 shadow-2xl rounded-t-lg md:rounded-none flex-none md:min-h-screen z-50 md:h-full overflow-y-auto"
+    class="
+      block
+      h-96
+      bottom-0
+      fixed
+      w-full
+      md:w-96 md:order-first
+      p-4
+      bg-gray-50
+      shadow-2xl
+      rounded-t-lg
+      md:rounded-none
+      flex-none
+      md:min-h-screen
+      z-50
+      md:h-full
+      overflow-y-auto
+    "
     *ngIf="isMenu"
     id="sidebar"
   >
@@ -91,7 +132,17 @@
       </div>
       <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
         <button
-          class="md:fixed p-2 z-20 bg-white text-gray-800 md:left-96 top-4 rounded-lg md:rounded-l-sm"
+          class="
+            md:fixed
+            p-2
+            z-20
+            bg-white
+            text-gray-800
+            md:left-96
+            top-4
+            rounded-lg
+            md:rounded-l-sm
+          "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -137,6 +188,7 @@
       <noah-critical-facilities-playground
         class="w-full"
       ></noah-critical-facilities-playground>
+      <noah-weather class="w-full"></noah-weather>
     </div>
   </nav>
 
