@@ -387,8 +387,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       touchZoomRotate: true,
       center: this.pgService.currentCoords,
     });
-
-    (this.map.getSource('video') as any).play();
   }
 
   initMarkers() {
@@ -420,7 +418,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         ],
       },
       paint: {
-        'raster-opacity': 0.2,
+        'raster-opacity': 0,
       },
     });
 
@@ -432,7 +430,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       )
       .subscribe((weather) => {
         if (weather.shown) {
-          this.map.setPaintProperty(layerID, 'raster-opacity', weather.opacity);
+          this.map.setPaintProperty(
+            layerID,
+            'raster-opacity',
+            weather.opacity / 100
+          );
           return;
         }
 
