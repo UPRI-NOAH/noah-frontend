@@ -78,10 +78,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        // this.initMarkers();
-        // this.addExaggerationControl();
-        // this.addCriticalFacilityLayers();
-        // this.initHazardLayers();
+        this.initMarkers();
+        this.addExaggerationControl();
+        this.addCriticalFacilityLayers();
+        this.initHazardLayers();
         this.initSensors();
       });
   }
