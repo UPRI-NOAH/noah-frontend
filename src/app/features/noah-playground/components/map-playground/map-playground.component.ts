@@ -11,7 +11,6 @@ import {
   filter,
   map,
   takeUntil,
-  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -332,56 +331,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initMap() {
     this.mapService.init();
 
-    const videoStyle: mapboxgl.Style = {
-      version: 8,
-      sources: {
-        satellite: {
-          type: 'raster',
-          url: 'mapbox://mapbox.satellite',
-          tileSize: 256,
-        },
-        video: {
-          type: 'video',
-          urls: ['assets/videos/ph_himawari.webm'],
-          coordinates: [
-            [100.0, 29.25], // top-left
-            [160.0, 29.25], // top-right
-            [160.0, 5.0], // bottom-right
-            [100.0, 5.0], // bottom-left
-          ],
-        },
-      },
-      layers: [
-        {
-          id: 'background',
-          type: 'background',
-          paint: {
-            'background-color': 'rgb(4,7,14)',
-          },
-        },
-        {
-          id: 'satellite',
-          type: 'raster',
-          source: 'satellite',
-        },
-        {
-          id: 'video',
-          type: 'raster',
-          source: 'video',
-          paint: {
-            'raster-opacity': 0.2,
-          },
-        },
-      ],
-    };
-
     this.map = new mapboxgl.Map({
       container: 'map',
-      // style: videoStyle,
-      // minZoom: 14,
-      // zoom: 17,
-      // center: [-122.514426, 37.562984],
-      // bearing: -96,
       style: environment.mapbox.styles.terrain,
       zoom: 5,
       touchZoomRotate: true,
