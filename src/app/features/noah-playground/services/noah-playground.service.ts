@@ -10,6 +10,7 @@ import {
   HazardLevelState,
   CriticalFacilitiesState,
   CriticalFacilityTypeState,
+  WeatherState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -23,8 +24,6 @@ export class NoahPlaygroundService {
   get exagerration$(): Observable<ExaggerationState> {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
-
-  constructor(private store: NoahPlaygroundStore) {}
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
@@ -48,6 +47,12 @@ export class NoahPlaygroundService {
     );
   }
 
+  get weather$(): Observable<WeatherState> {
+    return this.store.state$.pipe(map((state) => state.weather));
+  }
+
+  constructor(private store: NoahPlaygroundStore) {}
+
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
   }
@@ -70,6 +75,10 @@ export class NoahPlaygroundService {
 
   getExaggeration(): ExaggerationState {
     return this.store.state.exaggeration;
+  }
+
+  getWeather(): WeatherState {
+    return this.store.state.weather;
   }
 
   getHazard(
@@ -228,5 +237,9 @@ export class NoahPlaygroundService {
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+  }
+
+  setWeather(weather: WeatherState) {
+    this.store.patch({ weather }, 'updated weather state');
   }
 }

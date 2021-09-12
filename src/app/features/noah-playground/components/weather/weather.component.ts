@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { ExaggerationState } from '@features/noah-playground/store/noah-playground.store';
+import { WeatherState } from '@features/noah-playground/store/noah-playground.store';
 
 @Component({
   selector: 'noah-weather',
@@ -8,18 +8,18 @@ import { ExaggerationState } from '@features/noah-playground/store/noah-playgrou
   styleUrls: ['./weather.component.scss'],
 })
 export class WeatherComponent implements OnInit {
-  exaggeration: ExaggerationState;
+  weather: WeatherState;
 
   get expanded(): boolean {
-    return this.exaggeration.expanded;
+    return this.weather.expanded;
   }
 
-  get level(): number {
-    return this.exaggeration.level;
+  get opacity(): number {
+    return this.weather.opacity;
   }
 
   get shown(): boolean {
-    return this.exaggeration.shown;
+    return this.weather.shown;
   }
 
   constructor(private pgService: NoahPlaygroundService) {}
@@ -27,26 +27,26 @@ export class WeatherComponent implements OnInit {
   ngOnInit(): void {
     // The only time we get the value from the state directly is when we're
     // initializing the value
-    this.exaggeration = this.pgService.getExaggeration();
+    this.weather = this.pgService.getWeather();
   }
 
-  changeExaggerationLevel(level: number) {
-    this.exaggeration = {
-      ...this.exaggeration,
-      level,
+  changeExaggerationLevel(opacity: number) {
+    this.weather = {
+      ...this.weather,
+      opacity,
     };
 
-    this.pgService.setExaggeration(this.exaggeration);
+    this.pgService.setWeather(this.weather);
   }
 
   toggleExpand() {
     const expanded = !this.expanded;
-    this.exaggeration = {
-      ...this.exaggeration,
+    this.weather = {
+      ...this.weather,
       expanded: expanded,
     };
 
-    this.pgService.setExaggeration(this.exaggeration);
+    this.pgService.setWeather(this.weather);
   }
 
   toggleShown(event: Event) {
@@ -54,11 +54,11 @@ export class WeatherComponent implements OnInit {
     event.stopImmediatePropagation();
 
     const shown = !this.shown;
-    this.exaggeration = {
-      ...this.exaggeration,
+    this.weather = {
+      ...this.weather,
       shown,
     };
 
-    this.pgService.setExaggeration(this.exaggeration);
+    this.pgService.setWeather(this.weather);
   }
 }

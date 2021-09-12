@@ -73,6 +73,12 @@ export type CriticalFacilityTypeState = {
   opacity: number;
 };
 
+export type WeatherState = {
+  shown: boolean;
+  expanded: boolean;
+  opacity: number;
+};
+
 export type CriticalFacilityTypesState = {
   'fire-station': CriticalFacilityTypeState;
   'police-station': CriticalFacilityTypeState;
@@ -92,6 +98,7 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   criticalFacilities: CriticalFacilitiesState;
+  weather: WeatherState;
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
@@ -197,6 +204,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 100,
       },
     },
+  },
+  weather: {
+    shown: true,
+    expanded: true,
+    opacity: 80,
   },
   center: PH_DEFAULT_CENTER,
   currentCoords: PH_DEFAULT_CENTER,
