@@ -66,7 +66,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initMarkers();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
-        this.initComboHazardLayers();
+        this.initHazardLayers();
       });
   }
 
@@ -195,7 +195,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
   }
 
-  initComboHazardLayers() {
+  /**
+   * Initialize listeners for the changes in the hazard layers settings
+   */
+  initHazardLayers() {
     PH_COMBO_LAYERS.forEach((comboLayerObj) => {
       const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
       const sourceData = {
@@ -291,18 +294,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               ([hazardTypeValue, hazardLevelValue]) =>
                 !!hazardTypeValue && !!hazardLevelValue
             )
-            // tap(([hazardTypeValue, hazardLevelValue]) => {
-            //   if (hazardTypeValue === 'flood' && !environment.production) {
-            //     console.log(
-            //       'hazardTypeShown',
-            //       hazardTypeValue.shown,
-            //       'hazardLevelShown',
-            //       hazardLevelValue.shown,
-            //       h.name,
-            //       hl.name
-            //     );
-            //   }
-            // })
           )
           .subscribe(([hazardTypeValue, hazardLevelValue]) => {
             if (hazardTypeValue.shown && hazardLevelValue.shown) {
