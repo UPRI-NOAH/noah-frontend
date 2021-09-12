@@ -184,7 +184,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   criticalFacilities: {
-    shown: true,
+    shown: false,
     expanded: false,
     types: {
       'fire-station': {
@@ -206,8 +206,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   weather: {
-    shown: true,
-    expanded: true,
+    shown: false,
+    expanded: false,
     opacity: 80,
   },
   center: PH_DEFAULT_CENTER,
