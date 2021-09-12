@@ -13,13 +13,13 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import { getHazardColor, getHazardLayer } from '@shared/mocks/flood';
+import { getHazardColor } from '@shared/mocks/flood';
 import {
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
 import {

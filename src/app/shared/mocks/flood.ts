@@ -1,4 +1,4 @@
-import { Expression, FillLayer, FillPaint } from 'mapbox-gl';
+import { Expression, FillLayer } from 'mapbox-gl';
 import { NoahColor, NOAH_COLORS } from './noah-colors';
 
 export const LEYTE_FLOOD: FillLayer = {
@@ -98,26 +98,6 @@ export const LEYTE_FLOOD_100: FillLayer = {
     'fill-opacity': 0.75,
   },
 };
-
-export const getHazardLayer = (
-  id: string,
-  url: string,
-  sourceLayer: string,
-  type: string,
-  color: NoahColor = 'noah-red'
-): FillLayer => ({
-  id,
-  type: 'fill',
-  source: {
-    type: 'vector',
-    url,
-  },
-  'source-layer': sourceLayer,
-  paint: {
-    'fill-color': getHazardColor(type, color, id), // TO DO: Handle id properly
-    'fill-opacity': 0.75,
-  },
-});
 
 // TO DO: Handle 3rd parameter properly
 // We need a way to check if the hazard we're getting the colors for only has a certain number of
