@@ -8,6 +8,7 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import {
   debounceTime,
   distinctUntilChanged,
+  filter,
   map,
   takeUntil,
   tap,
@@ -21,7 +22,11 @@ import {
 } from '@shared/mocks/critical-facilities';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
+import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
+import {
+  HazardLevel,
+  HazardType,
+} from '@features/noah-playground/store/noah-playground.store';
 type MapStyle = 'terrain' | 'satellite';
 
 @Component({
@@ -62,7 +67,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initMarkers();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
-        this.initHazardLayers();
+        // this.initHazardLayers();
+        this.initComboHazardLayers();
       });
   }
 
@@ -189,6 +195,148 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         this.map.setTerrain({ source: 'mapbox-dem', exaggeration: 0 });
       });
+  }
+
+  initComboHazardLayers() {
+    PH_COMBO_LAYERS.forEach((comboLayerObj) => {
+      const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
+      const sourceData = {
+        type: 'vector',
+        url: comboLayerObj.url,
+      } as mapboxgl.AnySourceData;
+      this.map.addSource(sourceID, sourceData);
+
+      comboLayerObj.sourceLayer.forEach((sourceLayer) => {
+        const [rawHazardType, rawHazardLevel] = [
+          ...sourceLayer.toLowerCase().split('_').splice(1),
+        ];
+
+        const hazardTypes = {
+          fh: 'flood',
+          lh: 'landslide',
+          ssh: 'storm-surge',
+        };
+
+        const getHazardLevel = (
+          type: HazardType,
+          level: string
+        ): HazardLevel => {
+          if (type === 'flood') {
+            const strippedLevel = level.replace('yr', '');
+            return `flood-return-period-${strippedLevel}` as HazardLevel;
+          }
+
+          if (type === 'storm-surge') {
+            const strippedLevel = level.replace('ssa', '');
+            return `storm-surge-advisory-${strippedLevel}` as HazardLevel;
+          }
+
+          if (type === 'landslide') {
+            // We currently have only one shown
+            return 'landslide-hazard';
+          }
+
+          throw Error('hazard level not found');
+        };
+
+        const hazardType = hazardTypes[rawHazardType];
+        const hazardLevel = getHazardLevel(hazardType, rawHazardLevel);
+
+        // const layerID = `${sourceID}_${hazardType}_${hazardLevel}`;
+        const layerID = sourceLayer;
+        this.map.addLayer({
+          id: layerID,
+          type: 'fill',
+          source: sourceID,
+          'source-layer': sourceLayer,
+          paint: {
+            'fill-color': getHazardColor(hazardType, 'noah-red', hazardType),
+            'fill-opacity': 0.75,
+          },
+        });
+
+        // OPACITY
+        this.pgService
+          .getHazardLevel$(hazardType, hazardLevel)
+          .pipe(
+            takeUntil(this._unsub),
+            takeUntil(this._changeStyle),
+            filter((level) => !!level),
+            distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(
+              layerID,
+              'fill-opacity',
+              level.opacity / 100
+            )
+          );
+
+        // VISIBILITY
+        const hazardType$ = this.pgService.getHazard$(hazardType).pipe(
+          takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
+          distinctUntilChanged((x, y) => x.shown === y.shown)
+        );
+
+        const hazardLevel$ = this.pgService
+          .getHazardLevel$(hazardType, hazardLevel)
+          .pipe(
+            takeUntil(this._unsub),
+            takeUntil(this._changeStyle),
+            distinctUntilChanged((x, y) => x.shown !== y.shown)
+          );
+
+        combineLatest([hazardType$, hazardLevel$])
+          .pipe(
+            filter(
+              ([hazardTypeValue, hazardLevelValue]) =>
+                !!hazardTypeValue && !!hazardLevelValue
+            )
+            // tap(([hazardTypeValue, hazardLevelValue]) => {
+            //   if (hazardTypeValue === 'flood' && !environment.production) {
+            //     console.log(
+            //       'hazardTypeShown',
+            //       hazardTypeValue.shown,
+            //       'hazardLevelShown',
+            //       hazardLevelValue.shown,
+            //       h.name,
+            //       hl.name
+            //     );
+            //   }
+            // })
+          )
+          .subscribe(([hazardTypeValue, hazardLevelValue]) => {
+            if (hazardTypeValue.shown && hazardLevelValue.shown) {
+              this.map.setPaintProperty(
+                layerID,
+                'fill-opacity',
+                hazardLevelValue.opacity / 100
+              );
+              return;
+            }
+
+            this.map.setPaintProperty(layerID, 'fill-opacity', 0);
+          });
+
+        // COLOR
+        this.pgService
+          .getHazardLevel$(hazardType, hazardLevel)
+          .pipe(
+            takeUntil(this._unsub),
+            takeUntil(this._changeStyle),
+            filter((level) => !!level),
+            distinctUntilChanged((x, y) => x.color !== y.color)
+          )
+          .subscribe((level) =>
+            this.map.setPaintProperty(
+              layerID,
+              'fill-color',
+              getHazardColor(hazardType, level.color, layerID)
+            )
+          );
+      });
+    });
   }
 
   initHazardLayers() {
