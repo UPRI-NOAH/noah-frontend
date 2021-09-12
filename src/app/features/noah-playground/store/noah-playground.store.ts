@@ -113,7 +113,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   flood: {
     shown: true,
-    expanded: true,
+    expanded: false,
     levels: {
       'flood-return-period-5': {
         opacity: 85,
@@ -185,7 +185,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   criticalFacilities: {
-    shown: true,
+    shown: false,
     expanded: false,
     types: {
       'fire-station': {
@@ -210,8 +210,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
   currentCoords: PH_DEFAULT_CENTER,
   currentLocation: '-----',
   sensors: {
-    shown: true,
-    expanded: true,
+    shown: false,
+    expanded: false,
     types: {
       arg: {
         shown: true,
