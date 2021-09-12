@@ -1,0 +1,68 @@
+[
+  {
+    "url": "mapbox://prince-test.ph_fh_100yr_tls",
+    "sourceLayer": [
+      "PH010000000_FH_100yr",
+      "PH020000000_FH_100yr",
+      "PH040000000_FH_100yr",
+      "PH050000000_FH_100yr",
+      "PH060000000_FH_100yr",
+      "PH070000000_FH_100yr",
+      "PH080000000_FH_100yr",
+      "PH090000000_FH_100yr",
+      "PH100000000_FH_100yr",
+      "PH110000000_FH_100yr",
+      "PH120000000_FH_100yr",
+      "PH130000000_FH_100yr",
+      "PH140000000_FH_100yr",
+      "PH150000000_FH_100yr",
+      "PH160000000_FH_100yr",
+      "PH170000000_FH_100yr",
+      "PH180000000_FH_100yr"
+    ]
+  },
+  {
+    "url": "mapbox://prince-test.ph_lh_lh1_tls",
+    "sourceLayer": [
+      "PH010000000_LH_lh1",
+      "PH020000000_LH_lh1",
+      "PH030000000_LH_lh1",
+      "PH040000000_LH_lh1",
+      "PH050000000_LH_lh1",
+      "PH060000000_LH_lh1",
+      "PH070000000_LH_lh1",
+      "PH080000000_LH_lh1",
+      "PH100000000_LH_lh1",
+      "PH110000000_LH_lh1",
+      "PH120000000_LH_lh1",
+      "PH130000000_LH_lh1",
+      "PH140000000_LH_lh1",
+      "PH150000000_LH_lh1",
+      "PH160000000_LH_lh1",
+      "PH170000000_LH_lh1",
+      "PH180000000_LH_lh1"
+    ]
+  },
+  {
+    "url": "mapbox://prince-test.ph_ssh_ssa4_tls",
+    "sourceLayer": [
+      "PH010000000_SSH_ssa4",
+      "PH020000000_SSH_ssa4",
+      "PH030000000_SSH_ssa4",
+      "PH040000000_SSH_ssa4",
+      "PH050000000_SSH_ssa4",
+      "PH060000000_SSH_ssa4",
+      "PH070000000_SSH_ssa4",
+      "PH080000000_SSH_ssa4",
+      "PH090000000_SSH_ssa4",
+      "PH100000000_SSH_ssa4",
+      "PH110000000_SSH_ssa4",
+      "PH120000000_SSH_ssa4",
+      "PH130000000_SSH_ssa4",
+      "PH150000000_SSH_ssa4",
+      "PH160000000_SSH_ssa4",
+      "PH170000000_SSH_ssa4",
+      "PH180000000_SSH_ssa4"
+    ]
+  }
+]

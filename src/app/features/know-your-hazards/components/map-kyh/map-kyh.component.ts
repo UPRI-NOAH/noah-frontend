@@ -8,19 +8,20 @@ import {
   LEYTE_POLICESTATIONS,
   LEYTE_SCHOOLS,
 } from '@shared/mocks/critical-facilities';
-import { LEYTE_FLOOD } from '@shared/mocks/flood';
-import { LEYTE_LANDSLIDE } from '@shared/mocks/landslide';
-import { LEYTE_STORM_SURGE } from '@shared/mocks/storm-surges';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
+
 import {
   KYHPage,
   HazardType,
 } from '@features/know-your-hazards/store/kyh.store';
+import { getHazardColor } from '@shared/mocks/flood';
+import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -134,9 +135,62 @@ export class MapKyhComponent implements OnInit {
   }
 
   initLayers() {
-    this.map.addLayer(LEYTE_FLOOD);
-    this.map.addLayer(LEYTE_LANDSLIDE);
-    this.map.addLayer(LEYTE_STORM_SURGE);
+    PH_COMBO_LAYERS.forEach((comboLayerObj) => {
+      const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
+      const sourceData = {
+        type: 'vector',
+        url: comboLayerObj.url,
+      } as mapboxgl.AnySourceData;
+      this.map.addSource(sourceID, sourceData);
+
+      comboLayerObj.sourceLayer.forEach((sourceLayer) => {
+        const [rawHazardType, rawHazardLevel] = [
+          ...sourceLayer.toLowerCase().split('_').splice(1),
+        ];
+
+        const hazardTypes = {
+          fh: 'flood',
+          lh: 'landslide',
+          ssh: 'storm-surge',
+        };
+
+        const getHazardLevel = (
+          type: HazardType,
+          level: string
+        ): HazardLevel => {
+          if (type === 'flood') {
+            const strippedLevel = level.replace('yr', '');
+            return `flood-return-period-${strippedLevel}` as HazardLevel;
+          }
+
+          if (type === 'storm-surge') {
+            const strippedLevel = level.replace('ssa', '');
+            return `storm-surge-advisory-${strippedLevel}` as HazardLevel;
+          }
+
+          if (type === 'landslide') {
+            // We currently have only one shown
+            return 'landslide-hazard';
+          }
+
+          throw Error('hazard level not found');
+        };
+
+        const hazardType = hazardTypes[rawHazardType];
+
+        const layerID = sourceLayer;
+        this.map.addLayer({
+          id: layerID,
+          type: 'fill',
+          source: sourceID,
+          'source-layer': sourceLayer,
+          paint: {
+            'fill-color': getHazardColor(hazardType, 'noah-red', hazardType),
+            'fill-opacity': 0.75,
+          },
+        });
+      });
+    });
   }
 
   initPageListener() {

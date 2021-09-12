@@ -1,7 +1,6 @@
-import { state } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import {
   HazardType,
   KyhStore,
@@ -140,14 +139,11 @@ export class KyhService {
   private _getTilesetName(hazardTypes: HazardType): string {
     switch (hazardTypes) {
       case 'flood':
-        return 'jadurani.3tg2ae87';
-      // return LEYTE_FLOOD.source?.url || "";
+        return 'prince-test.ph_fh_100yr_tls';
       case 'landslide':
-        return 'jadurani.boxlw5qe';
-      // return LEYTE_LANDSLIDE.source?.url || "";
+        return 'prince-test.ph_lh_lh1_tls';
       case 'storm-surge':
-        return 'jadurani.cmmzrdab';
-      // return LEYTE_STORM_SURGE.source?.url || "";
+        return 'prince-test.ph_ssh_ssa4_tls';
       default:
         return '';
     }
