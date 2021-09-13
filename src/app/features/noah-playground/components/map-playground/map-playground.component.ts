@@ -490,19 +490,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       // shown
       const allShown$ = this.pgService.criticalFacilitiesShown$.pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
         distinctUntilChanged()
       );
 
-      const facility$ = this.pgService.getCriticalFacility$(name).pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged((x, y) => x.shown !== y.shown)
-      );
+      const facility$ = this.pgService
+        .getCriticalFacility$(name)
+        .pipe(distinctUntilChanged((x, y) => x.shown !== y.shown));
 
-      combineLatest([allShown$, facility$]).subscribe(
-        ([allShown, facility]) => {
+      combineLatest([allShown$, facility$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, facility]) => {
           if (facility.shown && allShown) {
             this.map.setPaintProperty(
               name,
@@ -519,8 +516,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
           this.map.setPaintProperty(name, 'icon-opacity', 0);
           this.map.setPaintProperty(name, 'text-opacity', 0);
-        }
-      );
+        });
     });
   }
 }
