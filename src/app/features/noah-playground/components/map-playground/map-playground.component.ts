@@ -143,10 +143,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    */
   addCriticalFacilityLayers() {
     //  CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
-    const hospital = 'assets/geojson/hospitals.geojson';
-    const fire = 'assets/geojson/fire_station.geojson';
-    const police = 'assets/geojson/police_station.geojson';
-    const school = 'assets/geojson/schools.geojson';
+    const hospital = 'assets/geojson/hospitals_g.geojson';
+    const fire = 'assets/geojson/fire_station_g.geojson';
+    const police = 'assets/geojson/police_station_g.geojson';
+    const school = 'assets/geojson/schools_g.geojson';
 
     this.map.on('load', () => {
       this.map.addSource('fireStations', {
@@ -259,7 +259,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'circle-stroke-color': '#05bc08',
         },
       });
-      //for cluster count
+      // //for cluster count
       this.map.addLayer({
         id: 'cluster-count',
         type: 'symbol',
@@ -359,6 +359,117 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'circle-stroke-width': 1,
           'circle-stroke-color': '#05bc08',
         },
+      });
+      //schools
+      this.map.on('click', 'unclustered-school', (e) => {
+        const geometry = e.features[0].geometry;
+        let coordinates00: [number, number] = [0, 0];
+        if (geometry.type === 'Point') {
+          coordinates00 = [geometry.coordinates[0], geometry.coordinates[1]];
+        }
+        const schoolName = e.features[0].properties.name;
+        const coordinates = coordinates00;
+        // Ensure that if the map is zoomed out such that
+        // multiple copies of the feature are visible, the
+        // popup appears over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`School Name: ${schoolName}`)
+          .addTo(this.map);
+      });
+
+      //fire station
+      this.map.on('click', 'unclustered-fire', (e) => {
+        const geometry = e.features[0].geometry;
+        let coordinates00: [number, number] = [0, 0];
+        if (geometry.type === 'Point') {
+          coordinates00 = [geometry.coordinates[0], geometry.coordinates[1]];
+        }
+        const FireStationName = e.features[0].properties.name;
+        const coordinates = coordinates00;
+        // Ensure that if the map is zoomed out such that
+        // multiple copies of the feature are visible, the
+        // popup appears over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`Fire Station Name: ${FireStationName}`)
+          .addTo(this.map);
+      });
+
+      //hospitals
+      this.map.on('click', 'unclustered-hospital', (e) => {
+        const geometry = e.features[0].geometry;
+        let coordinates00: [number, number] = [0, 0];
+        if (geometry.type === 'Point') {
+          coordinates00 = [geometry.coordinates[0], geometry.coordinates[1]];
+        }
+        const hospitalName = e.features[0].properties.name;
+        const coordinates = coordinates00;
+        // Ensure that if the map is zoomed out such that
+        // multiple copies of the feature are visible, the
+        // popup appears over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`Hospital Name: ${hospitalName}`)
+          .addTo(this.map);
+      });
+
+      //Police Station
+      this.map.on('click', 'unclustered-police', (e) => {
+        const geometry = e.features[0].geometry;
+        let coordinates00: [number, number] = [0, 0];
+        if (geometry.type === 'Point') {
+          coordinates00 = [geometry.coordinates[0], geometry.coordinates[1]];
+        }
+        const PoliceStation = e.features[0].properties.name;
+        const coordinates = coordinates00;
+        // Ensure that if the map is zoomed out such that
+        // multiple copies of the feature are visible, the
+        // popup appears over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`Police Station Name: ${PoliceStation}`)
+          .addTo(this.map);
+      });
+
+      this.map.on('mouseenter', 'fireStations-critical', () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+      this.map.on('mouseenter', 'fireStations-critical', () => {
+        this.map.getCanvas().style.cursor = '';
+      });
+
+      this.map.on('mouseenter', 'hospitals-critical', () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+      this.map.on('mouseenter', 'hospitals-critical', () => {
+        this.map.getCanvas().style.cursor = '';
+      });
+
+      this.map.on('mouseenter', 'police-critical', () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+      this.map.on('mouseenter', 'police-critical', () => {
+        this.map.getCanvas().style.cursor = '';
+      });
+
+      this.map.on('mouseenter', 'schools-critical', () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+      this.map.on('mouseenter', 'schools-critical', () => {
+        this.map.getCanvas().style.cursor = '';
       });
     });
   }
