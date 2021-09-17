@@ -70,8 +70,6 @@ export class SearchComponent implements OnInit {
       const longitude = position.coords.longitude;
       const coords = { lng: longitude, lat: latitude };
       localStorage.setItem('userLocation', JSON.stringify(coords));
-      const retrievedObject = localStorage.getItem('userLocation');
-      console.log('retrievedObject: ', JSON.parse(retrievedObject));
     }
 
     function locationError(error) {
@@ -82,12 +80,13 @@ export class SearchComponent implements OnInit {
     //GETTING COORDINATES TO LOCAL STORAGE
     const user = localStorage.getItem('userLocation');
     const userCoords = JSON.parse(user);
+
     const userPlaceName = await this.mapService.reverseGeocode(
       userCoords.lat,
       userCoords.lng
     );
+
     localStorage.setItem('userPlaceName', userPlaceName); //storing place name in localstorage
-    console.log(userPlaceName);
     this.selectPlace.emit(event);
     this.searchTermCtrl.setValue(userPlaceName);
     this.kyhService.setCenter(userCoords); // user location center when in kyh page
