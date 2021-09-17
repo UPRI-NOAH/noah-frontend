@@ -15,7 +15,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { ArrowKeysDirective } from '@shared/arrow-keys.directive';
 import { ENTER } from '@angular/cdk/keycodes';
-import { environment } from '@env/environment';
 
 @Component({
   selector: 'noah-search',
@@ -23,33 +22,24 @@ import { environment } from '@env/environment';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
-  center: [number, number];
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   currentLocation$: Observable<string>;
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
 
-  placeHolder: string = '';
-
   isDropdownOpen = false;
   isCurrent = false;
 
-  column: number = 1;
+  row: number = 1;
   @ViewChildren(ArrowKeysDirective) inputs: QueryList<ArrowKeysDirective>;
 
-  constructor(
-    private mapService: MapService,
-    private kyhService: KyhService,
-    private router: Router
-  ) {}
+  constructor(private mapService: MapService, private kyhService: KyhService) {}
 
   ngOnInit(): void {
     this.kyhService.keyBoard.subscribe((res) => {
       this.moveByArrowkey(res);
     });
-
-    this.placeHolder = this.kyhService.allPlaceHolder;
 
     this.kyhService.init();
     this.searchTermCtrl = new FormControl();
@@ -73,7 +63,7 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  async userFixedLocation() {
+  async userFixedLocation(event) {
     // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
     function locationSuccess(position) {
       const latitude = position.coords.latitude;
@@ -92,22 +82,20 @@ export class SearchComponent implements OnInit {
     //GETTING COORDINATES TO LOCAL STORAGE
     const user = localStorage.getItem('userLocation');
     const userCoords = JSON.parse(user);
-
-    let api_url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userCoords.lng},${userCoords.lat}.json?types=locality&access_token=${environment.mapbox.accessToken}`;
-    const response = await fetch(api_url);
-    const data = await response.json();
-    const userPlaceName = data.features[0].place_name;
+    const userPlaceName = await this.mapService.reverseGeocode(
+      userCoords.lat,
+      userCoords.lng
+    );
     localStorage.setItem('userPlaceName', userPlaceName); //storing place name in localstorage
-    this.router.navigate(['/know-your-hazards']);
-    this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
-    this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
+    console.log(userPlaceName);
+    this.selectPlace.emit(event);
+    this.searchTermCtrl.setValue(userPlaceName);
+    this.kyhService.setCenter(userCoords); // user location center when in kyh page
   }
 
   onEnterUser(event) {
     if (event.keyCode === ENTER) {
-      this.router.navigate(['/know-your-hazards']);
-      console.log('User Location Enter', event.keyCode);
-      this.kyhService.setPlaceHolder(localStorage.getItem('userPlaceName'));
+      this.selectPlace.emit(event);
       this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
     }
   }
@@ -116,16 +104,13 @@ export class SearchComponent implements OnInit {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
-    this.kyhService.setPlaceHolder(place.text);
   }
 
-  onKeyEnterPicked(place, event) {
+  onKeyEnterPickedPlace(place, event) {
     if (event.keyCode === ENTER) {
-      this.searchTermCtrl.setValue(place.text);
       this.isDropdownOpen = false;
       this.selectPlace.emit(place);
-      console.log('Picked Place Enter', event.keyCode);
-      this.kyhService.setPlaceHolder(place.text);
+      this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
     }
   }
 
@@ -135,17 +120,15 @@ export class SearchComponent implements OnInit {
 
     switch (object.action) {
       case 'UP':
-        index -= this.column;
-        console.log('UP');
+        index -= this.row;
         clearInterval(object);
         break;
       case 'DOWN':
-        index += this.column;
-        console.log('DOWN');
+        index += this.row;
         clearInterval(object);
         break;
       case 'ENTER':
-        index == this.column;
+        index == this.row;
         clearInterval(object);
     }
     if (index >= 0 && index < this.inputs.length) {

@@ -33,7 +33,7 @@
         [formControl]="searchTermCtrl"
         (keyup)="isDropdownOpen = true"
         (focus)="isCurrent = true"
-        placeholder="{{ placeHolder }}"
+        placeholder="Search Location"
         autocomplete="off"
         class="
           rounded-l-full
@@ -327,8 +327,12 @@
             focus:outline-none
             group
           "
+<<<<<<< HEAD
           (click)="userFixedLocation()"
 >>>>>>> 2218300... WIP: arrow keys selected/highlight and enter to select
+=======
+          (click)="userFixedLocation($event)"
+>>>>>>> 8b36029... WIP: placeholder search and clean code
         >
           <span>
             <svg
@@ -385,12 +389,10 @@
       </ul>
     </div>
 
-    <!-- <div noahArrowKeys *ngIf="isDropdownOpen && (places$ | async)?.length">my div5</div> -->
-
     <div
       noahArrowKeys
       (click)="pickPlace(place)"
-      (keydown)="onKeyEnterPicked(place, $event)"
+      (keydown)="onKeyEnterPickedPlace(place, $event)"
       *ngFor="let place of places$ | async"
       class="
         flex-row

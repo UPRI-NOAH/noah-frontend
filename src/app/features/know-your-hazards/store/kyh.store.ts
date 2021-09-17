@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
-export const user = localStorage.getItem('userLocation');
-export const userCoords = JSON.parse(user);
-
 export const PH_DEFAULT_CENTER = {
-  lat: userCoords.lat,
-  lng: userCoords.lng,
+  lat: 10.79258,
+  lng: 124.93226,
 };
 
 export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;
@@ -25,7 +22,6 @@ type KYHState = {
   stormSurgeRiskLevel: RiskLevel;
   landslideRiskLevel: RiskLevel;
   currentLocation: string;
-  allPlaceHolder: string;
 };
 
 const createInitialValue = (): KYHState => {
@@ -39,7 +35,6 @@ const createInitialValue = (): KYHState => {
     stormSurgeRiskLevel: 'unavailable',
     landslideRiskLevel: 'unavailable',
     currentLocation: '------',
-    allPlaceHolder: 'Search Location',
   };
 };
 
