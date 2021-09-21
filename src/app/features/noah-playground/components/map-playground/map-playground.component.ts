@@ -200,7 +200,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    */
   initHazardLayers() {
     PH_COMBO_LAYERS.forEach((comboLayerObj) => {
-      const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
+      const sourceID = comboLayerObj.url.replace('mapbox://upri-noah.', '');
       const sourceData = {
         type: 'vector',
         url: comboLayerObj.url,
