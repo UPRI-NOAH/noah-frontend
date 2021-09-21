@@ -221,8 +221,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
   currentCoords: PH_DEFAULT_CENTER,
   currentLocation: '-----',
   contourMaps: {
-    shown: true,
-    expanded: true,
+    shown: false,
+    expanded: false,
     selectedType: '1hr',
   },
 });
