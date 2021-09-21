@@ -20,7 +20,7 @@ import {
 } from '@shared/mocks/critical-facilities';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
+
 import {
   HazardLevel,
   HazardType,
