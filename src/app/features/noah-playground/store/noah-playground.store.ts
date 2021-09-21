@@ -33,6 +33,8 @@ export type CriticalFacilityLayer =
   | 'leyte_firestation'
   | 'leyte_police';
 
+export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
+
 export type HazardLevel =
   | FloodReturnPeriod
   | StormSurgeAdvisory
@@ -102,6 +104,11 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
+  contourMaps: {
+    shown: boolean;
+    expanded: boolean;
+    selectedType: ContourMapType;
+  };
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -213,6 +220,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
   center: PH_DEFAULT_CENTER,
   currentCoords: PH_DEFAULT_CENTER,
   currentLocation: '-----',
+  contourMaps: {
+    shown: false,
+    expanded: false,
+    selectedType: '1hr',
+  },
 });
 
 @Injectable({

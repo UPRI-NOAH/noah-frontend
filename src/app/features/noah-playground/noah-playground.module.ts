@@ -14,6 +14,7 @@ import { HazardTypeComponent } from './components/hazard-type/hazard-type.compon
 import { ExaggerationComponent } from './components/exaggeration/exaggeration.component';
 import { FacilityComponent } from './components/facility/facility.component';
 import { WeatherComponent } from './components/weather/weather.component';
+import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { WeatherComponent } from './components/weather/weather.component';
     ExaggerationComponent,
     FacilityComponent,
     WeatherComponent,
+    ContourMapsComponent,
   ],
   imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
 })

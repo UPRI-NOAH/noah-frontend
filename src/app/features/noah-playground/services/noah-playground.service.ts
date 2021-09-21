@@ -11,6 +11,7 @@ import {
   CriticalFacilitiesState,
   CriticalFacilityTypeState,
   WeatherState,
+  ContourMapType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -50,6 +51,20 @@ export class NoahPlaygroundService {
 
   get weather$(): Observable<WeatherState> {
     return this.store.state$.pipe(map((state) => state.weather));
+  }
+
+  get contourMapGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.expanded));
+  }
+
+  get contourMapGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.shown));
+  }
+
+  get selectedContourMap$(): Observable<ContourMapType> {
+    return this.store.state$.pipe(
+      map((state) => state.contourMaps.selectedType)
+    );
   }
 
   constructor(private store: NoahPlaygroundStore, private http: HttpClient) {}
@@ -251,5 +266,32 @@ export class NoahPlaygroundService {
 
   setWeather(weather: WeatherState) {
     this.store.patch({ weather }, 'updated weather state');
+  }
+
+  selectContourMapType(type: ContourMapType): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.selectedType = type;
+    this.store.patch({ contourMaps }, `select contour map type: ${type}`);
+  }
+
+  toggleContourMapGroupVisibility(): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.shown = !contourMaps.shown;
+    this.store.patch({ contourMaps }, `toggle visibility`);
+  }
+
+  toggleContourMapGroupExpansion(): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.expanded = !contourMaps.expanded;
+    this.store.patch({ contourMaps }, `toggle expansion`);
   }
 }
