@@ -362,7 +362,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       type: 'raster',
       source: {
         type: 'video',
-        urls: ['assets/videos/ph_himawari.webm'],
+        urls: [
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/himawari/ph_himawari.webm',
+        ],
         coordinates: [
           [100.0, 29.25], // top-left
           [160.0, 29.25], // top-right
