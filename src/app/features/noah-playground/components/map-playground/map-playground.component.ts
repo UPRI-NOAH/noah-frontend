@@ -198,8 +198,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Initialize listeners for the changes in the hazard layers settings
    */
-  initHazardLayers() {
-    PH_COMBO_LAYERS.forEach((comboLayerObj) => {
+  async initHazardLayers() {
+    const phComboLayers = await this.pgService.getHazardData();
+    phComboLayers.forEach((comboLayerObj) => {
       const sourceID = comboLayerObj.url.replace('mapbox://upri-noah.', '');
       const sourceData = {
         type: 'vector',
