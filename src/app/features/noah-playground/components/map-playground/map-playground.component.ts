@@ -20,7 +20,7 @@ import {
 } from '@shared/mocks/critical-facilities';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import PH_COMBO_LAYERS from '@shared/data/ph_combined_tileset.json';
+
 import {
   HazardLevel,
   HazardType,
@@ -198,9 +198,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   /**
    * Initialize listeners for the changes in the hazard layers settings
    */
-  initHazardLayers() {
-    PH_COMBO_LAYERS.forEach((comboLayerObj) => {
-      const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
+  async initHazardLayers() {
+    const phComboLayers = await this.pgService.getHazardData();
+    phComboLayers.forEach((comboLayerObj) => {
+      const sourceID = comboLayerObj.url.replace('mapbox://upri-noah.', '');
       const sourceData = {
         type: 'vector',
         url: comboLayerObj.url,

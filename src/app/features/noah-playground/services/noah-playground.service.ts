@@ -14,8 +14,9 @@ import {
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -51,7 +52,16 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.weather));
   }
 
-  constructor(private store: NoahPlaygroundStore) {}
+  constructor(private store: NoahPlaygroundStore, private http: HttpClient) {}
+
+  getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
 
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
