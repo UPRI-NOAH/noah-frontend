@@ -393,21 +393,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         this.map.setPaintProperty(layerID, 'raster-opacity', 0);
       });
-    }
+  }
 
   showContourMaps() {
     const contourMapImages = {
-      '12hr': '12hr_latest_rainfall_contour_31-Aug-2021_03-02.png',
-      '1hr': '1hr_latest_rainfall_contour_31-Aug-2021_02-43.png',
-      '24hr': '24hr_latest_rainfall_contour_31-Aug-2021_03-03.png',
-      '3hr': '3hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
-      '6hr': '6hr_latest_rainfall_contour_31-Aug-2021_03-01.png',
+      '1hr':
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+      '3hr':
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+      '6hr':
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+      '12hr':
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+      '24hr':
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
     };
 
     Object.keys(contourMapImages).forEach((contourType) => {
       this.map.addSource(contourType, {
         type: 'image',
-        url: `assets/sample-contour-maps/${contourMapImages[contourType]}`,
+        url: contourMapImages[contourType],
         coordinates: [
           [115.35, 21.55], // top-left
           [128.25, 21.55], // top-right
