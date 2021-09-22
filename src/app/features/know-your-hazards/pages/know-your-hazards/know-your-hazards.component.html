@@ -44,7 +44,7 @@
     <span class="sr-only">Open menu</span>
   </button>
   <noah-search
-    [searchTerm]="searchTerm"
+    [searchTerm]="currentLocation$ | async"
     (selectPlace)="selectPlace($event)"
     class="
       fixed
@@ -112,7 +112,7 @@
       </div>
 
       <noah-search
-        [searchTerm]="searchTerm"
+        [searchTerm]="currentLocation$ | async"
         (selectPlace)="selectPlace($event)"
         class="w-full mt-4 hidden md:block relative"
       >
@@ -343,7 +343,7 @@
   >
     <ng-container *ngIf="isKYHPage$ | async; else hazardTemplate">
       <noah-search
-        [searchTerm]="searchTerm"
+        [searchTerm]="currentLocation$ | async"
         (selectPlace)="selectPlace($event)"
         class="w-full mt-4 hidden md:block relative"
       >

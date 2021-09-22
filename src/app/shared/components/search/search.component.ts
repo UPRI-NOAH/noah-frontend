@@ -8,7 +8,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
 import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -24,6 +23,7 @@ import { ENTER } from '@angular/cdk/keycodes';
 export class SearchComponent implements OnInit {
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
+
   currentLocation$: Observable<string>;
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
@@ -40,9 +40,8 @@ export class SearchComponent implements OnInit {
     this.kyhService.keyBoard.subscribe((res) => {
       this.moveByArrowkey(res);
     });
-
     this.kyhService.init();
-    this.searchTermCtrl = new FormControl();
+    this.searchTermCtrl = new FormControl(this.searchTerm);
     this.places$ = new BehaviorSubject([]);
     this.currentLocation$ = this.kyhService.currentLocation$;
 
@@ -85,16 +84,26 @@ export class SearchComponent implements OnInit {
       userCoords.lat,
       userCoords.lng
     );
-
     localStorage.setItem('userPlaceName', userPlaceName); //storing place name in localstorage
-    this.selectPlace.emit(event);
+    const selectedPlace = {
+      text: userPlaceName,
+      center: [userCoords.lng, userCoords.lat],
+    };
+    this.selectPlace.emit(selectedPlace);
     this.searchTermCtrl.setValue(userPlaceName);
     this.kyhService.setCenter(userCoords); // user location center when in kyh page
   }
 
   onEnterUser(event) {
     if (event.keyCode === ENTER) {
-      this.selectPlace.emit(event);
+      const user = localStorage.getItem('userLocation');
+      const userCoords = JSON.parse(user);
+      const selectedPlace = {
+        text: localStorage.getItem('userPlaceName'),
+        center: [userCoords.lng, userCoords.lat],
+      };
+      this.kyhService.setCenter(userCoords); // user location center when in kyh page
+      this.selectPlace.emit(selectedPlace);
       this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
     }
   }
@@ -109,7 +118,7 @@ export class SearchComponent implements OnInit {
     if (event.keyCode === ENTER) {
       this.isDropdownOpen = false;
       this.selectPlace.emit(place);
-      this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
+      this.searchTermCtrl.setValue(place.text);
     }
   }
 

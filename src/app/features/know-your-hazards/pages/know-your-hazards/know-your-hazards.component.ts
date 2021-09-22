@@ -1,19 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import {
   HazardType,
-  KYHPage,
   RiskLevel,
 } from '@features/know-your-hazards/store/kyh.store';
-import { fromEvent, Observable } from 'rxjs';
-import { map, takeLast } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'noah-know-your-hazards',
   templateUrl: './know-your-hazards.component.html',
   styleUrls: ['./know-your-hazards.component.scss'],
 })
 export class KnowYourHazardsComponent implements OnInit {
-  searchTerm: string;
   currentLocation$: Observable<string>;
   currentCoords$: Observable<{ lng: number; lat: number }>;
   floodRiskLevel$: Observable<RiskLevel>;
