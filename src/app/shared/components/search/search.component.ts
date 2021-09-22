@@ -21,9 +21,9 @@ import { ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
+  center: [number, number];
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
-
   currentLocation$: Observable<string>;
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
@@ -62,7 +62,7 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  async userFixedLocation(event) {
+  async userFixedLocation() {
     // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
     function locationSuccess(position) {
       const latitude = position.coords.latitude;
