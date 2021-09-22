@@ -1,7 +1,6 @@
-import { state } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import {
   HazardType,
   KyhStore,

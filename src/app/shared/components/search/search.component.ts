@@ -21,7 +21,6 @@ import { ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
-  center: [number, number];
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   currentLocation$: Observable<string>;
