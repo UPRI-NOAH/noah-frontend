@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   HazardType,
@@ -19,6 +19,10 @@ export class KyhService {
     private hazardsService: HazardsService
   ) {}
 
+  keyBoard: Subject<any> = new Subject<any>();
+  sendMessage(message: any) {
+    this.keyBoard.next(message);
+  }
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.kyhStore.state$.pipe(map((state) => state.center));
   }
