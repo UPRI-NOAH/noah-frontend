@@ -20,6 +20,7 @@ export class KnowYourHazardsComponent implements OnInit {
   landslideRiskLevel$: Observable<RiskLevel>;
   isMenu: boolean = true;
   isOpen: boolean = true;
+  isList;
 
   get isKYHPage$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(

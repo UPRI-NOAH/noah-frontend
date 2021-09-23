@@ -14,7 +14,7 @@ export class NoahPlaygroundComponent implements OnInit {
 
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
-
+  isList;
   hazardTypes = HAZARDS;
 
   constructor(private pgService: NoahPlaygroundService) {}
