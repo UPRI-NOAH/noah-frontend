@@ -149,7 +149,60 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    * implementation.
    */
   addCriticalFacilityLayers() {
-    CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+    // CRITICAL_FACILITIES_ARR.forEach((cf) => this._loadCriticalFacilityIcon(cf));
+
+    const criticalFacilities = [
+      {
+        sourceName: 'schools',
+        layerName: 'schools_layer',
+        data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/schools.geojson',
+        color: '#EB5757',
+      },
+      {
+        sourceName: 'police_station',
+        layerName: 'police_station_layer',
+
+        data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
+        color: '#C21D7D',
+      },
+      {
+        sourceName: 'hospitals',
+        layerName: 'hospitals_layer',
+        data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
+        color: '#804B9B',
+      },
+      {
+        sourceName: 'fire_station',
+        layerName: 'fire_station_layer',
+        data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
+        color: '#2B75B2',
+      },
+    ];
+
+    criticalFacilities.forEach((criticalFacilityObj) => {
+      this.map.addLayer({
+        id: criticalFacilityObj.layerName,
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: criticalFacilityObj.data,
+        },
+        paint: {
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+          'circle-stroke-width': 1,
+          'circle-color': criticalFacilityObj.color,
+          'circle-stroke-color': 'white',
+        },
+      });
+    });
   }
 
   /**
