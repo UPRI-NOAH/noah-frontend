@@ -2,7 +2,10 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  purge: ['./src/**/*.{html,ts}'],
+  mode: 'jit',
+  purge: {
+    content: ['./src/**/*.{html,ts}', './tailwind.safelist.txt'],
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
