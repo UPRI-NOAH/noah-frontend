@@ -121,29 +121,9 @@ export type CriticalFacilityLayer =
 //   },
 // });
 
-// export const getSymbolLayer = (id: string): SymbolLayer => ({
-//   id,
-//   type: 'symbol',
-//   source: {
-//     type: 'geojson',
-//     data: criticalFacilities[id].data,
-//   },
-//   paint: {
-//     // 'icon-opacity': 1,
-//     'text-opacity': 1,
-//   },
-//   layout: {
-//     // 'icon-image': id,
-//     'text-anchor': 'top',
-//     'text-field': ['get', 'name'],
-//     'text-offset': [0, 2],
-//     'text-size': 10,
-//   },
-// });
-
-export const getSymbolLayer = (id: string): CircleLayer => ({
-  id: id,
-  type: 'circle',
+export const getSymbolLayer = (id: string): SymbolLayer => ({
+  id,
+  type: 'symbol',
   source: {
     type: 'geojson',
     data: criticalFacilities[id].data,
@@ -151,30 +131,53 @@ export const getSymbolLayer = (id: string): CircleLayer => ({
     clusterMaxZoom: 12,
   },
   paint: {
-    'circle-color': [
-      'step',
-      ['get', 'point_count'],
-      '#51bbd6',
-      100,
-      '#f1f075',
-      750,
-      '#f28cb1',
-    ],
-    'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-    // 'circle-radius': [
-    //   'step',
-    //   ['get', 'point_count'],
-    //   20,
-    //   100,
-    //   30,
-    //   750,
-    //   40,
-    // ],
-    // 'circle-color': 'red',
-    // 'circle-stroke-width': 1,
-    // 'circle-stroke-color': 'white',
+    'icon-opacity': 1,
+    'text-opacity': 1,
+  },
+  filter: ['!', ['has', 'point_count']],
+  layout: {
+    'icon-image': id,
+    'text-anchor': 'top',
+    'text-field': ['get', 'name'],
+    'text-offset': [0, 2],
+    'text-size': 10,
   },
 });
+
+// export const getSymbolLayer = (id: string): CircleLayer => ({
+//   id: id,
+//   type: 'circle',
+//   source: {
+//     type: 'geojson',
+//     data: criticalFacilities[id].data,
+//     cluster: true,
+//     clusterMaxZoom: 12,
+//   },
+//   paint: {
+//     'circle-color': [
+//       'step',
+//       ['get', 'point_count'],
+//       '#51bbd6',
+//       100,
+//       '#f1f075',
+//       750,
+//       '#f28cb1',
+//     ],
+//     'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+//     // 'circle-radius': [
+//     //   'step',
+//     //   ['get', 'point_count'],
+//     //   20,
+//     //   100,
+//     //   30,
+//     //   750,
+//     //   40,
+//     // ],
+//     // 'circle-color': 'red',
+//     // 'circle-stroke-width': 1,
+//     // 'circle-stroke-color': 'white',
+//   },
+// });
 
 export const getCriticalFacility = () => {};
 

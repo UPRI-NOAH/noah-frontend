@@ -515,37 +515,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   private _loadCriticalFacilityIcon(name: CriticalFacility) {
     const _this = this;
-    // this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
-    //   if (error) throw error;
-    //   _this.map.addImage(name, image);
-    _this.map.addLayer(getSymbolLayer(name));
+    this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
+      if (error) throw error;
+      _this.map.addImage(name, image);
+      _this.map.addLayer(getSymbolLayer(name));
 
-    // opacity
-    this.pgService
-      .getCriticalFacility$(name)
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged((x, y) => x.opacity !== y.opacity)
-      )
-      .subscribe((facility) => {
-        this.map.setPaintProperty(name, 'icon-opacity', facility.opacity / 100);
-        this.map.setPaintProperty(name, 'text-opacity', facility.opacity / 100);
-      });
-
-    // shown
-    const allShown$ = this.pgService.criticalFacilitiesShown$.pipe(
-      distinctUntilChanged()
-    );
-
-    const facility$ = this.pgService
-      .getCriticalFacility$(name)
-      .pipe(distinctUntilChanged((x, y) => x.shown !== y.shown));
-
-    combineLatest([allShown$, facility$])
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([allShown, facility]) => {
-        if (facility.shown && allShown) {
+      // opacity
+      this.pgService
+        .getCriticalFacility$(name)
+        .pipe(
+          takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
+          distinctUntilChanged((x, y) => x.opacity !== y.opacity)
+        )
+        .subscribe((facility) => {
           this.map.setPaintProperty(
             name,
             'icon-opacity',
@@ -556,12 +539,37 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'text-opacity',
             facility.opacity / 100
           );
-          return;
-        }
+        });
 
-        this.map.setPaintProperty(name, 'icon-opacity', 0);
-        this.map.setPaintProperty(name, 'text-opacity', 0);
-      });
-    // });
+      // shown
+      const allShown$ = this.pgService.criticalFacilitiesShown$.pipe(
+        distinctUntilChanged()
+      );
+
+      const facility$ = this.pgService
+        .getCriticalFacility$(name)
+        .pipe(distinctUntilChanged((x, y) => x.shown !== y.shown));
+
+      combineLatest([allShown$, facility$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, facility]) => {
+          if (facility.shown && allShown) {
+            this.map.setPaintProperty(
+              name,
+              'icon-opacity',
+              facility.opacity / 100
+            );
+            this.map.setPaintProperty(
+              name,
+              'text-opacity',
+              facility.opacity / 100
+            );
+            return;
+          }
+
+          this.map.setPaintProperty(name, 'icon-opacity', 0);
+          this.map.setPaintProperty(name, 'text-opacity', 0);
+        });
+    });
   }
 }
