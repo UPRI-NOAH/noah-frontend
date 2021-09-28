@@ -14,8 +14,10 @@ import {
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
+  criticalFacilities,
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
+  getCircleLayer,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
@@ -518,6 +520,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
       if (error) throw error;
       _this.map.addImage(name, image);
+
+      _this.map.addSource(name, {
+        type: 'geojson',
+        data: criticalFacilities[name].data,
+        cluster: true,
+        clusterMaxZoom: 12,
+        clusterMinPoints: 3,
+      });
+
+      _this.map.addLayer(getCircleLayer(name));
       _this.map.addLayer(getSymbolLayer(name));
 
       // opacity
@@ -530,12 +542,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         )
         .subscribe((facility) => {
           this.map.setPaintProperty(
-            name,
+            `${name}-image`,
             'icon-opacity',
             facility.opacity / 100
           );
+
           this.map.setPaintProperty(
-            name,
+            `${name}-image`,
             'text-opacity',
             facility.opacity / 100
           );
@@ -555,20 +568,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .subscribe(([allShown, facility]) => {
           if (facility.shown && allShown) {
             this.map.setPaintProperty(
-              name,
+              `${name}-image`,
               'icon-opacity',
               facility.opacity / 100
             );
             this.map.setPaintProperty(
-              name,
+              `${name}-image`,
               'text-opacity',
               facility.opacity / 100
             );
             return;
           }
 
-          this.map.setPaintProperty(name, 'icon-opacity', 0);
-          this.map.setPaintProperty(name, 'text-opacity', 0);
+          this.map.setPaintProperty(`${name}-image`, 'icon-opacity', 0);
+          this.map.setPaintProperty(`${name}-image`, 'text-opacity', 0);
         });
     });
   }

@@ -121,22 +121,17 @@ export type CriticalFacilityLayer =
 //   },
 // });
 
-export const getSymbolLayer = (id: string): SymbolLayer => ({
-  id,
+export const getSymbolLayer = (sourceName: string): SymbolLayer => ({
+  id: `${sourceName}-image`,
   type: 'symbol',
-  source: {
-    type: 'geojson',
-    data: criticalFacilities[id].data,
-    cluster: true,
-    clusterMaxZoom: 12,
-  },
+  source: sourceName,
   paint: {
     'icon-opacity': 1,
     'text-opacity': 1,
   },
   filter: ['!', ['has', 'point_count']],
   layout: {
-    'icon-image': id,
+    'icon-image': sourceName,
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
@@ -144,44 +139,30 @@ export const getSymbolLayer = (id: string): SymbolLayer => ({
   },
 });
 
-// export const getSymbolLayer = (id: string): CircleLayer => ({
-//   id: id,
-//   type: 'circle',
-//   source: {
-//     type: 'geojson',
-//     data: criticalFacilities[id].data,
-//     cluster: true,
-//     clusterMaxZoom: 12,
-//   },
-//   paint: {
-//     'circle-color': [
-//       'step',
-//       ['get', 'point_count'],
-//       '#51bbd6',
-//       100,
-//       '#f1f075',
-//       750,
-//       '#f28cb1',
-//     ],
-//     'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-//     // 'circle-radius': [
-//     //   'step',
-//     //   ['get', 'point_count'],
-//     //   20,
-//     //   100,
-//     //   30,
-//     //   750,
-//     //   40,
-//     // ],
-//     // 'circle-color': 'red',
-//     // 'circle-stroke-width': 1,
-//     // 'circle-stroke-color': 'white',
-//   },
-// });
+export const getCircleLayer = (sourceName: string): CircleLayer => ({
+  id: `${sourceName}-cluster`,
+  type: 'circle',
+  source: sourceName,
+  filter: ['has', 'point_count'],
+  paint: {
+    'circle-color': [
+      'step',
+      ['get', 'point_count'],
+      '#51bbd6',
+      100,
+      '#f1f075',
+      750,
+      '#f28cb1',
+    ],
+    'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+    'circle-stroke-width': 1,
+    'circle-stroke-color': 'white',
+  },
+});
 
 export const getCriticalFacility = () => {};
 
-const criticalFacilities = {
+export const criticalFacilities = {
   school: {
     url: 'mapbox://upri-noah.drbtf3uh',
     data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/schools.geojson',
