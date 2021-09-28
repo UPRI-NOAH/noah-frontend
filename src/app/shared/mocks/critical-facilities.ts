@@ -100,27 +100,6 @@ export type CriticalFacilityLayer =
   | 'leyte_firestation'
   | 'leyte_police';
 
-// export const getSymbolLayer = (id: string): SymbolLayer => ({
-//   id,
-//   type: 'symbol',
-//   source: {
-//     type: 'vector',
-//     url: MAPBOX_CRIT_FAC[id].url,
-//   },
-//   'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
-//   paint: {
-//     'icon-opacity': 1,
-//     'text-opacity': 1,
-//   },
-//   layout: {
-//     'icon-image': id,
-//     'text-anchor': 'top',
-//     'text-field': ['get', 'name'],
-//     'text-offset': [0, 2],
-//     'text-size': 10,
-//   },
-// });
-
 export const getSymbolLayer = (sourceName: string): SymbolLayer => ({
   id: `${sourceName}-image`,
   type: 'symbol',
@@ -158,18 +137,27 @@ export const getCircleLayer = (sourceName: string): CircleLayer => ({
   },
 });
 
-export const getClusterTextCount = (sourceName: string): SymbolLayer => ({
-  id: `${sourceName}-cluster-text`,
-  type: 'symbol',
-  source: sourceName,
-  filter: ['has', 'point_count'],
-  layout: {
-    'text-field': `{point_count_abbreviated}\n${sourceName}`,
-    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-    'text-size': 12,
-    'text-allow-overlap': true,
-  },
-});
+export const getClusterTextCount = (sourceName: string): SymbolLayer => {
+  const facilityNames: Record<CriticalFacility, string> = {
+    'fire-station': 'Fire Stations',
+    hospital: 'Hospitals',
+    'police-station': 'Police Stations',
+    school: 'Schools',
+  };
+
+  return {
+    id: `${sourceName}-cluster-text`,
+    type: 'symbol',
+    source: sourceName,
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': `{point_count_abbreviated}\n${facilityNames[sourceName]}`,
+      'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      'text-size': 12,
+      'text-allow-overlap': true,
+    },
+  };
+};
 
 export const getCriticalFacility = () => {};
 
