@@ -191,8 +191,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   criticalFacilities: {
-    shown: true,
-    expanded: true,
+    shown: false,
+    expanded: false,
     types: {
       'fire-station': {
         shown: true,
