@@ -18,6 +18,7 @@ import {
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
   getCircleLayer,
+  getClusterTextCount,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
@@ -531,6 +532,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       _this.map.addLayer(getCircleLayer(name));
       _this.map.addLayer(getSymbolLayer(name));
+      _this.map.addLayer(getClusterTextCount(name));
 
       // opacity
       this.pgService

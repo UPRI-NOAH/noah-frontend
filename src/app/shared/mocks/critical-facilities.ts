@@ -160,6 +160,19 @@ export const getCircleLayer = (sourceName: string): CircleLayer => ({
   },
 });
 
+export const getClusterTextCount = (sourceName: string): SymbolLayer => ({
+  id: `${sourceName}-text`,
+  type: 'symbol',
+  source: sourceName,
+  filter: ['has', 'point_count'],
+  layout: {
+    'text-field': `{point_count_abbreviated}\n${sourceName}`,
+    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+    'text-size': 12,
+    'text-allow-overlap': true,
+  },
+});
+
 export const getCriticalFacility = () => {};
 
 export const criticalFacilities = {
