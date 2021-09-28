@@ -14,8 +14,11 @@ import {
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
+  criticalFacilities,
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
+  getCircleLayer,
+  getClusterTextCount,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
@@ -465,7 +468,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
       if (error) throw error;
       _this.map.addImage(name, image);
+
+      _this.map.addSource(name, {
+        type: 'geojson',
+        data: criticalFacilities[name].data,
+        cluster: true,
+        clusterMaxZoom: 12,
+        clusterMinPoints: 3,
+      });
+
+      _this.map.addLayer(getCircleLayer(name));
       _this.map.addLayer(getSymbolLayer(name));
+      _this.map.addLayer(getClusterTextCount(name));
 
       // opacity
       this.pgService
@@ -476,51 +490,72 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           distinctUntilChanged((x, y) => x.opacity !== y.opacity)
         )
         .subscribe((facility) => {
+          const newOpacity = facility.opacity / 100;
           this.map.setPaintProperty(
-            name,
+            `${name}-image`,
             'icon-opacity',
-            facility.opacity / 100
+            newOpacity
           );
+
           this.map.setPaintProperty(
-            name,
+            `${name}-image`,
             'text-opacity',
-            facility.opacity / 100
+            newOpacity
+          );
+
+          this.map.setPaintProperty(
+            `${name}-cluster`,
+            'circle-opacity',
+            newOpacity
+          );
+
+          this.map.setPaintProperty(
+            `${name}-cluster-text`,
+            'text-opacity',
+            newOpacity
           );
         });
 
       // shown
       const allShown$ = this.pgService.criticalFacilitiesShown$.pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
         distinctUntilChanged()
       );
 
-      const facility$ = this.pgService.getCriticalFacility$(name).pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged((x, y) => x.shown !== y.shown)
-      );
+      const facility$ = this.pgService
+        .getCriticalFacility$(name)
+        .pipe(distinctUntilChanged((x, y) => x.shown !== y.shown));
 
-      combineLatest([allShown$, facility$]).subscribe(
-        ([allShown, facility]) => {
+      combineLatest([allShown$, facility$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, facility]) => {
+          let newOpacity = 0;
+
           if (facility.shown && allShown) {
-            this.map.setPaintProperty(
-              name,
-              'icon-opacity',
-              facility.opacity / 100
-            );
-            this.map.setPaintProperty(
-              name,
-              'text-opacity',
-              facility.opacity / 100
-            );
-            return;
+            newOpacity = facility.opacity / 100;
           }
 
-          this.map.setPaintProperty(name, 'icon-opacity', 0);
-          this.map.setPaintProperty(name, 'text-opacity', 0);
-        }
-      );
+          this.map.setPaintProperty(
+            `${name}-image`,
+            'icon-opacity',
+            newOpacity
+          );
+          this.map.setPaintProperty(
+            `${name}-image`,
+            'text-opacity',
+            newOpacity
+          );
+          this.map.setPaintProperty(
+            `${name}-cluster`,
+            'circle-opacity',
+            newOpacity
+          );
+
+          this.map.setPaintProperty(
+            `${name}-cluster-text`,
+            'text-opacity',
+            newOpacity
+          );
+        });
     });
   }
 }
