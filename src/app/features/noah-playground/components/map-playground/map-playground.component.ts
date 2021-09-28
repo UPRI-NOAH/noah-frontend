@@ -554,6 +554,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'text-opacity',
             facility.opacity / 100
           );
+
+          this.map.setPaintProperty(
+            `${name}-cluster`,
+            'circle-opacity',
+            facility.opacity / 100
+          );
+
+          this.map.setPaintProperty(
+            `${name}-cluster-text`,
+            'text-opacity',
+            facility.opacity / 100
+          );
         });
 
       // shown
@@ -579,11 +591,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-opacity',
               facility.opacity / 100
             );
+
+            this.map.setPaintProperty(
+              `${name}-cluster`,
+              'circle-opacity',
+              facility.opacity / 100
+            );
+
+            this.map.setPaintProperty(
+              `${name}-cluster-text`,
+              'text-opacity',
+              facility.opacity / 100
+            );
             return;
           }
 
           this.map.setPaintProperty(`${name}-image`, 'icon-opacity', 0);
           this.map.setPaintProperty(`${name}-image`, 'text-opacity', 0);
+          this.map.setPaintProperty(`${name}-cluster`, 'circle-opacity', 0);
+
+          this.map.setPaintProperty(`${name}-cluster-text`, 'text-opacity', 0);
         });
     });
   }

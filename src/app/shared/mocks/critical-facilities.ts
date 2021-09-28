@@ -155,13 +155,11 @@ export const getCircleLayer = (sourceName: string): CircleLayer => ({
       '#f28cb1',
     ],
     'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-    'circle-stroke-width': 1,
-    'circle-stroke-color': 'white',
   },
 });
 
 export const getClusterTextCount = (sourceName: string): SymbolLayer => ({
-  id: `${sourceName}-text`,
+  id: `${sourceName}-cluster-text`,
   type: 'symbol',
   source: sourceName,
   filter: ['has', 'point_count'],
