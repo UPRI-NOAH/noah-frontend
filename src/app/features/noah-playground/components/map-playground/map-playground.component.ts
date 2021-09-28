@@ -543,28 +543,29 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           distinctUntilChanged((x, y) => x.opacity !== y.opacity)
         )
         .subscribe((facility) => {
+          const newOpacity = facility.opacity / 100;
           this.map.setPaintProperty(
             `${name}-image`,
             'icon-opacity',
-            facility.opacity / 100
+            newOpacity
           );
 
           this.map.setPaintProperty(
             `${name}-image`,
             'text-opacity',
-            facility.opacity / 100
+            newOpacity
           );
 
           this.map.setPaintProperty(
             `${name}-cluster`,
             'circle-opacity',
-            facility.opacity / 100
+            newOpacity
           );
 
           this.map.setPaintProperty(
             `${name}-cluster-text`,
             'text-opacity',
-            facility.opacity / 100
+            newOpacity
           );
         });
 
@@ -580,37 +581,33 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       combineLatest([allShown$, facility$])
         .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
         .subscribe(([allShown, facility]) => {
+          let newOpacity = 0;
+
           if (facility.shown && allShown) {
-            this.map.setPaintProperty(
-              `${name}-image`,
-              'icon-opacity',
-              facility.opacity / 100
-            );
-            this.map.setPaintProperty(
-              `${name}-image`,
-              'text-opacity',
-              facility.opacity / 100
-            );
-
-            this.map.setPaintProperty(
-              `${name}-cluster`,
-              'circle-opacity',
-              facility.opacity / 100
-            );
-
-            this.map.setPaintProperty(
-              `${name}-cluster-text`,
-              'text-opacity',
-              facility.opacity / 100
-            );
-            return;
+            newOpacity = facility.opacity / 100;
           }
 
-          this.map.setPaintProperty(`${name}-image`, 'icon-opacity', 0);
-          this.map.setPaintProperty(`${name}-image`, 'text-opacity', 0);
-          this.map.setPaintProperty(`${name}-cluster`, 'circle-opacity', 0);
+          this.map.setPaintProperty(
+            `${name}-image`,
+            'icon-opacity',
+            newOpacity
+          );
+          this.map.setPaintProperty(
+            `${name}-image`,
+            'text-opacity',
+            newOpacity
+          );
+          this.map.setPaintProperty(
+            `${name}-cluster`,
+            'circle-opacity',
+            newOpacity
+          );
 
-          this.map.setPaintProperty(`${name}-cluster-text`, 'text-opacity', 0);
+          this.map.setPaintProperty(
+            `${name}-cluster-text`,
+            'text-opacity',
+            newOpacity
+          );
         });
     });
   }
