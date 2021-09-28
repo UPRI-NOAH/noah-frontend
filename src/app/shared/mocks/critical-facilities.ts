@@ -100,14 +100,34 @@ export type CriticalFacilityLayer =
   | 'leyte_firestation'
   | 'leyte_police';
 
+// export const getSymbolLayer = (id: string): SymbolLayer => ({
+//   id,
+//   type: 'symbol',
+//   source: {
+//     type: 'vector',
+//     url: MAPBOX_CRIT_FAC[id].url,
+//   },
+//   'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
+//   paint: {
+//     'icon-opacity': 1,
+//     'text-opacity': 1,
+//   },
+//   layout: {
+//     'icon-image': id,
+//     'text-anchor': 'top',
+//     'text-field': ['get', 'name'],
+//     'text-offset': [0, 2],
+//     'text-size': 10,
+//   },
+// });
+
 export const getSymbolLayer = (id: string): SymbolLayer => ({
   id,
   type: 'symbol',
   source: {
-    type: 'vector',
-    url: MAPBOX_CRIT_FAC[id].url,
+    type: 'geojson',
+    data: criticalFacilities[id].data,
   },
-  'source-layer': MAPBOX_CRIT_FAC[id].sourceLayer,
   paint: {
     'icon-opacity': 1,
     'text-opacity': 1,
@@ -122,6 +142,25 @@ export const getSymbolLayer = (id: string): SymbolLayer => ({
 });
 
 export const getCriticalFacility = () => {};
+
+const criticalFacilities = {
+  school: {
+    url: 'mapbox://upri-noah.drbtf3uh',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/schools.geojson',
+  },
+  hospital: {
+    url: 'mapbox://upri-noah.0qj1zvhm',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
+  },
+  'fire-station': {
+    url: 'mapbox://upri-noah.cebidtpr',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
+  },
+  'police-station': {
+    url: 'mapbox://upri-noah.ds1saq22',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
+  },
+};
 
 export const MAPBOX_CRIT_FAC = {
   school: {
