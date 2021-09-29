@@ -22,8 +22,8 @@
       <input
         type="search"
         [formControl]="searchTermCtrl"
+        (focus)="isDropdownOpen = true"
         (keyup)="isDropdownOpen = true"
-        (focus)="isCurrent = true"
         (keydown)="keydownAction($event)"
         placeholder="Search Location"
         autocomplete="off"
@@ -76,105 +76,125 @@
       duration-300
       ease-in-out
     "
-    *ngIf="isCurrent"
+    *ngIf="isDropdownOpen"
   >
-    <!-- <div #locationOptions tabindex="0" (keydown)="onEnterUser($event)"> -->
-    <div
-      #locationOptions
-      tabindex="0"
-      (keydown)="keydownAction($event, 'get-location')"
-      (click)="userFixedLocation()"
-    >
-      <ul class="list-none">
-        <li
-          class="
-            block
-            w-full
-            px-4
-            py-4
-            font-bold
-            text-sm
-            cursor-pointer
-            text-left text-gray-700
-            hover:bg-gray-100 hover:text-gray-900
-            transition
-            duration-300
-            ease-in-out
-            focus:outline-none
-            group
-          "
-        >
-          <img
-            class="w-6 pr-2 inline-block"
-            src="assets/icons/current-location.svg"
-          />
-          <span>Your Current Location</span>
-        </li>
-      </ul>
-    </div>
-
-    <div
-      #locationOptions
-      tabindex="0"
-      (click)="pickPlace(place)"
-      (keydown)="keydownAction($event, 'select-option', place)"
-      *ngFor="let place of places$ | async"
-      class="
-        flex-row
-        block
-        w-full
-        px-4
-        py-0
-        cursor-pointer
-        text-left
-        hover:bg-gray-100 hover:text-gray-900
-        transition
-        duration-300
-        ease-in-out
-        focus:outline-none
-        group
-        overflow:
-        hidden;
-        text-overflow:
-        ellipsis;
-        white-space:
-        wrap;
-      "
-    >
-      <div class="py-2 max-w-xl w-full flex flex-row">
-        <div class="md:mt-0 items-center flex">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="inline-block pr-2 text-high h-8 w-6"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+    <ng-container *ngIf="loading; else dropdownList">
+      <div tabindex="0">
+        <ul class="list-none">
+          <li
+            class="
+              block
+              w-full
+              px-4
+              py-4
+              font-bold
+              text-sm text-left text-gray-700
+              transition
+              duration-300
+              ease-in-out
+              focus:outline-none
+              group
+              text-center
+            "
           >
-            <path
-              fill-rule="evenodd"
-              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-              clip-rule="evenodd"
+            Loading...
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+    <ng-template #dropdownList>
+      <div
+        #locationOptions
+        tabindex="0"
+        (keydown)="keydownAction($event, 'get-location')"
+        (click)="userFixedLocation()"
+      >
+        <ul class="list-none">
+          <li
+            class="
+              block
+              w-full
+              px-4
+              py-4
+              font-bold
+              text-sm
+              cursor-pointer
+              text-left text-gray-700
+              hover:bg-gray-100 hover:text-gray-900
+              transition
+              duration-300
+              ease-in-out
+              focus:outline-none
+              group
+            "
+          >
+            <img
+              class="w-6 pr-2 inline-block"
+              src="assets/icons/current-location.svg"
             />
-          </svg>
-        </div>
-        <div class="flex-1">
-          <p class="font-bold text-gray-700 text-sm">{{ place.text }}</p>
-          <p class="text-xs text-gray-300 group-hover:text-gray-400">
-            {{ place.place_name }}
-          </p>
+            <span>Your Current Location</span>
+          </li>
+        </ul>
+      </div>
+
+      <div
+        #locationOptions
+        tabindex="0"
+        (click)="pickPlace(place)"
+        (keydown)="keydownAction($event, 'select-option', place)"
+        *ngFor="let place of places$ | async"
+        class="
+          flex-row
+          block
+          w-full
+          px-4
+          py-0
+          cursor-pointer
+          text-left
+          hover:bg-gray-100 hover:text-gray-900
+          transition
+          duration-300
+          ease-in-out
+          focus:outline-none
+          group
+          overflow:
+          hidden;
+          text-overflow:
+          ellipsis;
+          white-space:
+          wrap;
+        "
+      >
+        <div class="py-2 max-w-xl w-full flex flex-row">
+          <div class="md:mt-0 items-center flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="inline-block pr-2 text-high h-8 w-6"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-gray-700 text-sm">{{ place.text }}</p>
+            <p class="text-xs text-gray-300 group-hover:text-gray-400">
+              {{ place.place_name }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-template>
   </div>
 
   <!-- BACKDROP -->
   <div
     (click)="isDropdownOpen = false"
     *ngIf="isDropdownOpen"
-    class="fixed h-full bg-black opacity-30 top-0 right-0 bottom-0 left-0"
-  ></div>
-  <div
-    (click)="isCurrent = false"
-    *ngIf="isCurrent"
     class="fixed h-full bg-black opacity-30 top-0 right-0 bottom-0 left-0"
   ></div>
 </div>

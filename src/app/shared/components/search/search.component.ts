@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit {
   places$: BehaviorSubject<any[]>;
 
   isDropdownOpen = false;
-  isCurrent = false;
+  loading = false;
 
   focusedRowIdx: number = 0;
 
@@ -104,7 +104,12 @@ export class SearchComponent implements OnInit {
   }
 
   async userFixedLocation() {
+    if (this.loading) {
+      return;
+    }
+
     try {
+      this.loading = true;
       const coords: { lat: number; lng: number } =
         await this.locationService.getCurrentLocation();
 
@@ -123,20 +128,9 @@ export class SearchComponent implements OnInit {
     } catch (error) {
       console.error({ error });
       alert('Unable to find your location');
-    }
-  }
-
-  onEnterUser(event) {
-    if (event.keyCode === ENTER) {
-      const user = localStorage.getItem('userLocation');
-      const userCoords = JSON.parse(user);
-      const selectedPlace = {
-        text: localStorage.getItem('userPlaceName'),
-        center: [userCoords.lng, userCoords.lat],
-      };
-
-      this.selectPlace.emit(selectedPlace);
-      this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
+    } finally {
+      this.loading = false;
+      this.isDropdownOpen = false;
     }
   }
 
