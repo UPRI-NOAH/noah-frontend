@@ -194,12 +194,6 @@
         </button>
       </div>
 
-      <noah-search
-        [searchTerm]="currentLocation$ | async"
-        (selectPlace)="selectPlace($event)"
-        class="w-full mt-4 hidden md:block relative"
-      >
-      </noah-search>
       <div>
         <h4 class="text-2xl font-bold leading-tight mt-6 pb-2">
           Hazard Levels In Your Area
