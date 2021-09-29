@@ -12,7 +12,7 @@ import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { ENTER } from '@angular/cdk/keycodes';
+
 import { LocationService } from '@core/services/location.service';
 
 @Component({
@@ -44,15 +44,17 @@ export class SearchComponent implements OnInit {
 
     this.searchTermCtrl.valueChanges
       .pipe(
+        debounceTime(300),
         tap((searchText) => {
+          this.loading = true;
           if (!searchText?.length) {
             this.isDropdownOpen = false;
             this.places$.next([]);
           }
         }),
-        debounceTime(300),
         filter((searchText) => searchText && this.isDropdownOpen),
-        switchMap((searchText) => this.mapService.forwardGeocode(searchText))
+        switchMap((searchText) => this.mapService.forwardGeocode(searchText)),
+        tap(() => (this.loading = false))
       )
       .subscribe((value: any) => {
         this.places$.next(value.features);
