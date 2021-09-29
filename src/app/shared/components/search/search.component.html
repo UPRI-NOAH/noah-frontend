@@ -20,11 +20,11 @@
         />
       </div>
       <input
-        noahArrowKeys
         type="search"
         [formControl]="searchTermCtrl"
         (keyup)="isDropdownOpen = true"
         (focus)="isCurrent = true"
+        (keydown)="keydownAction($event)"
         placeholder="Search Location"
         autocomplete="off"
         class="
@@ -78,7 +78,8 @@
     "
     *ngIf="isCurrent"
   >
-    <div noahArrowKeys (keydown)="onEnterUser($event)">
+    <!-- <div #locationOptions tabindex="0" (keydown)="onEnterUser($event)"> -->
+    <div #locationOptions tabindex="0" (keydown)="keydownAction($event)">
       <ul class="list-none">
         <li
           class="
@@ -108,10 +109,12 @@
       </ul>
     </div>
 
+    <!-- (keydown)="onKeyEnterPickedPlace(place, $event)" -->
     <div
-      noahArrowKeys
+      #locationOptions
+      tabindex="0"
       (click)="pickPlace(place)"
-      (keydown)="onKeyEnterPickedPlace(place, $event)"
+      (keydown)="keydownAction($event)"
       *ngFor="let place of places$ | async"
       class="
         flex-row

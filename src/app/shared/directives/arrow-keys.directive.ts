@@ -14,6 +14,7 @@ export class ArrowKeysDirective {
   }
 
   @HostListener('keydown', ['$event']) onKeyup(e: KeyboardEvent) {
+    console.log(this.element);
     switch (e.code) {
       case 'ArrowUp':
         this.kyhService.sendMessage({ element: this.element, action: 'UP' });

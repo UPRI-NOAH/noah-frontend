@@ -1,10 +1,12 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
   QueryList,
+  Renderer2,
   ViewChildren,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -30,10 +32,16 @@ export class SearchComponent implements OnInit {
   isDropdownOpen = false;
   isCurrent = false;
 
-  row: number = 1;
-  @ViewChildren(ArrowKeysDirective) inputs: QueryList<ArrowKeysDirective>;
+  row: number = 0;
+  focusedRowIdx: number = 0;
+  // @ViewChildren(ArrowKeysDirective) inputs: QueryList<ArrowKeysDirective>;
+  @ViewChildren('locationOptions') locationOptions: QueryList<ElementRef>;
 
-  constructor(private mapService: MapService, private kyhService: KyhService) {}
+  constructor(
+    private kyhService: KyhService,
+    private mapService: MapService,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit(): void {
     this.kyhService.keyBoard.subscribe((res) => {
@@ -60,6 +68,42 @@ export class SearchComponent implements OnInit {
       .subscribe((value: any) => {
         this.places$.next(value.features);
       });
+  }
+
+  keydownAction(e: KeyboardEvent): void {
+    try {
+      const locationOptionsCount = this.locationOptions.length;
+      switch (e.code) {
+        case 'ArrowUp':
+          if (this.focusedRowIdx < 0 || this.focusedRowIdx - 1 < 0) {
+            this.focusedRowIdx = locationOptionsCount - 1;
+          } else {
+            this.focusedRowIdx -= 1;
+          }
+
+          (
+            this.locationOptions.toArray()[this.focusedRowIdx]
+              .nativeElement as HTMLElement
+          ).focus();
+          e.preventDefault();
+          break;
+        case 'ArrowDown':
+          this.focusedRowIdx = (this.focusedRowIdx + 1) % locationOptionsCount;
+          (
+            this.locationOptions.toArray()[this.focusedRowIdx]
+              .nativeElement as HTMLElement
+          ).focus();
+          e.preventDefault();
+          break;
+        case 'Enter':
+          this.focusedRowIdx = -1;
+          return;
+      }
+
+      console.log(this.focusedRowIdx);
+    } catch (error) {
+      console.error({ error });
+    }
   }
 
   async userFixedLocation() {
@@ -123,25 +167,23 @@ export class SearchComponent implements OnInit {
   }
 
   moveByArrowkey(object) {
-    const inputToArray = this.inputs.toArray();
-    let index = inputToArray.findIndex((x) => x.element == object.element);
-
-    switch (object.action) {
-      case 'UP':
-        index -= this.row;
-        clearInterval(object);
-        break;
-      case 'DOWN':
-        index += this.row;
-        clearInterval(object);
-        break;
-      case 'ENTER':
-        index == this.row;
-        clearInterval(object);
-    }
-
-    if (index >= 0 && index < this.inputs.length) {
-      inputToArray[index].element.nativeElement.focus();
-    }
+    // const inputToArray = this.inputs.toArray();
+    // let index = inputToArray.findIndex((x) => x.element == object.element);
+    // switch (object.action) {
+    //   case 'UP':
+    //     index -= this.row;
+    //     clearInterval(object);
+    //     break;
+    //   case 'DOWN':
+    //     index += this.row;
+    //     clearInterval(object);
+    //     break;
+    //   case 'ENTER':
+    //     index == this.row;
+    //     clearInterval(object);
+    // }
+    // if (index >= 0 && index < this.inputs.length) {
+    //   inputToArray[index].element.nativeElement.focus();
+    // }
   }
 }
