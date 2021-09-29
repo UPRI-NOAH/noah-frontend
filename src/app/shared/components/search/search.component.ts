@@ -12,7 +12,7 @@ import { MapService } from '@core/services/map.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { ArrowKeysDirective } from '@shared/arrow-keys.directive';
+import { ArrowKeysDirective } from '@shared/directives/arrow-keys.directive';
 import { ENTER } from '@angular/cdk/keycodes';
 
 @Component({
