@@ -82,7 +82,7 @@
     <div
       #locationOptions
       tabindex="0"
-      (keydown)="keydownAction($event)"
+      (keydown)="keydownAction($event, 'get-location')"
       (click)="userFixedLocation()"
     >
       <ul class="list-none">
@@ -117,7 +117,7 @@
       #locationOptions
       tabindex="0"
       (click)="pickPlace(place)"
-      (keydown)="keydownAction($event, place)"
+      (keydown)="keydownAction($event, 'select-option', place)"
       *ngFor="let place of places$ | async"
       class="
         flex-row

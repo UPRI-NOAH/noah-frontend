@@ -21,7 +21,15 @@ export class LocationService {
         reject(error);
       }
 
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+      const options = {
+        enableHighAccuracy: true,
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        locationSuccess,
+        locationError,
+        options
+      );
     });
   }
 }

@@ -60,7 +60,11 @@ export class SearchComponent implements OnInit {
   }
 
   // TO DO: add type for place
-  keydownAction(e: KeyboardEvent, place?: any): void {
+  keydownAction(
+    e: KeyboardEvent,
+    eventType?: 'get-location' | 'select-option',
+    place?: any
+  ): void {
     try {
       const locationOptionsCount = this.locationOptions.length;
       const locationOptionsArray = this.locationOptions.toArray();
@@ -81,9 +85,15 @@ export class SearchComponent implements OnInit {
           break;
         case 'Enter':
           this.focusedRowIdx = -1;
-          if (place) {
+
+          if (eventType === 'get-location') {
+            this.userFixedLocation();
+          }
+
+          if (eventType === 'select-option') {
             this.pickPlace(place);
           }
+
           return;
       }
 
@@ -94,21 +104,26 @@ export class SearchComponent implements OnInit {
   }
 
   async userFixedLocation() {
-    const coords: { lat: number; lng: number } =
-      await this.locationService.getCurrentLocation();
+    try {
+      const coords: { lat: number; lng: number } =
+        await this.locationService.getCurrentLocation();
 
-    const userPlaceName = await this.mapService.reverseGeocode(
-      coords.lat,
-      coords.lng
-    );
+      const userPlaceName = await this.mapService.reverseGeocode(
+        coords.lat,
+        coords.lng
+      );
 
-    const selectedPlace = {
-      text: userPlaceName,
-      center: [coords.lng, coords.lat],
-    };
+      const selectedPlace = {
+        text: userPlaceName,
+        center: [coords.lng, coords.lat],
+      };
 
-    this.selectPlace.emit(selectedPlace);
-    this.searchTermCtrl.setValue(userPlaceName);
+      this.selectPlace.emit(selectedPlace);
+      this.searchTermCtrl.setValue(userPlaceName);
+    } catch (error) {
+      console.error({ error });
+      alert('Unable to find your location');
+    }
   }
 
   onEnterUser(event) {
