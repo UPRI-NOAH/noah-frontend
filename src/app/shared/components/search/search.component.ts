@@ -63,26 +63,20 @@ export class SearchComponent implements OnInit {
   keydownAction(e: KeyboardEvent, place?: any): void {
     try {
       const locationOptionsCount = this.locationOptions.length;
+      const locationOptionsArray = this.locationOptions.toArray();
       switch (e.code) {
         case 'ArrowUp':
+          this.focusedRowIdx -= 1;
           if (this.focusedRowIdx < 0 || this.focusedRowIdx - 1 < 0) {
             this.focusedRowIdx = locationOptionsCount - 1;
-          } else {
-            this.focusedRowIdx -= 1;
           }
 
-          (
-            this.locationOptions.toArray()[this.focusedRowIdx]
-              .nativeElement as HTMLElement
-          ).focus();
+          locationOptionsArray[this.focusedRowIdx].nativeElement.focus();
           e.preventDefault();
           break;
         case 'ArrowDown':
           this.focusedRowIdx = (this.focusedRowIdx + 1) % locationOptionsCount;
-          (
-            this.locationOptions.toArray()[this.focusedRowIdx]
-              .nativeElement as HTMLElement
-          ).focus();
+          locationOptionsArray[this.focusedRowIdx].nativeElement.focus();
           e.preventDefault();
           break;
         case 'Enter':
