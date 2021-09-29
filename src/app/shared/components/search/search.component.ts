@@ -39,6 +39,7 @@ export class SearchComponent implements OnInit {
     this.kyhService.keyBoard.subscribe((res) => {
       this.moveByArrowkey(res);
     });
+
     this.kyhService.init();
     this.searchTermCtrl = new FormControl(this.searchTerm);
     this.places$ = new BehaviorSubject([]);
@@ -138,6 +139,7 @@ export class SearchComponent implements OnInit {
         index == this.row;
         clearInterval(object);
     }
+
     if (index >= 0 && index < this.inputs.length) {
       inputToArray[index].element.nativeElement.focus();
     }
