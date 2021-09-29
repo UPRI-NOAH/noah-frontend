@@ -70,7 +70,8 @@ export class SearchComponent implements OnInit {
       });
   }
 
-  keydownAction(e: KeyboardEvent): void {
+  // TO DO: add type for place
+  keydownAction(e: KeyboardEvent, place?: any): void {
     try {
       const locationOptionsCount = this.locationOptions.length;
       switch (e.code) {
@@ -97,6 +98,9 @@ export class SearchComponent implements OnInit {
           break;
         case 'Enter':
           this.focusedRowIdx = -1;
+          if (place) {
+            this.pickPlace(place);
+          }
           return;
       }
 
@@ -156,14 +160,6 @@ export class SearchComponent implements OnInit {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
-  }
-
-  onKeyEnterPickedPlace(place, event) {
-    if (event.keyCode === ENTER) {
-      this.isDropdownOpen = false;
-      this.selectPlace.emit(place);
-      this.searchTermCtrl.setValue(place.text);
-    }
   }
 
   moveByArrowkey(object) {

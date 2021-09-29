@@ -109,12 +109,11 @@
       </ul>
     </div>
 
-    <!-- (keydown)="onKeyEnterPickedPlace(place, $event)" -->
     <div
       #locationOptions
       tabindex="0"
       (click)="pickPlace(place)"
-      (keydown)="keydownAction($event)"
+      (keydown)="keydownAction($event, place)"
       *ngFor="let place of places$ | async"
       class="
         flex-row
