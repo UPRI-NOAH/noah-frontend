@@ -120,10 +120,10 @@ export const getSymbolLayer = (sourceName: string): SymbolLayer => ({
 
 export const getCircleLayer = (sourceName: string): CircleLayer => {
   const circleColors: Record<CriticalFacility, string> = {
-    'fire-station': '#FEC7A5',
-    hospital: '#F5C3DF',
-    'police-station': '#C4CFE4',
-    school: '#A7DEC7',
+    'fire-station': '#7A0177',
+    hospital: '#4a1486',
+    'police-station': '#8C5109',
+    school: '#35978F',
   };
 
   return {
@@ -156,6 +156,9 @@ export const getClusterTextCount = (sourceName: string): SymbolLayer => {
       'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
       'text-size': 12,
       'text-allow-overlap': true,
+    },
+    paint: {
+      'text-color': '#ffffff',
     },
   };
 };
