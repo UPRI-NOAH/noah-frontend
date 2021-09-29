@@ -79,7 +79,12 @@
     *ngIf="isCurrent"
   >
     <!-- <div #locationOptions tabindex="0" (keydown)="onEnterUser($event)"> -->
-    <div #locationOptions tabindex="0" (keydown)="keydownAction($event)">
+    <div
+      #locationOptions
+      tabindex="0"
+      (keydown)="keydownAction($event)"
+      (click)="userFixedLocation()"
+    >
       <ul class="list-none">
         <li
           class="
@@ -98,7 +103,6 @@
             focus:outline-none
             group
           "
-          (click)="userFixedLocation()"
         >
           <img
             class="w-6 pr-2 inline-block"
