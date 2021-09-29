@@ -58,7 +58,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.addNavigationControls();
         this.addGeolocationControls();
-        // this.initCenterListener();
+        this.initCenterListener();
         this.initGeolocationListener();
       });
 
