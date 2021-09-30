@@ -34,7 +34,7 @@ type CriticalFacilityFeature = Feature & {
   };
 };
 
-type MapItem = {
+export type MapItem = {
   coords: LngLatLike;
   name: string;
   type: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import {
   HazardType,
   KyhStore,
@@ -9,7 +9,7 @@ import {
   PH_DEFAULT_CENTER,
   ExposureLevel,
 } from '../store/kyh.store';
-import { HazardsService } from './hazards.service';
+import { HazardsService, MapItem } from './hazards.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +26,13 @@ export class KyhService {
   }
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.kyhStore.state$.pipe(map((state) => state.center));
+  }
+
+  get criticalFacilities$(): Observable<MapItem[]> {
+    return this.currentCoords$.pipe(
+      switchMap((coords) => this.hazardsService.getCriticalFacilities(coords)),
+      shareReplay(1)
+    );
   }
 
   get currentCoords$(): Observable<{ lng: number; lat: number }> {

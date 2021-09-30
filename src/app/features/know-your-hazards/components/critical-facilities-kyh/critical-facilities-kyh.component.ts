@@ -24,15 +24,9 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
     this.currentLocation$ = this.kyhService.currentLocation$;
     this.kyhService.setCurrentPage('know-your-hazards');
 
-    this.kyhService.currentCoords$
-      .pipe(
-        switchMap((coords) => this.hazardService.getCriticalFacilities(coords)),
-        tap((c) => console.log(c)),
-        takeUntil(this._unsub)
-      )
-      .subscribe(
-        (criticalFacilities) => (this.criticalFacilities = criticalFacilities)
-      );
+    this.kyhService.criticalFacilities$.subscribe(
+      (criticalFacilities) => (this.criticalFacilities = criticalFacilities)
+    );
   }
 
   ngOnDestroy(): void {
