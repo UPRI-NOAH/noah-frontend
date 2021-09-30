@@ -113,7 +113,8 @@ export class KyhService {
   }
 
   setCenter(center: { lat: number; lng: number }) {
-    this.kyhStore.patch({ center });
+    this.kyhStore.patch({ center }, 'update map center');
+    this.assessRisk();
   }
 
   setCurrentCoords(currentCoords: { lat: number; lng: number }) {
@@ -144,19 +145,15 @@ export class KyhService {
     this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');
   }
 
-  setMapCenter(coords: { lat: number; lng: number }) {
-    this.kyhStore.patch({ center: coords }, 'update map center');
-  }
-
   // Temporary
   private _getTilesetName(hazardTypes: HazardType): string {
     switch (hazardTypes) {
       case 'flood':
-        return 'prince-test.ph_fh_100yr_tls';
+        return 'upri-noah.ph_fh_100yr_tls';
       case 'landslide':
-        return 'prince-test.ph_lh_lh1_tls';
+        return 'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls';
       case 'storm-surge':
-        return 'prince-test.ph_ssh_ssa4_tls';
+        return 'upri-noah.ph_ssh_ssa4_tls';
       default:
         return '';
     }

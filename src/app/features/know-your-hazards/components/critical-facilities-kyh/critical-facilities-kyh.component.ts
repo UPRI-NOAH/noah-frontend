@@ -44,6 +44,6 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
       lat: (<[number, number]>marker.coords)[1],
       lng: (<[number, number]>marker.coords)[0],
     };
-    this.kyhService.setMapCenter(coords);
+    this.kyhService.setCenter(coords);
   }
 }
