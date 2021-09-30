@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -9,11 +10,10 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
-import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { ArrowKeysDirective } from '@shared/arrow-keys.directive';
-import { ENTER } from '@angular/cdk/keycodes';
+
+import { LocationService } from '@core/services/location.service';
 
 @Component({
   selector: 'noah-search',
@@ -23,87 +23,116 @@ import { ENTER } from '@angular/cdk/keycodes';
 export class SearchComponent implements OnInit {
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
-  currentLocation$: Observable<string>;
   searchTermCtrl: FormControl;
   places$: BehaviorSubject<any[]>;
 
   isDropdownOpen = false;
-  isCurrent = false;
+  loading = false;
 
-  row: number = 1;
-  @ViewChildren(ArrowKeysDirective) inputs: QueryList<ArrowKeysDirective>;
+  focusedRowIdx: number = 0;
 
-  constructor(private mapService: MapService, private kyhService: KyhService) {}
+  @ViewChildren('locationOptions') locationOptions: QueryList<ElementRef>;
+
+  constructor(
+    private mapService: MapService,
+    private locationService: LocationService
+  ) {}
 
   ngOnInit(): void {
-    this.kyhService.keyBoard.subscribe((res) => {
-      this.moveByArrowkey(res);
-    });
-    this.kyhService.init();
     this.searchTermCtrl = new FormControl(this.searchTerm);
     this.places$ = new BehaviorSubject([]);
-    this.currentLocation$ = this.kyhService.currentLocation$;
 
     this.searchTermCtrl.valueChanges
       .pipe(
+        debounceTime(300),
         tap((searchText) => {
+          this.loading = true;
           if (!searchText?.length) {
             this.isDropdownOpen = false;
             this.places$.next([]);
           }
         }),
-        debounceTime(300),
         filter((searchText) => searchText && this.isDropdownOpen),
-        switchMap((searchText) => this.mapService.forwardGeocode(searchText))
+        switchMap((searchText) => this.mapService.forwardGeocode(searchText)),
+        tap(() => (this.loading = false))
       )
       .subscribe((value: any) => {
         this.places$.next(value.features);
       });
   }
 
-  async userFixedLocation() {
-    // HERE GETTING USER COORDINATES THEN PARSE TO LOCAL STORAGE
-    function locationSuccess(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      const coords = { lng: longitude, lat: latitude };
-      localStorage.setItem('userLocation', JSON.stringify(coords));
-    }
+  // TO DO: add type for place
+  keydownAction(
+    e: KeyboardEvent,
+    eventType?: 'get-location' | 'select-option',
+    place?: any
+  ): void {
+    try {
+      const locationOptionsCount = this.locationOptions.length;
+      const locationOptionsArray = this.locationOptions.toArray();
+      switch (e.code) {
+        case 'ArrowUp':
+          this.focusedRowIdx -= 1;
+          if (this.focusedRowIdx < 0 || this.focusedRowIdx - 1 < 0) {
+            this.focusedRowIdx = locationOptionsCount - 1;
+          }
 
-    function locationError(error) {
-      const message = error.message;
-      alert(message);
-    }
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
-    //GETTING COORDINATES TO LOCAL STORAGE
-    const user = localStorage.getItem('userLocation');
-    const userCoords = JSON.parse(user);
+          locationOptionsArray[this.focusedRowIdx].nativeElement.focus();
+          e.preventDefault();
+          break;
+        case 'ArrowDown':
+          this.focusedRowIdx = (this.focusedRowIdx + 1) % locationOptionsCount;
+          locationOptionsArray[this.focusedRowIdx].nativeElement.focus();
+          e.preventDefault();
+          break;
+        case 'Enter':
+          this.focusedRowIdx = -1;
 
-    const userPlaceName = await this.mapService.reverseGeocode(
-      userCoords.lat,
-      userCoords.lng
-    );
-    localStorage.setItem('userPlaceName', userPlaceName); //storing place name in localstorage
-    const selectedPlace = {
-      text: userPlaceName,
-      center: [userCoords.lng, userCoords.lat],
-    };
-    this.selectPlace.emit(selectedPlace);
-    this.searchTermCtrl.setValue(userPlaceName);
-    this.kyhService.setCenter(userCoords); // user location center when in kyh page
+          if (eventType === 'get-location') {
+            this.userFixedLocation();
+          }
+
+          if (eventType === 'select-option') {
+            this.pickPlace(place);
+          }
+
+          return;
+      }
+
+      console.log(this.focusedRowIdx);
+    } catch (error) {
+      console.error({ error });
+    }
   }
 
-  onEnterUser(event) {
-    if (event.keyCode === ENTER) {
-      const user = localStorage.getItem('userLocation');
-      const userCoords = JSON.parse(user);
+  async userFixedLocation() {
+    if (this.loading) {
+      return;
+    }
+
+    try {
+      this.loading = true;
+      const coords: { lat: number; lng: number } =
+        await this.locationService.getCurrentLocation();
+
+      const userPlaceName = await this.mapService.reverseGeocode(
+        coords.lat,
+        coords.lng
+      );
+
       const selectedPlace = {
-        text: localStorage.getItem('userPlaceName'),
-        center: [userCoords.lng, userCoords.lat],
+        text: userPlaceName,
+        center: [coords.lng, coords.lat],
       };
-      this.kyhService.setCenter(userCoords); // user location center when in kyh page
+
       this.selectPlace.emit(selectedPlace);
-      this.searchTermCtrl.setValue(localStorage.getItem('userPlaceName'));
+      this.searchTermCtrl.setValue(userPlaceName);
+    } catch (error) {
+      console.error({ error });
+      alert('Unable to find your location');
+    } finally {
+      this.loading = false;
+      this.isDropdownOpen = false;
     }
   }
 
@@ -111,35 +140,5 @@ export class SearchComponent implements OnInit {
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);
-  }
-
-  onKeyEnterPickedPlace(place, event) {
-    if (event.keyCode === ENTER) {
-      this.isDropdownOpen = false;
-      this.selectPlace.emit(place);
-      this.searchTermCtrl.setValue(place.text);
-    }
-  }
-
-  moveByArrowkey(object) {
-    const inputToArray = this.inputs.toArray();
-    let index = inputToArray.findIndex((x) => x.element == object.element);
-
-    switch (object.action) {
-      case 'UP':
-        index -= this.row;
-        clearInterval(object);
-        break;
-      case 'DOWN':
-        index += this.row;
-        clearInterval(object);
-        break;
-      case 'ENTER':
-        index == this.row;
-        clearInterval(object);
-    }
-    if (index >= 0 && index < this.inputs.length) {
-      inputToArray[index].element.nativeElement.focus();
-    }
   }
 }

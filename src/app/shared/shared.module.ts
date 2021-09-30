@@ -6,10 +6,10 @@ import { ArrowKeysDirective } from './arrow-keys.directive';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [SearchComponent];
-
+const directives = [];
 @NgModule({
-  declarations: [...components, ArrowKeysDirective],
+  declarations: [...components, ...directives],
   imports: [...modules],
-  exports: [...modules, ...components],
+  exports: [...modules, ...components, ...directives],
 })
 export class SharedModule {}
