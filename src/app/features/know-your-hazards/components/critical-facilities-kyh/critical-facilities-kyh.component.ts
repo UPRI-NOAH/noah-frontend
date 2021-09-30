@@ -3,7 +3,7 @@ import { HazardsService } from '@features/know-your-hazards/services/hazards.ser
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable, Subject } from 'rxjs';
 import { SampleMarker } from '@shared/mocks/critical-facilities';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-critical-facilities-kyh',
@@ -27,6 +27,7 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
     this.kyhService.currentCoords$
       .pipe(
         switchMap((coords) => this.hazardService.getCriticalFacilities(coords)),
+        tap((c) => console.log(c)),
         takeUntil(this._unsub)
       )
       .subscribe(

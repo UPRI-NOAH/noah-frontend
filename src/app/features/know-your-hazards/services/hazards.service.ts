@@ -64,7 +64,8 @@ export class HazardsService {
       coords,
       limit: 25,
       radius: 5000, // 5km
-      tilesetName: CF_TILESET_NAMES,
+      tilesetName:
+        'upri-noah.schools_tls,upri-noah.hospitals_tls,upri-noah.fire_station_tls,upri-noah.police_station_tls',
     };
 
     return this.getFeatureInfo(payload).pipe(
@@ -84,7 +85,10 @@ export class HazardsService {
     const params = new HttpParams()
       .set('radius', payload.radius ? String(payload.radius) : '50')
       .set('limit', payload.limit ? String(payload.limit) : '20')
-      .set('access_token', environment.mapbox.accessToken);
+      .set(
+        'access_token',
+        'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g'
+      );
 
     return this.http.get<FeatureCollection>(baseURL, { params }).pipe(
       tap((result) => console.log(result)),
@@ -103,15 +107,15 @@ export class HazardsService {
   private _getCriticalFacility(
     featureList: CriticalFacilityFeature[]
   ): MapItem[] {
-    const getType = (layerName: CriticalFacilityLayer) => {
+    const getType = (layerName: string) => {
       switch (layerName) {
-        case 'leyte_firestation':
+        case 'fire_station':
           return 'fire-station';
-        case 'leyte_hospitals':
+        case 'hospitals':
           return 'hospital';
-        case 'leyte_police':
+        case 'police_station':
           return 'police-station';
-        case 'leyte_schools':
+        case 'schools':
           return 'school';
         default:
           throw new Error('critical facility layer not found!');

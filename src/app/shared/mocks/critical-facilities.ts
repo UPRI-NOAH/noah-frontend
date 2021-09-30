@@ -199,3 +199,22 @@ export const MAPBOX_CRIT_FAC = {
     sourceLayer: 'police_station_g-6ekisg',
   },
 };
+
+// export const MAPBOX_CRIT_FAC = {
+//   school: {
+//     url: 'mapbox://upri-noah.schools_tls',
+//     sourceLayer: 'schools',
+//   },
+//   hospital: {
+//     url: 'mapbox://upri-noah.hospitals_tls',
+//     sourceLayer: 'hospitals_tls',
+//   },
+//   'fire-station': {
+//     url: 'mapbox://upri-noah.fire_station_tls',
+//     sourceLayer: 'fire_station',
+//   },
+//   'police-station': {
+//     url: 'mapbox://upri-noah.police_station_tls',
+//     sourceLayer: 'police_station',
+//   },
+// };
