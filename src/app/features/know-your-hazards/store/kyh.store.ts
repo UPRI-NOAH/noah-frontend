@@ -10,7 +10,19 @@ export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
+// Remove later -- replace with exposure level
 export type RiskLevel = 'unavailable' | 'little' | 'low' | 'medium' | 'high';
+export type ExposureLevel =
+  | 'unavailable'
+  | 'little'
+  | 'low'
+  | 'medium'
+  | 'high';
+
+export type HazardState = {
+  shown: boolean;
+  exposureLevel: ExposureLevel;
+};
 
 type KYHState = {
   isLoading: boolean;
@@ -22,6 +34,10 @@ type KYHState = {
   stormSurgeRiskLevel: RiskLevel;
   landslideRiskLevel: RiskLevel;
   currentLocation: string;
+
+  flood: HazardState;
+  landslide: HazardState;
+  'storm-surge': HazardState;
 };
 
 const createInitialValue = (): KYHState => {
@@ -35,6 +51,19 @@ const createInitialValue = (): KYHState => {
     stormSurgeRiskLevel: 'unavailable',
     landslideRiskLevel: 'unavailable',
     currentLocation: '',
+
+    flood: {
+      shown: true,
+      exposureLevel: 'unavailable',
+    },
+    landslide: {
+      shown: true,
+      exposureLevel: 'unavailable',
+    },
+    'storm-surge': {
+      shown: true,
+      exposureLevel: 'unavailable',
+    },
   };
 };
 

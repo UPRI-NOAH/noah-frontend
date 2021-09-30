@@ -7,6 +7,7 @@ import {
   KYHPage,
   RiskLevel,
   PH_DEFAULT_CENTER,
+  ExposureLevel,
 } from '../store/kyh.store';
 import { HazardsService } from './hazards.service';
 
@@ -109,6 +110,16 @@ export class KyhService {
 
   init() {
     this.assessRisk();
+  }
+
+  getHazardExposureLevel$(hazardType: HazardType): Observable<ExposureLevel> {
+    return this.kyhStore.state$.pipe(
+      map((state) => state[hazardType].exposureLevel)
+    );
+  }
+
+  isHazardShown$(hazardType: HazardType): Observable<boolean> {
+    return this.kyhStore.state$.pipe(map((state) => state[hazardType].shown));
   }
 
   isHazardLayer(currentHazard: HazardType): boolean {
