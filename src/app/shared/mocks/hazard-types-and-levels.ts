@@ -30,7 +30,7 @@ export const LANDSLIDE = {
 
 export const DEBRIS_FLOW = {
   id: 'debris-flow' as HazardLevel,
-  name: 'Debris Flow',
+  name: 'Debris Flow and Alluvial Fan',
 };
 
 export const UNSTABLE_SLOPES = {

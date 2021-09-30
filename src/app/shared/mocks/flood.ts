@@ -1,3 +1,4 @@
+import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { Expression, FillLayer } from 'mapbox-gl';
 import { NoahColor, NOAH_COLORS } from './noah-colors';
 
@@ -106,14 +107,18 @@ export const LEYTE_FLOOD_100: FillLayer = {
 export const getHazardColor = (
   type: string,
   color: NoahColor,
-  hazardID: string
+  hazardLevel: HazardLevel
 ): Expression => {
-  if (hazardID === 'debris-flow') {
+  if (hazardLevel === 'unstable-slopes-maps') {
     return [
       'interpolate',
       ['linear'],
-      ['get', HAZARD_VARIABLES[type]],
+      ['get', 'GRIDCODE'],
+      2,
+      NOAH_COLORS[color].low,
       3,
+      NOAH_COLORS[color].medium,
+      4,
       NOAH_COLORS[color].high,
     ] as Expression;
   }

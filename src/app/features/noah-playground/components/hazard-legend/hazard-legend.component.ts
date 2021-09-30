@@ -8,10 +8,18 @@ import { NoahColor, NOAH_COLORS_ARRAY } from '@shared/mocks/noah-colors';
 })
 export class HazardLegendComponent implements OnInit {
   @Input() selectedColor = 'noah-red';
+  @Input() highOnly = false;
   @Output() valueChange = new EventEmitter();
 
   noahColors = NOAH_COLORS_ARRAY;
-  levels: string[] = ['high', 'medium', 'low'];
+
+  get levels(): string[] {
+    if (this.highOnly) {
+      return ['high'];
+    }
+
+    return ['high', 'medium', 'low'];
+  }
 
   constructor() {}
 
