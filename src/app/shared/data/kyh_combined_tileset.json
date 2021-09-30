@@ -1,6 +1,6 @@
 [
   {
-    "url": "mapbox://prince-test.ph_fh_100yr_tls",
+    "url": "mapbox://upri-noah.ph_fh_100yr_tls",
     "sourceLayer": [
       "PH010000000_FH_100yr",
       "PH020000000_FH_100yr",
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "url": "mapbox://prince-test.ph_lh_lh1_tls",
+    "url": "mapbox://upri-noah.ph_lh_lh1_tls",
     "sourceLayer": [
       "PH010000000_LH_lh1",
       "PH020000000_LH_lh1",
@@ -44,7 +44,22 @@
     ]
   },
   {
-    "url": "mapbox://prince-test.ph_ssh_ssa4_tls",
+    "url": "mapbox://upri-noah.ph_lh_lh2_tls",
+    "sourceLayer": ["ph_lh_af", "ph_lh_df"]
+  },
+  {
+    "url": "mapbox://upri-noah.ph_lh_lh3_tls",
+    "sourceLayer": [
+      "PH010000000_LH_lh3",
+      "PH020000000_LH_lh3",
+      "PH030000000_LH_lh3",
+      "PH040000000_LH_lh3",
+      "PH090000000_LH_lh3",
+      "PH130000000_LH_lh3"
+    ]
+  },
+  {
+    "url": "mapbox://upri-noah.ph_ssh_ssa4_tls",
     "sourceLayer": [
       "PH010000000_SSH_ssa4",
       "PH020000000_SSH_ssa4",

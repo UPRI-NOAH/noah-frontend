@@ -57,7 +57,6 @@ export class KnowYourHazardsComponent implements OnInit {
   }
 
   viewHazardLayer(currentHazard: HazardType) {
-    this.kyhService.setCurrentHazard(currentHazard);
     this.kyhService.setCurrentPage(currentHazard);
   }
 
