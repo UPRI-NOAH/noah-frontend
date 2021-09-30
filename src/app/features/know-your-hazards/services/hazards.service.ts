@@ -19,7 +19,7 @@ type AssessmentPayload = {
   tilesetName: string;
 };
 
-type CriticalFacilityFeature = Feature & {
+export type CriticalFacilityFeature = Feature & {
   geometry: {
     coordinates: [number, number];
   };
@@ -68,14 +68,7 @@ export class HazardsService {
         'upri-noah.schools_tls,upri-noah.hospitals_tls,upri-noah.fire_station_tls,upri-noah.police_station_tls',
     };
 
-    return this.getFeatureInfo(payload).pipe(
-      map((featureCollection) =>
-        this._getCriticalFacility(
-          featureCollection.features as CriticalFacilityFeature[]
-        )
-      ),
-      take(1)
-    );
+    return this.getFeatureInfo(payload).pipe(take(1));
   }
 
   getFeatureInfo(
@@ -90,10 +83,9 @@ export class HazardsService {
         'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g'
       );
 
-    return this.http.get<FeatureCollection>(baseURL, { params }).pipe(
-      tap((result) => console.log(result)),
-      catchError(this.handleError('getFeatureInfo', null))
-    );
+    return this.http
+      .get<FeatureCollection>(baseURL, { params })
+      .pipe(catchError(this.handleError('getFeatureInfo', null)));
   }
 
   private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {
