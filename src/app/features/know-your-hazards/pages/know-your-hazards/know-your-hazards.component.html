@@ -8,6 +8,7 @@
   </a>
 </div>
 <div class="w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row">
+  <!-- MOBILE VIEW -->
   <button
     (click)="isMenu = !isMenu"
     class="
@@ -44,7 +45,7 @@
     <span class="sr-only">Open menu</span>
   </button>
   <noah-search
-    [searchTerm]="searchTerm"
+    [searchTerm]="currentLocation$ | async"
     (selectPlace)="selectPlace($event)"
     class="
       fixed
@@ -193,12 +194,6 @@
         </button>
       </div>
 
-      <noah-search
-        [searchTerm]="searchTerm"
-        (selectPlace)="selectPlace($event)"
-        class="w-full mt-4 hidden md:block relative"
-      >
-      </noah-search>
       <div>
         <h4 class="text-2xl font-bold leading-tight mt-6 pb-2">
           Hazard Levels In Your Area
@@ -349,6 +344,7 @@
       </div>
     </ng-container>
   </nav>
+  <!-- MOBILE VIEW -->
 
   <!-- DESKTOP VIEW -->
   <nav
@@ -374,7 +370,7 @@
   >
     <ng-container *ngIf="isKYHPage$ | async; else hazardTemplate">
       <noah-search
-        [searchTerm]="searchTerm"
+        [searchTerm]="currentLocation$ | async"
         (selectPlace)="selectPlace($event)"
         class="w-full mt-4 hidden md:block relative"
       >
