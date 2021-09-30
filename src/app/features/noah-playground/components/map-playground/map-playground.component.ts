@@ -3,7 +3,7 @@ import { MapService } from '@core/services/map.service';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, fromEvent, Observable, Subject } from 'rxjs';
+import { combineLatest, fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -445,6 +445,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Add individual layers per hazard level (for each hazard type)
+   * @param params
+   */
   private _addFillHazardLayer(params: LayerSettingsParam) {
     const { layerID, sourceID, sourceLayer, hazardType, hazardLevel } = params;
     this.map.addLayer({
@@ -459,6 +463,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Reuse the same method to add the alluvial fan and debris flow layers
+   *
+   * @param sourceID
+   * @param layerName
+   * @param lh2Subtype
+   */
   private _addLH2HazardLayer(
     sourceID: string,
     layerName: string,
