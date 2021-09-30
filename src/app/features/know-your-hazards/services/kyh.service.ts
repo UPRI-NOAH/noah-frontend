@@ -48,14 +48,6 @@ export class KyhService {
     return this.kyhStore.state$.pipe(map((state) => state.currentPage));
   }
 
-  get currentHazard(): HazardType {
-    return this.kyhStore.state.currentHazard;
-  }
-
-  get currentHazard$(): Observable<HazardType> {
-    return this.kyhStore.state$.pipe(map((state) => state.currentHazard));
-  }
-
   get floodRiskLevel$(): Observable<RiskLevel> {
     return this.kyhStore.state$.pipe(map((state) => state.floodRiskLevel));
   }
@@ -147,17 +139,6 @@ export class KyhService {
         shown:
           currentPage === 'storm-surge' || currentPage === 'know-your-hazards',
       },
-    };
-
-    this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');
-  }
-
-  setCurrentHazard(currentHazard: HazardType) {
-    this.kyhStore.patch({ currentHazard }, 'update current hazard');
-    const newHazardState: Record<HazardType, { shown: boolean }> = {
-      flood: { shown: currentHazard === 'flood' },
-      landslide: { shown: currentHazard === 'landslide' },
-      'storm-surge': { shown: currentHazard === 'storm-surge' },
     };
 
     this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');

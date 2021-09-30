@@ -58,11 +58,6 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initLayers();
         this.initMarkers();
-        this.hideAllLayers();
-        this.initPageListener();
-
-        const page = this.kyhService.currentPage;
-        this.showLayers(page);
       });
   }
 
@@ -157,8 +152,6 @@ export class MapKyhComponent implements OnInit {
       );
 
       tileset.sourceLayer.forEach((layerName: string) => {
-        console.log(rawHazardType, rawHazardLevel, layerName);
-
         if (hazardLevel === 'debris-flow') {
           const [rawHazardType, lh2Subtype] = [
             ...layerName.toLowerCase().split('_').splice(1),
@@ -230,14 +223,6 @@ export class MapKyhComponent implements OnInit {
     });
   }
 
-  initPageListener() {
-    this.kyhService.currentPage$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((page) => {
-        this.showLayers(page);
-      });
-  }
-
   initMap() {
     this.mapService.init();
     this.map = new mapboxgl.Map({
@@ -294,32 +279,10 @@ export class MapKyhComponent implements OnInit {
     });
   }
 
-  hideAllLayers() {
-    this.kyhService.hazardTypes.forEach((hazard) => {
-      this.map.setLayoutProperty(hazard, 'visibility', 'none');
-    });
-  }
-
-  showAllLayers() {
-    this.kyhService.hazardTypes.forEach((hazard) => {
-      this.map.setLayoutProperty(hazard, 'visibility', 'visible');
-    });
-  }
-
   showCurrentHazardLayer(currentHazard: HazardType) {
     if (!this.kyhService.isHazardLayer(currentHazard)) return;
 
     this.map.setLayoutProperty(currentHazard, 'visibility', 'visible');
-  }
-
-  showLayers(page: KYHPage) {
-    if (page === 'know-your-hazards') {
-      this.showAllLayers();
-      return;
-    }
-
-    this.hideAllLayers();
-    this.showCurrentHazardLayer(page as HazardType);
   }
 
   switchMapStyle(style: MapStyle) {
