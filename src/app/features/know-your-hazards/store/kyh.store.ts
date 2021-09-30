@@ -21,7 +21,6 @@ export type ExposureLevel =
 
 export type HazardState = {
   shown: boolean;
-  exposureLevel: ExposureLevel;
 };
 
 type KYHState = {
@@ -54,15 +53,12 @@ const createInitialValue = (): KYHState => {
 
     flood: {
       shown: true,
-      exposureLevel: 'unavailable',
     },
     landslide: {
       shown: true,
-      exposureLevel: 'unavailable',
     },
     'storm-surge': {
       shown: true,
-      exposureLevel: 'unavailable',
     },
   };
 };

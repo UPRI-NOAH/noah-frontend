@@ -112,12 +112,6 @@ export class KyhService {
     this.assessRisk();
   }
 
-  getHazardExposureLevel$(hazardType: HazardType): Observable<ExposureLevel> {
-    return this.kyhStore.state$.pipe(
-      map((state) => state[hazardType].exposureLevel)
-    );
-  }
-
   isHazardShown$(hazardType: HazardType): Observable<boolean> {
     return this.kyhStore.state$.pipe(map((state) => state[hazardType].shown));
   }
@@ -140,10 +134,33 @@ export class KyhService {
 
   setCurrentPage(currentPage: KYHPage): void {
     this.kyhStore.patch({ currentPage }, 'update current page');
+
+    const newHazardState: Record<HazardType, { shown: boolean }> = {
+      flood: {
+        shown: currentPage === 'flood' || currentPage === 'know-your-hazards',
+      },
+      landslide: {
+        shown:
+          currentPage === 'landslide' || currentPage === 'know-your-hazards',
+      },
+      'storm-surge': {
+        shown:
+          currentPage === 'storm-surge' || currentPage === 'know-your-hazards',
+      },
+    };
+
+    this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');
   }
 
   setCurrentHazard(currentHazard: HazardType) {
     this.kyhStore.patch({ currentHazard }, 'update current hazard');
+    const newHazardState: Record<HazardType, { shown: boolean }> = {
+      flood: { shown: currentHazard === 'flood' },
+      landslide: { shown: currentHazard === 'landslide' },
+      'storm-surge': { shown: currentHazard === 'storm-surge' },
+    };
+
+    this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');
   }
 
   setMapCenter(coords: { lat: number; lng: number }) {
