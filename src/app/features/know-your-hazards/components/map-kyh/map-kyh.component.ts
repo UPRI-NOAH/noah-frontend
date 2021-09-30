@@ -67,7 +67,7 @@ export class MapKyhComponent implements OnInit {
   }
 
   initCenterListener() {
-    this.kyhService.center$
+    this.kyhService.currentCoords$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
@@ -236,47 +236,70 @@ export class MapKyhComponent implements OnInit {
     });
   }
 
-  initMarkers() {
+  async initMarkers() {
     this.centerMarker = new mapboxgl.Marker({ color: '#333' })
       .setLngLat(this.kyhService.currentCoords)
       .addTo(this.map);
 
-    this.kyhService.currentCoords$
-      .pipe(takeUntil(this._unsub))
+    this.kyhService.center$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
       });
 
-    const _this = this;
-    this.map.loadImage('assets/map-sprites/hospital.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-hospital', image);
-      _this.map.addLayer(LEYTE_HOSPITALS);
-    });
+    function addImages(map, images) {
+      const addImage = (map, id, url) => {
+        return new Promise((resolve, reject) => {
+          map.loadImage(url, (error, image) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            map.addImage(id, image);
+            resolve(image);
+          });
+        });
+      };
+      const promises = images.map((imageData) =>
+        addImage(map, imageData.id, imageData.url)
+      );
+      return Promise.all(promises);
+    }
 
-    this.map.loadImage(
-      'assets/map-sprites/fire-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-firestation', image);
-        _this.map.addLayer(LEYTE_FIRESTATIONS);
-      }
-    );
+    await addImages(this.map, [
+      { url: 'assets/map-sprites/hospital.png', id: 'hospital' },
+      { url: 'assets/map-sprites/fire-station.png', id: 'fire_station' },
+      { url: 'assets/map-sprites/police-station.png', id: 'police' },
+      { url: 'assets/map-sprites/school.png', id: 'school' },
+    ]);
 
-    this.map.loadImage(
-      'assets/map-sprites/police-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-policestation', image);
-        _this.map.addLayer(LEYTE_POLICESTATIONS);
-      }
-    );
+    this.kyhService.criticalFacilities$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .subscribe((criticalFacilities) => {
+        const criticalFacilitiesLayer = this.map.getLayer('criticalFacilities');
+        if (criticalFacilitiesLayer) {
+          this.map.removeLayer('criticalFacilities');
+          this.map.removeSource('cfSource');
+        }
 
-    this.map.loadImage('assets/map-sprites/school.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-school', image);
-      _this.map.addLayer(LEYTE_SCHOOLS);
-    });
+        this.map.addSource('cfSource', {
+          type: 'geojson',
+          data: criticalFacilities,
+        });
+
+        this.map.addLayer({
+          id: 'criticalFacilities',
+          type: 'symbol',
+          source: 'cfSource',
+          layout: {
+            'icon-image': ['get', 'amenity'],
+            'text-anchor': 'top',
+            'text-field': ['get', 'name'],
+            'text-offset': [0, 2],
+            'text-size': 10,
+          },
+        });
+      });
   }
 
   showCurrentHazardLayer(currentHazard: HazardType) {

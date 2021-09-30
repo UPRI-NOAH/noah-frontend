@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
+import { FeatureCollection } from 'geojson';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators';
 import {
   HazardType,
   KyhStore,
@@ -9,7 +15,11 @@ import {
   PH_DEFAULT_CENTER,
   ExposureLevel,
 } from '../store/kyh.store';
-import { HazardsService } from './hazards.service';
+import {
+  CriticalFacilityFeature,
+  HazardsService,
+  MapItem,
+} from './hazards.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,11 +35,25 @@ export class KyhService {
     this.keyBoard.next(message);
   }
   get center$(): Observable<{ lng: number; lat: number }> {
-    return this.kyhStore.state$.pipe(map((state) => state.center));
+    return this.kyhStore.state$.pipe(
+      map((state) => state.center),
+      shareReplay(1)
+    );
+  }
+
+  get criticalFacilities$(): Observable<FeatureCollection> {
+    return this.center$.pipe(
+      distinctUntilChanged(),
+      switchMap((coords) => this.hazardsService.getCriticalFacilities(coords)),
+      shareReplay(1)
+    );
   }
 
   get currentCoords$(): Observable<{ lng: number; lat: number }> {
-    return this.kyhStore.state$.pipe(map((state) => state.currentCoords));
+    return this.kyhStore.state$.pipe(
+      map((state) => state.currentCoords),
+      shareReplay(1)
+    );
   }
 
   get currentCoords(): { lng: number; lat: number } {

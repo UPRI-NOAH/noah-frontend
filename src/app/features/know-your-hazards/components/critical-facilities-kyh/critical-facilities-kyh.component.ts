@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { HazardsService } from '@features/know-your-hazards/services/hazards.service';
+import {
+  CriticalFacilityFeature,
+  HazardsService,
+  MapItem,
+} from '@features/know-your-hazards/services/hazards.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable, Subject } from 'rxjs';
 import { SampleMarker } from '@shared/mocks/critical-facilities';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-critical-facilities-kyh',
@@ -24,10 +28,13 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
     this.currentLocation$ = this.kyhService.currentLocation$;
     this.kyhService.setCurrentPage('know-your-hazards');
 
-    this.kyhService.currentCoords$
+    this.kyhService.criticalFacilities$
       .pipe(
-        switchMap((coords) => this.hazardService.getCriticalFacilities(coords)),
-        takeUntil(this._unsub)
+        map((featureCollection) =>
+          this._getCriticalFacility(
+            featureCollection.features as CriticalFacilityFeature[]
+          )
+        )
       )
       .subscribe(
         (criticalFacilities) => (this.criticalFacilities = criticalFacilities)
@@ -44,6 +51,32 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
       lat: (<[number, number]>marker.coords)[1],
       lng: (<[number, number]>marker.coords)[0],
     };
-    this.kyhService.setCenter(coords);
+    this.kyhService.setCurrentCoords(coords);
+  }
+
+  private _getCriticalFacility(
+    featureList: CriticalFacilityFeature[]
+  ): MapItem[] {
+    const getType = (layerName: string) => {
+      switch (layerName) {
+        case 'fire_station':
+          return 'fire-station';
+        case 'hospitals':
+          return 'hospital';
+        case 'police_station':
+          return 'police-station';
+        case 'schools':
+          return 'school';
+        default:
+          throw new Error('critical facility layer not found!');
+      }
+    };
+
+    return featureList.map((feature) => ({
+      coords: feature.geometry.coordinates,
+      name: feature.properties.name,
+      type: getType(feature.properties.tilequery.layer),
+      distance: feature.properties.tilequery.distance / 1000, // to km
+    }));
   }
 }
