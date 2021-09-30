@@ -542,7 +542,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ['linear'],
           ['get', 'ALLUVIAL'],
           3,
-          level.color,
+          NOAH_COLORS[level.color].high,
         ])
       );
   }
