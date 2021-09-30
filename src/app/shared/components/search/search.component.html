@@ -20,7 +20,6 @@
         />
       </div>
       <input
-        noahArrowKeys
         type="search"
         [formControl]="searchTermCtrl"
         (focus)="isDropdownOpen = true"
@@ -109,33 +108,29 @@
         tabindex="0"
         (keydown)="keydownAction($event, 'get-location')"
         (click)="userFixedLocation()"
+        class="
+          block
+          w-full
+          px-4
+          py-4
+          font-bold
+          text-sm
+          cursor-pointer
+          text-left text-gray-700
+          hover:bg-gray-100 hover:text-gray-900
+          focus:bg-gray-100 focus:text-gray-900
+          transition
+          duration-300
+          ease-in-out
+          focus:outline-none
+          group
+        "
       >
-        <ul class="list-none">
-          <li
-            class="
-              block
-              w-full
-              px-4
-              py-4
-              font-bold
-              text-sm
-              cursor-pointer
-              text-left text-gray-700
-              hover:bg-gray-100 hover:text-gray-900
-              transition
-              duration-300
-              ease-in-out
-              focus:outline-none
-              group
-            "
-          >
-            <img
-              class="w-6 pr-2 inline-block"
-              src="assets/icons/current-location.svg"
-            />
-            <span>Your Current Location</span>
-          </li>
-        </ul>
+        <img
+          class="w-6 pr-2 inline-block"
+          src="assets/icons/current-location.svg"
+        />
+        <span>Your Current Location</span>
       </div>
 
       <div
@@ -156,7 +151,7 @@
           transition
           duration-300
           ease-in-out
-          focus:outline-none
+          focus:outline-none focus:bg-gray-100 focus:text-gray-900
           group
           overflow:
           hidden;
@@ -181,12 +176,12 @@
               />
             </svg>
           </div>
-          <div class="flex-1">
+          <button class="flex-1 text-left">
             <p class="font-bold text-gray-700 text-sm">{{ place.text }}</p>
             <p class="text-xs text-gray-300 group-hover:text-gray-400">
               {{ place.place_name }}
             </p>
-          </div>
+          </button>
         </div>
       </div>
     </ng-template>

@@ -98,8 +98,6 @@ export class SearchComponent implements OnInit {
 
           return;
       }
-
-      console.log(this.focusedRowIdx);
     } catch (error) {
       console.error({ error });
     }
