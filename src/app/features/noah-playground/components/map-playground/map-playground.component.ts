@@ -471,6 +471,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         source: sourceID,
         'source-layer': layerName,
         paint: {
+          'line-width': 2,
           'line-color': [
             'interpolate',
             ['linear'],
