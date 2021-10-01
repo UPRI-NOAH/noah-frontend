@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="82.989037mm"
+   height="79.375mm"
+   viewBox="0 0 82.989037 79.375"
+   version="1.1"
+   id="svg1162"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="flashlight.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1164"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="-180.11584"
+     inkscape:cy="-135.59282"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1159" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-207.99625,-206.94833)">
+    <path
+       d="m 262.80759,269.58309 h 19.45496 v -12.09782 h -19.45496 z m 9.72789,-10.83659 c 2.64061,0 4.7881,2.14749 4.7881,4.7881 0,2.64061 -2.14749,4.79068 -4.7881,4.79068 -2.64058,0 -4.78808,-2.14922 -4.78808,-4.79068 0,-2.64061 2.14835,-4.7881 4.78808,-4.7881 z"
+       id="path1343-5"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 260.21266,236.05694 c 3.01216,0 5.46314,-2.45094 5.46314,-5.4631 0,-3.01215 -2.45098,-5.46313 -5.46314,-5.46313 -3.0113,0 -5.46225,2.45098 -5.46225,5.46313 0,3.01216 2.4501,5.4631 5.46225,5.4631 z"
+       id="path1345-5"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <polygon
+       points="70.515,65.89 70.515,60.618 46.447,60.618 46.447,43.585 70.515,43.585 70.515,25.667 -4.186,25.667 -4.186,78.536 70.515,78.536 70.515,74.074 "
+       id="polygon1347"
+       transform="matrix(0.86209775,0,0,0.86209775,221.47258,218.61759)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 236.37739,235.80524 1.58194,3.64665 h 29.56048 l 13.32804,-5.78121 c -0.50348,-1.52936 -0.4578,-3.17253 0.14043,-4.68811 0.59829,-1.51642 1.68628,-2.74663 3.09925,-3.51908 l -3.81908,-8.79855 c -3.14063,1.03106 -6.60713,-0.33711 -8.20719,-3.24236 l -32.47264,14.0884 c 1.08196,3.17511 -0.28347,6.68817 -3.2113,8.29426 z m 23.83527,-11.96766 c 3.72515,0 6.75627,3.03112 6.75627,6.75626 0,3.72511 -3.03112,6.75627 -6.75627,6.75627 -3.72426,0 -6.75538,-3.03116 -6.75538,-6.75627 0,-3.72514 3.03027,-6.75626 6.75538,-6.75626 z"
+       id="path1349"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 272.53548,267.03127 c 1.9268,0 3.49497,-1.56816 3.49497,-3.49755 0,-1.92677 -1.56732,-3.49494 -3.49497,-3.49494 -1.92763,0 -3.49495,1.56732 -3.49495,3.49494 0,1.92939 1.56817,3.49755 3.49495,3.49755 z"
+       id="path1351"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <rect
+       x="207.99625"
+       y="240.74509"
+       width="4.4768734"
+       height="45.578247"
+       id="rect1353"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 217.86383,239.45189 h 0.43883 l -1.86213,-4.29239 0.59396,-0.25675 c 1.37504,-0.59399 2.43543,-1.69058 2.98719,-3.08459 0.54916,-1.38886 0.52847,-2.90701 -0.057,-4.28033 -0.0196,-0.0326 -0.0404,-0.0681 -0.057,-0.10427 l -0.26457,-0.59571 34.81409,-15.10396 0.25774,0.59312 c 0.57157,1.31988 1.60352,2.34234 2.91388,2.91131 l 6.47696,-2.81044 -2.37421,-5.47518 -50.54137,21.92574 4.58639,10.57361 z"
+       id="path1355"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 218.13107,235.80608 1.58195,3.64581 h 12.90648 l -4.87947,-11.24519 28.388,-12.31678 c -0.96124,-0.61814 -1.75953,-1.45266 -2.31559,-2.46649 l -32.47348,14.08755 c 0.53449,1.55781 0.49741,3.23545 -0.1147,4.78293 -0.59829,1.51385 -1.68455,2.74145 -3.09322,3.51217 z"
+       id="path1357"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <rect
+       x="213.76717"
+       y="240.74509"
+       width="2.804404"
+       height="45.578247"
+       id="rect1359"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+    <path
+       d="m 234.02905,239.45189 h 2.51989 l -1.86214,-4.29239 0.594,-0.25675 c 2.82425,-1.22246 4.13549,-4.50792 2.94321,-7.34596 -0.0228,-0.0326 -0.057,-0.0906 -0.0844,-0.1665 l -0.20593,-0.57157 34.77187,-15.08414 0.25773,0.59226 c 1.23797,2.84667 4.55445,4.15704 7.39594,2.92252 l 0.59311,-0.25773 4.82346,11.11762 -0.59399,0.25611 c -1.37765,0.59741 -2.43974,1.69573 -2.9915,3.09234 -0.55173,1.39573 -0.52501,2.92509 0.0733,4.30271 l 0.25676,0.59315 -11.75127,5.09758 h 3.7527 l 16.46349,-7.14247 -10.99951,-25.36034 -50.54391,21.93004 z"
+       id="path1361"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.862097"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\cash.png"
+       inkscape:export-xdpi="313.13834"
+       inkscape:export-ydpi="313.13834" />
+  </g>
+</svg>
