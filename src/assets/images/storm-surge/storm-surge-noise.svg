@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="181.23958mm"
+   height="79.374992mm"
+   viewBox="0 0 181.23958 79.374992"
+   version="1.1"
+   id="svg955"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="landslide-noise.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/">
+  <sodipodi:namedview
+     id="namedview957"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="543.04588"
+     inkscape:cy="362.25545"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs952" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-92.333467,-30.671804)">
+    <polygon
+       points="275.283,163.305 275.286,163.305 275.285,163.303 "
+       id="polygon2"
+       transform="matrix(0.33439885,0,0,0.33439885,93.53278,29.63761)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 189.08727,80.746464 9.53004,-9.53003 9.5307,9.5307 v 1.46968 c 1.49744,-0.67749 2.84841,-1.39444 4.06328,-2.13514 l -4.48128,-4.48128 v -5.91217 h -3.34399 v 2.56852 l -5.76938,-5.76905 -15.39339,15.39405 2.36453,2.36454 1.49309,-1.4931 v 4.42477 c 0.68117,-0.0562 1.34863,-0.12005 2.00639,-0.18927 z"
+       id="path4"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 192.20822,82.339544 v 4.26224 c 2.20436,-0.31534 4.26492,-0.70357 6.18638,-1.152 v -3.11024 z"
+       id="path6"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 201.23766,82.339544 v 2.3769 c 1.3396,-0.38121 2.60028,-0.79286 3.7894,-1.22858 v -1.14832 z"
+       id="path8"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 239.09763,66.304774 c -1.22792,-7.93227 -7.08224,-13.78358 -13.41742,-15.99864 -2.44112,1.49209 -5.13971,3.95527 -8.0744,7.37885 l -1.45697,1.69874 -0.80624,-2.08732 c -0.78951,-2.04384 -0.93933,-4.35955 -0.4812,-6.81605 -0.1468,0.0696 -0.29193,0.14246 -0.43606,0.21836 -5.29555,2.8036 -9.19797,8.01321 -9.57317,12.41991 -0.0916,1.07643 0.0241,2.10538 0.38456,3.03902 2.59427,-3.02698 7.99983,-8.64856 12.3236,-4.97285 2.10438,1.9539 3.4306,4.55452 3.61586,7.32434 0.0813,1.21487 -0.0545,2.46218 -0.44475,3.70213 -2.01743,6.41411 -13.98089,16.64771 -42.30413,16.64771 v 1.61716 0.0782 c 41.23505,-0.76343 57.54135,-15.77092 60.67032,-24.24961 z"
+       id="path10"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 272.76959,96.495984 v -4.57023 c -11.70396,1.00319 -3.12095,-20.28698 -3.45535,-31.0991 -0.68351,-22.10042 -24.29943,-35.445941 -38.51171,-27.9223 -10.19081,5.39486 -17.05434,16.55274 -14.21195,23.90952 4.01278,-4.68159 12.37275,-13.37596 19.06073,-7.69118 4.68158,4.34719 6.88394,10.7633 4.90463,17.05468 -3.12094,9.92061 -21.62457,25.74838 -65.43082,25.74838 v 2.6e-4 h -1.3376 -23.40692 v 4.5699 h 23.40692 1.3376 z"
+       id="path12"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       y="91.925751"
+       width="12.538954"
+       height="4.5698948"
+       id="rect14"
+       x="93.532784"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <polygon
+       points="248.25,181.103 248.25,158.84 252.715,163.305 259.786,156.232 241,137.447 241,119.769 231,119.769 231,127.447 213.749,110.197 167.714,156.232 174.786,163.305 179.248,158.842 179.248,181.103 185.248,181.103 185.248,152.842 213.749,124.339 242.249,152.839 242.249,181.103 "
+       id="polygon16"
+       transform="matrix(0.33439885,0,0,0.33439885,93.53278,29.63761)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       x="158.60107"
+       y="82.339539"
+       width="6.186379"
+       height="7.8583732"
+       id="rect18"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       x="167.63051"
+       y="82.339539"
+       width="3.7894077"
+       height="3.7900765"
+       id="rect20"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <ellipse
+       transform="rotate(-13.109286)"
+       cx="111.04996"
+       cy="72.617981"
+       rx="7.5219998"
+       ry="7.5216646"
+       id="ellipse22"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334386"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 132.01341,52.544604 c -2.85409,0.71126 -4.10942,4.69462 -3.15003,8.02289 0.0789,0.40362 0.16452,0.82731 0.25213,1.25902 0.12841,-0.14681 0.25448,-0.30096 0.37453,-0.46616 0.8487,-1.14498 1.30449,-2.48826 1.30817,-2.49996 0.44375,-1.4212 1.72583,-2.36387 3.19652,-2.36387 0.33239,0 0.66344,0.0495 0.9838,0.14814 0.85405,0.2625 1.55428,0.84168 1.97195,1.63153 0.41833,0.78919 0.50327,1.69407 0.24109,2.54779 -0.13074,0.40997 -0.49491,1.4543 -1.19414,2.73538 -1.1443,2.06324 -2.49561,3.5998 -4.13416,4.70031 -0.39159,0.2625 -0.8748,0.5424 -1.44026,0.7942 0.27923,2.04016 0.45178,4.13417 0.3986,6.16732 l -10.60747,1.90707 c -1.33458,0.2401 -2.47689,1.11923 -3.04938,2.34782 l -7.49756,16.08492 c -0.97544,2.092671 -0.0699,4.579586 2.02278,5.555026 2.09267,0.97511 4.57927,0.0696 5.5547,-2.023104 l 6.58198,-14.121002 7.38452,-1.32756 c 0.0976,3.23765 0.81628,7.50592 3.17278,11.98753 2.54746,4.869846 7.03508,9.888506 14.26411,13.988566 0.65243,0.37085 1.36269,0.54741 2.06358,0.54741 1.45397,0 2.86647,-0.75908 3.63692,-2.11306 1.14064,-2.00707 0.44042,-4.55886 -1.56599,-5.7005 -6.0068,-3.430261 -9.18694,-7.186896 -10.9987,-10.611476 -1.80108,-3.42658 -2.22375,-6.62377 -2.22609,-8.91307 0,-0.39258 0.013,-0.75674 0.0338,-1.08813 1.37037,-0.82396 2.49328,-2.29531 2.99855,-4.89593 0.86476,-7.42834 0.37552,-11.81967 -1.90005,-18.56583 -2.6e-4,-7.9e-4 -2.6e-4,-10e-4 -7.9e-4,-0.002 0.79654,0.16285 1.62384,0.36817 2.46184,0.62666 3.40519,1.04901 6.90701,2.92131 9.45446,6.24289 0.52634,0.68652 1.32088,1.047 2.1241,1.047 0.56848,0 1.14097,-0.18057 1.62652,-0.55309 1.1724,-0.89987 1.39344,-2.57888 0.49391,-3.75129 -3.42157,-4.45553 -8.01722,-6.83812 -12.12631,-8.09981 -4.12515,-1.26536 -7.83229,-1.45497 -9.83433,-1.45731 -0.93198,0 -1.4951,0.0435 -1.5563,0.0485 -0.003,3.5e-4 -0.005,6.6e-4 -0.007,10e-4 -0.45679,0.005 -0.8982,0.0588 -1.31252,0.16218 z"
+       id="path24"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       d="m 135.41057,63.238344 c 0.76645,-1.40448 1.10385,-2.49428 1.1413,-2.61099 0.43472,-1.4125 -0.3578,-2.90927 -1.76963,-3.34332 -1.40883,-0.43305 -2.90125,0.35346 -3.33998,1.75894 l -7.9e-4,-2.6e-4 c 0,2.6e-4 0,2.6e-4 0,7.9e-4 -2.7e-4,0.001 -0.001,0.004 -0.003,0.01 l 2.7e-4,7.9e-4 v -2.6e-4 h 2.6e-4 c 0,0 0,2.6e-4 0,2.6e-4 h -2.6e-4 c -0.0425,0.14112 -0.5337,1.52085 -1.40816,2.70061 -0.45043,0.61763 -0.99149,1.16939 -1.55395,1.52787 -0.57149,0.35847 -1.12625,0.55543 -1.87163,0.56112 -1.1918,0.009 -3.23364,-0.61128 -6.18939,-3.30453 -1.09248,-0.99517 -2.78387,-0.91726 -3.77937,0.17422 -0.99517,1.09248 -0.91726,2.78387 0.17455,3.77971 3.50985,3.20187 6.74583,4.69162 9.79421,4.70165 0.008,0 0.0174,0 0.0257,0 1.88869,0 3.56871,-0.62432 4.85982,-1.49042 1.95724,-1.31519 3.1467,-3.07045 3.92016,-4.46589 z"
+       id="path26"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       x="151.65025"
+       y="49.747684"
+       width="36.783207"
+       height="1.7836835"
+       id="rect28"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       x="166.80923"
+       y="54.429272"
+       width="17.166031"
+       height="1.7836835"
+       id="rect30"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       x="157.00064"
+       y="45.066105"
+       width="17.166031"
+       height="1.7836835"
+       id="rect32"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.334399"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       i:knockout="Off"
+       d="m 134.01342,40.689774 0.51122,-0.55641 0.53212,0.54187 1.10303,1.123 1.09426,-1.12154 0.51291,-0.52558 0.51628,0.52238 1.12325,1.13638 1.15734,-1.14162 0.49975,-0.49329 0.50886,0.4866 1.2187,1.16605 1.19745,-1.16285 1.00827,0.77252 -1.69754,1.64887 -0.50009,0.48603 -0.50481,-0.48283 -1.21499,-1.16227 -1.17149,1.15558 -0.51391,0.50726 -0.50684,-0.51278 -1.11382,-1.1265 -1.09595,1.12359 -0.51426,0.52732 -0.51627,-0.52587 -1.08719,-1.10729 -1.00389,1.09246 -1.05716,-0.72249 z m 3.2666,5.73747 0.22054,0.62185 0.53145,1.49647 1.62774,-0.6204 0.71456,-0.27254 0.20806,0.6492 0.45693,1.42666 1.54411,-0.61866 0.72434,-0.29028 0.21042,0.66462 0.44277,1.39989 1.44496,-0.62418 v 0 l -1.57715,1.98249 -0.73615,0.3182 -0.21682,-0.68497 -0.44918,-1.42026 -1.54141,0.61778 -0.72231,0.2894 -0.21211,-0.6617 -0.46097,-1.43916 -1.60852,0.61255 -0.69534,0.26467 -0.22223,-0.62621 -0.53313,-1.50083 -1.65472,0.61749 -0.5355,-1.06803 2.34668,-0.87577 z m 6.84649,-11.49733 -0.74761,-0.29725 -1.55018,-0.61604 -0.44242,1.41561 -0.20707,0.66286 -0.72399,-0.28504 -1.57479,-0.62011 -0.4893,1.45633 -0.21144,0.62941 -0.69938,-0.25537 -1.67596,-0.61226 -0.51493,1.49007 -1.29288,-0.33245 0.7304,-2.11308 0.21548,-0.62302 0.69433,0.25363 1.67057,0.61051 0.49537,-1.47407 0.2175,-0.64716 0.71051,0.27981 1.56131,0.61487 0.44276,-1.41793 0.20773,-0.66549 0.72535,0.28854 1.52792,0.60731 0.37397,-1.35598 1.31211,0.26933 -0.56483,2.04677 z"
+       id="path1970"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.313179"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\StormSurge\storm-surge-noise.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+  </g>
+</svg>
