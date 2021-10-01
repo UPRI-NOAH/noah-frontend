@@ -10,9 +10,15 @@ import { PlaygroundModule } from '@features/playground/playground.module';
 import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-hazards.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
+import { BibliographyComponent } from './pages/bibliography/bibliography.component';
 
 @NgModule({
-  declarations: [LandingPageComponent, NavigationComponent, FooterComponent],
+  declarations: [
+    LandingPageComponent,
+    NavigationComponent,
+    FooterComponent,
+    BibliographyComponent,
+  ],
   imports: [
     CommonModule,
     HomeRoutingModule,
