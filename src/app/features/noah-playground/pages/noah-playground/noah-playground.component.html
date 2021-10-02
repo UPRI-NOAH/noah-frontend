@@ -106,9 +106,9 @@
       </div>
     </div>
     <div class="flex" *ngIf="isMenu">
-      <div class="absolute p-2 z-20 -right-2 top-0 md:hidden">
+      <div class="absolute p-2 z-20 right-0 top-0 md:hidden">
         <a class="fixed max-w-xs items-center">
-          <div class="mapboxgl-ctrl-bottom-right mb-2">
+          <div class="mapboxgl-ctrl-bottom-right -right-2 mb-2">
             <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
               <div
                 class="cursor-pointer"
@@ -126,7 +126,7 @@
                   aria-label="Toggle attribution"
                 ></div>
                 <div class="absolute z-40 right-0 -bottom-1 pt-2">
-                  <div class="rounded bg-white w-72 mt-4">
+                  <div class="rounded-lg bg-white w-72 mt-4">
                     <ul *ngIf="isList === 1">
                       <li class="p-1 text-xs flex">
                         <a
