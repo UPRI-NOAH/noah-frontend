@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   data-name="Layer 1"
+   viewBox="0 0 30 26"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="hospital.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="30"
+   height="26"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="13.312"
+     inkscape:cx="2.1409255"
+     inkscape:cy="7.9251803"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12"
+     height="24px" />
+  <title
+     id="title2">medical &amp;amp; health care icon set</title>
+  <g
+     id="g835"
+     style="fill:#4a1486;fill-opacity:1"
+     transform="matrix(0.3157795,0,0,0.3157795,-0.81540953,-2.6743985)">
+    <path
+       d="M 48.29,12.52 6.35,40.73 a 3.06,3.06 0 0 0 -0.59,4.56 l 3.46,3.94 a 3.06,3.06 0 0 0 4,0.52 L 48.29,26.18 a 3.06,3.06 0 0 1 3.41,0 l 35.08,23.56 a 3.06,3.06 0 0 0 4,-0.52 l 3.46,-3.94 A 3.06,3.06 0 0 0 93.65,40.72 L 51.71,12.52 a 3.06,3.06 0 0 0 -3.42,0 z"
+       id="path4"
+       style="fill:#4a1486;fill-opacity:1" />
+    <path
+       d="M 80.92,50.76 51.71,31 a 3.06,3.06 0 0 0 -3.43,0 l -29.2,19.76 a 3.06,3.06 0 0 0 -1.35,2.53 V 84.95 A 3.06,3.06 0 0 0 20.8,88 h 58.4 a 3.06,3.06 0 0 0 3.06,-3.06 V 53.29 A 3.06,3.06 0 0 0 80.92,50.76 Z M 57.4,66.86 H 53 v 4.42 h -6 v -4.42 h -4.4 v -6 H 47 v -4.39 h 6 v 4.42 h 4.4 z"
+       id="path6"
+       style="fill:#4a1486;fill-opacity:1" />
+  </g>
+  <metadata
+     id="metadata1007">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>medical &amp;amp; health care icon set</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

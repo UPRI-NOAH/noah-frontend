@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="79.422157mm"
+   height="79.375mm"
+   viewBox="0 0 79.422157 79.375"
+   version="1.1"
+   id="svg1162"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="flashlight.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1164"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="243.52741"
+     inkscape:cy="60.038613"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1159" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-40.827301,-132.60134)">
+    <g
+       id="g2069"
+       transform="matrix(0.89260165,0,0,0.89260165,35.908062,127.66007)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\flashlight.png"
+       inkscape:export-xdpi="323.67453"
+       inkscape:export-ydpi="323.67453">
+      <path
+         d="m 56.813,22.406 c -0.791,-0.791 -2.077,-0.791 -2.869,0 l -2.808,2.807 23.624,23.623 2.809,-2.807 c 0.79,-0.791 0.79,-2.078 0,-2.868 z"
+         id="path2047"
+         style="fill:#0066ff;fill-opacity:1" />
+      <polygon
+         points="73.998,49.329 50.645,25.975 41.847,44.884 55.089,58.128 "
+         id="polygon2049"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 12.262,74.229 c -0.515,-0.516 -1.354,-0.516 -1.87,0 l -4.494,4.494 c -0.516,0.515 -0.516,1.354 0.001,1.869 l 13.482,13.483 c 0.515,0.515 1.354,0.515 1.868,0 l 4.495,-4.494 c 0.516,-0.517 0.516,-1.355 0,-1.871 z"
+         id="path2051"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 30.642,69.384 c 1.097,1.097 2.818,1.19 4.027,0.288 l -4.316,-4.316 c -0.903,1.207 -0.809,2.93 0.289,4.028 z"
+         id="path2053"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 42.1,62.241 c 0.902,-1.208 0.809,-2.931 -0.288,-4.028 -1.098,-1.097 -2.82,-1.19 -4.028,-0.288 z"
+         id="path2055"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="M 13.103,73.816 26.158,86.871 54.368,58.659 41.313,45.606 Z m 29.63,-10.942 0.019,0.02 -0.313,0.313 -6.804,6.804 -0.313,0.313 -0.02,-0.02 c -1.559,1.247 -3.844,1.149 -5.287,-0.294 -1.443,-1.444 -1.541,-3.729 -0.295,-5.288 l -0.02,-0.02 0.314,-0.313 6.803,-6.804 0.314,-0.313 0.018,0.019 c 1.56,-1.246 3.846,-1.148 5.289,0.295 1.444,1.444 1.541,3.729 0.295,5.288 z"
+         id="path2057"
+         style="fill:#0066ff;fill-opacity:1" />
+      <rect
+         x="31.437"
+         y="63.536999"
+         transform="matrix(-0.7071,-0.7071,0.7071,-0.7071,12.6237,136.227)"
+         width="6.1760001"
+         height="3.925"
+         id="rect2059"
+         style="fill:#0066ff;fill-opacity:1" />
+      <rect
+         x="35.463001"
+         y="60.394001"
+         transform="matrix(-0.7071,-0.7071,0.7071,-0.7071,22.3431,132.2011)"
+         width="6.1760001"
+         height="2.1589999"
+         id="rect2061"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 69.528,30.496 c 0.519,0.521 1.36,0.521 1.881,0 L 85.047,16.859 c 0.518,-0.52 0.518,-1.362 0,-1.881 -0.521,-0.52 -1.363,-0.52 -1.881,0 L 69.528,28.615 c -0.52,0.521 -0.52,1.362 0,1.881 z"
+         id="path2063"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 63.464,24.396 c 0.614,0.405 1.438,0.237 1.844,-0.375 L 76.163,7.6 C 76.568,6.987 76.399,6.161 75.787,5.757 75.175,5.351 74.349,5.52 73.944,6.132 l -10.855,16.42 c -0.355,0.537 -0.271,1.235 0.168,1.673 0.061,0.063 0.131,0.12 0.207,0.171 z"
+         id="path2065"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="M 94.269,24.238 C 93.864,23.624 93.038,23.456 92.426,23.861 L 76.005,34.716 c -0.612,0.406 -0.781,1.231 -0.376,1.844 0.051,0.076 0.107,0.146 0.17,0.208 0.438,0.438 1.136,0.522 1.674,0.167 L 93.892,26.08 c 0.613,-0.404 0.782,-1.23 0.377,-1.842 z"
+         id="path2067"
+         style="fill:#0066ff;fill-opacity:1" />
+    </g>
+  </g>
+</svg>

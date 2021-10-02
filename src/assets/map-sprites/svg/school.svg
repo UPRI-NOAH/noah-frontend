@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   data-name="Layer 1"
+   viewBox="0 0 30 26"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg12"
+   sodipodi:docname="school.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   width="30"
+   height="26"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="9.4130055"
+     inkscape:cx="-21.512789"
+     inkscape:cy="-9.8268295"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12"
+     height="24px" />
+  <title
+     id="title2">medical &amp;amp; health care icon set</title>
+  <metadata
+     id="metadata1007">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>medical &amp;amp; health care icon set</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     data-name="14-school"
+     id="g1023"
+     transform="matrix(0.99989994,0,0,0.99989994,-1.0819817,-2.783951)"
+     style="fill:#35978f;fill-opacity:1"
+     inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\map-sprites\school.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96">
+    <path
+       d="M 28,22.18 V 12 a 1,1 0 0 0 -0.07,-0.35 v -0.08 a 1.26,1.26 0 0 0 -0.19,-0.28 v 0 a 0.75,0.75 0 0 0 -0.2,-0.15 l -12,-7 a 1,1 0 0 0 -1,0 l -12,7 a 1,1 0 0 0 0,1.72 l 12,7 a 1,1 0 0 0 1,0 L 26,13.74 v 8.44 a 3,3 0 1 0 2,0 z"
+       id="path1019"
+       style="fill:#35978f;fill-opacity:1" />
+    <path
+       d="M 25,22 V 18.38 A 1,1 0 0 0 23.5,17.52 L 15,22.47 6.5,17.52 a 1,1 0 0 0 -1,0 A 1,1 0 0 0 5,18.39 V 22 a 1,1 0 0 0 0.45,0.83 17.17,17.17 0 0 0 19.1,0 A 1,1 0 0 0 25,22 Z"
+       id="path1021"
+       style="fill:#35978f;fill-opacity:1" />
+  </g>
+</svg>
