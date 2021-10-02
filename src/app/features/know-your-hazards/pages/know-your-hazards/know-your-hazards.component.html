@@ -335,11 +335,27 @@
             </div>
           </div>
         </div>
-        <p class="m-6">
-          These hazard levels are based on our satellite and historical data. If
-          you’re in the <b class="text-high">“red”</b> zone of a particular
-          hazard, that means you’re highly susceptible to that hazard.
-        </p>
+
+        <div class="m-6">
+          <p class="font-bold text-medium">Hazards shown are:</p>
+          <ol>
+            <li>1) 100yr rain return for floods;</li>
+            <li>2) Shallow and structurally-controlled landslides;</li>
+            <li class="mb-2">3) 4-6 meters for storm surges.</li>
+            <li>
+              For more scenarios please go to the
+              <a routerLink="/noah-playground" class="text-primary"
+                >NOAH Playground.</a
+              >
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            These hazard levels are based on flood simulations as well as
+            satellite and historical data.
+          </p>
+          <p>Click <a class="text-primary">here</a> for the methods used.</p>
+        </div>
         <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
       </div>
     </ng-container>
@@ -516,11 +532,35 @@
             </div>
           </div>
         </div>
-        <p class="m-6">
-          These hazard levels are based on our satellite and historical data. If
-          you’re in the <b class="text-high">“red”</b> zone of a particular
-          hazard, that means you’re highly susceptible to that hazard.
-        </p>
+
+        <div class="m-6">
+          <p class="font-bold pb-2">Hazards shown are:</p>
+
+          <ol>
+            <li>1) 100yr rain return for floods</li>
+            <li>2) Shallow and structurally-controlled landslides</li>
+            <li class="mb-2">3) 4-5 meters for storm surges</li>
+            <li>
+              For more scenarios please go to the
+              <a
+                routerLink="/noah-playground"
+                target="_blank"
+                class="text-primary"
+                >NOAH Playground.</a
+              >
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            These hazard levels are based on flood simulations as well as
+            satellite and historical data. Click
+            <a routerLink="/bibliography" target="_blank" class="text-primary"
+              >here</a
+            >
+            for the methods used.
+          </p>
+        </div>
+
         <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
       </div>
     </ng-container>
