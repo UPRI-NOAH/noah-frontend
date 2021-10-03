@@ -146,6 +146,12 @@ export class HazardsService {
       return parseInt(properties.Var);
     }
 
+    // There was no `Var` value read earlier
+    // This is exclusive for Flood Data only
+    if ('No_Data' in properties) {
+      return -1;
+    }
+
     if ('HZ' in properties) {
       return parseInt(properties.HZ);
     }
@@ -168,6 +174,9 @@ export class HazardsService {
     const riskLevelNum = this._computeAreaRiskNum(featureCollection.features);
 
     switch (riskLevelNum) {
+      case -1:
+        return 'unavailable';
+
       case 0:
         return 'little';
 

@@ -173,7 +173,7 @@ export class KyhService {
   private _getTilesetName(hazardTypes: HazardType): string {
     switch (hazardTypes) {
       case 'flood':
-        return 'upri-noah.ph_fh_100yr_tls';
+        return 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata_tls';
       case 'landslide':
         return 'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls';
       case 'storm-surge':
