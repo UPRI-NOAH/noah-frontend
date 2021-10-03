@@ -31,14 +31,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.center));
   }
 
-  get currentCoords$(): Observable<{ lng: number; lat: number }> {
-    return this.store.state$.pipe(map((state) => state.currentCoords));
-  }
-
-  get currentCoords(): { lng: number; lat: number } {
-    return this.store.state.currentCoords;
-  }
-
   get currentLocation$(): Observable<string> {
     return this.store.state$.pipe(map((state) => state.currentLocation));
   }
@@ -254,10 +246,6 @@ export class NoahPlaygroundService {
 
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
-  }
-
-  setCurrentCoords(currentCoords: { lat: number; lng: number }) {
-    this.store.patch({ currentCoords });
   }
 
   setCurrentLocation(currentLocation: string): void {

@@ -29,6 +29,7 @@ import {
   HazardLevel,
   HazardType,
   LandslideHazards,
+  PH_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 type MapStyle = 'terrain' | 'satellite';
@@ -96,7 +97,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        this.initMarkers();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
@@ -132,13 +132,25 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
    */
   initCenterListener() {
     this.pgService.center$
-      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this._unsub),
+        filter((center) => center !== null)
+      )
       .subscribe((center) => {
         this.map.flyTo({
           center,
           zoom: 13,
           essential: true,
         });
+
+        if (!this.centerMarker) {
+          this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+            .setLngLat(center)
+            .addTo(this.map);
+        }
+
+        this.centerMarker.setLngLat(center);
       });
   }
 
@@ -282,20 +294,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       style: environment.mapbox.styles.terrain,
       zoom: 5,
       touchZoomRotate: true,
-      center: this.pgService.currentCoords,
+      center: PH_DEFAULT_CENTER,
     });
-  }
-
-  initMarkers() {
-    this.centerMarker = new mapboxgl.Marker({ color: '#333' })
-      .setLngLat(this.pgService.currentCoords)
-      .addTo(this.map);
-
-    this.pgService.currentCoords$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((currentCoords) => {
-        this.centerMarker.setLngLat(currentCoords);
-      });
   }
 
   initWeatherLayer() {

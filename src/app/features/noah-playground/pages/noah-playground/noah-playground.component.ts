@@ -27,6 +27,5 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;
     this.pgService.setCenter({ lat, lng });
-    this.pgService.setCurrentCoords({ lat, lng });
   }
 }

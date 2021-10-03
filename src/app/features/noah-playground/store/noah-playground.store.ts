@@ -3,9 +3,14 @@ import { StoreService } from '@core/services/store-service.service';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
 
+/**
+ * Official geographic center of the Philippines.
+ * Located in the Mindoro Strait, 12 kilometers
+ * NNE of Apo Island in Sablayan, Occidental Mindoro.
+ */
 export const PH_DEFAULT_CENTER = {
-  lat: 10.872407621178079,
-  lng: 124.93480374252101,
+  lat: 12.768369,
+  lng: 120.443461,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
@@ -102,7 +107,6 @@ type NoahPlaygroundState = {
   criticalFacilities: CriticalFacilitiesState;
   weather: WeatherState;
   center: { lng: number; lat: number };
-  currentCoords: { lng: number; lat: number };
   currentLocation: string;
   contourMaps: {
     shown: boolean;
@@ -217,8 +221,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     opacity: 80,
   },
-  center: PH_DEFAULT_CENTER,
-  currentCoords: PH_DEFAULT_CENTER,
+  center: null,
   currentLocation: '-----',
   contourMaps: {
     shown: false,
