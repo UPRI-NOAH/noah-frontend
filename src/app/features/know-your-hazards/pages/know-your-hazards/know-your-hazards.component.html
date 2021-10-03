@@ -14,7 +14,7 @@
     class="
       fixed
       p-2
-      z-20
+      z-50
       bg-white
       text-gray-800
       shadow-2xl
@@ -59,6 +59,7 @@
       w-2/3
     "
   ></noah-search>
+
   <nav
     class="
       block
@@ -124,36 +125,55 @@
                     aria-label="Toggle attribution"
                   ></div>
                   <div class="absolute z-40 right-0 -bottom-1 pt-2">
-                    <div class="rounded-lg bg-white w-72 mt-4">
+                    <div class="rounded-lg bg-white h-auto w-64 mt-4">
                       <ul *ngIf="isList === 1">
-                        <li class="p-1 text-xs flex">
-                          <a
-                            href="https://www.mapbox.com/about/maps/"
-                            target="_blank"
-                            title="Mapbox"
-                            aria-label="Mapbox"
-                            role="listitem"
-                          >
-                            <div class="mr-1 font-mono">© Mapbox</div></a
-                          >
-                          <a
-                            href="http://www.openstreetmap.org/about/"
-                            target="_blank"
-                            title="OpenStreetMap"
-                            aria-label="OpenStreetMap"
-                            role="listitem"
-                          >
-                            <div class="mr-1 font-mono">© OpenStreetMap</div></a
-                          >
-                          <a
-                            href="https://www.mapbox.com/map-feedback/"
-                            target="_blank"
-                            title="Improve this map"
-                            aria-label="Improve this map"
-                            role="listitem"
-                          >
-                            <div class="font-mono">Improve this map</div></a
-                          >
+                        <li class="p-1 text-xs">
+                          <div>
+                            <a
+                              href="https://www.mapbox.com/about/maps/"
+                              target="_blank"
+                              title="Mapbox"
+                              aria-label="Mapbox"
+                              role="listitem"
+                            >
+                              <span class="mr-1 text-black">© Mapbox</span></a
+                            >
+                            <a
+                              href="http://www.openstreetmap.org/about/"
+                              target="_blank"
+                              title="OpenStreetMap"
+                              aria-label="OpenStreetMap"
+                              role="listitem"
+                            >
+                              <span class="mr-1 text-black"
+                                >© OpenStreetMap</span
+                              >
+                            </a>
+                          </div>
+                          <div>
+                            <a
+                              href="https://doh.gov.ph/"
+                              target="_blank"
+                              title="Mapbox"
+                              aria-label="Mapbox"
+                              role="listitem"
+                            >
+                              <span class="mr-1 text-black"
+                                >© Department of Health</span
+                              ></a
+                            >
+                            <a
+                              href="https://www.mapbox.com/map-feedback/"
+                              target="_blank"
+                              title="OpenStreetMap"
+                              aria-label="OpenStreetMap"
+                              role="listitem"
+                            >
+                              <span class="mr-1 text-black"
+                                >Improve this map</span
+                              >
+                            </a>
+                          </div>
                         </li>
                       </ul>
                     </div>
@@ -164,6 +184,7 @@
           </a>
         </div>
       </div>
+
       <!-- MAPBOX LOGOS -->
       <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
         <button
@@ -370,6 +391,78 @@
       </div>
     </ng-container>
   </nav>
+  <!-- //Customizing Mapbox attribution -->
+  <div class="mapboxgl-ctrl-bottom-right md:hidden z-40">
+    <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
+      <div
+        class="cursor-pointer"
+        (click)="isList === 1 ? (isList = 0) : (isList = 1)"
+      >
+        <div
+          class="
+            mapboxgl-ctrl-attrib-button
+            bg-gray-200
+            z-50
+            focus:outline-none
+          "
+          type="button"
+          title="Toggle attribution"
+          aria-label="Toggle attribution"
+        ></div>
+        <div class="absolute z-40 right-0 -bottom-1 pt-2">
+          <div class="rounded-lg bg-white h-auto w-64 mt-4">
+            <ul *ngIf="isList === 1">
+              <li class="p-1 text-xs">
+                <div>
+                  <a
+                    href="https://www.mapbox.com/about/maps/"
+                    target="_blank"
+                    title="Mapbox"
+                    aria-label="Mapbox"
+                    role="listitem"
+                  >
+                    <span class="mr-1 text-black">© Mapbox</span></a
+                  >
+                  <a
+                    href="http://www.openstreetmap.org/about/"
+                    target="_blank"
+                    title="OpenStreetMap"
+                    aria-label="OpenStreetMap"
+                    role="listitem"
+                  >
+                    <span class="mr-1 text-black">© OpenStreetMap</span>
+                  </a>
+                </div>
+                <div>
+                  <a
+                    href="https://doh.gov.ph/"
+                    target="_blank"
+                    title="Mapbox"
+                    aria-label="Mapbox"
+                    role="listitem"
+                  >
+                    <span class="mr-1 text-black"
+                      >© Department of Health</span
+                    ></a
+                  >
+                  <a
+                    href="https://www.mapbox.com/map-feedback/"
+                    target="_blank"
+                    title="OpenStreetMap"
+                    aria-label="OpenStreetMap"
+                    role="listitem"
+                  >
+                    <span class="mr-1 text-black">Improve this map</span>
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- //Customizing Mapbox attribution -->
   <!-- MOBILE VIEW -->
 
   <!-- DESKTOP VIEW -->

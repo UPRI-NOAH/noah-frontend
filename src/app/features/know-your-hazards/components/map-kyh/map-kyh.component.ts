@@ -41,6 +41,7 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
+  isMapboxAttrib;
   isOpenedList;
   private _unsub = new Subject();
 
@@ -238,6 +239,7 @@ export class MapKyhComponent implements OnInit {
       touchZoomRotate: true,
       bearing: 30,
       center: this.kyhService.currentCoords,
+      attributionControl: false,
     });
   }
 
