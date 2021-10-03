@@ -133,12 +133,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'flood-return-period-25': {
         opacity: 85,
         color: 'noah-red',
-        shown: true,
+        shown: false,
       },
       'flood-return-period-100': {
         opacity: 85,
         color: 'noah-red',
-        shown: false,
+        shown: true,
       },
     },
   },
