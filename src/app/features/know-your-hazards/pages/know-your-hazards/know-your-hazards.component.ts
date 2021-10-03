@@ -28,6 +28,16 @@ export class KnowYourHazardsComponent implements OnInit {
     );
   }
 
+  get floodCaption$(): Observable<string> {
+    return this.floodRiskLevel$.pipe(
+      map((val) =>
+        val === 'unavailable'
+          ? 'Flood hazard maps in this area is not yet complete.'
+          : ''
+      )
+    );
+  }
+
   get isFlood$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(map((page) => page === 'flood'));
   }
