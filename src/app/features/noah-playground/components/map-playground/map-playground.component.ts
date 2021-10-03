@@ -10,6 +10,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  pluck,
   shareReplay,
   takeUntil,
 } from 'rxjs/operators';
@@ -321,23 +322,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.pgService.weather$
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged()
-      )
-      .subscribe((weather) => {
-        if (weather.shown) {
-          this.map.setPaintProperty(
-            layerID,
-            'raster-opacity',
-            weather.opacity / 100
-          );
-          return;
+    combineLatest([
+      this.pgService.weather$.pipe(pluck('shown'), distinctUntilChanged()),
+      this.pgService.weather$.pipe(pluck('opacity'), distinctUntilChanged()),
+    ])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([shown, opacity]) => {
+        let newOpacity = 0;
+        if (shown) {
+          newOpacity = opacity / 100;
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 4,
+            essential: true,
+          });
         }
 
-        this.map.setPaintProperty(layerID, 'raster-opacity', 0);
+        this.map.setPaintProperty(layerID, 'raster-opacity', newOpacity);
       });
   }
 
