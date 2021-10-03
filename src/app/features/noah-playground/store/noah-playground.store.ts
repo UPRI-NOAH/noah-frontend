@@ -143,7 +143,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   landslide: {
-    shown: true,
+    shown: false,
     expanded: false,
     levels: {
       'landslide-hazard': {
@@ -169,7 +169,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   'storm-surge': {
-    shown: true,
+    shown: false,
     expanded: false,
     levels: {
       'storm-surge-advisory-1': {
