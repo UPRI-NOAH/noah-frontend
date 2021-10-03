@@ -1,0 +1,10 @@
+<div class="banner" [class.h-100]="fullHeight">
+  <div
+    class="banner-img"
+    [style.background-image]="bgImgSrc"
+    [class.blur]="!loadedFullRes"
+    [class.noblur]="loadedFullRes"
+    [class.with-overlay]="hasDarkOverlay"
+  ></div>
+  <ng-content></ng-content>
+</div>
