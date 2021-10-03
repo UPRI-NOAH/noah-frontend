@@ -1,50 +1,61 @@
-<div class="fixed z-50">
-  <!-- SITE NAV -->
-  <noah-navigation></noah-navigation>
-</div>
-
-<div class="h-screen font-sans login bg-cover">
-  <div class="absolute top-0 w-full h-screen">
-    <img
-      src="assets/images/landing-bg.png"
-      class="h-screen w-full object-cover"
-    />
+<app-banner
+  lowResImgUrl="assets/images/landing-bg-min.jpg"
+  hiResImgUrl="assets/images/landing-bg.png"
+  [hasDarkOverlay]="false"
+  [fullHeight]="true"
+>
+  <div class="fixed z-100">
+    <!-- SITE NAV -->
+    <noah-navigation></noah-navigation>
   </div>
-  <div
-    class="relative mx-auto h-full flex flex-1 justify-center items-center p-2"
-  >
-    <div class="w-full max-w-lg">
-      <div class="leading-loose flex justify-center">
-        <form class="mx-auto p-6 bg-white w-full rounded-lg shadow-xl">
-          <div class="text-center pt-5">
-            <h1 class="text-3xl sm:text-4xl font-bold">Know Your Hazards</h1>
-          </div>
-          <div class="mt-2 text-center">
-            <p class="text-base sm:text-2sm pt-4">
-              Assess how likely are you to be affected by
-              <b>floods</b>, <b>landslides</b>, and <b>storm surges</b> and what
-              you can do about it.
-            </p>
-          </div>
 
-          <div class="mt-4 items-center flex justify-center">
-            <div class="md:flex-shrink-1 w-96">
-              <div class="pb-8 px-2">
-                <noah-search
-                  [searchTerm]="searchTerm"
-                  (selectPlace)="selectPlace($event)"
-                  class="visible"
-                >
-                </noah-search>
+  <div class="z-10 h-screen font-sans login bg-cover">
+    <div
+      class="
+        relative
+        z-10
+        mx-auto
+        h-full
+        flex flex-1
+        justify-center
+        items-center
+        p-2
+      "
+    >
+      <div class="w-full max-w-lg">
+        <div class="leading-loose flex justify-center">
+          <form class="mx-auto p-6 bg-white w-full rounded-lg shadow-xl">
+            <div class="text-center pt-5">
+              <h1 class="text-3xl sm:text-4xl font-bold">Know Your Hazards</h1>
+            </div>
+            <div class="mt-2 text-center">
+              <p class="text-base sm:text-2sm pt-4">
+                Assess how likely are you to be affected by
+                <b>floods</b>, <b>landslides</b>, and <b>storm surges</b> and
+                what you can do about it.
+              </p>
+            </div>
+
+            <div class="mt-4 items-center flex justify-center">
+              <div class="md:flex-shrink-1 w-96">
+                <div class="pb-8 px-2">
+                  <noah-search
+                    [searchTerm]="searchTerm"
+                    (selectPlace)="selectPlace($event)"
+                    class="visible"
+                  >
+                  </noah-search>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="text-center"></div>
-        </form>
+            <div class="text-center"></div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</app-banner>
+
 <section class="bg-white">
   <div class="max-w-5xl px-6 py-16 mx-auto">
     <div class="items-center md:flex md:space-x-6">
