@@ -24,7 +24,7 @@
         />
       </label>
       <div class="flex flex-col ml-3">
-        <div class="text-xl leading-none font-bold">Contour Maps</div>
+        <div class="text-xl leading-none font-bold">Rainfall Contour</div>
       </div>
     </div>
     <div class="cursor-pointer">
@@ -68,31 +68,37 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="pl-6">
-      <div class="items-center">
+    <div class="flex justify-around">
+      <div class="my-auto items-center">
         <!-- CONTOUR MAP SOLO START -->
-        <div
-          class="text-m f-f-r py-2 pl-4"
-          *ngFor="let contourMap of contourMaps"
-        >
+        <div class="f-f-r py-2 pl-4" *ngFor="let contourMap of contourMaps">
           <div class="flex items-center">
-            <label class="inline-flex items-center radio">
+            <div class="inline-flex items-center radio">
               <input
                 type="radio"
                 class="radio h-5 w-5 text-blue-600"
-                name="selected-contour-map"
+                id="selected-contour-map-{{ contourMap }}"
                 [checked]="(selectedContourMap$ | async) === contourMap"
                 (click)="selectContourMap(contourMap)"
               />
-            </label>
+            </div>
             <div class="flex flex-col ml-3">
-              <div class="text-lg f-f-r capitalize">{{ contourMap }}</div>
+              <label
+                for="selected-contour-map-{{ contourMap }}"
+                class="text-lg f-f-r capitalize"
+                >{{ contourMap }}</label
+              >
             </div>
           </div>
         </div>
         <!-- CONTOUR MAP SOLO END -->
         <hr class="p-2" />
       </div>
+      <img
+        src="assets/legends/rainfall-contour-legend-{{
+          selectedContourMap$ | async
+        }}.png"
+      />
     </div>
   </div>
 </div>
