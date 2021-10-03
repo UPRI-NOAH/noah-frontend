@@ -68,13 +68,10 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="pl-6">
-      <div class="items-center">
+    <div class="flex justify-around">
+      <div class="my-auto items-center">
         <!-- CONTOUR MAP SOLO START -->
-        <div
-          class="text-m f-f-r py-2 pl-4"
-          *ngFor="let contourMap of contourMaps"
-        >
+        <div class="f-f-r py-2 pl-4" *ngFor="let contourMap of contourMaps">
           <div class="flex items-center">
             <div class="inline-flex items-center radio">
               <input
@@ -97,6 +94,11 @@
         <!-- CONTOUR MAP SOLO END -->
         <hr class="p-2" />
       </div>
+      <img
+        src="assets/legends/rainfall-contour-legend-{{
+          selectedContourMap$ | async
+        }}.png"
+      />
     </div>
   </div>
 </div>
