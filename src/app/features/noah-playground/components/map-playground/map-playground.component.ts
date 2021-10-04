@@ -234,11 +234,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              console.log(
-                sensorType,
-                'circle-opacity',
-                +(groupShown && soloShown)
-              );
               this.map.setPaintProperty(
                 sensorType,
                 'circle-opacity',
@@ -261,7 +256,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
     const _this = this;
     this.map.on('mouseover', sensorType, (e) => {
-      console.log(e);
       _this.map.getCanvas().style.cursor = 'pointer';
 
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
