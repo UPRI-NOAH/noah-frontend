@@ -66,10 +66,18 @@
       </button>
     </div>
   </div>
+
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
+
     <div class="pl-6" *ngFor="let sensorType of sensorTypes">
       <noah-sensor-solo [sensorType]="sensorType"></noah-sensor-solo>
+    </div>
+    <div>
+      <p class="text-xs italic mt-2">
+        Sensors data are from the stations deployed by DOST-ASTI, together with
+        the help of DOST and PAGASA
+      </p>
     </div>
   </div>
 </div>
