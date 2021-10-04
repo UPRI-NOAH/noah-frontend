@@ -9,7 +9,12 @@ import {
   LEYTE_SCHOOLS,
 } from '@shared/mocks/critical-facilities';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  takeUntil,
+} from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -22,6 +27,7 @@ import {
 } from '@features/know-your-hazards/store/kyh.store';
 import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
+import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -57,11 +63,6 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initLayers();
         this.initMarkers();
-        this.hideAllLayers();
-        this.initPageListener();
-
-        const page = this.kyhService.currentPage;
-        this.showLayers(page);
       });
   }
 
@@ -71,12 +72,12 @@ export class MapKyhComponent implements OnInit {
   }
 
   initCenterListener() {
-    this.kyhService.center$
+    this.kyhService.currentCoords$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
           center,
-          zoom: 15,
+          zoom: 17,
           essential: true,
         });
       });
@@ -135,70 +136,96 @@ export class MapKyhComponent implements OnInit {
   }
 
   initLayers() {
-    PH_COMBO_LAYERS.forEach((comboLayerObj) => {
-      const sourceID = comboLayerObj.url.replace('mapbox://prince-test.', '');
+    PH_COMBO_LAYERS.forEach((tileset) => {
       const sourceData = {
         type: 'vector',
-        url: comboLayerObj.url,
+        url: tileset.url,
       } as mapboxgl.AnySourceData;
+      const sourceID = tileset.url.replace('mapbox://upri-noah.', '');
+      // 1. Add source first
       this.map.addSource(sourceID, sourceData);
 
-      comboLayerObj.sourceLayer.forEach((sourceLayer) => {
-        const [rawHazardType, rawHazardLevel] = [
-          ...sourceLayer.toLowerCase().split('_').splice(1),
-        ];
+      // 2. Get the hazard type and level
+      const [rawHazardType, rawHazardLevel] = [
+        ...sourceID.toLowerCase().split('_').splice(1),
+      ];
 
-        const hazardTypes = {
-          fh: 'flood',
-          lh: 'landslide',
-          ssh: 'storm-surge',
-        };
+      const hazardType = getHazardType(rawHazardType as RawHazardType);
+      const hazardLevel = getHazardLevel(
+        rawHazardType as RawHazardType,
+        rawHazardLevel as RawHazardLevel
+      );
 
-        const getHazardLevel = (
-          type: HazardType,
-          level: string
-        ): HazardLevel => {
-          if (type === 'flood') {
-            const strippedLevel = level.replace('yr', '');
-            return `flood-return-period-${strippedLevel}` as HazardLevel;
+      tileset.sourceLayer.forEach((layerName: string) => {
+        if (hazardLevel === 'debris-flow') {
+          const [rawHazardType, lh2Subtype] = [
+            ...layerName.toLowerCase().split('_').splice(1),
+          ];
+          if (lh2Subtype === 'af') {
+            this.map.addLayer({
+              id: layerName,
+              type: 'line',
+              source: sourceID,
+              'source-layer': layerName,
+              paint: {
+                'line-width': 2,
+                'line-color': [
+                  'interpolate',
+                  ['linear'],
+                  ['get', 'ALLUVIAL'],
+                  4,
+                  NOAH_COLORS['noah-black'].high,
+                ],
+                'line-opacity': 0.75,
+              },
+            });
           }
 
-          if (type === 'storm-surge') {
-            const strippedLevel = level.replace('ssa', '');
-            return `storm-surge-advisory-${strippedLevel}` as HazardLevel;
+          if (lh2Subtype === 'df') {
+            this.map.addLayer({
+              id: layerName,
+              type: 'fill',
+              source: sourceID,
+              'source-layer': layerName,
+              paint: {
+                'fill-color': [
+                  'interpolate',
+                  ['linear'],
+                  ['get', 'ALLUVIAL'],
+                  3,
+                  NOAH_COLORS['noah-red'].high,
+                ],
+                'fill-opacity': 0.75,
+              },
+            });
           }
+        } else {
+          this.map.addLayer({
+            id: layerName,
+            type: 'fill',
+            source: sourceID,
+            'source-layer': layerName,
+            paint: {
+              'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
+              'fill-opacity': 0.75,
+            },
+          });
+        }
 
-          if (type === 'landslide') {
-            // We currently have only one shown
-            return 'landslide-hazard';
-          }
-
-          throw Error('hazard level not found');
-        };
-
-        const hazardType = hazardTypes[rawHazardType];
-
-        const layerID = sourceLayer;
-        this.map.addLayer({
-          id: layerID,
-          type: 'fill',
-          source: sourceID,
-          'source-layer': sourceLayer,
-          paint: {
-            'fill-color': getHazardColor(hazardType, 'noah-red', hazardType),
-            'fill-opacity': 0.75,
-          },
-        });
+        // add visibility watcher
+        this.kyhService
+          .isHazardShown$(hazardType)
+          .pipe(
+            takeUntil(this._unsub),
+            // takeUntil(this._changeStyle),
+            distinctUntilChanged()
+          )
+          .subscribe((shown: boolean) => {
+            const visibility = shown ? 'visible' : 'none';
+            this.map.setLayoutProperty(layerName, 'visibility', visibility);
+          });
       });
     });
-  }
-
-  initPageListener() {
-    this.kyhService.currentPage$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((page) => {
-        this.showLayers(page);
-      });
   }
 
   initMap() {
@@ -214,75 +241,76 @@ export class MapKyhComponent implements OnInit {
     });
   }
 
-  initMarkers() {
+  async initMarkers() {
     this.centerMarker = new mapboxgl.Marker({ color: '#333' })
       .setLngLat(this.kyhService.currentCoords)
       .addTo(this.map);
 
-    this.kyhService.currentCoords$
-      .pipe(takeUntil(this._unsub))
+    this.kyhService.center$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
       });
 
-    const _this = this;
-    this.map.loadImage('assets/map-sprites/hospital.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-hospital', image);
-      _this.map.addLayer(LEYTE_HOSPITALS);
-    });
+    function addImages(map, images) {
+      const addImage = (map, id, url) => {
+        return new Promise((resolve, reject) => {
+          map.loadImage(url, (error, image) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            map.addImage(id, image);
+            resolve(image);
+          });
+        });
+      };
+      const promises = images.map((imageData) =>
+        addImage(map, imageData.id, imageData.url)
+      );
+      return Promise.all(promises);
+    }
 
-    this.map.loadImage(
-      'assets/map-sprites/fire-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-firestation', image);
-        _this.map.addLayer(LEYTE_FIRESTATIONS);
-      }
-    );
+    await addImages(this.map, [
+      { url: 'assets/map-sprites/hospital.png', id: 'hospital' },
+      { url: 'assets/map-sprites/fire-station.png', id: 'fire_station' },
+      { url: 'assets/map-sprites/police-station.png', id: 'police' },
+      { url: 'assets/map-sprites/school.png', id: 'school' },
+    ]);
 
-    this.map.loadImage(
-      'assets/map-sprites/police-station.png',
-      (error, image) => {
-        if (error) throw error;
-        _this.map.addImage('icon-policestation', image);
-        _this.map.addLayer(LEYTE_POLICESTATIONS);
-      }
-    );
+    this.kyhService.criticalFacilities$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .subscribe((criticalFacilities) => {
+        const criticalFacilitiesLayer = this.map.getLayer('criticalFacilities');
+        if (criticalFacilitiesLayer) {
+          this.map.removeLayer('criticalFacilities');
+          this.map.removeSource('cfSource');
+        }
 
-    this.map.loadImage('assets/map-sprites/school.png', (error, image) => {
-      if (error) throw error;
-      _this.map.addImage('icon-school', image);
-      _this.map.addLayer(LEYTE_SCHOOLS);
-    });
-  }
+        this.map.addSource('cfSource', {
+          type: 'geojson',
+          data: criticalFacilities,
+        });
 
-  hideAllLayers() {
-    this.kyhService.hazardTypes.forEach((hazard) => {
-      this.map.setLayoutProperty(hazard, 'visibility', 'none');
-    });
-  }
-
-  showAllLayers() {
-    this.kyhService.hazardTypes.forEach((hazard) => {
-      this.map.setLayoutProperty(hazard, 'visibility', 'visible');
-    });
+        this.map.addLayer({
+          id: 'criticalFacilities',
+          type: 'symbol',
+          source: 'cfSource',
+          layout: {
+            'icon-image': ['get', 'amenity'],
+            'text-anchor': 'top',
+            'text-field': ['get', 'name'],
+            'text-offset': [0, 2],
+            'text-size': 10,
+          },
+        });
+      });
   }
 
   showCurrentHazardLayer(currentHazard: HazardType) {
     if (!this.kyhService.isHazardLayer(currentHazard)) return;
 
     this.map.setLayoutProperty(currentHazard, 'visibility', 'visible');
-  }
-
-  showLayers(page: KYHPage) {
-    if (page === 'know-your-hazards') {
-      this.showAllLayers();
-      return;
-    }
-
-    this.hideAllLayers();
-    this.showCurrentHazardLayer(page as HazardType);
   }
 
   switchMapStyle(style: MapStyle) {
@@ -293,4 +321,73 @@ export class MapKyhComponent implements OnInit {
       this.map.setStyle(environment.mapbox.styles[style]);
     }
   }
+}
+
+type RawHazardType = 'lh' | 'fh' | 'ssh';
+type RawHazardLevel =
+  | RawFloodReturnPeriod
+  | RawStormSurgeAdvisory
+  | RawLandslideHazards;
+
+export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr';
+
+export type RawStormSurgeAdvisory = 'ssa1' | 'ssa2' | 'ssa3' | 'ssa4';
+
+export type RawLandslideHazards =
+  | 'lh1' // landslide
+  | 'lh2' // alluvial fan and debris flow
+  | 'lh3'; // unstable slopes
+
+type LH2Subtype = 'af' | 'df';
+
+function getHazardType(rawHazardType: RawHazardType): HazardType {
+  switch (rawHazardType) {
+    case 'fh':
+      return 'flood';
+    case 'lh':
+      return 'landslide';
+    case 'ssh':
+      return 'storm-surge';
+    default:
+      break;
+  }
+  throw new Error(`Cannot find hazard type ${rawHazardType}`);
+}
+
+function getHazardLevel(
+  rawHazardType: RawHazardType,
+  rawHazardLevel: RawHazardLevel
+): HazardLevel {
+  switch (rawHazardType) {
+    case 'fh':
+      const strippedFloodLevel = rawHazardLevel.replace('yr', '');
+      return `flood-return-period-${strippedFloodLevel}` as HazardLevel;
+    case 'lh':
+      return handleLandslideLevel(
+        rawHazardLevel as RawLandslideHazards
+      ) as HazardLevel;
+    case 'ssh':
+      const strippedSSHLevel = rawHazardLevel.replace('ssa', '');
+      return `storm-surge-advisory-${strippedSSHLevel}` as HazardLevel;
+    default:
+      break;
+  }
+
+  throw new Error(`Cannot find hazard type ${rawHazardType}`);
+}
+
+function handleLandslideLevel(level: RawLandslideHazards): string {
+  switch (level) {
+    case 'lh1':
+      return 'landslide-hazard';
+    case 'lh2':
+      // returns debris-flow for both debris-flow and alluvial fan
+      return 'debris-flow';
+    case 'lh3':
+      return 'unstable-slopes-maps';
+    default:
+      break;
+  }
+
+  throw new Error(`Cannot find hazard level ${level}`);
 }

@@ -17,6 +17,11 @@
   --color-4: #2b75b2;
   --color-5: #1a994e;
   --color-6: #333333;
+  font-size: 16px;
+}
+
+html {
+  @apply text-noah-black-high;
 }
 
 .checkbox {

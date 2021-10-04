@@ -1,0 +1,4977 @@
+{
+  "type": "FeatureCollection",
+  "name": "fire_station_g",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.99564, 14.54854] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pasay Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00425, 14.54931] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Donsol Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.59681, 12.90649] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kalibo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.36915, 11.70077] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.11046, 14.65114] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Loma Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99462, 14.63181] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Boat 2" },
+      "geometry": { "type": "Point", "coordinates": [121.08548, 14.58886] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Baclaran Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.997, 14.53142] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Makati Fire Station № 9"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.06045, 14.56277] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hulong Duhat Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.93945, 14.68118] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Makati Fire Station 10"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.06517, 14.549] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Philacor Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.03945, 14.45569] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Meralco Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.06348, 14.57913] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "IBP Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.09581, 14.69463] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kalentong Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.02528, 14.59125] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bf Homes Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.01953, 14.73262] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Galas Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00917, 14.61197] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santolan Substation"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08596, 14.61765] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Makati Fire Sub-station 5"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00586, 14.56032] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Caloocan City Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97467, 14.65791] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Taguig Fire Substation"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07045, 14.52882] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dagat-dagatan Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.95493, 14.64669] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Suerte Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.03546, 14.50486] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pillar Village Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00827, 14.41691] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mandaluyong Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.03323, 14.57729] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Malibay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00973, 14.53372] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Bayan Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.95115, 14.65808] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Huerta Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99114, 14.50085] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manuela Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.975, 14.45448] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Station 6" },
+      "geometry": { "type": "Point", "coordinates": [121.02446, 14.57192] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Antonio Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.01881, 14.65469] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Bilibid Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.02968, 14.38153] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Daang-hari Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.94116, 14.66857] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bf Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07682, 14.68971] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Station 1" },
+      "geometry": { "type": "Point", "coordinates": [121.04479, 14.56052] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Fire Chiefs & Fire Fighters Group"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.02159, 14.64227] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Fairview Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.073, 14.70736] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [114.08721, 22.5508] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Filipino Chinese Fire Fighter"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.61497, 7.0768] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "FCYMAA Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.41234, 14.28524] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pacita Fire Substation"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.0627, 14.34502] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Rosa City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.11054, 14.31566] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mabolo Fire Sub Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.91581, 10.3124] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "B. F. Home Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.02715, 14.44575] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Talomo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.57375, 7.0599] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Batong Malake Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.24188, 14.17158] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Liliw Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.4337, 14.13375] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [118.73648, 9.73893] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Kawit Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.88919, 14.4357] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balagtas Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.90848, 14.81761] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Obando Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.93533, 14.71153] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Polo Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.94632, 14.70803] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.77743, 13.2373] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.35705, 11.67898] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.91378, 13.88404] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kalibo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.36684, 11.70897] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Gen. Trias Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.88028, 14.38683] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Gen. Trias Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.90279, 14.30504] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Dau FireStation" },
+      "geometry": { "type": "Point", "coordinates": [120.58612, 15.18171] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Amity Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.9567, 10.67217] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Ubujan Fire SubStation"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.85992, 9.68633] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.95631, 10.65546] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Substation" },
+      "geometry": { "type": "Point", "coordinates": [124.61122, 11.00396] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.60566, 11.0122] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Siniloan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.44591, 14.42144] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Angeles Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.58693, 15.13732] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Telabastagan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.60142, 15.1201] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Maria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96179, 14.81936] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Argao Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.60035, 9.882] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mendez Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9046, 14.13108] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Maragondon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.73575, 14.27599] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tiaong Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.32333, 13.95878] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Isidro Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.10894, 14.63575] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.70039, 15.02465] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Fernando Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.69412, 15.02778] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "尖東消防局 Tsim Tung Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.18003, 22.30044] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Alfonso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.85552, 14.1362] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Naic Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.77167, 14.32262] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Silay Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.97516, 10.80122] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Minosa Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.52011, 15.18259] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Rodriguez Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.13648, 14.73052] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Surigao City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.49374, 9.79204] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lucena City PNR Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.61311, 13.9272] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Arayat Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.77149, 15.154] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Catarman Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.63755, 12.49958] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [118.74794, 9.76285] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Vigan City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.38675, 17.57477] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Quezon City Fil-Chi Volunteer Fire Brigade Ass'n."
+      },
+      "geometry": { "type": "Point", "coordinates": [121.01772, 14.61572] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Victoria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.32853, 14.22784] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Davao Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.62414, 7.07579] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Toril Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [125.49915, 7.01914] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.46126, 14.86667] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pagsanjan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.45586, 14.27232] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "LISP 2 Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.1468, 14.19284] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.70831, 7.58493] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Majayjay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.47056, 14.14686] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hagonoy Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.73407, 14.8358] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pateros Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07353, 14.55164] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Buru-On Fire Sub Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.16876, 8.18739] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dapitan City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.42204, 8.65948] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cabadbaran City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.53454, 9.12063] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.90931, 15.33674] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Plaridel Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.72384, 8.6081] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "murcia fire department"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.04031, 10.60592] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "brgy. panghulo fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9564, 14.68609] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cabanatuan City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9428, 15.44466] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Malaybalay City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.12763, 8.1537] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "舂坎角消防局 Chung Hom Kok Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.20351, 22.22014] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Angat Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.02845, 14.91938] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "General Mariano Alvarez Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00704, 14.29593] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Makilala Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.08851, 6.95925] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Pikit Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.67736, 7.05746] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Midsayap Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.53244, 7.18915] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cotabato Filipino - Chinese Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.25084, 7.22345] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.06918, 12.3529] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "PHILPHOS Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.43392, 10.89945] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Floridablanca Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.52821, 14.97487] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.23653, 8.22869] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kaputian Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.72532, 6.96566] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.85507, 9.63923] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.99954, 14.47648] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection;BFP Regional Office 2"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.72395, 17.62276] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Department" },
+      "geometry": { "type": "Point", "coordinates": [120.57046, 15.29009] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Muñoz Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.90353, 15.71329] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Mesa Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00852, 14.60171] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.45777, 6.83314] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tubigon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.96064, 9.94434] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dagupan City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.34211, 16.04128] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Morong Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.23689, 14.50658] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kidapawan City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.0919, 7.00823] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balai Bomba dan Penyelamat Sandakan"
+      },
+      "geometry": { "type": "Point", "coordinates": [118.09236, 5.8645] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.84419, 6.50177] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Granada Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.034, 10.66624] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manaoag Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.48669, 16.0437] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.6518, 8.4836] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Cogon Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.65121, 8.47915] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sanchez Mira Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.23435, 18.5606] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Roxas Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.75522, 11.58498] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.03238, 14.68183] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "灣裡消防分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.18141, 22.9328] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Jamindan Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.50932, 11.40963] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "機場消防隊海上救援西局 Airport Fire Contingent West Sea Rescue Berth"
+      },
+      "geometry": { "type": "Point", "coordinates": [113.89711, 22.30463] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "initao fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.30348, 8.49695] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Naawan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.29, 8.43386] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cabuyao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.12454, 14.27138] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lugait Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.25931, 8.34262] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.06345, 6.22094] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.29818, 6.68818] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tetuan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.09088, 6.91754] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guiwan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.09199, 6.92877] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "高雄市消防局綜合大樓"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.30695, 22.59307] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "田贝中队" },
+      "geometry": { "type": "Point", "coordinates": [114.12159, 22.56636] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "高雄港消防局" },
+      "geometry": { "type": "Point", "coordinates": [120.27735, 22.6198] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Malolos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.82069, 14.86439] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pastrana Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.8867, 11.13664] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bangar Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.42404, 16.89421] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Digos City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.35639, 6.74483] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.59129, 16.41232] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Bataan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [126.13707, 7.55078] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Candelaria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [119.93178, 15.62659] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.97987, 9.33401] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Techno Park" },
+      "geometry": { "type": "Point", "coordinates": [121.05751, 14.26141] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Subic Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.2342, 14.87695] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tagkawayan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.53852, 13.96362] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.34257, 13.99449] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Aluba Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.64635, 8.45587] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Arranque Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97792, 14.60257] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balai Bomba Berakas"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.93252, 4.92513] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Unit Operasi Wanita"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.93266, 4.92543] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lambak Kanan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.96527, 4.97285] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bancasi Butuan Airport Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.48054, 8.94878] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.34225, 8.59] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Antipolo City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.17598, 14.58386] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cauayan Airport Fire & Rescue"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.7536, 16.92751] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Millenium Fire & Rescue Volunteers Assoc., Inc."
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00329, 14.63557] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balai Bomba dan Penyelamat Daerah Tuaran"
+      },
+      "geometry": { "type": "Point", "coordinates": [116.2343, 6.17869] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Virac Airport Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.21177, 13.57902] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bomba Dan Penyelamat"
+      },
+      "geometry": { "type": "Point", "coordinates": [116.06491, 5.96165] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Old Paranaque Fire Volunteer"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99571, 14.51322] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "中區滅火輪消防局 Central Fireboat Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.15572, 22.28861] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.21855, 16.65102] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Bato Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.29725, 13.60976] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Andres Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.09804, 13.59888] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Virac Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.2365, 13.58476] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.47759, 10.69159] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.03832, 11.06342] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guinobatan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.59914, 13.19156] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pigcawayan Bureau Of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.42462, 7.27757] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balanga City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.5336, 14.6731] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.59451, 14.5624] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Jabatan Bomba dan Penyelamat Limbang"
+      },
+      "geometry": { "type": "Point", "coordinates": [115.01487, 4.76082] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calauan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.31481, 14.14661] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "第一救災救護大隊" },
+      "geometry": { "type": "Point", "coordinates": [120.33058, 22.62271] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "第一中隊" },
+      "geometry": { "type": "Point", "coordinates": [120.31122, 22.63053] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.05117, 10.29799] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bontoc Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97811, 17.08792] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.63351, 22.59218] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Cruz Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98045, 14.6016] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "LISP Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.1011, 14.23863] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dagupan Panda Fire Volunteer"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.35, 16.04622] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Toledo City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.63428, 10.37535] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Filipino-Chinese Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.29497, 9.31761] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Carlota Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.9214, 10.42713] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Apas Fire Sub Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.90502, 10.33712] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "中庄分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.39672, 22.63242] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "五甲分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.33449, 22.59794] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "前金分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.2943, 22.62862] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "前鎮分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.31914, 22.58662] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "十全分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.31137, 22.645] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "右昌分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.29176, 22.71772] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "大昌分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.32496, 22.64937] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "大林分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.34621, 22.52709] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "大樹分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.43257, 22.69509] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "小港分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.33635, 22.56291] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "岡山分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.29434, 22.7963] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "崇德小隊" },
+      "geometry": { "type": "Point", "coordinates": [120.38253, 22.87743] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "成功分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.29847, 22.59509] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "新興分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.31149, 22.63053] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "旗山分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.48353, 22.88831] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "林園分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.39448, 22.50839] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "梓官分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.26291, 22.76046] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "橋頭分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.29676, 22.74147] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "永安分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.23646, 22.82352] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "湖內分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.2127, 22.90852] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "特搜中隊" },
+      "geometry": { "type": "Point", "coordinates": [120.32176, 22.73407] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "瑞隆分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.32573, 22.60029] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "田寮分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.40573, 22.82493] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "美濃分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.54235, 22.90079] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "苓雅分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.33063, 22.62269] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "茂林分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.66328, 22.88625] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "茄萣分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.18326, 22.90368] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "阿蓮分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.32887, 22.87896] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "高桂分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.37067, 22.5623] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "鳳山分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.36289, 22.62749] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "鳳祥分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.36096, 22.59907] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "鼎金分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.3216, 22.66685] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "鼓山分隊" },
+      "geometry": { "type": "Point", "coordinates": [120.27547, 22.62323] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Subic Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.23547, 14.86886] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "灣仔消防局 Wan Chai Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [114.18137, 22.27971] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Silang Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97177, 14.22251] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Candiajy Fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.49659, 9.81875] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calumpit Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.76464, 14.91464] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manocmanoc Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.94223, 11.94958] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Mati Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [126.2169, 6.95186] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Los Baños Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.22444, 14.18197] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "IRRI Emergency Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.25798, 14.1712] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Don Carlos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.99171, 7.68126] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Claver Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.73261, 9.57273] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.96211, 14.18744] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Asingan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.66989, 16.00415] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Masambong Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.01191, 14.64018] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mabini Fire Stationn"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.52334, 9.86521] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Ibayo-TIpas Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08843, 14.54063] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calauag Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.28686, 13.95701] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.64758, 22.4325] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.87796, 6.94583] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Marabut Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.21264, 11.10826] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.92808, 11.56774] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "屏東縣政府消防局第二大隊萬丹分隊"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.49031, 22.58783] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Surallah fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.74716, 6.37671] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "SBMA Fire Department Station 4"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.29833, 14.80583] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "消防" },
+      "geometry": { "type": "Point", "coordinates": [114.03525, 22.60989] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Naval Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.394, 11.56189] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.72225, 17.62037] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.02022, 11.77033] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Bay Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.28454, 14.18023] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mansasa Fire Substation"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.86912, 9.63392] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mansasa Fire Substation"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.86906, 9.63374] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Consolacion Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.95766, 10.37605] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Agusan Filipino-Chinese Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.54115, 8.95072] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dimiao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.16059, 9.60447] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.4153, 10.47991] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guadalupe Fire Sub Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.88403, 10.32259] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Liloan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.99894, 10.39977] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tipolo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.92752, 10.33321] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Naga City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.7592, 10.20463] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Carcar City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.64141, 10.10533] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Compostela Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.01255, 10.45349] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Maribojoc Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.84388, 9.74129] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balilihan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.97182, 9.75593] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Loon Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.79731, 9.80531] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Valencia Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.20913, 9.60942] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Daan Bantayan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.00172, 11.24684] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Zambaonguita Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.1999, 9.09959] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Valencia Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.24285, 9.28194] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "MEPZ II Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.96405, 10.30105] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "MEPZ I Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.98051, 10.32648] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Buug Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.06058, 7.72877] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hinunangan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.20305, 10.39538] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.65293, 14.0368] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sta. Barbara Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.53089, 10.82695] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mariveles Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.48949, 14.43583] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Lapaz Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.56982, 10.711] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Jose Panganiban Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.6939, 14.28567] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Lazi Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.63353, 9.12855] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Larena Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.59506, 9.24949] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Juan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.49328, 9.1637] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Francisco Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.38238, 10.64541] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Poro Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.40656, 10.62887] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tudela Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.47095, 10.63614] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Canlaon City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.22773, 10.38283] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bustos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.91874, 14.95413] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Baliwag Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.89998, 14.95954] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.75274, 13.15149] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Jose Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.48774, 12.52851] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cortes Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [126.19206, 9.27536] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Loreto Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.85356, 8.187] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Culion Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.01865, 11.89481] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Palapag Firetruck Garage (temporary)"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.11539, 12.54608] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.59899, 7.05719] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Juan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.93797, 10.66567] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "BFP - Claveria" },
+      "geometry": { "type": "Point", "coordinates": [124.89381, 8.61119] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [113.96989, 22.38291] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Ongpin-Gandara-Tetuan Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9772, 14.60031] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Maypajo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9737, 14.63777] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "SBMA Fire Department Station 7"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.28317, 14.81808] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "SBMA Fire Department Station 5"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.32559, 14.80432] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "SBMA Fire Department Station 6"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.30851, 14.84322] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "SBMA Fire Department Station 2"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.28134, 14.75725] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Malate Fire Volunteer and Rescue Squad"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98653, 14.56551] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Office of the Provincial Fire Marshal"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97694, 17.08957] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Alpha Fire Brigade" },
+      "geometry": { "type": "Point", "coordinates": [120.9657, 14.62917] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "B.M. Domingo Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96659, 14.60462] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bambang-Masangkay-Abad Santos Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97983, 14.6102] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Blue Dragon Fire and Rescue"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97036, 14.62868] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central Downtown Firefighters"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98128, 14.60872] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central Sampaloc Fire and Rescue Volunteer Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99085, 14.61812] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central San Nicolas Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96899, 14.59885] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central Tondo Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96751, 14.61262] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Chinatown Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97698, 14.59976] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dagupan Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97259, 14.61122] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Divisoria Volunteer Firefighters"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97136, 14.60369] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Binondo Paco Fire Search and Rescue Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97524, 14.6002] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "G. Perfecto Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97149, 14.61281] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Hometown Volunteer" },
+      "geometry": { "type": "Point", "coordinates": [120.97582, 14.60423] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Maginoo Fire Rescue Volunteer"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96144, 14.62018] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manila Blumentrit Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98008, 14.62246] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manila DJ Zone 31 Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97936, 14.60553] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manila Setba Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98104, 14.62028] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Market Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96811, 14.6073] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "North Jose Abad Santos Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9681, 14.62535] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "North Tondo Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9694, 14.61975] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pandacan Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00131, 14.58585] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Red Cross Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97021, 14.59132] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Saint Florian Rescue Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97978, 14.60748] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Andres Fire Volunteer Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00378, 14.5691] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Soler Volunteer Fire Prevention Center"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98066, 14.60217] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "South San Nicolas Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97335, 14.5992] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tondo 1 Volunteer Firefighters"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97275, 14.61249] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Tutuban Prime" },
+      "geometry": { "type": "Point", "coordinates": [120.97264, 14.6106] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "West Tondo Volunteer Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97497, 14.61036] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Imus Central Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.94151, 14.42304] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "卑南消防分隊" },
+      "geometry": { "type": "Point", "coordinates": [121.09362, 22.83027] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "台東縣消防局" },
+      "geometry": { "type": "Point", "coordinates": [121.15172, 22.76483] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.0881, 11.47196] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bartville, Dela Paz Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.09377, 14.61115] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Escolta Santa Cruz Fire and Rescue Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.97996, 14.59877] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Madridejos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.72987, 11.29608] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Fernando Municipal Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.70774, 10.16117] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Talisay City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.8291, 10.25341] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Polillo Municipal Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.93809, 14.71435] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.04758, 14.80929] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "FPIP Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.13046, 14.13683] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Rosario Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.0845, 14.58612] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Culasi Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.05507, 11.4264] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Castillejos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.19964, 14.93223] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Rodriguez Sub-Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.93795, 10.66563] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Balai Bomba Tutong" },
+      "geometry": { "type": "Point", "coordinates": [114.65611, 4.80335] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Jose Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.0228, 11.20757] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.01819, 10.32367] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.07291, 10.27163] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "MADDELA FIRE STATION"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.68398, 16.33974] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.92405, 15.58365] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Oroquieta Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.79713, 8.47669] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Matag-ob Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.4708, 11.14853] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.50706, 22.51482] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Rafael Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.92748, 14.98217] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "FIRE STATION" },
+      "geometry": { "type": "Point", "coordinates": [124.62858, 12.50587] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.32096, 10.14112] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Numancia Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.32939, 11.70475] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.03542, 14.72113] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Laua-an Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.04147, 11.14318] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "BFR RO2 OFFICE" },
+      "geometry": { "type": "Point", "coordinates": [121.75193, 17.65316] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "(EMS) BFP REGIONAL OFFICE"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.75181, 17.65336] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "NEW BUILDING GAPAN CITY FIRE STATION"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.94861, 15.29298] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Gattaran Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.64623, 18.06136] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dinas Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.33902, 7.61624] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.47652, 17.36369] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Rita Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.94063, 11.45184] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.3006, 11.14042] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire-San Fernando"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.14396, 13.56497] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Ballesteros Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.5154, 18.41006] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Taft Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [125.41719, 11.90434] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pioduran Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.44769, 13.02854] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Carmel Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.19675, 9.82036] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tagbilaran City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.86454, 9.65373] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "DILG" },
+      "geometry": { "type": "Point", "coordinates": [122.61791, 11.05931] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Binangonan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.1885, 14.48172] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bangued Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.61641, 17.60122] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Quintin Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.52004, 17.54177] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Temporary San Quintin FS"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.51901, 17.54314] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Buguias Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.82194, 16.80036] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Basak Mandaue Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.95004, 10.35452] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.4165, 10.89766] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dolores Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.4845, 12.03598] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Nicolas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.95219, 13.93033] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.64458, 22.705] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.82301, 21.93466] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tarlac Filipino Chinese Fire Brigade Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.59724, 15.49481] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.44026, 17.40354] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Barangay Basak San Nicolas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.87047, 10.28615] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Igbaras Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.26542, 10.71599] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.83829, 8.14376] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Carmen Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.84833, 8.14356] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tabuk City Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.46568, 17.4706] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Abra de Ilog Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.72636, 13.44052] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cortes Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [126.18785, 9.27625] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Antonio Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.85686, 15.30748] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Altavas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.48779, 11.53771] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "taguig" },
+      "geometry": { "type": "Point", "coordinates": [120.90097, 13.52706] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "D'ECK TRANS Volunteer Fire & Rescue Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.96242, 14.60099] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [117.99764, 9.23807] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [117.6493, 9.01776] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tayugo Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.55172, 6.64534] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.03461, 11.28929] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cagayan de Oro City Fire District Station 6"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.6313, 8.50236] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.3411, 12.32147] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Tupi fire station" },
+      "geometry": { "type": "Point", "coordinates": [124.94974, 6.331] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Garchitorena Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.70166, 13.88412] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection - Aliaga Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.84327, 15.50101] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cordova Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.94921, 10.25173] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Trinidad Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.34753, 10.07987] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Alaminos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.24675, 14.06551] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.68656, 12.36885] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Minalin Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.6843, 14.96894] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "FIRE SUB-STATION" },
+      "geometry": { "type": "Point", "coordinates": [121.06872, 13.78404] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Valenzuela Primo" },
+      "geometry": { "type": "Point", "coordinates": [120.97878, 14.68237] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Manapla Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.12308, 10.9597] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Oslob Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.43095, 9.52129] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.38317, 17.54738] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.36413, 17.58932] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dolores Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.484, 12.03563] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Paco Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99763, 14.57952] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "RD Shipyard Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.12693, 6.00208] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "RD Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.15268, 6.08713] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dole Philippines - Calumpang Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.1524, 6.08336] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "KCC Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.18916, 6.115] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "CPAVI Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.14379, 6.06555] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Barangay Fatima Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.11517, 6.07384] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Barangay Labangal Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.15218, 6.09448] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Claveria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08228, 18.60678] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sampaloc Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.63865, 14.16176] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calamba Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.16757, 14.21169] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.6861, 15.02348] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Panacan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.65534, 7.15826] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cabantian Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.59926, 7.14318] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Central San Juan Fire and Rescue Volunteers"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.02806, 14.60113] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Boac Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.83397, 13.44927] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tacloban Filipino-Chinese Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.00259, 11.25026] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Catalina Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.08702, 6.9091] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Odiongan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.98135, 12.40011] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.98128, 6.70403] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Luis Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.52268, 15.7231] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.13754, 22.91641] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Leon Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.38728, 10.78145] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bocaue Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.93548, 14.78017] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Capas Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.5928, 15.34673] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Shariff Aguak Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.43924, 6.86377] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Fire Station of Nabunturan"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.96909, 7.60296] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Bureau Fire of Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.48747, 16.49724] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection - Bulacan"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.81586, 14.85624] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.25085, 7.21753] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Makato Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.29226, 11.71223] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Torrijos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.0862, 13.32204] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tayabas City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.5929, 14.0243] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Cruz Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.41513, 6.83423] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.07433, 14.64161] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Barbara Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.40299, 16.00031] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Camaligan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.16723, 13.62462] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Leon Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.38723, 10.78143] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guimbal Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.3219, 10.66174] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire truck" },
+      "geometry": { "type": "Point", "coordinates": [122.0614, 6.67966] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.45289, 11.8143] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sindangan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.99822, 8.23338] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bislig Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [126.31611, 8.21845] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Marcelino Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.15551, 14.97464] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.56664, 10.73968] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.01255, 14.52507] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.26341, 14.85144] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Dao Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.68429, 11.39432] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Costner" },
+      "geometry": { "type": "Point", "coordinates": [122.57976, 10.69498] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Tanay BFP" },
+      "geometry": { "type": "Point", "coordinates": [121.28282, 14.50047] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Placer Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.6001, 9.65669] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.48726, 16.49751] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Lorenzo Ruiz Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.86216, 14.03513] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Cagayan fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.14261, 18.45482] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.99692, 18.26012] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Day Care Center 1;San isidro sub fire station;health center"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.54588, 10.73623] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hinundayan Municipal Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.25521, 10.35096] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.60063, 22.355] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "BFP Tublay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.63299, 16.47509] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "62 Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.0862, 14.60398] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Jose Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.9413, 10.74796] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sibalom Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.0177, 10.78968] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "屏東縣政府消防局第三大隊東港分隊"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.46128, 22.46324] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [125.01776, 11.70988] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "PASUKAN BOMBA SUKARELA GUGUSAN FELDA SAHABAT"
+      },
+      "geometry": { "type": "Point", "coordinates": [118.91195, 5.05863] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bontoc Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.97008, 10.35608] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tacurong City Bureau of Fire"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.67558, 6.69144] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tarangnan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.74592, 11.90227] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mambajao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.72601, 9.24627] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Arevalo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.51655, 10.68784] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lamitan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.13533, 6.66176] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sta. Maria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.07471, 6.93106] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Volunteer Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.9851, 14.64843] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.0303, 14.59113] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.09412, 8.51784] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Moalboal Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.39223, 9.93556] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bayugan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.75196, 8.71265] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "BFP" },
+      "geometry": { "type": "Point", "coordinates": [121.05906, 14.47382] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Fire Prone Residential"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.05883, 14.48004] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Marcelino Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.15533, 14.97452] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.77175, 7.91987] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Vallehermoso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.3261, 10.33027] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guihulngan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.27295, 10.11915] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hagonoy Barangay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.06985, 14.51282] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kapangan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.60586, 16.57611] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pioduran Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.44913, 13.02957] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bambang Fire and Rescue"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08208, 14.55485] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pasig City Fire Boat"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08202, 14.55409] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Joaquin Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07632, 14.55106] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Jose Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07427, 14.56128] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Cruz Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07898, 14.5636] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.09406, 14.56476] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Palatiw BSF and Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08495, 14.56304] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santolan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08635, 14.61634] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.02507, 8.91168] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [121.08373, 14.59027] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pinagbuhatan Fire and Rescue"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08607, 14.55604] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Barangka Ibaba Barangay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.04128, 14.57157] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Agno Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [119.80211, 16.11602] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lake Sebu Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.71871, 6.23419] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [114.93149, 4.9241] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [114.93628, 4.89337] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sierra Bullones Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.29322, 9.80627] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Las Navas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.03143, 12.33805] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Estancia Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.15088, 11.45681] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Basay Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.64062, 9.40843] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Siaton Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.03348, 9.06136] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.11802, 10.56579] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Kananga Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.55958, 11.18327] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Panglao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.75342, 9.58038] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "New Washington Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.43423, 11.64833] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dolores Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.99118, 11.58743] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Binalbagan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.85933, 10.19437] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mabinay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.92594, 9.73668] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [123.22437, 9.46542] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Juan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.17367, 10.26076] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dalaguete Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.53471, 9.76192] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Loctugan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.76578, 11.5132] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calceta Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.86436, 9.65373] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bais City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.11745, 9.59421] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mambusao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.59718, 11.42835] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Talibon Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.82559, 10.72891] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.59418, 10.72394] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Toboso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.51534, 10.71506] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Capul Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.18258, 12.42276] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dalaguete Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.53468, 9.76195] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [124.87621, 12.53984] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dumanjug Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.43583, 10.05884] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Clarin Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.02326, 9.96285] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Culab-og Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.58748, 10.69946] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Escalante Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.49286, 10.83374] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Loay Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.0257, 9.59569] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Himamaylan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.47482, 11.46566] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Ilog Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.76961, 10.02449] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Castellana Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.01806, 10.32352] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "La Castellana Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.01822, 10.32369] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mandurriao Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.53636, 10.71666] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Culab-og Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.28285, 12.50048] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lapu-lapu City Fire District Station 3"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.95896, 10.30526] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Batad Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.11027, 11.41779] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dueñas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.61786, 11.05932] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Toboso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.11027, 11.4178] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Ricardo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.27678, 9.91268] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Basey Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [125.0694, 11.28057] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Valderrama Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.12964, 11.00329] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Passi Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.64158, 11.10465] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Catalina Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.86231, 9.33399] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bien Unido Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.377, 10.14061] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Sigma Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [122.6655, 11.42292] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bingawan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.56761, 11.23331] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Barugo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.73687, 11.326] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Enrique Magalona Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.9778, 10.87867] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Kawit Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [123.94559, 11.18504] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Himamaylan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.86696, 10.08617] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Talibon Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.32086, 10.14134] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Zarraga Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.60854, 10.82242] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Carigara Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.68566, 11.30259] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Gamay Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [125.29903, 12.38468] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sapian Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.60509, 11.49428] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Canlaon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.21388, 10.38414] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Borbon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.03085, 10.83767] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.95912, 10.66921] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.5971, 10.87918] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Banate Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.8174, 11.001] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Isidro Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.33099, 12.38555] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calape Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.88089, 9.89382] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lambunao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.47501, 11.05445] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bugasong Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.06435, 11.04374] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mondragon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.75124, 12.51748] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Paranas Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.02053, 11.77021] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "amenity=fire_station name=Kabankalan City Fire Station source=data.gov.ph;Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.81252, 9.99521] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Sogod Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [124.00428, 10.7528] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Dao fire station" },
+      "geometry": { "type": "Point", "coordinates": [122.7676, 11.46377] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.5877, 10.60722] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Calape Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.59067, 10.598] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pontevedra Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.86585, 10.37617] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Tagbac Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.57997, 10.76488] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [125.21251, 11.10766] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [122.53789, 11.26078] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dumaguete Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.3097, 9.30489] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Rotary Club of Pinamalayan Central"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.47221, 13.04278] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guiuan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.58289, 10.93475] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Hinigaran Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.85305, 10.27046] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Antonio Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.27894, 12.4134] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Moises Padilla Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.07464, 10.2702] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lavezares Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.33091, 12.53479] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Alegria Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.34013, 9.72932] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Roxas Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [121.5176, 12.59104] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lemery Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.91368, 13.88388] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Taal Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.91759, 13.87802] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Malaybalay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.12645, 8.15778] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": null },
+      "geometry": { "type": "Point", "coordinates": [120.97833, 13.86847] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "宝安区森林消防大队" },
+      "geometry": { "type": "Point", "coordinates": [113.86725, 22.82998] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Ildefonso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.39864, 17.62591] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "长兴消防站" },
+      "geometry": { "type": "Point", "coordinates": [114.23922, 22.73033] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Magpet Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.11467, 7.1028] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Pasig Alliance" },
+      "geometry": { "type": "Point", "coordinates": [121.06944, 14.56798] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Minglanilla Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.79604, 10.24426] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Novaliches fire station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.03548, 14.72129] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Doña Ata Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98454, 14.67744] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Sta Maria tennis club"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.47158, 16.0271] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bamboo Organ Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98152, 14.48072] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dapa Central Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [126.05267, 9.75709] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Holy Spirit Barangay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.07673, 14.68428] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Binmaley Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.26962, 16.02826] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Laguindingan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.43587, 8.56967] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Baracom Central Fire & Rescue Volunteer"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.98664, 14.62595] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "BF International Barangay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99482, 14.4575] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Balai Bomba Dan Penyelamat Kunak"
+      },
+      "geometry": { "type": "Point", "coordinates": [118.24582, 4.68561] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Tboli fire station" },
+      "geometry": { "type": "Point", "coordinates": [124.82549, 6.21166] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Margarita Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.65876, 12.03781] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Ana Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.76306, 15.08455] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Porac Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.54098, 15.07347] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Simon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.75029, 14.9842] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dingle Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.66979, 11.00009] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Jimalalud Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.20099, 9.9787] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Enrique Villanueva Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [123.64388, 9.27956] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "ARTECHE FIRE STATION"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.372, 12.27211] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Padre Garcia Fire Department"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.21312, 13.87997] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Knighthawk Rescue Team"
+      },
+      "geometry": { "type": "Point", "coordinates": [125.591, 7.06248] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Brooke's Point Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [117.83661, 8.77149] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Santa Rita Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.61738, 15.00085] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dumarao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.67841, 11.26201] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dumarao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.67831, 11.26203] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Dumarao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.67831, 11.26203] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Miguel Fire & Rescue Base"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.08564, 14.56549] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "BUREAU OF FIRE PROTECTION"
+      },
+      "geometry": { "type": "Point", "coordinates": [117.99751, 9.23808] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Candaba Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.82813, 15.09247] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "IVC Station" },
+      "geometry": { "type": "Point", "coordinates": [121.08005, 14.62729] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lucena Integrated Filipino-Chinese Fire Brigade Incorporated"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.61203, 13.93421] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pagbilao Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.68723, 13.97165] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Agdangan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.91228, 13.87631] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Mulanay Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.40315, 13.52322] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Gumaca Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.09823, 13.92098] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Atimonan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.92587, 14.00198] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Macalelon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.13817, 13.7475] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Padre Burgos Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.81441, 13.91593] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Pitogo Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.08815, 13.78291] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Buenavista Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.46526, 13.73328] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Guinayangan Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.45467, 13.89717] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Plaridel Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.01174, 13.95871] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Andres Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.67508, 13.32178] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "San Narciso Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.56678, 13.56436] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Alabat Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.02099, 14.10634] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Quezon Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [122.18234, 14.00649] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lucena City St. Michael Fire Sub-Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.60439, 13.95798] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Labangon Station" },
+      "geometry": { "type": "Point", "coordinates": [123.88118, 10.2991] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Aurora Hill Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.60629, 16.42627] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Lawang Bato Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.99404, 14.73035] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Caybiga Fire Sub-station"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.00714, 14.71905] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "BUREAU OF FIRE PROTECTION JONES ISABELA"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.70225, 16.56223] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Urdaneta City Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.56493, 15.9754] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Talugtug Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.80736, 15.77829] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Bureau of Fire Protection"
+      },
+      "geometry": { "type": "Point", "coordinates": [120.5981, 15.47078] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Paglat Fire Station"
+      },
+      "geometry": { "type": "Point", "coordinates": [124.78475, 6.78075] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "Banna Fire Station" },
+      "geometry": { "type": "Point", "coordinates": [120.65451, 17.98081] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "fire_station", "name": "552ND AOS" },
+      "geometry": { "type": "Point", "coordinates": [121.12832, 13.95291] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "amenity": "fire_station",
+        "name": "Fortune Fire Brigade"
+      },
+      "geometry": { "type": "Point", "coordinates": [121.12779, 14.66327] }
+    }
+  ]
+}

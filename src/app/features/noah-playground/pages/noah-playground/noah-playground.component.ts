@@ -14,7 +14,7 @@ export class NoahPlaygroundComponent implements OnInit {
 
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
-
+  isList;
   hazardTypes = HAZARDS;
 
   constructor(private pgService: NoahPlaygroundService) {}
@@ -27,6 +27,5 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;
     this.pgService.setCenter({ lat, lng });
-    this.pgService.setCurrentCoords({ lat, lng });
   }
 }

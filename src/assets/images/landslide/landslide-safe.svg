@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="181.23958mm"
+   height="79.374992mm"
+   viewBox="0 0 181.23958 79.374992"
+   version="1.1"
+   id="svg955"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="landslide-noise.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview957"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="543.04588"
+     inkscape:cy="362.25545"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs952" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-92.333467,-30.671804)">
+    <g
+       id="g4217"
+       transform="matrix(1.2026515,0,0,1.2026515,135.08285,22.559091)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-Assets\NOAH Assets\HazardLevel\Landslide\landslide-safe.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <g
+         id="g4207"
+         style="fill:#0066ff;fill-opacity:1">
+        <path
+           d="M 62.950012,50.079956 C 63.890015,49.22998 64.48999,48.019958 64.48999,46.659973 64.48999,45.419983 64,44.25 63.099976,43.380005 62.210022,42.519958 61.030029,42.039978 59.77002,42.039978 H 38.780029 c 0.599976,-0.969971 1.459961,-2.409973 2.529969,-4.320007 1.220031,-2.179993 1.73999,-4.529969 1.470031,-6.630005 -0.200012,-1.529969 -1.310058,-2.719971 -2.840027,-3.029969 -1.510009,-0.309997 -3,0.349976 -3.770019,1.679993 -1.029968,1.76001 -2.200012,3.419983 -3.479981,4.940003 -2.25,2.669983 -4.880005,4.950012 -8.020019,6.960022 h -2.23999 c -0.359986,-1.040039 -1.299988,-1.78003 -2.380005,-1.78003 h -9.48999 c -1.4099735,0 -2.5499882,1.25 -2.5499882,2.799988 v 27.480042 c 0,1.549987 1.1400146,2.809997 2.5499882,2.809997 h 9.48999 c 1.090027,0 2.020019,-0.75 2.390014,-1.800049 h 2.419983 l 8.820008,1.830018 C 33.75,72.98999 33.820007,73 33.880005,73 H 55.400024 C 58,73 60.119995,70.929993 60.119995,68.390015 c 0,-1.03003 -0.339966,-2 -0.950012,-2.79004 1.98999,-0.539978 3.460022,-2.339965 3.460022,-4.45996 0,-1.03003 -0.340027,-2.01001 -0.970032,-2.810059 1.930054,-0.579956 3.350037,-2.349976 3.350037,-4.429993 0,-1.25 -0.5,-2.409973 -1.390015,-3.269958 -0.210022,-0.210022 -0.429993,-0.390015 -0.669983,-0.550049 z M 20.049988,70.950012 h -9.48999 c -0.26001,0 -0.549988,-0.330017 -0.549988,-0.809997 V 42.659973 c 0,-0.469971 0.289978,-0.799988 0.549988,-0.799988 h 9.48999 c 0.26001,0 0.549988,0.320008 0.559997,0.78003 v 27.509948 c 0,0.470032 -0.299987,0.800049 -0.559997,0.800049 z"
+           id="path4205"
+           style="fill:#0066ff;fill-opacity:1" />
+      </g>
+      <g
+         id="g4211"
+         style="fill:#0066ff;fill-opacity:1">
+        <path
+           d="M 70.98999,7 H 45.080017 c -0.549988,0 -1,0.4500122 -1,1 v 17.779968 c 0,0.549988 0.450012,1 1,1 H 46.72998 V 29.75 c 0,0.359985 0.190003,0.690002 0.5,0.869995 0.150025,0.08997 0.330018,0.130005 0.5,0.130005 0.170044,0 0.340027,-0.04004 0.489991,-0.119995 l 6.890014,-3.850037 H 70.98999 c 0.549988,0 1,-0.450012 1,-1 V 8 c 0,-0.5499878 -0.450012,-1 -1,-1 z"
+           id="path4209"
+           style="fill:#0066ff;fill-opacity:1" />
+      </g>
+      <g
+         id="g4215"
+         style="fill:#0066ff;fill-opacity:1">
+        <circle
+           cx="15.307861"
+           cy="66.518127"
+           r="1.758606"
+           id="circle4213"
+           style="fill:#0066ff;fill-opacity:1" />
+      </g>
+    </g>
+  </g>
+</svg>

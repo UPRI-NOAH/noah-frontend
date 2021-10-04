@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="80.746277mm"
+   height="79.375mm"
+   viewBox="0 0 80.746277 79.375001"
+   version="1.1"
+   id="svg1162"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="flashlight.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1164"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.4823793"
+     inkscape:cx="-21.249621"
+     inkscape:cy="104.89892"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1159" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-288.55874,-253.61783)">
+    <g
+       id="g2748"
+       transform="matrix(1.3685345,0,0,1.3685345,285.82167,249.50265)"
+       style="fill:#0066ff;fill-opacity:1"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\sanitation.png"
+       inkscape:export-xdpi="496.25476"
+       inkscape:export-ydpi="496.25476">
+      <path
+         d="m 27.512,34.982 c -0.055,0.111 -0.1,0.226 -0.146,0.341 0.535,-0.193 1.104,-0.316 1.704,-0.316 1.004,0 1.977,0.295 2.812,0.852 l 4.738,3.159 C 36.861,38.443 37,37.815 37,37.153 37,36.399 36.825,35.656 36.488,34.982 L 32,26.007 Z"
+         id="path2736"
+         style="fill:#0066ff;fill-opacity:1" />
+      <polygon
+         points="34,16.007 34,12.007 30,12.007 30,16.007 26,16.007 26,20.007 30,20.007 30,24.007 34,24.007 34,20.007 38,20.007 38,16.007 "
+         id="polygon2738"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 21.307,39.751 2.239,-3.349 C 19.066,33.546 16.1,28.618 16.1,23.007 c 0,-8.837 7.343,-16 16.4,-16 9.057,0 16.4,7.163 16.4,16 0,5.611 -2.966,10.539 -7.446,13.395 l 2.239,3.349 c 5.6,-3.57 9.307,-9.73 9.307,-16.744 0,-11.046 -9.178,-20 -20.5,-20 -11.322,0 -20.5,8.954 -20.5,20 0,7.014 3.708,13.174 9.307,16.744 z"
+         id="path2740"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="M 43.993,46.335 30.774,37.522 c -0.504,-0.336 -1.097,-0.516 -1.703,-0.516 -1.696,0 -3.07,1.375 -3.07,3.07 v 0.286 c 0,1.027 0.513,1.985 1.367,2.555 l 7.632,5.09 -1.828,1.828 c -0.75,0.75 -1.768,1.172 -2.828,1.172 H 16.657 c -1.061,0 -2.078,-0.422 -2.828,-1.172 L 6.82,42.824 C 6.297,42.301 5.587,42.007 4.847,42.007 H 4.797 C 3.252,42.007 1.999,43.26 2,44.805 v 0.049 c 0,0.738 0.29,1.442 0.812,1.963 1.734,1.734 5.814,5.815 7.905,7.905 0.838,0.838 1.904,1.408 3.065,1.64 l 12.636,2.527 c 0.387,0.077 0.782,0.117 1.177,0.117 H 51 v -12 h -4.789 c -0.789,10e-4 -1.561,-0.232 -2.218,-0.671 z"
+         id="path2742"
+         style="fill:#0066ff;fill-opacity:1" />
+      <polygon
+         points="61,45.007 59,45.007 59,55.007 57,55.007 57,45.007 53,45.007 53,61.007 57,61.007 57,57.007 59,57.007 59,61.007 61.002,61.007 "
+         id="polygon2744"
+         style="fill:#0066ff;fill-opacity:1" />
+      <path
+         d="m 11.868,45.046 3.375,3.375 c 0.373,0.372 0.888,0.586 1.414,0.586 h 3.009 L 19.137,48.213 C 17.728,46.099 16.783,43.711 16.366,41.205 16.155,39.936 15.057,39.006 13.77,39.006 h -0.139 c -1.453,0 -2.631,1.178 -2.631,2.631 0,0.245 0.034,0.488 0.101,0.723 z"
+         id="path2746"
+         style="fill:#0066ff;fill-opacity:1" />
+    </g>
+  </g>
+</svg>

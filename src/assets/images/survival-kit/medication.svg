@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="78.70443mm"
+   height="79.374931mm"
+   viewBox="0 0 78.70443 79.374932"
+   version="1.1"
+   id="svg1162"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="flashlight.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1164"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74118967"
+     inkscape:cx="-92.418988"
+     inkscape:cy="6.0713204"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1159" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-184.63225,-169.54916)">
+    <path
+       d="m 198.27254,224.40097 v -0.31106 a 3.3409476,3.3409476 0 0 0 -3.34093,-3.34094 h -7.00447 a 3.3409476,3.3409476 0 0 0 -3.29489,3.34094 v 19.12404 a 3.3409476,3.3409476 0 0 0 3.34097,3.34095 h 6.95839 a 3.3409476,3.3409476 0 0 0 3.34093,-3.34095 v 0 z"
+       id="path2365"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:1.15205"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 263.33668,240.40294 v -0.18432 a 2.2438268,1.9815275 0 0 0 -1.70891,-1.70503 4.3832895,3.870891 0 0 0 -4.42245,-2.74189 l -2.88304,0.0691 a 35.575092,31.416428 0 0 0 -4.21371,0.41475 l -8.9492,1.65894 -14.57183,-1.46309 -4.73553,-0.9562 a 0.82186678,0.72579205 0 0 1 -0.63923,-0.80645 v 0 a 0.82186678,0.72579205 0 0 1 1.0045,-0.61058 l 4.73552,0.97924 12.69324,0.0921 a 3.2352852,2.8570861 0 0 0 3.26138,-2.8571 v 0 a 3.3005127,2.9146888 0 0 0 -3.05263,-2.93772 l -10.61905,-1.62441 a 41.028114,36.232001 0 0 1 -4.61809,-0.85251 c -1.06973,-0.32257 -4.59201,-1.44007 -6.52276,-2.21193 a 23.860228,21.071011 0 0 0 -16.07205,-1.64743 6.0009325,5.2994342 0 0 0 -0.93928,0.26497 v 20.61019 c 3.06568,0.87555 6.52276,1.99304 10.95821,3.21421 0,0 11.40178,1.02533 12.45845,1.48615 a 3.6266503,3.2027014 0 0 0 2.72655,0.17281 l 10.24071,-4.5506 3.78322,0.31105 11.74094,-2.97228 z m -25.56917,-7.21183 0.2609,-2.18889 a 0.8088213,0.71427155 0 0 1 0.93927,-0.63362 l 0.74365,0.11527 v 0 a 2.0742353,1.8317608 0 0 1 1.94376,1.58983 1.9698713,1.7395968 0 0 1 -1.95683,1.93545 h -1.14801 a 0.8088213,0.71427155 0 0 1 -0.78274,-0.81796 z"
+       id="path2367"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:1.22593"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 219.44116,197.89049 v -6.53026 h -4.57118 v 6.53026 a 0.91423595,0.91423595 0 0 1 -0.91424,0.91424 h -6.39965 v 4.17936 h 6.39965 a 0.91423595,0.91423595 0 0 1 0.91424,0.91423 v 6.53025 h 4.57118 v -6.53025 a 0.91423595,0.91423595 0 0 1 0.91428,-0.91423 h 6.53023 v -4.17936 h -6.53023 a 0.91423595,0.91423595 0 0 1 -0.91428,-0.91424 z"
+       id="path2203-3"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 228.89699,183.72897 a 0.91084023,0.91084023 0 0 1 -0.57467,-0.85025 v -3.53416 h -22.33346 v 3.53365 c 0,0.3734 -0.23053,0.64571 -0.57701,0.90692 h -0.005 c -3.25455,1.30606 -5.42741,4.532 -5.42741,8.11555 v 22.83643 a 3.9124074,3.9124074 0 0 0 3.9051,3.91958 h 26.50449 a 3.944275,3.944275 0 0 0 3.93954,-3.92219 v -22.83343 c 0,-3.60406 -2.18108,-6.88825 -5.43316,-8.1721 z m -0.18285,20.16935 a 0.91423595,0.91423595 0 0 1 -0.91423,0.91424 h -6.53023 v 6.53025 a 0.91423595,0.91423595 0 0 1 -0.91424,0.91423 h -6.3997 a 0.91423595,0.91423595 0 0 1 -0.91419,-0.91423 v -6.53025 h -6.3997 a 0.91423595,0.91423595 0 0 1 -0.91423,-0.91424 v -6.00783 a 0.91423595,0.91423595 0 0 1 0.91423,-0.91424 h 6.3997 v -6.53026 a 0.91423595,0.91423595 0 0 1 0.91419,-0.91424 h 6.3997 a 0.91423595,0.91423595 0 0 1 0.91424,0.91424 v 6.53026 h 6.53023 a 0.91423595,0.91423595 0 0 1 0.91423,0.91424 z"
+       id="path2205-7"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <rect
+       x="204.81339"
+       y="169.54916"
+       width="24.684368"
+       height="7.9669132"
+       id="rect2207-9"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 255.64795,211.47342 h -5.64515 v 7.18327 h 5.64515 a 3.5916418,3.5916418 0 1 0 0,-7.18327 z"
+       id="path2209-0"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 257.46594,205.49458 -5.27644,-1.93465 -2.23086,6.08502 h 5.68931 a 5.4001304,5.4001304 0 0 1 3.51719,1.30016 3.5926861,3.5926861 0 0 0 -1.6992,-5.45053 z"
+       id="path2211-9"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 240.6956,205.88587 a 3.5720505,3.5720505 0 0 0 2.02517,1.86386 l 5.17115,1.89522 h 0.11932 l 2.46179,-6.71442 -5.27647,-1.93373 a 3.5966043,3.5966043 0 0 0 -4.50106,4.88907 z m 1.76538,-0.0831 a 0.91423595,0.91423595 0 0 1 1.17308,-0.54372 l 4.17287,1.52978 a 0.91423595,0.91423595 0 1 1 -0.62939,1.71667 l -4.17286,-1.52977 a 0.91423595,0.91423595 0 0 1 -0.5437,-1.17296 z"
+       id="path2213-0"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+    <path
+       d="m 238.98363,215.06506 a 3.5964737,3.5964737 0 0 0 3.59648,3.59163 h 5.59421 v -7.18327 h -5.59421 a 3.5964737,3.5964737 0 0 0 -3.59648,3.59164 z m 8.95557,1.89377 a 0.91423595,0.91423595 0 0 1 -0.91419,0.91424 h -4.4449 a 0.914236,0.914236 0 1 1 0,-1.82847 h 4.4449 a 0.91423595,0.91423595 0 0 1 0.91419,0.91423 z"
+       id="path2215-1"
+       style="fill:#0066ff;fill-opacity:1;stroke-width:0.130605"
+       inkscape:export-filename="D:\UPRI-NOAH\noah-frontend\src\assets\images\survival-kit\medication.png"
+       inkscape:export-xdpi="148.91298"
+       inkscape:export-ydpi="148.91298" />
+  </g>
+</svg>

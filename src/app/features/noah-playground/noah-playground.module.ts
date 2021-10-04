@@ -17,6 +17,8 @@ import { ExaggerationComponent } from './components/exaggeration/exaggeration.co
 import { FacilityComponent } from './components/facility/facility.component';
 import { SensorsGroupComponent } from './components/sensors-group/sensors-group.component';
 import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.component';
+import { WeatherComponent } from './components/weather/weather.component';
+import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.compon
     FacilityComponent,
     SensorsGroupComponent,
     SensorSoloComponent,
+    WeatherComponent,
+    ContourMapsComponent,
   ],
   imports: [
     CommonModule,

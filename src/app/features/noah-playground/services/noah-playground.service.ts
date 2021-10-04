@@ -10,12 +10,15 @@ import {
   HazardLevelState,
   CriticalFacilitiesState,
   CriticalFacilityTypeState,
+  WeatherState,
+  ContourMapType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -26,20 +29,13 @@ export class NoahPlaygroundService {
   }
 
   constructor(
+    private http: HttpClient,
     private sensorService: SensorService,
     private store: NoahPlaygroundStore
   ) {}
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
-  }
-
-  get currentCoords$(): Observable<{ lng: number; lat: number }> {
-    return this.store.state$.pipe(map((state) => state.currentCoords));
-  }
-
-  get currentCoords(): { lng: number; lat: number } {
-    return this.store.state.currentCoords;
   }
 
   get currentLocation$(): Observable<string> {
@@ -52,12 +48,39 @@ export class NoahPlaygroundService {
     );
   }
 
+
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
 
   get sensorsGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.expanded));
+
+  get weather$(): Observable<WeatherState> {
+    return this.store.state$.pipe(map((state) => state.weather));
+  }
+
+  get contourMapGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.expanded));
+  }
+
+  get contourMapGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.shown));
+  }
+
+  get selectedContourMap$(): Observable<ContourMapType> {
+    return this.store.state$.pipe(
+      map((state) => state.contourMaps.selectedType)
+    );
+  }
+
+  getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
   }
 
   getCriticalFacilities(): CriticalFacilitiesState {
@@ -82,6 +105,10 @@ export class NoahPlaygroundService {
 
   getExaggeration(): ExaggerationState {
     return this.store.state.exaggeration;
+  }
+
+  getWeather(): WeatherState {
+    return this.store.state.weather;
   }
 
   getHazard(
@@ -240,10 +267,6 @@ export class NoahPlaygroundService {
     this.store.patch({ center });
   }
 
-  setCurrentCoords(currentCoords: { lat: number; lng: number }) {
-    this.store.patch({ currentCoords });
-  }
-
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
   }
@@ -287,5 +310,35 @@ export class NoahPlaygroundService {
       { sensors },
       `change sensor ${sensorType}'visibility to ${!shown}`
     );
+
+  setWeather(weather: WeatherState) {
+    this.store.patch({ weather }, 'updated weather state');
+  }
+
+  selectContourMapType(type: ContourMapType): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.selectedType = type;
+    this.store.patch({ contourMaps }, `select contour map type: ${type}`);
+  }
+
+  toggleContourMapGroupVisibility(): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.shown = !contourMaps.shown;
+    this.store.patch({ contourMaps }, `toggle visibility`);
+  }
+
+  toggleContourMapGroupExpansion(): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.expanded = !contourMaps.expanded;
+    this.store.patch({ contourMaps }, `toggle expansion`);
   }
 }

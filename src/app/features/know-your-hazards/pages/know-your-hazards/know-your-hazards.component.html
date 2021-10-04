@@ -8,6 +8,7 @@
   </a>
 </div>
 <div class="w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row">
+  <!-- MOBILE VIEW -->
   <button
     (click)="isMenu = !isMenu"
     class="
@@ -44,7 +45,7 @@
     <span class="sr-only">Open menu</span>
   </button>
   <noah-search
-    [searchTerm]="searchTerm"
+    [searchTerm]="currentLocation$ | async"
     (selectPlace)="selectPlace($event)"
     class="
       fixed
@@ -82,6 +83,88 @@
     id="sidebar"
   >
     <ng-container *ngIf="isKYHPage$ | async; else hazardTemplate">
+      <!-- MAPBOX LOGOS -->
+      <div class="flex" *ngIf="isMenu">
+        <div class="absolute p-2 z-20 -left-2 top-0 md:hidden">
+          <a class="fixed max-w-xs items-center">
+            <div class="mapboxgl-ctrl-bottom-left mb-2">
+              <div class="mapboxgl-ctrl">
+                <a
+                  class="mapboxgl-ctrl-logo"
+                  target="_blank"
+                  rel="noopener nofollow"
+                  href="https://www.mapbox.com/"
+                  aria-label="Mapbox logo"
+                >
+                </a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="flex" *ngIf="isMenu">
+        <div class="absolute p-1 z-20 right-0 top-0 md:hidden">
+          <a class="fixed max-w-xs items-center">
+            <div class="mapboxgl-ctrl-bottom-right -right-2 mb-2">
+              <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
+                <div
+                  class="cursor-pointer"
+                  (click)="isList === 1 ? (isList = 0) : (isList = 1)"
+                >
+                  <div
+                    class="
+                      mapboxgl-ctrl-attrib-button
+                      bg-gray-200
+                      z-50
+                      focus:outline-none
+                    "
+                    type="button"
+                    title="Toggle attribution"
+                    aria-label="Toggle attribution"
+                  ></div>
+                  <div class="absolute z-40 right-0 -bottom-1 pt-2">
+                    <div class="rounded-lg bg-white w-72 mt-4">
+                      <ul *ngIf="isList === 1">
+                        <li class="p-1 text-xs flex">
+                          <a
+                            href="https://www.mapbox.com/about/maps/"
+                            target="_blank"
+                            title="Mapbox"
+                            aria-label="Mapbox"
+                            role="listitem"
+                          >
+                            <div class="mr-1 font-mono">© Mapbox</div></a
+                          >
+                          <a
+                            href="http://www.openstreetmap.org/about/"
+                            target="_blank"
+                            title="OpenStreetMap"
+                            aria-label="OpenStreetMap"
+                            role="listitem"
+                          >
+                            <div class="mr-1 font-mono">© OpenStreetMap</div></a
+                          >
+                          <a
+                            href="https://www.mapbox.com/map-feedback/"
+                            target="_blank"
+                            title="Improve this map"
+                            aria-label="Improve this map"
+                            role="listitem"
+                          >
+                            <div class="font-mono">Improve this map</div></a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <!-- MAPBOX LOGOS -->
       <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
         <button
           class="
@@ -111,12 +194,6 @@
         </button>
       </div>
 
-      <noah-search
-        [searchTerm]="searchTerm"
-        (selectPlace)="selectPlace($event)"
-        class="w-full mt-4 hidden md:block relative"
-      >
-      </noah-search>
       <div>
         <h4 class="text-2xl font-bold leading-tight mt-6 pb-2">
           Hazard Levels In Your Area
@@ -130,7 +207,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('flood')"
             id="menu"
@@ -140,7 +217,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/flood.png"
+                  src="assets/images/flood.svg"
                   alt="flood"
                 />
                 <div class="flex flex-col ml-3">
@@ -150,7 +227,7 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (floodRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (floodRiskLevel$ | async)"
                   >
                     {{ floodRiskLevel$ | async }}
                   </p>
@@ -176,7 +253,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('landslide')"
             id="menu"
@@ -186,7 +263,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/landslide.png"
+                  src="assets/images/landslide.svg"
                   alt="landslide"
                 />
                 <div class="flex flex-col ml-3">
@@ -196,7 +273,7 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (landslideRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (landslideRiskLevel$ | async)"
                   >
                     {{ landslideRiskLevel$ | async }}
                   </p>
@@ -222,7 +299,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('storm-surge')"
             id="menu"
@@ -232,7 +309,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/storm-surge.png"
+                  src="assets/images/storm-surge.svg"
                   alt="storm-surge"
                 />
                 <div class="flex flex-col ml-3">
@@ -242,7 +319,9 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (stormSurgeRiskLevel$ | async)"
+                    [ngClass]="
+                      'text-noah-red-' + (stormSurgeRiskLevel$ | async)
+                    "
                   >
                     {{ stormSurgeRiskLevel$ | async }}
                   </p>
@@ -258,15 +337,40 @@
             </div>
           </div>
         </div>
-        <p class="m-6">
-          These hazard levels are based on our satellite and historical data. If
-          you’re in the <b class="text-high">“red”</b> zone of a particular
-          hazard, that means you’re highly susceptible to that hazard.
-        </p>
+
+        <div class="m-6">
+          <p class="font-bold">Hazards shown are:</p>
+          <ol>
+            <li>1) 100-year rain return for floods;</li>
+            <li>2) Shallow and structurally-controlled landslides;</li>
+            <li class="mb-2">3) 5-meters for storm surges.</li>
+            <li>
+              For more information, please go to the
+              <a routerLink="/noah-playground" class="text-primary"
+                >NOAH Playground.</a
+              >
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            These hazard levels are based on flood simulations as well as
+            satellite and historical data.
+          </p>
+          <p>Click <a class="text-primary">here</a> for the methods used.</p>
+          <p class="mt-2 text-xs tracking-wide">
+            <span class="font-bold">Disclaimer:</span> Project NOAH is still in
+            beta release. There are ongoing developments to stabilize the
+            platform and to complete the hazard maps. The UP System, UP
+            Resilience Institute, and UP NOAH Center will not be liable for any
+            damages and losses of any party as a result of using this beta
+            website, its contents, and functionalities.
+          </p>
+        </div>
         <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
       </div>
     </ng-container>
   </nav>
+  <!-- MOBILE VIEW -->
 
   <!-- DESKTOP VIEW -->
   <nav
@@ -292,7 +396,7 @@
   >
     <ng-container *ngIf="isKYHPage$ | async; else hazardTemplate">
       <noah-search
-        [searchTerm]="searchTerm"
+        [searchTerm]="currentLocation$ | async"
         (selectPlace)="selectPlace($event)"
         class="w-full mt-4 hidden md:block relative"
       >
@@ -310,7 +414,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('flood')"
             id="menu"
@@ -320,7 +424,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/flood.png"
+                  src="assets/images/flood.svg"
                   alt="flood"
                 />
                 <div class="flex flex-col ml-3">
@@ -330,10 +434,17 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (floodRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (floodRiskLevel$ | async)"
                   >
-                    {{ floodRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (floodRiskLevel$ | async)
+                    }}
                   </p>
+                  <small *ngIf="!(isLoading$ | async)">{{
+                    floodCaption$ | async
+                  }}</small>
                 </div>
               </div>
               <p class="text-sm w-4 text-gray-600 leading-none mt-1">
@@ -356,7 +467,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('landslide')"
             id="menu"
@@ -366,7 +477,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/landslide.png"
+                  src="assets/images/landslide.svg"
                   alt="flood"
                 />
                 <div class="flex flex-col ml-3">
@@ -376,9 +487,13 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (landslideRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (landslideRiskLevel$ | async)"
                   >
-                    {{ landslideRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (landslideRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>
@@ -402,7 +517,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('storm-surge')"
             id="menu"
@@ -412,7 +527,7 @@
               <div class="flex items-center">
                 <img
                   class="h-auto w-14"
-                  src="assets/images/storm-surge.png"
+                  src="assets/images/storm-surge.svg"
                   alt="flood"
                 />
                 <div class="flex flex-col ml-3">
@@ -422,9 +537,15 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (stormSurgeRiskLevel$ | async)"
+                    [ngClass]="
+                      'text-noah-red-' + (stormSurgeRiskLevel$ | async)
+                    "
                   >
-                    {{ stormSurgeRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (stormSurgeRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>
@@ -438,11 +559,43 @@
             </div>
           </div>
         </div>
-        <p class="m-6">
-          These hazard levels are based on our satellite and historical data. If
-          you’re in the <b class="text-high">“red”</b> zone of a particular
-          hazard, that means you’re highly susceptible to that hazard.
-        </p>
+
+        <div class="m-6">
+          <p class="font-bold pb-2">Hazards shown are:</p>
+
+          <ol>
+            <li>1) 100-year rain return for floods</li>
+            <li>2) Shallow and structurally-controlled landslides</li>
+            <li class="mb-2">3) 5 meters for storm surges</li>
+            <li>
+              For more information, please go to the
+              <a
+                routerLink="/noah-playground"
+                target="_blank"
+                class="text-primary"
+                >NOAH Playground.</a
+              >
+            </li>
+          </ol>
+
+          <p class="mt-2">
+            These hazard levels are based on flood simulations as well as
+            satellite and historical data. Click
+            <a routerLink="/bibliography" target="_blank" class="text-primary"
+              >here</a
+            >
+            for the methods used.
+          </p>
+          <p class="mt-2 text-xs tracking-wide">
+            <span class="font-bold">Disclaimer:</span> Project NOAH is still in
+            beta release. There are ongoing developments to stabilize the
+            platform and to complete the hazard maps. The UP System, UP
+            Resilience Institute, and UP NOAH Center will not be liable for any
+            damages and losses of any party as a result of using this beta
+            website, its contents, and functionalities.
+          </p>
+        </div>
+
         <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
       </div>
     </ng-container>

@@ -19,6 +19,11 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   initialOpacityValue: number = 75;
   shown = false;
 
+  get highOnly(): boolean {
+    // Temporary -- should use ID instead
+    return this.name === 'Debris Flow and Alluvial Fan';
+  }
+
   private _unsub = new Subject();
 
   constructor(private pgService: NoahPlaygroundService) {}

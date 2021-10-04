@@ -4,9 +4,14 @@ import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
 
+/**
+ * Official geographic center of the Philippines.
+ * Located in the Mindoro Strait, 12 kilometers
+ * NNE of Apo Island in Sablayan, Occidental Mindoro.
+ */
 export const PH_DEFAULT_CENTER = {
-  lat: 10.872407621178079,
-  lng: 124.93480374252101,
+  lat: 12.768369,
+  lng: 120.443461,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
@@ -33,6 +38,8 @@ export type CriticalFacilityLayer =
   | 'leyte_hospitals'
   | 'leyte_firestation'
   | 'leyte_police';
+
+export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
 export type HazardLevel =
   | FloodReturnPeriod
@@ -74,6 +81,12 @@ export type CriticalFacilityTypeState = {
   opacity: number;
 };
 
+export type WeatherState = {
+  shown: boolean;
+  expanded: boolean;
+  opacity: number;
+};
+
 export type CriticalFacilityTypesState = {
   'fire-station': CriticalFacilityTypeState;
   'police-station': CriticalFacilityTypeState;
@@ -99,16 +112,21 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   criticalFacilities: CriticalFacilitiesState;
+  weather: WeatherState;
   center: { lng: number; lat: number };
-  currentCoords: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  contourMaps: {
+    shown: boolean;
+    expanded: boolean;
+    selectedType: ContourMapType;
+  };
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
   exaggeration: {
     shown: true,
-    expanded: true,
+    expanded: false,
     level: 1.8,
   },
   flood: {
@@ -123,17 +141,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'flood-return-period-25': {
         opacity: 85,
         color: 'noah-red',
-        shown: true,
+        shown: false,
       },
       'flood-return-period-100': {
         opacity: 85,
         color: 'noah-red',
-        shown: false,
+        shown: true,
       },
     },
   },
   landslide: {
-    shown: true,
+    shown: false,
     expanded: false,
     levels: {
       'landslide-hazard': {
@@ -159,7 +177,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   'storm-surge': {
-    shown: true,
+    shown: false,
     expanded: false,
     levels: {
       'storm-surge-advisory-1': {
@@ -189,15 +207,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       'fire-station': {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       'police-station': {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       school: {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       hospital: {
@@ -206,8 +224,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
-  center: PH_DEFAULT_CENTER,
-  currentCoords: PH_DEFAULT_CENTER,
+  weather: {
+    shown: false,
+    expanded: false,
+    opacity: 80,
+  },
+  center: null,
   currentLocation: '-----',
   sensors: {
     shown: false,
@@ -226,6 +248,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
         shown: true,
       },
     },
+  contourMaps: {
+    shown: false,
+    expanded: false,
+    selectedType: '1hr',
   },
 });
 

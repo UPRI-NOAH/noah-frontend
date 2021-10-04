@@ -9,9 +9,8 @@
       text-gray-800
       shadow-2xl
       drop-shadow-2xl
-      md:rounded-r-lg md:rounded-t-none
       rounded-t-lg
-      md:top-4
+      md:rounded-tl-none md:rounded-r-lg md:top-4
       h-10
       bottom-0
       self-center
@@ -86,6 +85,105 @@
     *ngIf="isMenu"
     id="sidebar"
   >
+    <!-- MAPBOX LOGO -->
+    <div class="flex" *ngIf="isMenu">
+      <div class="absolute p-2 z-20 -left-2 top-0 md:hidden">
+        <a class="fixed max-w-xs items-center">
+          <div class="mapboxgl-ctrl-bottom-left mb-2">
+            <div class="mapboxgl-ctrl">
+              <a
+                class="mapboxgl-ctrl-logo"
+                target="_blank"
+                rel="noopener nofollow"
+                href="https://www.mapbox.com/"
+                aria-label="Mapbox logo"
+              >
+              </a>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="flex" *ngIf="isMenu">
+      <div class="absolute p-2 z-20 right-0 top-0 md:hidden">
+        <a class="fixed max-w-xs items-center">
+          <div class="mapboxgl-ctrl-bottom-right -right-2 mb-2">
+            <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
+              <div
+                class="cursor-pointer"
+                (click)="isList === 1 ? (isList = 0) : (isList = 1)"
+              >
+                <div
+                  class="
+                    mapboxgl-ctrl-attrib-button
+                    bg-gray-200
+                    z-50
+                    focus:outline-none
+                  "
+                  type="button"
+                  title="Toggle attribution"
+                  aria-label="Toggle attribution"
+                ></div>
+                <div class="absolute z-40 right-0 -bottom-1 pt-2">
+                  <div class="rounded-lg bg-white w-72 mt-4">
+                    <ul *ngIf="isList === 1">
+                      <li class="p-1 text-xs flex">
+                        <a
+                          href="https://www.mapbox.com/about/maps/"
+                          target="_blank"
+                          title="Mapbox"
+                          aria-label="Mapbox"
+                          role="listitem"
+                        >
+                          <div class="mr-1 font-mono">© Mapbox</div></a
+                        >
+                        <a
+                          href="http://www.openstreetmap.org/about/"
+                          target="_blank"
+                          title="OpenStreetMap"
+                          aria-label="OpenStreetMap"
+                          role="listitem"
+                        >
+                          <div class="mr-1 font-mono">© OpenStreetMap</div></a
+                        >
+                        <a
+                          href="https://www.mapbox.com/map-feedback/"
+                          target="_blank"
+                          title="Improve this map"
+                          aria-label="Improve this map"
+                          role="listitem"
+                        >
+                          <div class="font-mono">Improve this map</div></a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <!-- MAPBOX LOGO -->
+    <div class="flex" *ngIf="isMenu">
+      <div class="absolute z-50 md:left-96 bottom-0 sm:flex hidden">
+        <a class="fixed max-w-xs items-center">
+          <div class="mapboxgl-ctrl-bottom-left">
+            <div class="mapboxgl-ctrl">
+              <a
+                class="mapboxgl-ctrl-logo"
+                target="_blank"
+                rel="noopener nofollow"
+                href="https://www.mapbox.com/"
+                aria-label="Mapbox logo"
+              >
+              </a>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
     <div class="absolute">
       <img
         class="object-cover w-full h-full opacity-5"
@@ -188,6 +286,8 @@
       <noah-critical-facilities-playground
         class="w-full"
       ></noah-critical-facilities-playground>
+      <noah-weather class="w-full"></noah-weather>
+      <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group>
     </div>
   </nav>
