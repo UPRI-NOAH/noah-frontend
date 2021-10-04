@@ -199,15 +199,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       'fire-station': {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       'police-station': {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       school: {
-        shown: true,
+        shown: false,
         opacity: 100,
       },
       hospital: {
