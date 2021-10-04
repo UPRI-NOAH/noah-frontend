@@ -77,7 +77,7 @@ export class MapKyhComponent implements OnInit {
       .subscribe((center) => {
         this.map.flyTo({
           center,
-          zoom: 15,
+          zoom: 17,
           essential: true,
         });
       });
