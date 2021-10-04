@@ -34,11 +34,15 @@ const routes: Routes = [
       import('@features/home/home.module').then((m) => m.HomeModule),
   },
   {
-    path: 'noah-playground',
+    path: 'noah-studio',
     loadChildren: () =>
       import('@features/noah-playground/noah-playground.module').then(
         (m) => m.NoahPlaygroundModule
       ),
+  },
+  {
+    path: 'noah-playground',
+    redirectTo: 'noah-studio',
   },
   {
     path: '**',
