@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
+/**
+ * Malacañang palace
+ */
 export const PH_DEFAULT_CENTER = {
-  lat: 10.777080241395213,
-  lng: 124.98707397619495,
+  lat: 14.594112104824488,
+  lng: 120.9943811923392,
 };
 
 export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;

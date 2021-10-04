@@ -9,7 +9,12 @@ import {
   LEYTE_SCHOOLS,
 } from '@shared/mocks/critical-facilities';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  takeUntil,
+} from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';

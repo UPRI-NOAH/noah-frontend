@@ -20,6 +20,7 @@ bg-noah-black-high
 text-noah-red-low
 text-noah-red-medium
 text-noah-red-high
+text-noah-red-unavailable
 text-noah-pink-low
 text-noah-pink-medium
 text-noah-pink-high

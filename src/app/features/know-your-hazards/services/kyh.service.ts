@@ -94,6 +94,7 @@ export class KyhService {
     const payloadFlood = {
       coords: this.kyhStore.state.center,
       tilesetName: this._getTilesetName('flood'),
+      radius: 1000,
     };
     const payloadStormSurge = {
       coords: this.kyhStore.state.center,
