@@ -248,6 +248,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
         shown: true,
       },
     },
+  },
   contourMaps: {
     shown: false,
     expanded: false,

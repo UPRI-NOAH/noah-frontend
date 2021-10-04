@@ -48,13 +48,13 @@ export class NoahPlaygroundService {
     );
   }
 
-
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
 
   get sensorsGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.expanded));
+  }
 
   get weather$(): Observable<WeatherState> {
     return this.store.state$.pipe(map((state) => state.weather));
@@ -310,6 +310,7 @@ export class NoahPlaygroundService {
       { sensors },
       `change sensor ${sensorType}'visibility to ${!shown}`
     );
+  }
 
   setWeather(weather: WeatherState) {
     this.store.patch({ weather }, 'updated weather state');
