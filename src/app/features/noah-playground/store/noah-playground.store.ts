@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
+import { SensorType } from '../services/sensor.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -99,6 +100,12 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type SensorsState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<SensorType, { shown: boolean }>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -108,6 +115,7 @@ type NoahPlaygroundState = {
   weather: WeatherState;
   center: { lng: number; lat: number };
   currentLocation: string;
+  sensors: SensorsState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -223,6 +231,24 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   center: null,
   currentLocation: '-----',
+  sensors: {
+    shown: false,
+    expanded: false,
+    types: {
+      arg: {
+        shown: true,
+      },
+      wlms: {
+        shown: true,
+      },
+      aws: {
+        shown: true,
+      },
+      wlmsarg: {
+        shown: true,
+      },
+    },
+  },
   contourMaps: {
     shown: false,
     expanded: false,

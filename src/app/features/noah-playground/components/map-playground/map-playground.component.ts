@@ -9,6 +9,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   pluck,
   shareReplay,
@@ -23,6 +24,17 @@ import {
   getClusterTextCount,
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
+
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import {
+  SENSORS,
+  SensorService,
+  SensorType,
+} from '@features/noah-playground/services/sensor.service';
+import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
+import * as Highcharts from 'highcharts';
+import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
@@ -75,12 +87,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
 
+  private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
 
   constructor(
     private mapService: MapService,
-    private pgService: NoahPlaygroundService
+    private pgService: NoahPlaygroundService,
+    private sensorChartService: SensorChartService,
+    private sensorService: SensorService
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +116,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
+        this.initSensors();
         this.initWeatherLayer();
         this.showContourMaps();
       });
@@ -187,6 +203,156 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  initSensors() {
+    SENSORS.forEach((sensorType) => {
+      this.sensorService
+        .getSensors(sensorType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: sensorType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-color': SENSOR_COLORS[sensorType],
+              'circle-radius': 5,
+              'circle-opacity': 0,
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.sensorsGroupShown$,
+            this.pgService.getSensorTypeShown$(sensorType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              console.log(
+                sensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                sensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+
+          // show mouse event listeners
+          this.showDataPoints(sensorType);
+        });
+    });
+  }
+
+  showDataPoints(sensorType: SensorType) {
+    const graphDiv = document.getElementById('graph-dom');
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+    });
+
+    const _this = this;
+    this.map.on('mouseover', sensorType, (e) => {
+      console.log(e);
+      _this.map.getCanvas().style.cursor = 'pointer';
+
+      const coordinates = (e.features[0].geometry as any).coordinates.slice();
+      const location = e.features[0].properties.location;
+      const stationID = e.features[0].properties.station_id;
+      const typeName = e.features[0].properties.type_name;
+      const status = e.features[0].properties.status_description;
+      const dateInstalled = e.features[0].properties.date_installed;
+      const province = e.features[0].properties.province;
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      popUp
+        .setLngLat(coordinates)
+        .setHTML(
+          `
+          <div style="color: #333333;">
+            <div><strong>#${stationID} - ${location}</strong></div>
+            <div>Type: ${typeName}</div>
+            <div>Status: ${status}</div>
+            <div>Date Installed: ${dateInstalled}</div>
+            <div>Province: ${province}</div>
+          </div>
+        `
+        )
+        .addTo(_this.map);
+    });
+
+    this.map.on('click', sensorType, function (e) {
+      graphDiv.hidden = false;
+      _this.map.flyTo({
+        center: (e.features[0].geometry as any).coordinates.slice(),
+        zoom: 11,
+        essential: true,
+      });
+
+      const stationID = e.features[0].properties.station_id;
+      const location = e.features[0].properties.location;
+      const pk = e.features[0].properties.pk;
+
+      popUp.setDOMContent(graphDiv).setMaxWidth('900px');
+
+      _this.showChart(+pk, +stationID, location, sensorType);
+
+      _this._graphShown = true;
+    });
+
+    popUp.on('close', () => (_this._graphShown = false));
+
+    this.map.on('mouseleave', sensorType, function () {
+      if (_this._graphShown) return;
+
+      _this.map.getCanvas().style.cursor = '';
+      popUp.remove();
+    });
+  }
+
+  async showChart(
+    pk: number,
+    stationID: number,
+    location: string,
+    sensorType: SensorType
+  ) {
+    const options: any = {
+      title: {
+        text: `#${stationID} - ${location}`,
+      },
+      credits: {
+        enabled: false,
+      },
+      ...this.sensorChartService.getChartOpts(sensorType),
+    };
+
+    const chart = Highcharts.chart('graph-dom', options);
+    chart.showLoading();
+
+    const response: any = await this.sensorService
+      .getSensorData(pk)
+      .pipe(first())
+      .toPromise();
+
+    chart.hideLoading();
+
+    const sensorChartOpts = {
+      data: response.results,
+      sensorType,
+    };
+
+    this.sensorChartService.showChart(chart, sensorChartOpts);
   }
 
   /**

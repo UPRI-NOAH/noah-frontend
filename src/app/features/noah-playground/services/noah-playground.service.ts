@@ -17,6 +17,7 @@ import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
+import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -26,6 +27,12 @@ export class NoahPlaygroundService {
   get exagerration$(): Observable<ExaggerationState> {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
+
+  constructor(
+    private http: HttpClient,
+    private sensorService: SensorService,
+    private store: NoahPlaygroundStore
+  ) {}
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
@@ -39,6 +46,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.criticalFacilities.shown)
     );
+  }
+
+  get sensorsGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.sensors.shown));
+  }
+
+  get sensorsGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.sensors.expanded));
   }
 
   get weather$(): Observable<WeatherState> {
@@ -58,8 +73,6 @@ export class NoahPlaygroundService {
       map((state) => state.contourMaps.selectedType)
     );
   }
-
-  constructor(private store: NoahPlaygroundStore, private http: HttpClient) {}
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
@@ -145,6 +158,12 @@ export class NoahPlaygroundService {
     this.store.patch(
       { [hazardType]: hazard },
       `opacity ${opacity}, ${hazardType}, ${hazardLevel}`
+    );
+  }
+
+  getSensorTypeShown$(sensorType: SensorType): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.sensors.types[sensorType].shown)
     );
   }
 
@@ -250,6 +269,47 @@ export class NoahPlaygroundService {
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+  }
+
+  toggleSensorsGroupExpanded(): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    const { expanded } = sensors;
+    sensors.expanded = !expanded;
+
+    this.store.patch(
+      { sensors },
+      `update sensor group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleSensorsGroupShown(): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    const { shown } = sensors;
+    sensors.shown = !shown;
+
+    this.store.patch(
+      { sensors },
+      `update sensor group state shown to ${!shown}`
+    );
+  }
+
+  setSensorTypeShown(sensorType: SensorType): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    const { shown } = sensors.types[sensorType];
+    sensors.types[sensorType].shown = !shown;
+    this.store.patch(
+      { sensors },
+      `change sensor ${sensorType}'visibility to ${!shown}`
+    );
   }
 
   setWeather(weather: WeatherState) {

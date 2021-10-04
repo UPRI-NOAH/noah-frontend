@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { HighchartsChartModule } from 'highcharts-angular';
+
 import { NoahPlaygroundRoutingModule } from './noah-playground-routing.module';
 import { SharedModule } from '@shared/shared.module';
 
@@ -13,6 +15,8 @@ import { HazardLevelComponent } from './components/hazard-level/hazard-level.com
 import { HazardTypeComponent } from './components/hazard-type/hazard-type.component';
 import { ExaggerationComponent } from './components/exaggeration/exaggeration.component';
 import { FacilityComponent } from './components/facility/facility.component';
+import { SensorsGroupComponent } from './components/sensors-group/sensors-group.component';
+import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
 
@@ -27,9 +31,16 @@ import { ContourMapsComponent } from './components/contour-maps/contour-maps.com
     HazardTypeComponent,
     ExaggerationComponent,
     FacilityComponent,
+    SensorsGroupComponent,
+    SensorSoloComponent,
     WeatherComponent,
     ContourMapsComponent,
   ],
-  imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
+  imports: [
+    CommonModule,
+    NoahPlaygroundRoutingModule,
+    SharedModule,
+    HighchartsChartModule,
+  ],
 })
 export class NoahPlaygroundModule {}
