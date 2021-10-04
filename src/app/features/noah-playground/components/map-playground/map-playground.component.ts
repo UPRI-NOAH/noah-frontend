@@ -86,6 +86,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
+  isMapboxAttrib;
 
   private _graphShown = false;
   private _unsub = new Subject();
@@ -456,6 +457,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       zoom: 5,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
+      attributionControl: false,
     });
   }
 
