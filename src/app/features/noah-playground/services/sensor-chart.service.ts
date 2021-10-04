@@ -31,10 +31,16 @@ export class SensorChartService {
       chart.showLoading('No Data Available');
     }
 
+    const sortedData = data.sort((a: any, b: any) => {
+      return (
+        new Date(a.dateTimeRead).getTime() - new Date(b.dateTimeRead).getTime()
+      );
+    });
+
     // set X axis
     chart.xAxis[0].update(
       {
-        categories: data.map((d) => d.dateTimeRead),
+        categories: sortedData.map((d) => d.dateTimeRead),
         tickInterval: 5,
       },
       true
@@ -44,13 +50,13 @@ export class SensorChartService {
     switch (sensorType) {
       case 'arg':
         chart.series[0].setData(
-          data.map((d) => +d.rain_value),
+          sortedData.map((d) => Number(d.rain_value)),
           true
         );
         break;
       default:
         chart.series[0].setData(
-          data.map((d) => +d.waterlevel),
+          sortedData.map((d) => Number(d.waterlevel)),
           true
         );
         break;
@@ -130,7 +136,7 @@ export class SensorChartService {
 
           {
             from: 30,
-            to: 100,
+            to: 500,
             // color: 'red',
             color: '#fc3d03',
             label: {
