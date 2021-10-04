@@ -90,7 +90,7 @@ export class HazardsService {
 
   private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {
     if (!feature) {
-      return 'low';
+      return 'little to none';
     }
 
     return this._formatRiskLevel(feature);
@@ -146,8 +146,14 @@ export class HazardsService {
       return parseInt(properties.Var);
     }
 
-    if ('HZ' in properties) {
-      return parseInt(properties.HZ);
+    // There was no `Var` value read earlier
+    // This is exclusive for Flood Data only
+    if ('No_Data' in properties) {
+      return -1;
+    }
+
+    if ('LH' in properties) {
+      return parseInt(properties.LH);
     }
 
     if ('HAZ' in properties) {
@@ -168,8 +174,11 @@ export class HazardsService {
     const riskLevelNum = this._computeAreaRiskNum(featureCollection.features);
 
     switch (riskLevelNum) {
+      case -1:
+        return 'unavailable';
+
       case 0:
-        return 'little';
+        return 'little to none';
 
       case 1:
         return 'low';

@@ -207,7 +207,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('flood')"
             id="menu"
@@ -227,7 +227,7 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (floodRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (floodRiskLevel$ | async)"
                   >
                     {{ floodRiskLevel$ | async }}
                   </p>
@@ -253,7 +253,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('landslide')"
             id="menu"
@@ -273,7 +273,7 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (landslideRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (landslideRiskLevel$ | async)"
                   >
                     {{ landslideRiskLevel$ | async }}
                   </p>
@@ -299,7 +299,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('storm-surge')"
             id="menu"
@@ -319,7 +319,9 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (stormSurgeRiskLevel$ | async)"
+                    [ngClass]="
+                      'text-noah-red-' + (stormSurgeRiskLevel$ | async)
+                    "
                   >
                     {{ stormSurgeRiskLevel$ | async }}
                   </p>
@@ -404,7 +406,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('flood')"
             id="menu"
@@ -424,10 +426,17 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (floodRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (floodRiskLevel$ | async)"
                   >
-                    {{ floodRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (floodRiskLevel$ | async)
+                    }}
                   </p>
+                  <small *ngIf="!(isLoading$ | async)">{{
+                    floodCaption$ | async
+                  }}</small>
                 </div>
               </div>
               <p class="text-sm w-4 text-gray-600 leading-none mt-1">
@@ -450,7 +459,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('landslide')"
             id="menu"
@@ -470,9 +479,13 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (landslideRiskLevel$ | async)"
+                    [ngClass]="'text-noah-red-' + (landslideRiskLevel$ | async)"
                   >
-                    {{ landslideRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (landslideRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>
@@ -496,7 +509,7 @@
               shadow-md
               hover:shodow-lg
               rounded-2xl
-              hover:bg-blue-300
+              hover:bg-gray-100
             "
             (click)="viewHazardLayer('storm-surge')"
             id="menu"
@@ -516,9 +529,15 @@
                   <p
                     class="uppercase font-bold text-xl leading-none mt-2"
                     role="button"
-                    [ngClass]="'text-' + (stormSurgeRiskLevel$ | async)"
+                    [ngClass]="
+                      'text-noah-red-' + (stormSurgeRiskLevel$ | async)
+                    "
                   >
-                    {{ stormSurgeRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (stormSurgeRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>

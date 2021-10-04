@@ -17,7 +17,6 @@ module.exports = {
         low: 'var(--color-low)',
         medium: 'var(--color-medium)',
         high: 'var(--color-high)',
-        'light-blue': colors.lightBlue,
         cyan: colors.cyan,
         sidebar: 'var(--color-sidebar)',
         footer: 'var(--color-6)',
@@ -38,6 +37,7 @@ module.exports = {
           low: '#F2C94C',
           medium: '#F2994A',
           high: '#EB5757',
+          unavailable: '#8B8B8B',
         },
         'noah-violet': {
           low: '#A9C6DE',

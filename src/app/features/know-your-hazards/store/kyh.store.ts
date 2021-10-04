@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
+/**
+ * Malacañang palace
+ */
 export const PH_DEFAULT_CENTER = {
-  lat: 10.777080241395213,
-  lng: 124.98707397619495,
+  lat: 14.594112104824488,
+  lng: 120.9943811923392,
 };
 
 export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;
@@ -11,10 +14,15 @@ export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
 // Remove later -- replace with exposure level
-export type RiskLevel = 'unavailable' | 'little' | 'low' | 'medium' | 'high';
+export type RiskLevel =
+  | 'unavailable'
+  | 'little to none'
+  | 'low'
+  | 'medium'
+  | 'high';
 export type ExposureLevel =
   | 'unavailable'
-  | 'little'
+  | 'little to none'
   | 'low'
   | 'medium'
   | 'high';

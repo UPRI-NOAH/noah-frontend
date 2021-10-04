@@ -21,10 +21,21 @@ export class KnowYourHazardsComponent implements OnInit {
   isMenu: boolean = true;
   isOpen: boolean = true;
   isList;
+  isLoading$: Observable<boolean>;
 
   get isKYHPage$(): Observable<boolean> {
     return this.kyhService.currentPage$.pipe(
       map((page) => page === 'know-your-hazards')
+    );
+  }
+
+  get floodCaption$(): Observable<string> {
+    return this.floodRiskLevel$.pipe(
+      map((val) =>
+        val === 'unavailable'
+          ? 'Flood hazard maps in this area is not yet complete.'
+          : ''
+      )
     );
   }
 
@@ -48,6 +59,7 @@ export class KnowYourHazardsComponent implements OnInit {
     this.floodRiskLevel$ = this.kyhService.floodRiskLevel$;
     this.stormSurgeRiskLevel$ = this.kyhService.stormSurgeRiskLevel$;
     this.landslideRiskLevel$ = this.kyhService.landslideRiskLevel$;
+    this.isLoading$ = this.kyhService.isLoading$;
   }
 
   ngOnInit(): void {

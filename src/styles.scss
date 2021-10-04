@@ -20,6 +20,10 @@
   font-size: 16px;
 }
 
+html {
+  @apply text-noah-black-high;
+}
+
 .checkbox {
   --border-color: black;
   --color: #3f83f8;

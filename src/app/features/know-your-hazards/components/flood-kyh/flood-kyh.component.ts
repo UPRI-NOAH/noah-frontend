@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import { RiskLevel } from '@features/personalized-risk-assessment/store/pra.store';
+import { RiskLevel } from '@features/know-your-hazards/store/kyh.store';
 import { Observable } from 'rxjs';
 
 @Component({
