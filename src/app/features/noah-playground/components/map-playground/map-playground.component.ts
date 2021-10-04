@@ -322,15 +322,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     });
 
-    combineLatest([
-      this.pgService.weather$.pipe(pluck('shown'), distinctUntilChanged()),
-      this.pgService.weather$.pipe(pluck('opacity'), distinctUntilChanged()),
-    ])
+    this.pgService.weather$
+      .pipe(pluck('opacity'), distinctUntilChanged())
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([shown, opacity]) => {
+      .subscribe((opacity) => {
+        this.map.setPaintProperty(layerID, 'raster-opacity', opacity / 100);
+      });
+
+    this.pgService.weather$
+      .pipe(
+        distinctUntilChanged((prev, next) => prev.shown === next.shown),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe((weather) => {
         let newOpacity = 0;
-        if (shown) {
-          newOpacity = opacity / 100;
+        if (weather.shown) {
+          newOpacity = weather.opacity / 100;
           this.map.flyTo({
             center: PH_DEFAULT_CENTER,
             zoom: 4,
