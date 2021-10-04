@@ -13,7 +13,7 @@ export const SENSORS: SensorType[] = ['arg', 'aws', 'wlms', 'wlmsarg'];
   providedIn: 'root',
 })
 export class SensorService {
-  private BASE_URL = 'http://202.90.159.72:8000';
+  private BASE_URL = 'https://noah-api.site';
 
   constructor(private http: HttpClient) {}
 
