@@ -428,9 +428,15 @@
                     role="button"
                     [ngClass]="'text-noah-red-' + (floodRiskLevel$ | async)"
                   >
-                    {{ floodRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (floodRiskLevel$ | async)
+                    }}
                   </p>
-                  <small>{{ floodCaption$ | async }}</small>
+                  <small *ngIf="!(isLoading$ | async)">{{
+                    floodCaption$ | async
+                  }}</small>
                 </div>
               </div>
               <p class="text-sm w-4 text-gray-600 leading-none mt-1">
@@ -475,7 +481,11 @@
                     role="button"
                     [ngClass]="'text-noah-red-' + (landslideRiskLevel$ | async)"
                   >
-                    {{ landslideRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (landslideRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>
@@ -523,7 +533,11 @@
                       'text-noah-red-' + (stormSurgeRiskLevel$ | async)
                     "
                   >
-                    {{ stormSurgeRiskLevel$ | async }}
+                    {{
+                      (isLoading$ | async)
+                        ? 'Loading...'
+                        : (stormSurgeRiskLevel$ | async)
+                    }}
                   </p>
                 </div>
               </div>

@@ -72,6 +72,13 @@ export class KyhService {
     return this.kyhStore.state$.pipe(map((state) => state.currentPage));
   }
 
+  get isLoading$(): Observable<boolean> {
+    return this.kyhStore.state$.pipe(
+      map((state) => state.isLoading),
+      shareReplay(1)
+    );
+  }
+
   get floodRiskLevel$(): Observable<RiskLevel> {
     return this.kyhStore.state$.pipe(map((state) => state.floodRiskLevel));
   }
@@ -89,7 +96,15 @@ export class KyhService {
   }
 
   async assessRisk(): Promise<void> {
-    this.kyhStore.patch({ isLoading: true }, 'loading risk level...');
+    this.kyhStore.patch(
+      {
+        isLoading: true,
+        floodRiskLevel: 'unavailable',
+        landslideRiskLevel: 'unavailable',
+        stormSurgeRiskLevel: 'unavailable',
+      },
+      'loading risk level...'
+    );
 
     const payloadFlood = {
       coords: this.kyhStore.state.center,
