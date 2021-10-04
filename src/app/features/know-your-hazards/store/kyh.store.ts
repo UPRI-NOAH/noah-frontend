@@ -14,10 +14,15 @@ export type KYHPage = 'know-your-hazards' | 'critical-facilities' | HazardType;
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
 // Remove later -- replace with exposure level
-export type RiskLevel = 'unavailable' | 'little' | 'low' | 'medium' | 'high';
+export type RiskLevel =
+  | 'unavailable'
+  | 'little to none'
+  | 'low'
+  | 'medium'
+  | 'high';
 export type ExposureLevel =
   | 'unavailable'
-  | 'little'
+  | 'little to none'
   | 'low'
   | 'medium'
   | 'high';

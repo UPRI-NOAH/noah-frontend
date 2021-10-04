@@ -90,7 +90,7 @@ export class HazardsService {
 
   private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {
     if (!feature) {
-      return 'low';
+      return 'little to none';
     }
 
     return this._formatRiskLevel(feature);
@@ -152,8 +152,8 @@ export class HazardsService {
       return -1;
     }
 
-    if ('HZ' in properties) {
-      return parseInt(properties.HZ);
+    if ('LH' in properties) {
+      return parseInt(properties.LH);
     }
 
     if ('HAZ' in properties) {
@@ -178,7 +178,7 @@ export class HazardsService {
         return 'unavailable';
 
       case 0:
-        return 'little';
+        return 'little to none';
 
       case 1:
         return 'low';
