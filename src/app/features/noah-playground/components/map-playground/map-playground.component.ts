@@ -102,8 +102,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initMap();
 
-    fromEvent(this.map, 'load')
-      .pipe(takeUntil(this._unsub))
+    fromEvent(this.map, 'style.load')
+      .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
         this.addNavigationControls();
         this.addGeolocationControls();
