@@ -1,0 +1,56 @@
+name: Deploy to Server
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+    types: [closed]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-and-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Here we are configuring build matrix that allows you to perform certain operations on your code
+    # with different software/Operating system configurations.
+    # In our case, we are only running it for Node v12.*. but you can multiple entries in that array.
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # As you can see below we are using matrix.node-version => it means it will execute for all possible combinations
+      # provided matrix keys array(in our case only one kye => node-version)
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install the node modules
+      - name: NPM Install
+        run: npm install
+
+      # Create production build
+      - name: Production Build
+        run: npm run build -- --prod # This is equivalent to 'ng build --prod'
+
+      # Install SSH key for the server
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
+      - name: Add Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # Deploy to Server
+      - name: Deploy to Server with rsync
+        run: rsync -avz ./dist/noah-frontend/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/ --rsync-path="sudo rsync"
