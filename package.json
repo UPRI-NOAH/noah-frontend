@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:prod": "cross-env NODE_ENV=production ng build --prod",
+    "build:prod": "cross-env NODE_ENV=production ng build --prod && cp $(pwd)/.netlify/_redirects $(pwd)/dist/noah-frontend/_redirects",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "private": true,
