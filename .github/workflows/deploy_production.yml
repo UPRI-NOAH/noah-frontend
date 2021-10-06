@@ -5,16 +5,11 @@ name: Deploy to Production Server
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-    types: [closed]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build-and-deploy:
-    # Only run if PR is merged.
-    if: github.event.pull_request.merged == true
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
@@ -67,7 +62,7 @@ jobs:
         uses: chetan/invalidate-cloudfront-action@v2
         env:
           DISTRIBUTION: ${{ env.AWS_CF_DISTRIBUTION_ID }}
-          PATHS: '/index.html'
+          PATHS: '/'
           AWS_REGION: 'us-east-1'
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
