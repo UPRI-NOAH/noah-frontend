@@ -1,5 +1,7 @@
-import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
-import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+import {
+  HazardLevel,
+  HazardType,
+} from '@features/noah-playground/store/noah-playground.store';
 
 // FLOOD
 export const FLOOD_5RRP = {

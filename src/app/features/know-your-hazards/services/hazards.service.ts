@@ -1,14 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
-import {
-  CF_TILESET_NAMES,
-  CriticalFacilityLayer,
-} from '@shared/mocks/critical-facilities';
 import { Feature, FeatureCollection } from 'geojson';
-import { LngLat, LngLatLike } from 'mapbox-gl';
+import { LngLatLike } from 'mapbox-gl';
 import { Observable, of } from 'rxjs';
-import { catchError, map, take, tap } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { RiskLevel } from '../store/kyh.store';
 
 type AssessmentPayload = {
@@ -29,7 +25,7 @@ export type CriticalFacilityFeature = Feature & {
     tilequery: {
       distance: number;
       geometry: string;
-      layer: CriticalFacilityLayer;
+      layer: string;
     };
   };
 };
@@ -78,10 +74,7 @@ export class HazardsService {
     const params = new HttpParams()
       .set('radius', payload.radius ? String(payload.radius) : '50')
       .set('limit', payload.limit ? String(payload.limit) : '20')
-      .set(
-        'access_token',
-        'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g'
-      );
+      .set('access_token', environment.mapbox.accessToken);
 
     return this.http
       .get<FeatureCollection>(baseURL, { params })
@@ -94,32 +87,6 @@ export class HazardsService {
     }
 
     return this._formatRiskLevel(feature);
-  }
-
-  private _getCriticalFacility(
-    featureList: CriticalFacilityFeature[]
-  ): MapItem[] {
-    const getType = (layerName: string) => {
-      switch (layerName) {
-        case 'fire_station':
-          return 'fire-station';
-        case 'hospitals':
-          return 'hospital';
-        case 'police_station':
-          return 'police-station';
-        case 'schools':
-          return 'school';
-        default:
-          throw new Error('critical facility layer not found!');
-      }
-    };
-
-    return featureList.map((feature) => ({
-      coords: feature.geometry.coordinates,
-      name: feature.properties.name,
-      type: getType(feature.properties.tilequery.layer),
-      distance: feature.properties.tilequery.distance / 1000, // to km
-    }));
   }
 
   /**

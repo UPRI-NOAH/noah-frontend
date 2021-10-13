@@ -6,10 +6,10 @@ export const environment = {
   production: false,
   mapbox: {
     accessToken:
-      'pk.eyJ1IjoiamFkdXJhbmkiLCJhIjoiY2tsZ245OGx3MHltbTJwcWwxbGpubjY1cyJ9.lqNLH1nne4ddBcXvWsP9YQ',
+      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
     styles: {
-      terrain: 'mapbox://styles/jadurani/ckn56hvjq09fb17p6cmnve685',
-      satellite: 'mapbox://styles/jadurani/ckn9l9me41v9l17pg0ob9fy5n',
+      terrain: 'mapbox://styles/upri-noah/ckupb1t4ybxq517s530madpso',
+      satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
     },
   },
 };

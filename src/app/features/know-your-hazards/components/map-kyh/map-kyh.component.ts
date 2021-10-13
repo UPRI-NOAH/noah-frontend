@@ -2,19 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import {
-  LEYTE_FIRESTATIONS,
-  LEYTE_HOSPITALS,
-  LEYTE_POLICESTATIONS,
-  LEYTE_SCHOOLS,
-} from '@shared/mocks/critical-facilities';
 import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';

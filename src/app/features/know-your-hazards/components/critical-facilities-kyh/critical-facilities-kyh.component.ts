@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {
   CriticalFacilityFeature,
-  HazardsService,
   MapItem,
 } from '@features/know-your-hazards/services/hazards.service';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable, Subject } from 'rxjs';
 import { SampleMarker } from '@shared/mocks/critical-facilities';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-critical-facilities-kyh',
@@ -19,10 +18,7 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
   criticalFacilities = [];
   private _unsub = new Subject();
 
-  constructor(
-    private kyhService: KyhService,
-    private hazardService: HazardsService
-  ) {}
+  constructor(private kyhService: KyhService) {}
 
   ngOnInit(): void {
     this.currentLocation$ = this.kyhService.currentLocation$;
@@ -30,6 +26,7 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
 
     this.kyhService.criticalFacilities$
       .pipe(
+        takeUntil(this._unsub),
         map((featureCollection) =>
           this._getCriticalFacility(
             featureCollection.features as CriticalFacilityFeature[]

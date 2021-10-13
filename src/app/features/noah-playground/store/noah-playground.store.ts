@@ -33,19 +33,12 @@ export type LandslideHazards =
   | 'debris-flow'
   | 'unstable-slopes-maps';
 
-export type CriticalFacilityLayer =
-  | 'leyte_schools'
-  | 'leyte_hospitals'
-  | 'leyte_firestation'
-  | 'leyte_police';
-
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
 export type HazardLevel =
   | FloodReturnPeriod
   | StormSurgeAdvisory
-  | LandslideHazards
-  | CriticalFacilityLayer;
+  | LandslideHazards;
 
 type HazardState = {
   shown: boolean;

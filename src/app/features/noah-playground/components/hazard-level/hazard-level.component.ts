@@ -1,7 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
-import { HazardType } from '@features/personalized-risk-assessment/store/pra.store';
+import {
+  HazardLevel,
+  HazardType,
+} from '@features/noah-playground/store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Subject } from 'rxjs';
 
