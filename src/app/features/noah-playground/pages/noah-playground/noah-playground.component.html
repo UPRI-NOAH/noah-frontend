@@ -1,4 +1,6 @@
-<div class="w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row">
+<div
+  class="fixed w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row"
+>
   <button
     (click)="isMenu = !isMenu"
     class="
@@ -65,22 +67,21 @@
 
   <nav
     class="
-      block
-      h-96
-      bottom-0
       fixed
-      w-full
-      md:w-96 md:order-first
       p-4
-      bg-gray-50
+      z-50
+      bg-white
+      rounded-lg
+      md:rounded-l-sm
+      overflow-y-auto
+      h-96
+      md:h-full
+      w-full
+      md:w-96
+      bottom-0
+      md:order-first
       shadow-2xl
       rounded-t-lg
-      md:rounded-none
-      flex-none
-      md:min-h-screen
-      z-50
-      md:h-full
-      overflow-y-auto
     "
     *ngIf="isMenu"
     id="sidebar"
@@ -184,7 +185,7 @@
     </div>
     <!-- MAPBOX LOGO -->
     <div class="flex" *ngIf="isMenu">
-      <div class="absolute z-50 md:left-96 bottom-0 sm:flex hidden">
+      <div class="absolute z-50 md:left-96 bottom-0 hidden md:block">
         <a class="fixed max-w-xs items-center">
           <div class="mapboxgl-ctrl-bottom-left">
             <div class="mapboxgl-ctrl">
@@ -381,7 +382,19 @@
   </div>
   <!-- //Customizing Mapbox attribution -->
 
-  <main class="block w-full md:w-3/4 bg-gray-100 order-1 md:min-h-screen z-10">
+  <main
+    class="
+      block
+      h-screen
+      flex-wrap
+      w-full
+      md:w-3/4
+      bg-gray-100
+      order-1
+      md:min-h-screen
+      z-10
+    "
+  >
     <noah-map-playground></noah-map-playground>
   </main>
 </div>
