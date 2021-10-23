@@ -8,5 +8,5 @@ export const environment = {
       satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
     },
   },
-  gaTag: 'G-2LP2ZPT4BG',
+  gaTag: 'G-589EMLLFCY',
 };

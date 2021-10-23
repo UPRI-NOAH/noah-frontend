@@ -17,6 +17,7 @@ import {
 import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -34,7 +35,11 @@ export class MapKyhComponent implements OnInit {
   isOpenedList;
   private _unsub = new Subject();
 
-  constructor(private mapService: MapService, private kyhService: KyhService) {}
+  constructor(
+    private gaService: GoogleAnalyticsService,
+    private mapService: MapService,
+    private kyhService: KyhService
+  ) {}
 
   ngOnInit(): void {
     this.initMap();
@@ -308,6 +313,7 @@ export class MapKyhComponent implements OnInit {
     if (this.mapStyle === style) return;
 
     if (style in environment.mapbox.styles) {
+      this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
     }

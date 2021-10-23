@@ -12,6 +12,7 @@ export const environment = {
       satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
     },
   },
+  gaTag: 'G-XXQTRHXBW3',
 };
 
 /*

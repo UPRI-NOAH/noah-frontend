@@ -4,8 +4,8 @@
 
 <button
   class="text-left shadow flex rounded w-full p-3 my-3"
-  *ngFor="let facility of criticalFacilities"
-  (click)="focus(facility)"
+  *ngFor="let facility of criticalFacilities; let index = index"
+  (click)="focus(facility, index)"
 >
   <span class="w-1/6">
     <img

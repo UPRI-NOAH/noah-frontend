@@ -9,6 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build:prod": "cross-env NODE_ENV=production ng build --prod && cp $(pwd)/.netlify/_redirects $(pwd)/dist/noah-frontend/_redirects",
+    "build-noah-ph": "cross-env NODE_ENV=production ng build -c=noahPH && cp $(pwd)/.netlify/_redirects $(pwd)/dist/noah-frontend/_redirects",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "private": true,
@@ -27,6 +28,7 @@
     "highcharts": "^9.2.2",
     "highcharts-angular": "^2.10.0",
     "mapbox-gl": "^2.4.1",
+    "ngx-google-analytics": "^11.2.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

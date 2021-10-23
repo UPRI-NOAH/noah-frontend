@@ -19,6 +19,7 @@ import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,7 @@ export class NoahPlaygroundService {
   }
 
   constructor(
+    private gaService: GoogleAnalyticsService,
     private http: HttpClient,
     private sensorService: SensorService,
     private store: NoahPlaygroundStore
@@ -269,6 +271,7 @@ export class NoahPlaygroundService {
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+    this.gaService.event('change_location', 'noah_studio');
   }
 
   toggleSensorsGroupExpanded(): void {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from 'geojson';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { Observable, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -26,6 +27,7 @@ import {
 })
 export class KyhService {
   constructor(
+    private gaService: GoogleAnalyticsService,
     private kyhStore: KyhStore,
     private hazardsService: HazardsService
   ) {}
@@ -162,6 +164,7 @@ export class KyhService {
 
   setCurrentLocation(currentLocation: string): void {
     this.kyhStore.patch({ currentLocation }, 'update current location');
+    this.gaService.event('change_location', 'know_your_hazards');
   }
 
   setCurrentPage(currentPage: KYHPage): void {
