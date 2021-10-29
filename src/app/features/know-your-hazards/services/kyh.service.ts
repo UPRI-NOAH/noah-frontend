@@ -8,24 +8,15 @@ import {
   shareReplay,
   switchMap,
 } from 'rxjs/operators';
-import {
-  HazardType,
-  KyhStore,
-  KYHPage,
-  RiskLevel,
-  PH_DEFAULT_CENTER,
-  ExposureLevel,
-} from '../store/kyh.store';
-import {
-  CriticalFacilityFeature,
-  HazardsService,
-  MapItem,
-} from './hazards.service';
+import { HazardType, KyhStore, ExposureLevel } from '../store/kyh.store';
+import { HazardsService } from './hazards.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class KyhService {
+  criticalFacilities$: Observable<FeatureCollection>;
+
   constructor(
     private gaService: GoogleAnalyticsService,
     private kyhStore: KyhStore,
@@ -36,18 +27,37 @@ export class KyhService {
   sendMessage(message: any) {
     this.keyBoard.next(message);
   }
+
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.kyhStore.state$.pipe(
       map((state) => state.center),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       shareReplay(1)
     );
   }
 
-  get criticalFacilities$(): Observable<FeatureCollection> {
+  getCriticalFacilities$(): Observable<FeatureCollection> {
     return this.center$.pipe(
-      distinctUntilChanged(),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       switchMap((coords) => this.hazardsService.getCriticalFacilities(coords)),
       shareReplay(1)
+    );
+  }
+
+  getExposureLevel$(hazardType: HazardType): Observable<ExposureLevel> {
+    return this.kyhStore.state$.pipe(
+      map((state) => {
+        switch (hazardType) {
+          case 'flood':
+            return state.exposureLevels.flood;
+          case 'landslide':
+            return state.exposureLevels.landslide;
+          case 'storm-surge':
+            return state.exposureLevels['storm-surge'];
+          default:
+            throw new Error(`Invalid hazard type ${hazardType}`);
+        }
+      })
     );
   }
 
@@ -66,31 +76,11 @@ export class KyhService {
     return this.kyhStore.state$.pipe(map((state) => state.currentLocation));
   }
 
-  get currentPage(): KYHPage {
-    return this.kyhStore.state.currentPage;
-  }
-
-  get currentPage$(): Observable<KYHPage> {
-    return this.kyhStore.state$.pipe(map((state) => state.currentPage));
-  }
-
   get isLoading$(): Observable<boolean> {
     return this.kyhStore.state$.pipe(
       map((state) => state.isLoading),
       shareReplay(1)
     );
-  }
-
-  get floodRiskLevel$(): Observable<RiskLevel> {
-    return this.kyhStore.state$.pipe(map((state) => state.floodRiskLevel));
-  }
-
-  get stormSurgeRiskLevel$(): Observable<RiskLevel> {
-    return this.kyhStore.state$.pipe(map((state) => state.stormSurgeRiskLevel));
-  }
-
-  get landslideRiskLevel$(): Observable<RiskLevel> {
-    return this.kyhStore.state$.pipe(map((state) => state.landslideRiskLevel));
   }
 
   get hazardTypes(): HazardType[] {
@@ -101,52 +91,45 @@ export class KyhService {
     this.kyhStore.patch(
       {
         isLoading: true,
-        floodRiskLevel: 'unavailable',
-        landslideRiskLevel: 'unavailable',
-        stormSurgeRiskLevel: 'unavailable',
+        exposureLevels: {
+          flood: 'unavailable',
+          landslide: 'unavailable',
+          'storm-surge': 'unavailable',
+        },
       },
-      'loading risk level...'
+      'loading exposure levels...'
     );
 
-    const payloadFlood = {
+    const payload = {
       coords: this.kyhStore.state.center,
-      tilesetName: this._getTilesetName('flood'),
-    };
-    const payloadStormSurge = {
-      coords: this.kyhStore.state.center,
-      tilesetName: this._getTilesetName('storm-surge'),
-    };
-    const payloadLandslide = {
-      coords: this.kyhStore.state.center,
-      tilesetName: this._getTilesetName('landslide'),
+      tilesetName: this._getAllTilesetNames(),
     };
 
-    const floodRiskLevel = await this.hazardsService
-      .assess(payloadFlood)
-      .toPromise();
-    const stormSurgeRiskLevel = await this.hazardsService
-      .assess(payloadStormSurge)
-      .toPromise();
-    const landslideRiskLevel = await this.hazardsService
-      .assess(payloadLandslide)
+    const exposureLevels = await this.hazardsService
+      .assess(payload)
       .toPromise();
     this.kyhStore.patch(
       {
         isLoading: false,
-        floodRiskLevel: floodRiskLevel as RiskLevel,
-        stormSurgeRiskLevel: stormSurgeRiskLevel as RiskLevel,
-        landslideRiskLevel: landslideRiskLevel as RiskLevel,
+        exposureLevels,
       },
-      `updated risk level --`
+      `updated hazard exposure level for all`
     );
   }
 
   init() {
     this.assessRisk();
+    this.criticalFacilities$ = this.getCriticalFacilities$();
   }
 
   isHazardShown$(hazardType: HazardType): Observable<boolean> {
-    return this.kyhStore.state$.pipe(map((state) => state[hazardType].shown));
+    return this.kyhStore.state$.pipe(
+      map((state) =>
+        state.currentView === 'all' || state.currentView === hazardType
+          ? true
+          : false
+      )
+    );
   }
 
   isHazardLayer(currentHazard: HazardType): boolean {
@@ -167,37 +150,21 @@ export class KyhService {
     this.gaService.event('change_location', 'know_your_hazards');
   }
 
-  setCurrentPage(currentPage: KYHPage): void {
-    this.kyhStore.patch({ currentPage }, 'update current page');
-
-    const newHazardState: Record<HazardType, { shown: boolean }> = {
-      flood: {
-        shown: currentPage === 'flood' || currentPage === 'know-your-hazards',
-      },
-      landslide: {
-        shown:
-          currentPage === 'landslide' || currentPage === 'know-your-hazards',
-      },
-      'storm-surge': {
-        shown:
-          currentPage === 'storm-surge' || currentPage === 'know-your-hazards',
-      },
-    };
-
-    this.kyhStore.patch({ ...newHazardState }, 'show/hide hazards');
+  setCurrentView(viewedHazard: HazardType | 'all'): void {
+    this.kyhStore.patch(
+      { currentView: viewedHazard },
+      `set current view to ${viewedHazard}`
+    );
   }
 
-  // Temporary
-  private _getTilesetName(hazardTypes: HazardType): string {
-    switch (hazardTypes) {
-      case 'flood':
-        return 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata_tls';
-      case 'landslide':
-        return 'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls';
-      case 'storm-surge':
-        return 'upri-noah.ph_ssh_ssa4_tls';
-      default:
-        return '';
-    }
+  private _getAllTilesetNames(): string {
+    const tilesetNames = {
+      flood: 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata_tls',
+      landslide:
+        'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls',
+      'storm-surge': 'upri-noah.ph_ssh_ssa4_tls',
+    };
+
+    return `${tilesetNames['flood']},${tilesetNames['landslide']},${tilesetNames['storm-surge']}`;
   }
 }

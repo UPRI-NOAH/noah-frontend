@@ -11,15 +11,13 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
 import {
-  KYHPage,
   HazardType,
+  MapStyle,
 } from '@features/know-your-hazards/store/kyh.store';
 import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
-
-type MapStyle = 'terrain' | 'satellite';
 
 @Component({
   selector: 'noah-map-kyh',
@@ -31,9 +29,9 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
-  isMapboxAttrib;
-  isOpenedList;
+
   private _unsub = new Subject();
+  private _changeStyle = new Subject();
 
   constructor(
     private gaService: GoogleAnalyticsService,
@@ -49,6 +47,7 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initGeocoder();
         this.initGeolocation();
+        this.initAttribution();
         this.initCenterListener();
         this.initGeolocationListener();
       });
@@ -64,6 +63,11 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  initAttribution() {
+    const attribution = this.mapService.getNewAttributionControl();
+    this.map.addControl(attribution, 'bottom-right');
   }
 
   initCenterListener() {
@@ -212,7 +216,7 @@ export class MapKyhComponent implements OnInit {
           .isHazardShown$(hazardType)
           .pipe(
             takeUntil(this._unsub),
-            // takeUntil(this._changeStyle),
+            takeUntil(this._changeStyle),
             distinctUntilChanged()
           )
           .subscribe((shown: boolean) => {
@@ -316,6 +320,7 @@ export class MapKyhComponent implements OnInit {
       this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
     }
   }
 }

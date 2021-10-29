@@ -26,7 +26,6 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentLocation$ = this.kyhService.currentLocation$;
-    this.kyhService.setCurrentPage('know-your-hazards');
 
     this.kyhService.criticalFacilities$
       .pipe(

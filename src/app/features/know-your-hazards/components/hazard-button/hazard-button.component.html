@@ -1,0 +1,42 @@
+<button
+  class="
+    my-2
+    w-full
+    flex
+    p-2
+    bg-white
+    shadow-md
+    hover:shodow-lg
+    rounded-md
+    hover:bg-gray-50
+    items-center
+    justify-between
+  "
+  (click)="buttonAction()"
+>
+  <div class="flex items-center">
+    <img
+      class="h-auto w-14"
+      src="assets/images/{{ hazardType }}.svg"
+      alt="flood"
+    />
+    <div class="flex flex-col text-left ml-3">
+      <div class="font-bold leading-none">
+        <span>{{ hazardType | replace: '-':' ' | titlecase }}</span> Hazard
+        Level
+      </div>
+      <div class="uppercase font-bold text-xl leading-none mt-2">
+        <ng-container *ngIf="isLoading$ | async; else expLevel">
+          <span class="text-gray-700">Loading...</span>
+        </ng-container>
+        <ng-template #expLevel>
+          <span class="text-noah-red-{{ exposureLevel$ | async }}">{{
+            exposureLevel$ | async
+          }}</span>
+        </ng-template>
+      </div>
+      <small>{{ caption$ | async }}</small>
+    </div>
+  </div>
+  <img class="w-4" src="assets/icons/right-chevron.svg" />
+</button>

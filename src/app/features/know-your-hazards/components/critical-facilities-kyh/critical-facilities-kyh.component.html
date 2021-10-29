@@ -1,22 +1,30 @@
-<h4 class="text-2xl font-bold leading-tight mt-6 pb-2">
+<h4 class="text-xl font-bold leading-tight mt-6 pb-2">
   Critical Facilities Near You
 </h4>
 
 <button
-  class="text-left shadow flex rounded w-full p-3 my-3"
+  class="
+    text-left
+    shadow
+    items-center
+    flex
+    rounded
+    w-full
+    p-3
+    my-3
+    bg-white
+    hover:bg-gray-50
+  "
   *ngFor="let facility of criticalFacilities; let index = index"
   (click)="focus(facility, index)"
 >
-  <span class="w-1/6">
-    <img
-      class="h-auto m-auto"
-      src="assets/map-sprites/svg/{{ facility.type }}.svg"
-    />
-  </span>
-  <span class="w-5/6 pl-3">
+  <div class="w-1/6 flex">
+    <img class="m-auto" src="assets/map-sprites/svg/{{ facility.type }}.svg" />
+  </div>
+  <div class="w-5/6 pl-3">
     <div class="text-sm font-bold">{{ facility.name }}</div>
     <small class="text-gray-500" *ngIf="facility.distance">
       {{ facility.distance | number: '1.1-2' }} km away</small
     >
-  </span>
+  </div>
 </button>
