@@ -27,6 +27,8 @@ export const getSymbolLayer = (sourceName: string): SymbolLayer => ({
   filter: ['!', ['has', 'point_count']],
   layout: {
     'icon-image': sourceName,
+    'icon-allow-overlap': true,
+    'text-allow-overlap': true,
     'text-anchor': 'top',
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
