@@ -296,12 +296,33 @@ export class MapKyhComponent implements OnInit {
           id: 'criticalFacilities',
           type: 'symbol',
           source: 'cfSource',
+          paint: {
+            'icon-opacity': 1,
+            'icon-halo-color':
+              this.mapStyle === 'terrain'
+                ? 'rgba(255, 255, 255, 1)'
+                : 'rgba(0, 0, 0, 1)',
+            'icon-halo-width': 0.5,
+            'icon-halo-blur': 0.5,
+            'text-opacity': 1,
+            'text-color': this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+            'text-halo-color':
+              this.mapStyle === 'terrain'
+                ? 'rgba(255, 255, 255, 1)'
+                : 'rgba(0, 0, 0, 1)',
+            'text-halo-width': 0.5,
+            'text-halo-blur': 0.5,
+          },
           layout: {
             'icon-image': ['get', 'amenity'],
             'text-anchor': 'top',
             'text-field': ['get', 'name'],
             'text-offset': [0, 2],
-            'text-size': 10,
+            'text-size': 12,
+            'text-letter-spacing': 0.08,
+            'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+            'icon-allow-overlap': true,
+            'text-allow-overlap': true,
           },
         });
       });

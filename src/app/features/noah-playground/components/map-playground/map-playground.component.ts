@@ -878,7 +878,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
 
       _this.map.addLayer(getCircleLayer(name));
-      _this.map.addLayer(getSymbolLayer(name));
+      _this.map.addLayer(getSymbolLayer(name, this.mapStyle));
       _this.map.addLayer(getClusterTextCount(name));
 
       // opacity
