@@ -90,15 +90,15 @@ export const criticalFacilities = {
   },
   hospital: {
     url: 'mapbox://upri-noah.0qj1zvhm',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
   },
   'fire-station': {
     url: 'mapbox://upri-noah.cebidtpr',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
   },
   'police-station': {
     url: 'mapbox://upri-noah.ds1saq22',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
   },
 };
 
