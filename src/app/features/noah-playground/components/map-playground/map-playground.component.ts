@@ -242,9 +242,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               );
             });
 
+          this.pgService.setSensorTypeFetched(sensorType, true);
           // show mouse event listeners
           this.showDataPoints(sensorType);
-        });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from DOST for sensors of type "${sensorType}"`
+          )
+        );
     });
   }
 

@@ -92,10 +92,15 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type SensorTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
 export type SensorsState = {
   shown: boolean;
   expanded: boolean;
-  types: Record<SensorType, { shown: boolean }>;
+  types: Record<SensorType, SensorTypeState>;
 };
 
 type NoahPlaygroundState = {
@@ -229,15 +234,19 @@ const createInitialValue = (): NoahPlaygroundState => ({
     types: {
       arg: {
         shown: true,
+        fetched: false,
       },
       wlms: {
         shown: true,
+        fetched: false,
       },
       aws: {
         shown: true,
+        fetched: false,
       },
       wlmsarg: {
         shown: true,
+        fetched: false,
       },
     },
   },

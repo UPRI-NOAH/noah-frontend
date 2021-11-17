@@ -169,6 +169,12 @@ export class NoahPlaygroundService {
     );
   }
 
+  getSensorTypeFetched$(sensorType: SensorType): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.sensors.types[sensorType].fetched)
+    );
+  }
+
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
@@ -312,6 +318,18 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `change sensor ${sensorType}'visibility to ${!shown}`
+    );
+  }
+
+  setSensorTypeFetched(sensorType: SensorType, fetched = true): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    sensors.types[sensorType].fetched = fetched;
+    this.store.patch(
+      { sensors },
+      `change sensor's fetched status ${sensorType}' to ${!fetched}`
     );
   }
 
