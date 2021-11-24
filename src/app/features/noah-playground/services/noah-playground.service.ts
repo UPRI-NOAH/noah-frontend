@@ -342,18 +342,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  setWeatherSatelliteProperty(value: boolean, property: 'expanded' | 'shown') {
-    const weatherSatellite: WeatherSatelliteState = {
-      ...this.store.state.weatherSatellite,
-    };
-
-    weatherSatellite[property] = value;
-    this.store.patch(
-      { weatherSatellite },
-      `Weather Satellite ${property}, ${value}`
-    );
-  }
-
   getWeatherSatelliteOpacity(weatherType: WeatherSatelliteType): number {
     return this.store.state[weatherType].opacity;
   }
@@ -376,18 +364,6 @@ export class NoahPlaygroundService {
       `Weather Satellite - update ${weatherType}'s opacity to ${opacity}`
     );
   }
-
-  // setWeatherSatelliteShown(value: boolean, type: WeatherSatelliteType) {
-  //   const weatherSatellite: WeatherSatelliteState = {
-  //     ...this.store.state.weatherSatellite,
-  //   };
-
-  //   weatherSatellite.types[type].shown = value;
-  //   this.store.patch(
-  //     { weatherSatellite },
-  //     `Weather Satellite - update ${type}'s shown to ${value}`
-  //   );
-  // }
 
   selectWeatherSatelliteType(weatherType: WeatherSatelliteType): void {
     const weatherSatellite = {
