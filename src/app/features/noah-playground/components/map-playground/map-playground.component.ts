@@ -500,7 +500,87 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initWeatherSatelliteLayers() {
-    WEATHER_SATELLITE_ARR.forEach((ws) => this._loadWeatherSatellite(ws));
+    const weatherSatelliteImages = {
+      himawari: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        type: 'video',
+      },
+      'himawari-GSMAP': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        type: 'video',
+      },
+    };
+
+    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (weatherSatelliteDetails.type) {
+        case 'video':
+          return {
+            type: 'video',
+            urls: [weatherSatelliteDetails.url],
+            coordinates: [
+              [100.0, 29.25], // top-left
+              [160.0, 29.25], // top-right
+              [160.0, 5.0], // bottom-right
+              [100.0, 5.0], // bottom-left
+            ],
+          };
+        default:
+          throw new Error(
+            '[MapPlayground] Unable to get weather satellite source'
+          );
+      }
+    };
+
+    Object.keys(weatherSatelliteImages).forEach(
+      (weatherType: WeatherSatelliteType) => {
+        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
+
+        // 1. Add source per weather satellite type
+        this.map.addSource(
+          weatherType,
+          getWeatherSatelliteSource(weatherSatelliteDetails)
+        );
+
+        // 2. Add layer per weather satellite source
+        this.map.addLayer({
+          id: weatherType,
+          type: 'raster',
+          source: weatherType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        // 3. Check for group and individual visibility and opacity
+        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          shareReplay(1)
+        );
+        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
+          shareReplay(1)
+        );
+        const weatherTypeOpacity$ = this.pgService
+          .getWeatherSatellite$(weatherType)
+          .pipe(
+            map((weather) => weather.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
+            let opacity = +(allShown && selectedWeather === weatherType);
+            if (opacity) {
+              opacity = weatherTypeOpacity / 100;
+            }
+
+            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
+          });
+      }
+    );
   }
 
   showContourMaps() {
@@ -833,120 +913,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.map.setPaintProperty(layerName, 'fill-opacity', newOpacity);
       });
   }
-
-  //
-  private _loadWeatherSatellite(name: WeatherSatelliteType) {
-    const weatherSatelliteImages = {
-      himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
-        type: 'video',
-      },
-      'himawari-GSMAP': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
-        type: 'video',
-      },
-    };
-
-    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (weatherSatelliteDetails.type) {
-        case 'video':
-          return {
-            type: 'video',
-            urls: [weatherSatelliteDetails.url],
-            coordinates: [
-              [100.0, 29.25], // top-left
-              [160.0, 29.25], // top-right
-              [160.0, 5.0], // bottom-right
-              [100.0, 5.0], // bottom-left
-            ],
-          };
-        default:
-          throw new Error(
-            '[MapPlayground] Unable to get weather satellite source'
-          );
-      }
-    };
-
-    Object.keys(weatherSatelliteImages).forEach((weatherType) => {
-      const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
-
-      this.map.addSource(
-        weatherType,
-        getWeatherSatelliteSource(weatherSatelliteDetails)
-      );
-
-      this.map.addLayer({
-        id: weatherType,
-        type: 'raster',
-        source: weatherType,
-        paint: {
-          'raster-fade-duration': 0,
-          'raster-opacity': 0,
-        },
-      });
-
-      const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-        distinctUntilChanged()
-      );
-      const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
-        distinctUntilChanged()
-      );
-
-      combineLatest([allShown$, selectedWeather$])
-        .pipe(
-          takeUntil(this._unsub),
-          takeUntil(this._changeStyle),
-          map(([allShown, selectedWeather]) => {
-            return +(allShown && selectedWeather === weatherType);
-          })
-        )
-        .subscribe((opacity: number) => {
-          this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
-        });
-
-      // opacity
-      const weatherOp$ = this.pgService
-        .getWeatherSatellite$(name)
-        .pipe(distinctUntilChanged((x, y) => x.opacity !== y.opacity));
-
-      combineLatest([allShown$, weatherOp$])
-        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-        .subscribe(([allShown, weatherOp]) => {
-          let newOpacity = 0;
-
-          if (weatherOp.opacity && allShown) {
-            newOpacity = weatherOp.opacity / 100;
-          }
-          this.map.setPaintProperty(name, 'raster-opacity', newOpacity);
-        });
-
-      // shown
-      const weather$ = this.pgService
-        .getWeatherSatellite$(name)
-        .pipe(distinctUntilChanged((x, y) => x.shown !== y.shown));
-
-      combineLatest([allShown$, weather$])
-        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-        .subscribe(([allShown, weather]) => {
-          let newOpacity = 0;
-
-          if (weather.shown && allShown) {
-            newOpacity = weather.opacity / 100;
-          }
-
-          this.map.setPaintProperty(name, 'raster-opacity', newOpacity);
-          // this.map.flyTo({
-          //   center: PH_DEFAULT_CENTER,
-          //   zoom: 4,
-          //   essential: true,
-          // });
-        });
-    });
-  }
-  //
 
   private _loadCriticalFacilityIcon(name: CriticalFacility) {
     const _this = this;
