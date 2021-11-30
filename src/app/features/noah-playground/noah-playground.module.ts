@@ -19,6 +19,7 @@ import { SensorsGroupComponent } from './components/sensors-group/sensors-group.
 import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
+import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ContourMapsComponent } from './components/contour-maps/contour-maps.com
     SensorSoloComponent,
     WeatherComponent,
     ContourMapsComponent,
+    WeatherSatellitePlaygroundComponent,
   ],
   imports: [
     CommonModule,

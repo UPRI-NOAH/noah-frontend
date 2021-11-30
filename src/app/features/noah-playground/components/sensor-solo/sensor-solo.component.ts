@@ -36,7 +36,6 @@ export class SensorSoloComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe((fetched) => {
         this.fetchFailed = !fetched;
-        console.log(fetched);
       });
   }
 
