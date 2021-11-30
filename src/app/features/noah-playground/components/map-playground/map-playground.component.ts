@@ -19,6 +19,7 @@ import {
   pluck,
   shareReplay,
   takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -557,6 +558,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
+          tap(() => {
+            this.map.flyTo({
+              center: PH_DEFAULT_CENTER,
+              zoom: 4,
+              essential: true,
+            });
+          }),
           shareReplay(1)
         );
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(

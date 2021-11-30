@@ -14,7 +14,6 @@ export class WeatherComponent implements OnInit {
   selectedWeatherSatellite$: Observable<WeatherSatelliteType>;
 
   initialOpacityValue: number = 30;
-  shown = true;
 
   get displayName(): string {
     return this.name.replace('-', ' ');
@@ -29,7 +28,6 @@ export class WeatherComponent implements OnInit {
     this.initialOpacityValue = this.pgService.getWeatherSatelliteOpacity(
       this.name
     );
-    this.shown = this.pgService.getWeatherSatelliteShown(this.name);
   }
 
   changeOpacity(opacity: number) {

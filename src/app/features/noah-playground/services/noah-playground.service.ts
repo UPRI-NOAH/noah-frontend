@@ -352,10 +352,6 @@ export class NoahPlaygroundService {
     return this.store.state.weatherSatellite.types[weatherType].opacity;
   }
 
-  getWeatherSatelliteShown(weatherType: WeatherSatelliteType): boolean {
-    return this.store.state.weatherSatellite.types[weatherType].shown;
-  }
-
   setWeatherSatelliteOpacity(
     opacity: number,
     weatherType: WeatherSatelliteType
