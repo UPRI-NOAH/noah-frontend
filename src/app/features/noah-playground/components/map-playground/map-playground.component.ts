@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
-import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
+import mapboxgl, {
+  AnySourceData,
+  GeolocateControl,
+  Map,
+  Marker,
+} from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
@@ -14,6 +19,7 @@ import {
   pluck,
   shareReplay,
   takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -43,8 +49,13 @@ import {
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  WeatherSatelliteState,
+  WeatherSatelliteType,
+  WeatherSatelliteTypeState,
+  WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+
 type MapStyle = 'terrain' | 'satellite';
 
 type LayerSettingsParam = {
@@ -64,6 +75,8 @@ type RawHazardLevel =
 export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr';
 
 export type RawStormSurgeAdvisory = 'ssa1' | 'ssa2' | 'ssa3' | 'ssa4';
+
+export type RawWeatherSatellite = 'himawari' | 'himawari-GSMAP';
 
 export type RawLandslideHazards =
   | 'lh1' // landslide
@@ -118,7 +131,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
-        this.initWeatherLayer();
+        this.initWeatherSatelliteLayers();
         this.showContourMaps();
       });
   }
@@ -487,55 +500,96 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  initWeatherLayer() {
-    const layerID = 'himawari-satellite-image';
-
-    this.map.addLayer({
-      id: layerID,
-      type: 'raster',
-      source: {
+  initWeatherSatelliteLayers() {
+    const weatherSatelliteImages = {
+      himawari: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
         type: 'video',
-        urls: [
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
-        ],
-        coordinates: [
-          [100.0, 29.25], // top-left
-          [160.0, 29.25], // top-right
-          [160.0, 5.0], // bottom-right
-          [100.0, 5.0], // bottom-left
-        ],
       },
-      paint: {
-        'raster-opacity': 0,
+      'himawari-GSMAP': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        type: 'video',
       },
-    });
+    };
 
-    this.pgService.weather$
-      .pipe(pluck('opacity'), distinctUntilChanged())
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe((opacity) => {
-        this.map.setPaintProperty(layerID, 'raster-opacity', opacity / 100);
-      });
+    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (weatherSatelliteDetails.type) {
+        case 'video':
+          return {
+            type: 'video',
+            urls: [weatherSatelliteDetails.url],
+            coordinates: [
+              [100.0, 29.25], // top-left
+              [160.0, 29.25], // top-right
+              [160.0, 5.0], // bottom-right
+              [100.0, 5.0], // bottom-left
+            ],
+          };
+        default:
+          throw new Error(
+            '[MapPlayground] Unable to get weather satellite source'
+          );
+      }
+    };
 
-    this.pgService.weather$
-      .pipe(
-        distinctUntilChanged((prev, next) => prev.shown === next.shown),
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle)
-      )
-      .subscribe((weather) => {
-        let newOpacity = 0;
-        if (weather.shown) {
-          newOpacity = weather.opacity / 100;
-          this.map.flyTo({
-            center: PH_DEFAULT_CENTER,
-            zoom: 4,
-            essential: true,
+    Object.keys(weatherSatelliteImages).forEach(
+      (weatherType: WeatherSatelliteType) => {
+        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
+
+        // 1. Add source per weather satellite type
+        this.map.addSource(
+          weatherType,
+          getWeatherSatelliteSource(weatherSatelliteDetails)
+        );
+
+        // 2. Add layer per weather satellite source
+        this.map.addLayer({
+          id: weatherType,
+          type: 'raster',
+          source: weatherType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        // 3. Check for group and individual visibility and opacity
+        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
+          tap(() => {
+            this.map.flyTo({
+              center: PH_DEFAULT_CENTER,
+              zoom: 4,
+              essential: true,
+            });
+          }),
+          shareReplay(1)
+        );
+        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
+          shareReplay(1)
+        );
+        const weatherTypeOpacity$ = this.pgService
+          .getWeatherSatellite$(weatherType)
+          .pipe(
+            map((weather) => weather.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
+            let opacity = +(allShown && selectedWeather === weatherType);
+            if (opacity) {
+              opacity = weatherTypeOpacity / 100;
+            }
+
+            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
-        }
-
-        this.map.setPaintProperty(layerID, 'raster-opacity', newOpacity);
-      });
+      }
+    );
   }
 
   showContourMaps() {
