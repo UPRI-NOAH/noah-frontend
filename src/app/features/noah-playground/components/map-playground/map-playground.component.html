@@ -110,8 +110,8 @@
 </div>
 <div class="top-44 absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-4">
   <div class="p-2">
-    <div class="dropdown inline-block relative">
-      <button
+    <div class="inline-block relative">
+      <a
         class="
           bg-white
           text-gray-800
@@ -128,6 +128,11 @@
           focus:ring-gray-600
           focus:ring-opacity-50
         "
+        id="imgLink"
+        download="noah-studio.png"
+        href=""
+        target="_blank"
+        (click)="exportScreenshots()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +154,7 @@
             d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-      </button>
+      </a>
     </div>
   </div>
 </div>
