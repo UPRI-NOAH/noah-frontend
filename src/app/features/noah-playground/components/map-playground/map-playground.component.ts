@@ -45,6 +45,7 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
+  ContourMapType,
   HazardLevel,
   HazardType,
   LandslideHazards,
@@ -594,29 +595,68 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   showContourMaps() {
     const contourMapImages = {
-      '1hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
-      '3hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
-      '6hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
-      '12hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
-      '24hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+      '1hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '3hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '6hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '12hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr-lapse': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+        type: 'video',
+      },
+    };
+
+    const getContourMapSource = (contourMapDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (contourMapDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: contourMapDetails.url,
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        case 'video':
+          return {
+            type: 'video',
+            urls: [contourMapDetails.url],
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get contour map source');
+      }
     };
 
     Object.keys(contourMapImages).forEach((contourType) => {
-      this.map.addSource(contourType, {
-        type: 'image',
-        url: contourMapImages[contourType],
-        coordinates: [
-          [115.35, 21.55], // top-left
-          [128.25, 21.55], // top-right
-          [128.25, 3.85], // bottom-right
-          [115.35, 3.85], // bottom-left
-        ],
-      });
+      const contourMapDetails = contourMapImages[contourType];
+
+      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
       this.map.addLayer({
         id: contourType,

@@ -9,7 +9,14 @@ import { Observable } from 'rxjs';
   styleUrls: ['./contour-maps.component.scss'],
 })
 export class ContourMapsComponent implements OnInit {
-  contourMaps: ContourMapType[] = ['1hr', '3hr', '6hr', '12hr', '24hr'];
+  contourMaps: ContourMapType[] = [
+    '1hr',
+    '3hr',
+    '6hr',
+    '12hr',
+    '24hr',
+    '24hr-lapse',
+  ];
 
   expanded$: Observable<boolean>;
   selectedContourMap$: Observable<ContourMapType>;

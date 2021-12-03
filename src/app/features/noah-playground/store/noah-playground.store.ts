@@ -32,7 +32,13 @@ export type LandslideHazards =
   | 'debris-flow'
   | 'unstable-slopes-maps';
 
-export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
+export type ContourMapType =
+  | '1hr'
+  | '3hr'
+  | '6hr'
+  | '12hr'
+  | '24hr'
+  | '24hr-lapse';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
