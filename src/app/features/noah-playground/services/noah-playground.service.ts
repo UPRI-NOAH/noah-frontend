@@ -16,6 +16,7 @@ import {
   WeatherSatelliteTypeState,
   VolcanoGroupState,
   VolcanoType,
+  VolcanoState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -123,6 +124,12 @@ export class NoahPlaygroundService {
   ): Observable<CriticalFacilityTypeState> {
     return this.store.state$.pipe(
       map((state) => state.criticalFacilities.types[type])
+    );
+  }
+
+  getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
+    return this.store.state$.pipe(
+      map((state) => state.volcanoes.types[volcanoType])
     );
   }
 

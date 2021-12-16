@@ -284,6 +284,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     };
 
+    const volcanoColorMap: Record<VolcanoType, string> = {
+      active: 'red',
+      inactive: 'gray',
+      'potentially-active': 'yellow',
+    };
+
+    const allShown$ = this.pgService.volcanoGroupShown$.pipe(
+      distinctUntilChanged()
+    );
+
     // 1 - load the geojson files (add sources/layers)
     Object.keys(volcanoSourceFiles).forEach((volcanoType: VolcanoType) => {
       const volcanoObjData = volcanoSourceFiles[volcanoType];
@@ -296,14 +306,28 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           data: volcanoObjData.url,
         },
         paint: {
-          'circle-color': 'red',
+          'circle-color': volcanoColorMap[volcanoType],
           'circle-radius': 5,
           'circle-opacity': 1,
         },
       });
-    });
 
-    // 2 - listen to the values from the store (group and individual)
+      // 2 - listen to the values from the store (group and individual)
+      const volcano$ = this.pgService
+        .getVolcano$(volcanoType)
+        .pipe(shareReplay(1));
+
+      combineLatest([allShown$, volcano$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, volcano]) => {
+          let newOpacity = 0;
+          if (volcano.shown && allShown) {
+            newOpacity = volcano.opacity / 100;
+          }
+
+          this.map.setPaintProperty(volcanoType, 'circle-opacity', newOpacity);
+        });
+    });
   }
 
   showDataPoints(sensorType: SensorType) {
