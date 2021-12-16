@@ -1,0 +1,105 @@
+<div class="flex flex-col justify-between w-full">
+  <div class="text-gray-800 pt-4 pb-2 mx-8 items-center flex">
+    <button class="text-gray-800 pr-4" (click)="back()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        />
+      </svg>
+    </button>
+    <h4 class="text-2xl font-bold leading-tight mt-4 pb-4">
+      Know Your Hazard: Flooding
+    </h4>
+  </div>
+
+  <div class="text-gray-800 py-4 mx-8 items-center">
+    <p class="text-black-700">
+      <b>Flooding</b> is the overflow of water from a river or another body of
+      water due to heavy rainfall.
+    </p>
+  </div>
+  <div class="items-start mx-8">
+    <h4 class="text-xl font-bold leading-tight my-2 pt-2">
+      What To Do During Flood
+    </h4>
+    <div class="py-2 max-w-xl w-full flex flex-row">
+      <div class="flex-1">
+        <p class="text-black my-2">
+          <!-- Your flood hazard level is
+            <span [ngClass]="'text-' + (floodRiskLevel$ | async)">{{
+              floodRiskLevel$ | async
+            }}</span
+            >.  -->
+          Be prepared to evacuate immediately when there’s an alert for heavy
+          rainfall.
+        </p>
+      </div>
+      <div class="ml-0 md:mt-0 items-center flex">
+        <img
+          class="h-14 w-auto"
+          src="assets/images/flood/flood-evacuate.svg"
+          alt="flood"
+        />
+      </div>
+    </div>
+
+    <div class="py-2 max-w-xl w-full flex flex-row">
+      <div class="mr-0 md:mt-0 items-center flex">
+        <img
+          class="h-14 w-auto"
+          src="assets/images/flood/flood-boots.svg"
+          alt="flood"
+        />
+      </div>
+      <div class="flex-1">
+        <p class="text-black my-2">
+          Refrain from walking through floodwater most especially without
+          wearing protective gear like boots.
+        </p>
+      </div>
+    </div>
+
+    <div class="py-2 max-w-xl w-full flex flex-row">
+      <div class="flex-1">
+        <p class="text-black my-2">
+          Don’t walk or drive through moving water. It can sweep you and your
+          car away.
+        </p>
+      </div>
+      <div class="ml-0 md:mt-0 items-center flex">
+        <img
+          class="h-14 w-auto"
+          src="assets/images/flood/flood-dont-walk.svg"
+          alt="flood"
+        />
+      </div>
+    </div>
+    <div class="py-2 max-w-xl w-full flex flex-row">
+      <div class="mr-0 md:mt-0 items-center flex">
+        <img
+          class="h-14 w-auto"
+          src="assets/images/flood/flood-switch.svg"
+          alt="flood"
+        />
+      </div>
+      <div class="flex-1">
+        <p class="text-black my-2">
+          Turn off all electrical appliances and LPG tank; turn off the main
+          power switch as needed.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="items-start mx-8">
+    <noah-survival-kit></noah-survival-kit>
+  </div>
+</div>

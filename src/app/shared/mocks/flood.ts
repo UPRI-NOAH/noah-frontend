@@ -17,11 +17,11 @@ export const getHazardColor = (
       ['linear'],
       ['get', 'GRIDCODE'],
       2,
-      NOAH_COLORS[color].low,
+      NOAH_COLORS[color].high,
       3,
       NOAH_COLORS[color].medium,
       4,
-      NOAH_COLORS[color].high,
+      NOAH_COLORS[color].low,
     ] as Expression;
   }
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
@@ -17,10 +18,11 @@ export class NoahPlaygroundComponent implements OnInit {
   isList;
   hazardTypes = HAZARDS;
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(private pgService: NoahPlaygroundService, private title: Title) {}
 
   ngOnInit(): void {
     this.currentLocationPg$ = this.pgService.currentLocation$;
+    this.title.setTitle('NOAH Studio');
   }
 
   selectPlace(selectedPlace) {

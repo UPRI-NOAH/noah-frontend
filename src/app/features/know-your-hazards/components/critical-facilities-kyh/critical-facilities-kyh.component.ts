@@ -7,6 +7,7 @@ import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable, Subject } from 'rxjs';
 import { SampleMarker } from '@shared/mocks/critical-facilities';
 import { map, takeUntil } from 'rxjs/operators';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
   selector: 'noah-critical-facilities-kyh',
@@ -18,11 +19,13 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
   criticalFacilities = [];
   private _unsub = new Subject();
 
-  constructor(private kyhService: KyhService) {}
+  constructor(
+    private gaService: GoogleAnalyticsService,
+    private kyhService: KyhService
+  ) {}
 
   ngOnInit(): void {
     this.currentLocation$ = this.kyhService.currentLocation$;
-    this.kyhService.setCurrentPage('know-your-hazards');
 
     this.kyhService.criticalFacilities$
       .pipe(
@@ -43,7 +46,15 @@ export class CriticalFacilitiesKyhComponent implements OnInit {
     this._unsub.complete();
   }
 
-  focus(marker: SampleMarker) {
+  focus(marker: SampleMarker, index: number) {
+    // index -- how far is it from the top of the list
+    this.gaService.event(
+      'focus_critical_facility',
+      'know_your_hazards',
+      marker.type,
+      index
+    );
+
     const coords = {
       lat: (<[number, number]>marker.coords)[1],
       lng: (<[number, number]>marker.coords)[0],

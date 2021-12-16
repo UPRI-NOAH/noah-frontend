@@ -1,5 +1,7 @@
 import { CircleLayer, LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
 
+export type MapStyle = 'terrain' | 'satellite';
+
 export const CRITICAL_FACILITIES_ARR = [
   'police-station',
   'fire-station',
@@ -16,21 +18,33 @@ export type SampleMarker = {
   address: string;
 };
 
-export const getSymbolLayer = (sourceName: string): SymbolLayer => ({
+export const getSymbolLayer = (
+  sourceName: string,
+  mapStyle: MapStyle
+): SymbolLayer => ({
   id: `${sourceName}-image`,
   type: 'symbol',
   source: sourceName,
   paint: {
     'icon-opacity': 1,
     'text-opacity': 1,
+    'text-color': mapStyle === 'terrain' ? '#333333' : '#ffffff',
+    'text-halo-color':
+      mapStyle === 'terrain' ? 'rgba(255, 255, 255, 1)' : 'rgba(0, 0, 0, 1)',
+    'text-halo-width': 0.5,
+    'text-halo-blur': 0.5,
   },
   filter: ['!', ['has', 'point_count']],
   layout: {
     'icon-image': sourceName,
+    'icon-allow-overlap': true,
+    'text-allow-overlap': true,
     'text-anchor': 'top',
+    'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
     'text-field': ['get', 'name'],
     'text-offset': [0, 2],
-    'text-size': 10,
+    'text-size': 12,
+    'text-letter-spacing': 0.08,
   },
 });
 
@@ -88,15 +102,15 @@ export const criticalFacilities = {
   },
   hospital: {
     url: 'mapbox://upri-noah.0qj1zvhm',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
   },
   'fire-station': {
     url: 'mapbox://upri-noah.cebidtpr',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/hospitals.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
   },
   'police-station': {
     url: 'mapbox://upri-noah.ds1saq22',
-    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/fire_station.geojson',
+    data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/police_station.geojson',
   },
 };
 

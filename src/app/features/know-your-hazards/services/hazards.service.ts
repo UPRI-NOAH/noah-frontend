@@ -5,7 +5,11 @@ import { Feature, FeatureCollection } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
 import { Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
-import { RiskLevel } from '../store/kyh.store';
+import {
+  ExposureLevel,
+  HazardExposureLevel,
+  HazardType,
+} from '../store/kyh.store';
 
 type AssessmentPayload = {
   coords: { lat: number; lng: number };
@@ -48,7 +52,7 @@ const httpOptions = {
 export class HazardsService {
   constructor(private http: HttpClient) {}
 
-  assess(payload: AssessmentPayload): Observable<RiskLevel> {
+  assess(payload: AssessmentPayload): Observable<HazardExposureLevel> {
     return this.getFeatureInfo(payload).pipe(
       map((feature) => this._getRiskLevel(feature)),
       take(1)
@@ -81,12 +85,14 @@ export class HazardsService {
       .pipe(catchError(this.handleError('getFeatureInfo', null)));
   }
 
-  private _getRiskLevel(feature: FeatureCollection | null): RiskLevel {
-    if (!feature) {
-      return 'little to none';
-    }
-
-    return this._formatRiskLevel(feature);
+  private _getRiskLevel(
+    featureCollection: FeatureCollection | null
+  ): HazardExposureLevel {
+    return {
+      flood: this._formatRiskLevel(featureCollection, 'flood'),
+      landslide: this._formatRiskLevel(featureCollection, 'landslide'),
+      'storm-surge': this._formatRiskLevel(featureCollection, 'storm-surge'),
+    };
   }
 
   /**
@@ -103,42 +109,70 @@ export class HazardsService {
     };
   }
 
-  private _getRiskNum(feature: Feature): number {
+  private _getFloodExposure(feature: Feature): number {
     const { properties } = feature;
-    if (!properties) {
-      return 0;
-    }
+    if (!properties) return 0;
 
-    if ('Var' in properties) {
-      return parseInt(properties.Var);
-    }
+    if ('Var' in properties) return parseInt(properties.Var);
 
     // There was no `Var` value read earlier
     // This is exclusive for Flood Data only
-    if ('No_Data' in properties) {
-      return -1;
-    }
-
-    if ('LH' in properties) {
-      return parseInt(properties.LH);
-    }
-
-    if ('HAZ' in properties) {
-      return parseFloat(properties.HAZ);
-    }
+    if ('No_Data' in properties) return -1;
 
     return 0;
   }
 
-  private _computeAreaRiskNum(features: Array<Feature>): number {
-    const riskNumList = features.map((feature: Feature) =>
-      this._getRiskNum(feature)
-    );
+  private _getLandslideExposure(feature: Feature): number {
+    const { properties } = feature;
+    if (!properties) return 0;
+
+    if ('LH' in properties) return parseInt(properties.LH);
+
+    return 0;
+  }
+
+  private _getStormSurgeExposure(feature: Feature): number {
+    const { properties } = feature;
+
+    if (!properties) return 0;
+
+    if ('HAZ' in properties) return parseInt(properties.HAZ);
+    return 0;
+  }
+
+  private _computeAreaRiskNum(
+    features: Array<Feature>,
+    hazardType: HazardType
+  ): number {
+    let getRiskNum: (feature: Feature) => number;
+    switch (hazardType) {
+      case 'flood':
+        getRiskNum = this._getFloodExposure;
+        break;
+      case 'landslide':
+        getRiskNum = this._getLandslideExposure;
+        break;
+      case 'storm-surge':
+        getRiskNum = this._getStormSurgeExposure;
+        break;
+      default:
+        break;
+    }
+
+    const riskNumList = features.map((feature: Feature) => getRiskNum(feature));
     return Math.max(...riskNumList);
   }
 
-  private _formatRiskLevel(featureCollection: FeatureCollection): RiskLevel {
-    const riskLevelNum = this._computeAreaRiskNum(featureCollection.features);
+  private _formatRiskLevel(
+    featureCollection: FeatureCollection,
+    hazardType: HazardType
+  ): ExposureLevel {
+    if (!featureCollection) return 'little to none';
+
+    const riskLevelNum = this._computeAreaRiskNum(
+      featureCollection.features,
+      hazardType
+    );
 
     switch (riskLevelNum) {
       case -1:

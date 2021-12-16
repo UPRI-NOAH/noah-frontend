@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
-import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
+import mapboxgl, {
+  AnySourceData,
+  GeolocateControl,
+  Map,
+  Marker,
+} from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
@@ -14,6 +19,7 @@ import {
   pluck,
   shareReplay,
   takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -39,12 +45,18 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
+  ContourMapType,
   HazardLevel,
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  WeatherSatelliteState,
+  WeatherSatelliteType,
+  WeatherSatelliteTypeState,
+  WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+
 type MapStyle = 'terrain' | 'satellite';
 
 type LayerSettingsParam = {
@@ -64,6 +76,8 @@ type RawHazardLevel =
 export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr';
 
 export type RawStormSurgeAdvisory = 'ssa1' | 'ssa2' | 'ssa3' | 'ssa4';
+
+export type RawWeatherSatellite = 'himawari' | 'himawari-GSMAP';
 
 export type RawLandslideHazards =
   | 'lh1' // landslide
@@ -118,7 +132,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
-        this.initWeatherLayer();
+        this.initWeatherSatelliteLayers();
         this.showContourMaps();
       });
   }
@@ -242,9 +256,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               );
             });
 
+          this.pgService.setSensorTypeFetched(sensorType, true);
           // show mouse event listeners
           this.showDataPoints(sensorType);
-        });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from DOST for sensors of type "${sensorType}"`
+          )
+        );
     });
   }
 
@@ -254,57 +274,77 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       closeButton: true,
       closeOnClick: false,
     });
-
     const _this = this;
-    this.map.on('mouseover', sensorType, (e) => {
-      _this.map.getCanvas().style.cursor = 'pointer';
 
-      const coordinates = (e.features[0].geometry as any).coordinates.slice();
-      const location = e.features[0].properties.location;
-      const stationID = e.features[0].properties.station_id;
-      const typeName = e.features[0].properties.type_name;
-      const status = e.features[0].properties.status_description;
-      const dateInstalled = e.features[0].properties.date_installed;
-      const province = e.features[0].properties.province;
+    combineLatest([
+      this.pgService.sensorsGroupShown$,
+      this.pgService.getSensorTypeShown$(sensorType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        if (groupShown && soloShown) {
+          this.map.on('mouseover', sensorType, (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            const location = e.features[0].properties.location;
+            const stationID = e.features[0].properties.station_id;
+            const typeName = e.features[0].properties.type_name;
+            const status = e.features[0].properties.status_description;
+            const dateInstalled = e.features[0].properties.date_installed;
+            const province = e.features[0].properties.province;
 
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
 
-      popUp
-        .setLngLat(coordinates)
-        .setHTML(
-          `
-          <div style="color: #333333;">
-            <div><strong>#${stationID} - ${location}</strong></div>
-            <div>Type: ${typeName}</div>
-            <div>Status: ${status}</div>
-            <div>Date Installed: ${dateInstalled}</div>
-            <div>Province: ${province}</div>
-          </div>
-        `
-        )
-        .addTo(_this.map);
-    });
+            _this.map.getCanvas().style.cursor = 'pointer';
+            popUp
+              .setLngLat(coordinates)
+              .setHTML(
+                `
+              <div style="color: #333333;">
+                <div><strong>#${stationID} - ${location}</strong></div>
+                <div>Type: ${typeName}</div>
+                <div>Status: ${status}</div>
+                <div>Date Installed: ${dateInstalled}</div>
+                <div>Province: ${province}</div>
+              </div>
+            `
+              )
+              .addTo(_this.map);
+          });
+          this.map.on('click', sensorType, function (e) {
+            graphDiv.hidden = false;
+            _this.map.flyTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+              zoom: 11,
+              essential: true,
+            });
 
-    this.map.on('click', sensorType, function (e) {
-      graphDiv.hidden = false;
-      _this.map.flyTo({
-        center: (e.features[0].geometry as any).coordinates.slice(),
-        zoom: 11,
-        essential: true,
+            const stationID = e.features[0].properties.station_id;
+            const location = e.features[0].properties.location;
+            const pk = e.features[0].properties.pk;
+
+            popUp.setDOMContent(graphDiv).setMaxWidth('900px');
+
+            _this.showChart(+pk, +stationID, location, sensorType);
+
+            _this._graphShown = true;
+          });
+        } else {
+          popUp.remove();
+          this.map.on('mouseover', sensorType, (e) => {
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+          });
+          this.map.on('click', sensorType, function (e) {
+            _this.map.flyTo({});
+            _this._graphShown = false;
+          });
+        }
       });
-
-      const stationID = e.features[0].properties.station_id;
-      const location = e.features[0].properties.location;
-      const pk = e.features[0].properties.pk;
-
-      popUp.setDOMContent(graphDiv).setMaxWidth('900px');
-
-      _this.showChart(+pk, +stationID, location, sensorType);
-
-      _this._graphShown = true;
-    });
 
     popUp.on('close', () => (_this._graphShown = false));
 
@@ -461,82 +501,162 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  initWeatherLayer() {
-    const layerID = 'himawari-satellite-image';
-
-    this.map.addLayer({
-      id: layerID,
-      type: 'raster',
-      source: {
+  initWeatherSatelliteLayers() {
+    const weatherSatelliteImages = {
+      himawari: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
         type: 'video',
-        urls: [
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/himawari/ph_himawari.webm',
-        ],
-        coordinates: [
-          [100.0, 29.25], // top-left
-          [160.0, 29.25], // top-right
-          [160.0, 5.0], // bottom-right
-          [100.0, 5.0], // bottom-left
-        ],
       },
-      paint: {
-        'raster-opacity': 0,
+      'himawari-GSMAP': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        type: 'video',
       },
-    });
+    };
 
-    this.pgService.weather$
-      .pipe(pluck('opacity'), distinctUntilChanged())
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe((opacity) => {
-        this.map.setPaintProperty(layerID, 'raster-opacity', opacity / 100);
-      });
+    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (weatherSatelliteDetails.type) {
+        case 'video':
+          return {
+            type: 'video',
+            urls: [weatherSatelliteDetails.url],
+            coordinates: [
+              [100.0, 29.25], // top-left
+              [160.0, 29.25], // top-right
+              [160.0, 5.0], // bottom-right
+              [100.0, 5.0], // bottom-left
+            ],
+          };
+        default:
+          throw new Error(
+            '[MapPlayground] Unable to get weather satellite source'
+          );
+      }
+    };
 
-    this.pgService.weather$
-      .pipe(
-        distinctUntilChanged((prev, next) => prev.shown === next.shown),
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle)
-      )
-      .subscribe((weather) => {
-        let newOpacity = 0;
-        if (weather.shown) {
-          newOpacity = weather.opacity / 100;
-          this.map.flyTo({
-            center: PH_DEFAULT_CENTER,
-            zoom: 4,
-            essential: true,
+    Object.keys(weatherSatelliteImages).forEach(
+      (weatherType: WeatherSatelliteType) => {
+        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
+
+        // 1. Add source per weather satellite type
+        this.map.addSource(
+          weatherType,
+          getWeatherSatelliteSource(weatherSatelliteDetails)
+        );
+
+        // 2. Add layer per weather satellite source
+        this.map.addLayer({
+          id: weatherType,
+          type: 'raster',
+          source: weatherType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        // 3. Check for group and individual visibility and opacity
+        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
+          tap(() => {
+            this.map.flyTo({
+              center: PH_DEFAULT_CENTER,
+              zoom: 4,
+              essential: true,
+            });
+          }),
+          shareReplay(1)
+        );
+        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
+          shareReplay(1)
+        );
+        const weatherTypeOpacity$ = this.pgService
+          .getWeatherSatellite$(weatherType)
+          .pipe(
+            map((weather) => weather.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
+            let opacity = +(allShown && selectedWeather === weatherType);
+            if (opacity) {
+              opacity = weatherTypeOpacity / 100;
+            }
+
+            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
-        }
-
-        this.map.setPaintProperty(layerID, 'raster-opacity', newOpacity);
-      });
+      }
+    );
   }
 
   showContourMaps() {
     const contourMapImages = {
-      '1hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
-      '3hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
-      '6hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
-      '12hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
-      '24hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+      '1hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '3hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '6hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '12hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr-lapse': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+        type: 'video',
+      },
+    };
+
+    const getContourMapSource = (contourMapDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (contourMapDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: contourMapDetails.url,
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        case 'video':
+          return {
+            type: 'video',
+            urls: [contourMapDetails.url],
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get contour map source');
+      }
     };
 
     Object.keys(contourMapImages).forEach((contourType) => {
-      this.map.addSource(contourType, {
-        type: 'image',
-        url: contourMapImages[contourType],
-        coordinates: [
-          [115.35, 21.55], // top-left
-          [128.25, 21.55], // top-right
-          [128.25, 3.85], // bottom-right
-          [115.35, 3.85], // bottom-left
-        ],
-      });
+      const contourMapDetails = contourMapImages[contourType];
+
+      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
       this.map.addLayer({
         id: contourType,
@@ -858,7 +978,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
 
       _this.map.addLayer(getCircleLayer(name));
-      _this.map.addLayer(getSymbolLayer(name));
+      _this.map.addLayer(getSymbolLayer(name, this.mapStyle));
       _this.map.addLayer(getClusterTextCount(name));
 
       // opacity
