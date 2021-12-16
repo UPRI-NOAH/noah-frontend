@@ -1,0 +1,4673 @@
+{
+  "type": "FeatureCollection",
+  "generator": "UPRI-NOAH",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.241667, 14.080833]
+      },
+      "properties": {
+        "x": 121.241667,
+        "y": 14.080833,
+        "name": "Mt. Tamlong",
+        "elevation": "0.249"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7, 11.033333]
+      },
+      "properties": {
+        "x": 124.7,
+        "y": 11.033333,
+        "name": "ABUNUG",
+        "elevation": "0.6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.966667, 10.791667]
+      },
+      "properties": {
+        "x": 124.966667,
+        "y": 10.791667,
+        "name": "ABUYUG",
+        "elevation": "0.197"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.033333, 10.833333]
+      },
+      "properties": {
+        "x": 121.033333,
+        "y": 10.833333,
+        "name": "AGUADA",
+        "elevation": "0.186"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.95, 11.15]
+      },
+      "properties": {
+        "x": 120.95,
+        "y": 11.15,
+        "name": "AGUTAYA",
+        "elevation": "0.12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.424167, 7.421167]
+      },
+      "properties": {
+        "x": 124.424167,
+        "y": 7.421167,
+        "name": "AKIR-AKIR",
+        "elevation": "0.526"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.75, 11.108333]
+      },
+      "properties": {
+        "x": 124.75,
+        "y": 11.108333,
+        "name": "ALTO",
+        "elevation": "0.135"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.883333, 5.691667]
+      },
+      "properties": {
+        "x": 120.883333,
+        "y": 5.691667,
+        "name": "ALU",
+        "elevation": "0.095"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1, 17.316667]
+      },
+      "properties": {
+        "x": 121.1,
+        "y": 17.316667,
+        "name": "AMBALATUNGAN",
+        "elevation": "2.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.8, 15.833333]
+      },
+      "properties": {
+        "x": 120.8,
+        "y": 15.833333,
+        "name": "AMORONG",
+        "elevation": "0.376"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.677833, 7.916667]
+      },
+      "properties": {
+        "x": 125.677833,
+        "y": 7.916667,
+        "name": "AMPAOID",
+        "elevation": "1.066"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.63, 8.388333]
+      },
+      "properties": {
+        "x": 123.63,
+        "y": 8.388333,
+        "name": "AMPIRO",
+        "elevation": "1.532"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.183333, 13.9]
+      },
+      "properties": {
+        "x": 121.183333,
+        "y": 13.9,
+        "name": "ANILAO HILL",
+        "elevation": "0.358"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.85, 10.866667]
+      },
+      "properties": {
+        "x": 124.85,
+        "y": 10.866667,
+        "name": "AQUITING",
+        "elevation": "0.523"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.743333, 15.208333]
+      },
+      "properties": {
+        "x": 120.743333,
+        "y": 15.208333,
+        "name": "ARAYAT",
+        "elevation": "1.026"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.583333, 11.533333]
+      },
+      "properties": {
+        "x": 124.583333,
+        "y": 11.533333,
+        "name": "ASCUERO",
+        "elevation": "1.266"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.366667, 14.15]
+      },
+      "properties": {
+        "x": 121.366667,
+        "y": 14.15,
+        "name": "ATIMBIA",
+        "elevation": "0.65"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.25, 7.583333]
+      },
+      "properties": {
+        "x": 123.25,
+        "y": 7.583333,
+        "name": "BACAUAN",
+        "elevation": "1.824"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.825, 14.216667]
+      },
+      "properties": {
+        "x": 122.825,
+        "y": 14.216667,
+        "name": "BAGACAY",
+        "elevation": "0.775"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.566667, 5.883333]
+      },
+      "properties": {
+        "x": 125.566667,
+        "y": 5.883333,
+        "name": "BAGSAK",
+        "elevation": "1.142"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.433333, 19.316667]
+      },
+      "properties": {
+        "x": 121.433333,
+        "y": 19.316667,
+        "name": "BAGUA",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.933333, 18.95]
+      },
+      "properties": {
+        "x": 121.933333,
+        "y": 18.95,
+        "name": "BALATUBAT",
+        "elevation": "0.828"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.983333, 8.766667]
+      },
+      "properties": {
+        "x": 124.983333,
+        "y": 8.766667,
+        "name": "BALATUKAN",
+        "elevation": "2.56"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.366667, 14.95]
+      },
+      "properties": {
+        "x": 120.366667,
+        "y": 14.95,
+        "name": "BALIKABOK",
+        "elevation": "0.849"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.171, 6.308333]
+      },
+      "properties": {
+        "x": 125.171,
+        "y": 6.308333,
+        "name": "BALO DOME",
+        "elevation": "0.873"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.683333, 15.866667]
+      },
+      "properties": {
+        "x": 120.683333,
+        "y": 15.866667,
+        "name": "BALUNGAO",
+        "elevation": "0.382"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5, 14.066667]
+      },
+      "properties": {
+        "x": 121.5,
+        "y": 14.06666667,
+        "name": "BANAHAO DE LUCBAN",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.733333, 15.783333]
+      },
+      "properties": {
+        "x": 120.733333,
+        "y": 15.783333,
+        "name": "BANGCAY",
+        "elevation": "0.406"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.066667, 12.916667]
+      },
+      "properties": {
+        "x": 122.066667,
+        "y": 12.916667,
+        "name": "BANTON",
+        "elevation": "0.596"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.483333, 11.433333]
+      },
+      "properties": {
+        "x": 124.483333,
+        "y": 11.433333,
+        "name": "BAONAO",
+        "elevation": "0.485"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1475, 6.246667]
+      },
+      "properties": {
+        "x": 125.1475,
+        "y": 6.246667,
+        "name": "BASE PEAK",
+        "elevation": "0.598"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.066667, 6.55]
+      },
+      "properties": {
+        "x": 122.066667,
+        "y": 6.55,
+        "name": "BASILAN",
+        "elevation": "0.971"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.183333, 7.483333]
+      },
+      "properties": {
+        "x": 123.183333,
+        "y": 7.483333,
+        "name": "BATELIAN",
+        "elevation": "0.62"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.95, 12.833333]
+      },
+      "properties": {
+        "x": 123.95,
+        "y": 12.833333,
+        "name": "BATUAN",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.8, 14.05]
+      },
+      "properties": {
+        "x": 120.8,
+        "y": 14.05,
+        "name": "BATULAO",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.0955, 7.787167]
+      },
+      "properties": {
+        "x": 124.0955,
+        "y": 7.787167,
+        "name": "BAYA",
+        "elevation": "1.38"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.4, 14.166667]
+      },
+      "properties": {
+        "x": 121.4,
+        "y": 14.166667,
+        "name": "BAYAGUITOS",
+        "elevation": "0.316"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.391667, 6.154333]
+      },
+      "properties": {
+        "x": 125.391667,
+        "y": 6.154333,
+        "name": "BEE HIVE PEAK",
+        "elevation": "0.808"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.05, 13.9]
+      },
+      "properties": {
+        "x": 121.05,
+        "y": 13.9,
+        "name": "BIGAIN HILL",
+        "elevation": "0.464"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.283333, 7.854167]
+      },
+      "properties": {
+        "x": 123.283333,
+        "y": 7.854167,
+        "name": "BIGONG",
+        "elevation": "0.77"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.016667, 6.95]
+      },
+      "properties": {
+        "x": 124.016667,
+        "y": 6.95,
+        "name": "BINACA",
+        "elevation": "1.004"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.0, 12.616667]
+      },
+      "properties": {
+        "x": 124.0,
+        "y": 12.616667,
+        "name": "BINITACAN",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.133333, 17.25]
+      },
+      "properties": {
+        "x": 121.133333,
+        "y": 17.25,
+        "name": "BINULUAN",
+        "elevation": "2.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.966667, 10.816667]
+      },
+      "properties": {
+        "x": 120.966667,
+        "y": 10.816667,
+        "name": "BISUCAY",
+        "elevation": "0.105"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.441667, 6.066667]
+      },
+      "properties": {
+        "x": 121.441667,
+        "y": 6.066667,
+        "name": "BITI0",
+        "elevation": "0.215"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.283333, 7.5]
+      },
+      "properties": {
+        "x": 124.283333,
+        "y": 7.5,
+        "name": "BITO",
+        "elevation": "1.058"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.216667, 6.958333]
+      },
+      "properties": {
+        "x": 124.216667,
+        "y": 6.958333,
+        "name": "BLIK",
+        "elevation": "1.198"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.966667, 11.158333]
+      },
+      "properties": {
+        "x": 120.966667,
+        "y": 11.158333,
+        "name": "BOCTONG",
+        "elevation": "0.271"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.141667, 6.933333]
+      },
+      "properties": {
+        "x": 125.141667,
+        "y": 6.933333,
+        "name": "Unnamed",
+        "elevation": "0.64 0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.133333, 6.891667]
+      },
+      "properties": {
+        "x": 125.133333,
+        "y": 6.891667,
+        "name": "Unnamed",
+        "elevation": "0.982"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.125, 6.866667]
+      },
+      "properties": {
+        "x": 125.125,
+        "y": 6.866667,
+        "name": "Mount Gap",
+        "elevation": "1.06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.15, 6.858333]
+      },
+      "properties": {
+        "x": 125.15,
+        "y": 6.858333,
+        "name": "Unnamed",
+        "elevation": "0.356"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.133333, 6.841667]
+      },
+      "properties": {
+        "x": 125.133333,
+        "y": 6.841667,
+        "name": "Unnamed",
+        "elevation": "0.592"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.108333, 6.891667]
+      },
+      "properties": {
+        "x": 125.108333,
+        "y": 6.891667,
+        "name": "Unnamed",
+        "elevation": "0.804"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.108333, 6.883333]
+      },
+      "properties": {
+        "x": 125.108333,
+        "y": 6.883333,
+        "name": "Mount Libadan",
+        "elevation": "0.826"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1, 6.883333]
+      },
+      "properties": {
+        "x": 125.1,
+        "y": 6.883333,
+        "name": "Unnamed",
+        "elevation": "0.788"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.083333, 6.916667]
+      },
+      "properties": {
+        "x": 125.083333,
+        "y": 6.916667,
+        "name": "Unnamed",
+        "elevation": "0.65"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.066667, 6.875]
+      },
+      "properties": {
+        "x": 125.066667,
+        "y": 6.875,
+        "name": "Unnamed",
+        "elevation": "0.444"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.075, 6.85]
+      },
+      "properties": {
+        "x": 125.075,
+        "y": 6.85,
+        "name": "Unnamed",
+        "elevation": "0.497"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1, 6.858333]
+      },
+      "properties": {
+        "x": 125.1,
+        "y": 6.858333,
+        "name": "Unnamed",
+        "elevation": "0.798"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.108333, 6.8375]
+      },
+      "properties": {
+        "x": 125.108333,
+        "y": 6.8375,
+        "name": "Unnamed",
+        "elevation": "0.592"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1, 6.833333]
+      },
+      "properties": {
+        "x": 125.1,
+        "y": 6.833333,
+        "name": "Unnamed",
+        "elevation": "0.624"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.108333, 6.816667]
+      },
+      "properties": {
+        "x": 125.108333,
+        "y": 6.816667,
+        "name": "Unnamed",
+        "elevation": "0.542"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.104167, 6.808333]
+      },
+      "properties": {
+        "x": 125.104167,
+        "y": 6.808333,
+        "name": "Unnamed",
+        "elevation": "0.4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1, 6.795833]
+      },
+      "properties": {
+        "x": 125.1,
+        "y": 6.795833,
+        "name": "Unnamed",
+        "elevation": "0.302"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.116667, 6.766667]
+      },
+      "properties": {
+        "x": 125.116667,
+        "y": 6.766667,
+        "name": "Unnamed",
+        "elevation": "0.208"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [126.1, 6.870833]
+      },
+      "properties": {
+        "x": 126.1,
+        "y": 6.870833,
+        "name": "Unnamed",
+        "elevation": "0.792"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.615, 5.263333]
+      },
+      "properties": {
+        "x": 121.615,
+        "y": 5.263333,
+        "name": "BOLOD",
+        "elevation": "0.164"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.066667, 10.9]
+      },
+      "properties": {
+        "x": 121.066667,
+        "y": 10.9,
+        "name": "BONBON",
+        "elevation": "0.247"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.166667, 9.166667]
+      },
+      "properties": {
+        "x": 123.166667,
+        "y": 9.166667,
+        "name": "BONTES",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7075, 6.098]
+      },
+      "properties": {
+        "x": 124.7075,
+        "y": 6.098,
+        "name": "BOSA",
+        "elevation": "2.083"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.861, 8.084167]
+      },
+      "properties": {
+        "x": 123.861,
+        "y": 8.084167,
+        "name": "BUCAS",
+        "elevation": "0.45"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.816667, 6.15]
+      },
+      "properties": {
+        "x": 121.816667,
+        "y": 6.15,
+        "name": "BUCUTUA",
+        "elevation": "0.089"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.266667, 7.6]
+      },
+      "properties": {
+        "x": 123.266667,
+        "y": 7.6,
+        "name": "BUGA",
+        "elevation": "0.549"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.233333, 14.1]
+      },
+      "properties": {
+        "x": 121.233333,
+        "y": 14.1,
+        "name": "BULALO",
+        "elevation": "0.525"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.833333, 6.133333]
+      },
+      "properties": {
+        "x": 121.833333,
+        "y": 6.133333,
+        "name": "BULAN",
+        "elevation": "0.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.175, 7.704167]
+      },
+      "properties": {
+        "x": 123.175,
+        "y": 7.704167,
+        "name": "BULIBU",
+        "elevation": "0.566"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.875, 15.833333]
+      },
+      "properties": {
+        "x": 120.875,
+        "y": 15.833333,
+        "name": "BURGOS",
+        "elevation": "0.13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.766667, 9.116667]
+      },
+      "properties": {
+        "x": 124.766667,
+        "y": 9.116667,
+        "name": "BUTAY",
+        "elevation": "0.679"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.083333, 7.75]
+      },
+      "properties": {
+        "x": 125.083333,
+        "y": 7.75,
+        "name": "BUTUNG",
+        "elevation": "0.684"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.3267, 15.695]
+      },
+      "properties": {
+        "x": 120.3267,
+        "y": 15.695,
+        "name": "CABALUYAN",
+        "elevation": "0.285"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.233333, 7.541667]
+      },
+      "properties": {
+        "x": 124.233333,
+        "y": 7.541667,
+        "name": "CABUGAO",
+        "elevation": "0.812"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.3017, 15.6967]
+      },
+      "properties": {
+        "x": 120.3017,
+        "y": 15.6967,
+        "name": "CAHELIETAN",
+        "elevation": "0.28"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.116667, 8.566667]
+      },
+      "properties": {
+        "x": 125.116667,
+        "y": 8.566667,
+        "name": "CALABUGAO",
+        "elevation": "1.864"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.466667, 19.316667]
+      },
+      "properties": {
+        "x": 121.466667,
+        "y": 19.316667,
+        "name": "CALAYAN",
+        "elevation": "0.499"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.708333, 9.208333]
+      },
+      "properties": {
+        "x": 124.708333,
+        "y": 9.208333,
+        "name": "CAMPANA",
+        "elevation": "0.676"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.416667, 11.966667]
+      },
+      "properties": {
+        "x": 124.416667,
+        "y": 11.966667,
+        "name": "CA0DAG",
+        "elevation": "0.432"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.95, 10.983333]
+      },
+      "properties": {
+        "x": 120.95,
+        "y": 10.983333,
+        "name": "CANIPO",
+        "elevation": "0.164"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.216667, 10.3]
+      },
+      "properties": {
+        "x": 125.216667,
+        "y": 10.3,
+        "name": "CANTOLOC",
+        "elevation": "0.82"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.5, 11.583333]
+      },
+      "properties": {
+        "x": 124.5,
+        "y": 11.583333,
+        "name": "CAPINYAYAN",
+        "elevation": "0.98"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9, 10.733333]
+      },
+      "properties": {
+        "x": 120.9,
+        "y": 10.733333,
+        "name": "CAPONAYAN",
+        "elevation": "0.161"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.416667, 6.033333]
+      },
+      "properties": {
+        "x": 121.416667,
+        "y": 6.033333,
+        "name": "CAPUAL",
+        "elevation": "0.312"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.433333, 11.666667]
+      },
+      "properties": {
+        "x": 124.433333,
+        "y": 11.666667,
+        "name": "CARAYCARAY",
+        "elevation": "0.437"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.75, 14.133333]
+      },
+      "properties": {
+        "x": 120.75,
+        "y": 14.133333,
+        "name": "CARILIAO",
+        "elevation": "0.656"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.666833, 9.216667]
+      },
+      "properties": {
+        "x": 124.666833,
+        "y": 9.216667,
+        "name": "CARLING",
+        "elevation": "0.8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.883333, 13.033333]
+      },
+      "properties": {
+        "x": 121.883333,
+        "y": 13.033333,
+        "name": "CARLOTA",
+        "elevation": "0.049"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.847, 8.056667]
+      },
+      "properties": {
+        "x": 123.847,
+        "y": 8.056667,
+        "name": "CATMON",
+        "elevation": "1.624"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.333333, 15.708333]
+      },
+      "properties": {
+        "x": 120.333333,
+        "y": 15.708333,
+        "name": "CGNDONG",
+        "elevation": "0.164"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2, 10.883333]
+      },
+      "properties": {
+        "x": 121.2,
+        "y": 10.883333,
+        "name": "COCORO",
+        "elevation": "0.095"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.966667, 12.583333]
+      },
+      "properties": {
+        "x": 123.966667,
+        "y": 12.583333,
+        "name": "COLOUMOTAN",
+        "elevation": "0.602"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.016667, 13.916667]
+      },
+      "properties": {
+        "x": 123.016667,
+        "y": 13.916667,
+        "name": "ONE - CULASI PEAK",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.316667, 11.933333]
+      },
+      "properties": {
+        "x": 124.316667,
+        "y": 11.933333,
+        "name": "COSTA RICA",
+        "elevation": "0.394"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.933333, 12.7]
+      },
+      "properties": {
+        "x": 123.933333,
+        "y": 12.7,
+        "name": "CULANGALAN",
+        "elevation": "0.36"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.0875, 13.895833]
+      },
+      "properties": {
+        "x": 123.0875,
+        "y": 13.895833,
+        "name": "CULASI",
+        "elevation": "0.387"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.666667, 15.8]
+      },
+      "properties": {
+        "x": 120.666667,
+        "y": 15.8,
+        "name": "CUYAPO",
+        "elevation": "0.209"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.811667, 16.521167]
+      },
+      "properties": {
+        "x": 120.811667,
+        "y": 16.521167,
+        "name": "DACLAN",
+        "elevation": "1.5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.366667, 14.0]
+      },
+      "properties": {
+        "x": 121.366667,
+        "y": 14.0,
+        "name": "DAGATAN",
+        "elevation": "0.12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.945833, 7.816667]
+      },
+      "properties": {
+        "x": 124.945833,
+        "y": 7.816667,
+        "name": "DAGUMBAAN",
+        "elevation": "1.128"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.178333, 5.981667]
+      },
+      "properties": {
+        "x": 121.178333,
+        "y": 5.981667,
+        "name": "DAKULA",
+        "elevation": "0.399"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.75, 19.05]
+      },
+      "properties": {
+        "x": 121.75,
+        "y": 19.05,
+        "name": "DALUPIRI",
+        "elevation": "0.275"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.683333, 11.066667]
+      },
+      "properties": {
+        "x": 124.683333,
+        "y": 11.066667,
+        "name": "DANAO",
+        "elevation": "0.7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.783333, 20.333333]
+      },
+      "properties": {
+        "x": 121.783333,
+        "y": 20.333333,
+        "name": "DEQUEY",
+        "elevation": "0.062"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.925, 20.725]
+      },
+      "properties": {
+        "x": 121.925,
+        "y": 20.725,
+        "name": "DIOGO",
+        "elevation": "0.547"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.933333, 11.25]
+      },
+      "properties": {
+        "x": 120.933333,
+        "y": 11.25,
+        "name": "DIT",
+        "elevation": "0.231"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.129167, 7.640833]
+      },
+      "properties": {
+        "x": 124.129167,
+        "y": 7.640833,
+        "name": "DOS HERMANAS",
+        "elevation": "0.814"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5125, 13.104333]
+      },
+      "properties": {
+        "x": 121.5125,
+        "y": 13.104333,
+        "name": "DUMALI",
+        "elevation": "0.756"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.325, 7.633333]
+      },
+      "properties": {
+        "x": 123.325,
+        "y": 7.633333,
+        "name": "DUPUNGAN",
+        "elevation": "0.396"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.078333, 7.778333]
+      },
+      "properties": {
+        "x": 124.078333,
+        "y": 7.778333,
+        "name": "GADUNGAN",
+        "elevation": "1.342"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.0, 7.883333]
+      },
+      "properties": {
+        "x": 124.0,
+        "y": 7.883333,
+        "name": "GALANTAY",
+        "elevation": "1.274"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.133333, 6.866667]
+      },
+      "properties": {
+        "x": 125.133333,
+        "y": 6.866667,
+        "name": "GAP",
+        "elevation": "1.038"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.9917, 12.6]
+      },
+      "properties": {
+        "x": 123.9917,
+        "y": 12.6,
+        "name": "GATE MOUNTAINS",
+        "elevation": "0.559"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.516667, 11.433333]
+      },
+      "properties": {
+        "x": 124.516667,
+        "y": 11.433333,
+        "name": "GAYAD",
+        "elevation": "0.618"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7659, 9.0947]
+      },
+      "properties": {
+        "x": 124.7659,
+        "y": 9.0947,
+        "name": "GINSILIBAN",
+        "elevation": "0.581"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.516667, 11.583333]
+      },
+      "properties": {
+        "x": 124.516667,
+        "y": 11.583333,
+        "name": "GIRON",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.483333, 11.616667]
+      },
+      "properties": {
+        "x": 124.483333,
+        "y": 11.616667,
+        "name": "GUIAUASAN",
+        "elevation": "1.6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.083333, 6.025]
+      },
+      "properties": {
+        "x": 121.083333,
+        "y": 6.025,
+        "name": "GUIMBA",
+        "elevation": "0.482"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.266667, 6.083333]
+      },
+      "properties": {
+        "x": 121.266667,
+        "y": 6.083333,
+        "name": "GUJANGAN",
+        "elevation": "0.122"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.483333, 11.6]
+      },
+      "properties": {
+        "x": 124.483333,
+        "y": 11.6,
+        "name": "GU0SAN",
+        "elevation": "1.045"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.108333, 7.908333]
+      },
+      "properties": {
+        "x": 124.108333,
+        "y": 7.908333,
+        "name": "GURAIN",
+        "elevation": "1.825"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.975, 12.775]
+      },
+      "properties": {
+        "x": 123.975,
+        "y": 12.775,
+        "name": "HOMAHAN",
+        "elevation": "0.464"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.8, 20.325]
+      },
+      "properties": {
+        "x": 121.8,
+        "y": 20.325,
+        "name": "IVUHOS",
+        "elevation": "0.107"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.233333, 7.683333]
+      },
+      "properties": {
+        "x": 123.233333,
+        "y": 7.683333,
+        "name": "IMBING",
+        "elevation": "0.7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.966667, 7.825]
+      },
+      "properties": {
+        "x": 124.966667,
+        "y": 7.825,
+        "name": "INAYAWAN",
+        "elevation": "1.174"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.925, 7.816667]
+      },
+      "properties": {
+        "x": 124.925,
+        "y": 7.816667,
+        "name": "INIAOAN",
+        "elevation": "1.535"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.116667, 12.766667]
+      },
+      "properties": {
+        "x": 124.116667,
+        "y": 12.766667,
+        "name": "IROSIN CALDERA",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.933333, 13.033333]
+      },
+      "properties": {
+        "x": 121.933333,
+        "y": 13.033333,
+        "name": "ISABEL",
+        "elevation": "0.072"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.716667, 11.1]
+      },
+      "properties": {
+        "x": 124.716667,
+        "y": 11.1,
+        "name": "JANAGDAN",
+        "elevation": "1.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.0, 12.766667]
+      },
+      "properties": {
+        "x": 124.0,
+        "y": 12.766667,
+        "name": "JORMAJAN",
+        "elevation": "0.738"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.933333, 12.8]
+      },
+      "properties": {
+        "x": 123.933333,
+        "y": 12.8,
+        "name": "JUBAN",
+        "elevation": "0.844"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.916667, 8.133333]
+      },
+      "properties": {
+        "x": 124.916667,
+        "y": 8.133333,
+        "name": "KAATOAN",
+        "elevation": "2.153"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.666667, 7.866667]
+      },
+      "properties": {
+        "x": 124.666667,
+        "y": 7.866667,
+        "name": "KABARITAN",
+        "elevation": "1.157"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.216667, 5.811667]
+      },
+      "properties": {
+        "x": 121.216667,
+        "y": 5.811667,
+        "name": "KAMAWI",
+        "elevation": "0.071"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.883333, 10.866667]
+      },
+      "properties": {
+        "x": 124.883333,
+        "y": 10.866667,
+        "name": "KASIBOR",
+        "elevation": "0.845"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.925, 8.128333]
+      },
+      "properties": {
+        "x": 124.925,
+        "y": 8.128333,
+        "name": "KATANGLAD",
+        "elevation": "2.938"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.366667, 5.925]
+      },
+      "properties": {
+        "x": 121.366667,
+        "y": 5.925,
+        "name": "KAUSAKAR",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.816667, 7.758333]
+      },
+      "properties": {
+        "x": 124.816667,
+        "y": 7.758333,
+        "name": "KIDONGIN",
+        "elevation": "1.144"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.875333, 7.958333]
+      },
+      "properties": {
+        "x": 124.875333,
+        "y": 7.958333,
+        "name": "KILAKRON",
+        "elevation": "2.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.366667, 11.95]
+      },
+      "properties": {
+        "x": 124.366667,
+        "y": 11.95,
+        "name": "KIRIKITE",
+        "elevation": "0.202"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.662, 7.285]
+      },
+      "properties": {
+        "x": 124.662,
+        "y": 7.285,
+        "name": "KITABUD",
+        "elevation": "1.167"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.266667, 12.466667]
+      },
+      "properties": {
+        "x": 121.266667,
+        "y": 12.466667,
+        "name": "KNOB PEAK",
+        "elevation": "0.917"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.928333, 7.84]
+      },
+      "properties": {
+        "x": 124.928333,
+        "y": 7.84,
+        "name": "KOLOKO",
+        "elevation": "1.074"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.166667, 14.15]
+      },
+      "properties": {
+        "x": 121.166667,
+        "y": 14.15,
+        "name": "LA MESA",
+        "elevation": "0.136"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.8, 11.116667]
+      },
+      "properties": {
+        "x": 124.8,
+        "y": 11.116667,
+        "name": "LAAO",
+        "elevation": "1.135"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.516667, 11.016667]
+      },
+      "properties": {
+        "x": 124.516667,
+        "y": 11.016667,
+        "name": "LABI",
+        "elevation": "1.3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.316667, 14.133333]
+      },
+      "properties": {
+        "x": 121.316667,
+        "y": 14.133333,
+        "name": "LAGULA",
+        "elevation": "0.482"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2611, 14.0383]
+      },
+      "properties": {
+        "x": 121.2611,
+        "y": 14.0383,
+        "name": "Mani Hill",
+        "elevation": "0.26"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2565, 14.0352]
+      },
+      "properties": {
+        "x": 121.2565,
+        "y": 14.0352,
+        "name": "Palindan Hill",
+        "elevation": "0.26"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2537, 14.0312]
+      },
+      "properties": {
+        "x": 121.2537,
+        "y": 14.0312,
+        "name": "Tanza Hill",
+        "elevation": "0.26"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.25, 14.108333]
+      },
+      "properties": {
+        "x": 121.25,
+        "y": 14.108333,
+        "name": "Mount Mabilog",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.283333, 14.1]
+      },
+      "properties": {
+        "x": 121.283333,
+        "y": 14.1,
+        "name": "Mount Mapula",
+        "elevation": "0.209"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.241667, 14.033333]
+      },
+      "properties": {
+        "x": 121.241667,
+        "y": 14.033333,
+        "name": "Bunsulan Hills",
+        "elevation": "0.36"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.241667, 14.05]
+      },
+      "properties": {
+        "x": 121.241667,
+        "y": 14.05,
+        "name": "Mapait Hills",
+        "elevation": "0.38"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.241667, 14.1]
+      },
+      "properties": {
+        "x": 121.241667,
+        "y": 14.1,
+        "name": "Mt. Buboy",
+        "elevation": "0.215"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.216667, 14.083333]
+      },
+      "properties": {
+        "x": 121.216667,
+        "y": 14.083333,
+        "name": "Mt. Olilia",
+        "elevation": "0.376"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.25, 14.116667]
+      },
+      "properties": {
+        "x": 121.25,
+        "y": 14.116667,
+        "name": "Mt. Luyong",
+        "elevation": "0.318"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 14.116667]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 14.116667,
+        "name": "Imoc Hill",
+        "elevation": "0.4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.333333, 14.125]
+      },
+      "properties": {
+        "x": 121.333333,
+        "y": 14.125,
+        "name": "Lake Molacan",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3615, 14.1208]
+      },
+      "properties": {
+        "x": 121.3615,
+        "y": 14.1208,
+        "name": "Lake Yambo",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3672, 14.1158]
+      },
+      "properties": {
+        "x": 121.3672,
+        "y": 14.11579999,
+        "name": "Lake Pandin",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.375, 14.083333]
+      },
+      "properties": {
+        "x": 121.375,
+        "y": 14.083333,
+        "name": "Lake Calibato",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.341667, 14.108333]
+      },
+      "properties": {
+        "x": 121.341667,
+        "y": 14.108333,
+        "name": "Lake Palacpaquen",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.341667, 14.083333]
+      },
+      "properties": {
+        "x": 121.341667,
+        "y": 14.083333,
+        "name": "Lake Bunot",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.333333, 14.083333]
+      },
+      "properties": {
+        "x": 121.333333,
+        "y": 14.083333,
+        "name": "Sampaloc Lake",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 14.108333]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 14.108333,
+        "name": "Imoc Maar",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 14.1]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 14.1,
+        "name": "Unnamed",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.808333, 7.975]
+      },
+      "properties": {
+        "x": 123.808333,
+        "y": 7.975,
+        "name": "Lauan",
+        "elevation": "0.064"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.816667, 7.933333]
+      },
+      "properties": {
+        "x": 123.816667,
+        "y": 7.933333,
+        "name": "Pindulungan Hill",
+        "elevation": "0.1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.820833, 7.933333]
+      },
+      "properties": {
+        "x": 123.820833,
+        "y": 7.933333,
+        "name": "Unnamed",
+        "elevation": "0.06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.825, 7.941667]
+      },
+      "properties": {
+        "x": 123.825,
+        "y": 7.941667,
+        "name": "Kaba0gan",
+        "elevation": "0.34"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.841667, 7.941667]
+      },
+      "properties": {
+        "x": 123.841667,
+        "y": 7.941667,
+        "name": "Unnamed",
+        "elevation": "0.3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.841667, 7.929167]
+      },
+      "properties": {
+        "x": 123.841667,
+        "y": 7.929167,
+        "name": "Unnamed",
+        "elevation": "0.28"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.816667, 7.916667]
+      },
+      "properties": {
+        "x": 123.816667,
+        "y": 7.916667,
+        "name": "Unnamed",
+        "elevation": "0.12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.85, 7.866667]
+      },
+      "properties": {
+        "x": 123.85,
+        "y": 7.866667,
+        "name": "Unnamed",
+        "elevation": "0.275"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.858333, 7.875]
+      },
+      "properties": {
+        "x": 123.858333,
+        "y": 7.875,
+        "name": "Unnamed",
+        "elevation": "0.259"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.866667, 7.925]
+      },
+      "properties": {
+        "x": 123.866667,
+        "y": 7.925,
+        "name": "Unnamed",
+        "elevation": "0.12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.858333, 7.954167]
+      },
+      "properties": {
+        "x": 123.858333,
+        "y": 7.954167,
+        "name": "Unnamed",
+        "elevation": "0.26"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.866667, 7.958333]
+      },
+      "properties": {
+        "x": 123.866667,
+        "y": 7.958333,
+        "name": "Unnamed",
+        "elevation": "0.25"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.875, 7.95]
+      },
+      "properties": {
+        "x": 123.875,
+        "y": 7.95,
+        "name": "Unnamed",
+        "elevation": "0.27"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.891667, 7.9375]
+      },
+      "properties": {
+        "x": 123.891667,
+        "y": 7.9375,
+        "name": "Unnamed",
+        "elevation": "0.128"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.908333, 7.908333]
+      },
+      "properties": {
+        "x": 123.908333,
+        "y": 7.908333,
+        "name": "Mount Pana",
+        "elevation": "0.336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.891667, 7.9]
+      },
+      "properties": {
+        "x": 123.891667,
+        "y": 7.9,
+        "name": "Unnamed",
+        "elevation": "0.358"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.925, 7.933333]
+      },
+      "properties": {
+        "x": 123.925,
+        "y": 7.933333,
+        "name": "Unnamed",
+        "elevation": "0.394"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.908333, 7.958333]
+      },
+      "properties": {
+        "x": 123.908333,
+        "y": 7.958333,
+        "name": "Unnamed",
+        "elevation": "0.498"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.45, 7.65]
+      },
+      "properties": {
+        "x": 124.45,
+        "y": 7.65,
+        "name": "LATUKAN",
+        "elevation": "2.338"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.516667, 11.516667]
+      },
+      "properties": {
+        "x": 124.516667,
+        "y": 11.516667,
+        "name": "LAUAAN",
+        "elevation": "1.177"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.9, 7.725]
+      },
+      "properties": {
+        "x": 123.9,
+        "y": 7.725,
+        "name": "MICBACAN",
+        "elevation": "0.5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.65, 9.216667]
+      },
+      "properties": {
+        "x": 124.65,
+        "y": 9.216667,
+        "name": "MINOKOL",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.35, 14.15]
+      },
+      "properties": {
+        "x": 121.35,
+        "y": 14.15,
+        "name": "NAGCARLANG",
+        "elevation": "0.629"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.6, 14.083333]
+      },
+      "properties": {
+        "x": 122.6,
+        "y": 14.083333,
+        "name": "NALUSBITAN",
+        "elevation": "0.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.858333, 8.133333]
+      },
+      "properties": {
+        "x": 124.858333,
+        "y": 8.133333,
+        "name": "0LUYAW",
+        "elevation": "2.602"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.416667, 13.206667]
+      },
+      "properties": {
+        "x": 121.416667,
+        "y": 13.206667,
+        "name": "NAUJAN",
+        "elevation": "0.49"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.016667, 6.391667]
+      },
+      "properties": {
+        "x": 125.016667,
+        "y": 6.391667,
+        "name": "NAVARO",
+        "elevation": "1.122"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.258333, 9.933333]
+      },
+      "properties": {
+        "x": 125.258333,
+        "y": 9.933333,
+        "name": "NELANGCAPAN",
+        "elevation": "0.687"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.933333, 21.066667]
+      },
+      "properties": {
+        "x": 121.933333,
+        "y": 21.066667,
+        "name": "NORTH (Batanes)",
+        "elevation": "0.263"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.616667, 8.308333]
+      },
+      "properties": {
+        "x": 123.616667,
+        "y": 8.308333,
+        "name": "NORTH (Zamboanga del Sur)",
+        "elevation": "2.183"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.858333, 8.8]
+      },
+      "properties": {
+        "x": 124.858333,
+        "y": 8.8,
+        "name": "OBULAN",
+        "elevation": "1.245"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.3, 11.416667]
+      },
+      "properties": {
+        "x": 124.3,
+        "y": 11.416667,
+        "name": "OPOW",
+        "elevation": "0.553"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.533333, 11.416667]
+      },
+      "properties": {
+        "x": 124.533333,
+        "y": 11.416667,
+        "name": "OSMENA",
+        "elevation": "0.38"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.518333, 9.593333]
+      },
+      "properties": {
+        "x": 125.518333,
+        "y": 9.593333,
+        "name": "PACO",
+        "elevation": "0.524"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.9, 20.3]
+      },
+      "properties": {
+        "x": 121.9,
+        "y": 20.3,
+        "name": "PADANG",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.346667, 6.533333]
+      },
+      "properties": {
+        "x": 125.346667,
+        "y": 6.533333,
+        "name": "PAGYASNGAN",
+        "elevation": "0.783"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.65, 14.25]
+      },
+      "properties": {
+        "x": 120.65,
+        "y": 14.25,
+        "name": "PALAY-PALAY",
+        "elevation": "0.648"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.92, 8.83]
+      },
+      "properties": {
+        "x": 124.92,
+        "y": 8.83,
+        "name": "PAMALIHI",
+        "elevation": "1.956"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.166667, 11.283333]
+      },
+      "properties": {
+        "x": 123.166667,
+        "y": 11.283333,
+        "name": "PAN DE AZUCAR",
+        "elevation": "0.572"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.906667, 7.915]
+      },
+      "properties": {
+        "x": 123.906667,
+        "y": 7.915,
+        "name": "PANA",
+        "elevation": "0.336"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.4, 11.666667]
+      },
+      "properties": {
+        "x": 124.4,
+        "y": 11.666667,
+        "name": "PANAMAO (Biliran)",
+        "elevation": "1.056"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.166667, 5.966667]
+      },
+      "properties": {
+        "x": 121.166667,
+        "y": 5.966667,
+        "name": "PANAMAO (Sulu)",
+        "elevation": "0.399"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9, 13.716667]
+      },
+      "properties": {
+        "x": 120.9,
+        "y": 13.716667,
+        "name": "PANAY",
+        "elevation": "0.501"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.833333, 6.608333]
+      },
+      "properties": {
+        "x": 121.833333,
+        "y": 6.608333,
+        "name": "PANGASAHAN",
+        "elevation": "0.217"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.95, 19.533333]
+      },
+      "properties": {
+        "x": 121.95,
+        "y": 19.533333,
+        "name": "PANGASUN",
+        "elevation": "0.843"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.508333, 19.433333]
+      },
+      "properties": {
+        "x": 121.508333,
+        "y": 19.433333,
+        "name": "PANUITAN",
+        "elevation": "0.151"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.158333, 5.816667]
+      },
+      "properties": {
+        "x": 121.158333,
+        "y": 5.816667,
+        "name": "PATA",
+        "elevation": "0.394"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.083333, 5.85]
+      },
+      "properties": {
+        "x": 121.083333,
+        "y": 5.85,
+        "name": "PATIAN",
+        "elevation": "0.123"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.383333, 6.9]
+      },
+      "properties": {
+        "x": 125.383333,
+        "y": 6.9,
+        "name": "PATULANGON",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.816667, 11.016667]
+      },
+      "properties": {
+        "x": 120.816667,
+        "y": 11.016667,
+        "name": "PATUNGA",
+        "elevation": "0.13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.866667, 11.041667]
+      },
+      "properties": {
+        "x": 120.866667,
+        "y": 11.041667,
+        "name": "PAYA",
+        "elevation": "0.023"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.066667, 13.683333]
+      },
+      "properties": {
+        "x": 121.066667,
+        "y": 13.683333,
+        "name": "PINAMUCAN",
+        "elevation": "0.798"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.233333, 7.983333]
+      },
+      "properties": {
+        "x": 123.233333,
+        "y": 7.983333,
+        "name": "PINUKIS",
+        "elevation": "1.532"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.393, 15.566667]
+      },
+      "properties": {
+        "x": 120.393,
+        "y": 15.56666666,
+        "name": "PITONGBAYOG I",
+        "elevation": "0.24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.4017, 15.566667]
+      },
+      "properties": {
+        "x": 120.4017,
+        "y": 15.56666667,
+        "name": "PITONGBAYOG II",
+        "elevation": "0.283"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.958333, 13.05]
+      },
+      "properties": {
+        "x": 123.958333,
+        "y": 13.05,
+        "name": "POCDOL",
+        "elevation": "1.102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.733333, 11.116667]
+      },
+      "properties": {
+        "x": 124.733333,
+        "y": 11.116667,
+        "name": "PROTO-LABI",
+        "elevation": "1.12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.633333, 7.923333]
+      },
+      "properties": {
+        "x": 124.633333,
+        "y": 7.923333,
+        "name": "PUDUNG",
+        "elevation": "1.558"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9, 16.6]
+      },
+      "properties": {
+        "x": 120.9,
+        "y": 16.6,
+        "name": "PULAG",
+        "elevation": "2.922"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.95, 6.583333]
+      },
+      "properties": {
+        "x": 124.95,
+        "y": 6.583333,
+        "name": "QUEZON",
+        "elevation": "0.652"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.841667, 20.733333]
+      },
+      "properties": {
+        "x": 121.841667,
+        "y": 20.733333,
+        "name": "RIPOSET",
+        "elevation": "0.229"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.866667, 20.316667]
+      },
+      "properties": {
+        "x": 121.866667,
+        "y": 20.316667,
+        "name": "SABTANG",
+        "elevation": "0.347"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.422167, 8.118333]
+      },
+      "properties": {
+        "x": 124.422167,
+        "y": 8.118333,
+        "name": "SAGADA",
+        "elevation": "1.128"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.858333, 7.841667]
+      },
+      "properties": {
+        "x": 124.858333,
+        "y": 7.841667,
+        "name": "SALIMBAL",
+        "elevation": "0.892"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 5.908333]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 5.908333,
+        "name": "SANDAHAN",
+        "elevation": "0.392"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.85, 20.816667]
+      },
+      "properties": {
+        "x": 121.85,
+        "y": 20.816667,
+        "name": "SANTA ROSA",
+        "elevation": "0.277"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.55, 16.333333]
+      },
+      "properties": {
+        "x": 120.55,
+        "y": 16.333333,
+        "name": "SANTO TOMAS",
+        "elevation": "2.252"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.366667, 14.383333]
+      },
+      "properties": {
+        "x": 121.366667,
+        "y": 14.383333,
+        "name": "SEMBRANO",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.075, 12.783333]
+      },
+      "properties": {
+        "x": 124.075,
+        "y": 12.783333,
+        "name": "SHARP PEAK",
+        "elevation": "1.047"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.85, 5.533333]
+      },
+      "properties": {
+        "x": 120.85,
+        "y": 5.533333,
+        "name": "SIASI",
+        "elevation": "0.483"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.408333, 6.916667]
+      },
+      "properties": {
+        "x": 125.408333,
+        "y": 6.916667,
+        "name": "SIBULAN",
+        "elevation": "1.292"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.791667, 5.558333]
+      },
+      "properties": {
+        "x": 120.791667,
+        "y": 5.558333,
+        "name": "SIGANGAN",
+        "elevation": "0.283"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.766667, 7.791667]
+      },
+      "properties": {
+        "x": 123.766667,
+        "y": 7.791667,
+        "name": "SIGAYAN",
+        "elevation": "0.602"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.05, 12.816667]
+      },
+      "properties": {
+        "x": 122.05,
+        "y": 12.816667,
+        "name": "SIMARA",
+        "elevation": "0.229"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.271667, 7.498333]
+      },
+      "properties": {
+        "x": 125.271667,
+        "y": 7.498333,
+        "name": "SINAKO",
+        "elevation": "1.59"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.208333, 6.633333]
+      },
+      "properties": {
+        "x": 122.208333,
+        "y": 6.633333,
+        "name": "SININGCAPAN",
+        "elevation": "0.533"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.9, 20.908333]
+      },
+      "properties": {
+        "x": 121.9,
+        "y": 20.908333,
+        "name": "STAYAN",
+        "elevation": "0.164"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.25, 8.0]
+      },
+      "properties": {
+        "x": 123.25,
+        "y": 8.0,
+        "name": "SUGARLOAF COMPLEX",
+        "elevation": "1.432"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.075, 6.025]
+      },
+      "properties": {
+        "x": 121.075,
+        "y": 6.025,
+        "name": "SUNGAL",
+        "elevation": "0.518"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.033333, 14.133333]
+      },
+      "properties": {
+        "x": 121.033333,
+        "y": 14.133333,
+        "name": "SUNGAY",
+        "elevation": "0.62"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.8, 7.466667]
+      },
+      "properties": {
+        "x": 124.8,
+        "y": 7.466667,
+        "name": "TABLE",
+        "elevation": "0.576"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.4, 11.666667]
+      },
+      "properties": {
+        "x": 124.4,
+        "y": 11.666667,
+        "name": "TABUA0",
+        "elevation": "0.929"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1, 11.0]
+      },
+      "properties": {
+        "x": 121.1,
+        "y": 11.0,
+        "name": "TACBUBUC",
+        "elevation": "0.102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.133333, 10.966667]
+      },
+      "properties": {
+        "x": 121.133333,
+        "y": 10.966667,
+        "name": "TAGAUAYAN",
+        "elevation": "0.159"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.8, 7.783333]
+      },
+      "properties": {
+        "x": 124.8,
+        "y": 7.783333,
+        "name": "TAGOAN",
+        "elevation": "1.144"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.25, 14.35]
+      },
+      "properties": {
+        "x": 121.25,
+        "y": 14.35,
+        "name": "TALIM",
+        "elevation": "0.421"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.075, 5.95]
+      },
+      "properties": {
+        "x": 121.075,
+        "y": 5.95,
+        "name": "TALIPAO",
+        "elevation": "0.391"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0, 14.033333]
+      },
+      "properties": {
+        "x": 121.0,
+        "y": 14.033333,
+        "name": "TALISAY CALDERA",
+        "elevation": "0.5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.333333, 7.033333]
+      },
+      "properties": {
+        "x": 125.333333,
+        "y": 7.033333,
+        "name": "TALOMO",
+        "elevation": "2.674"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.433333, 11.55]
+      },
+      "properties": {
+        "x": 124.433333,
+        "y": 11.55,
+        "name": "TAMBUROK",
+        "elevation": "0.437"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.333333, 5.133333]
+      },
+      "properties": {
+        "x": 120.333333,
+        "y": 5.133333,
+        "name": "TANDUBAS",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.406667, 6.483333]
+      },
+      "properties": {
+        "x": 125.406667,
+        "y": 6.483333,
+        "name": "TANGDI",
+        "elevation": "1.154"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.958333, 6.3]
+      },
+      "properties": {
+        "x": 121.958333,
+        "y": 6.3,
+        "name": "TAPIANTANA",
+        "elevation": "0.249"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9, 5.733333]
+      },
+      "properties": {
+        "x": 120.9,
+        "y": 5.733333,
+        "name": "TAPUL",
+        "elevation": "0.474"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.931667, 5.986667]
+      },
+      "properties": {
+        "x": 120.931667,
+        "y": 5.986667,
+        "name": "TARAN",
+        "elevation": "0.811"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.141667, 7.533333]
+      },
+      "properties": {
+        "x": 123.141667,
+        "y": 7.533333,
+        "name": "TARRANOSA",
+        "elevation": "0.36"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.833333, 6.233333]
+      },
+      "properties": {
+        "x": 121.833333,
+        "y": 6.233333,
+        "name": "TATALAN",
+        "elevation": "0.102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 13.958333]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 13.958333,
+        "name": "TICAB",
+        "elevation": "0.097"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.683333, 8.125]
+      },
+      "properties": {
+        "x": 124.683333,
+        "y": 8.125,
+        "name": "TICALAN",
+        "elevation": "1.041"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.183333, 13.85]
+      },
+      "properties": {
+        "x": 121.183333,
+        "y": 13.85,
+        "name": "TOMBOL HILL",
+        "elevation": "0.235"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.6835, 9.193333]
+      },
+      "properties": {
+        "x": 124.6835,
+        "y": 9.193333,
+        "name": "TRES MARIAS",
+        "elevation": "0.771"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.316667, 6.025]
+      },
+      "properties": {
+        "x": 121.316667,
+        "y": 6.025,
+        "name": "TULAYAN",
+        "elevation": "0.161"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.275, 5.916667]
+      },
+      "properties": {
+        "x": 121.275,
+        "y": 5.916667,
+        "name": "UKAN",
+        "elevation": "0.299"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.258333, 5.983333]
+      },
+      "properties": {
+        "x": 121.258333,
+        "y": 5.983333,
+        "name": "UROT",
+        "elevation": "0.43"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.083333, 13.566667]
+      },
+      "properties": {
+        "x": 121.083333,
+        "y": 13.566667,
+        "name": "VERDE",
+        "elevation": "0.364"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.5, 11.533333]
+      },
+      "properties": {
+        "x": 124.5,
+        "y": 11.533333,
+        "name": "VULCAN (Biliran)",
+        "elevation": "1.015"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.603333, 6.25]
+      },
+      "properties": {
+        "x": 121.603333,
+        "y": 6.25,
+        "name": "WEST BOLOD",
+        "elevation": "0.152"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.166667, 7.85]
+      },
+      "properties": {
+        "x": 123.166667,
+        "y": 7.85,
+        "name": "WOOD",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.95, 21.116667]
+      },
+      "properties": {
+        "x": 121.95,
+        "y": 21.116667,
+        "name": "YAMI",
+        "elevation": "0.211"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.583333, 7.891667]
+      },
+      "properties": {
+        "x": 123.583333,
+        "y": 7.891667,
+        "name": "Unnamed",
+        "elevation": "0.237"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.558333, 7.891667]
+      },
+      "properties": {
+        "x": 123.558333,
+        "y": 7.891667,
+        "name": "Unnamed",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.558333, 7.908333]
+      },
+      "properties": {
+        "x": 123.558333,
+        "y": 7.908333,
+        "name": "Unnamed",
+        "elevation": "0.319"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.55, 7.933333]
+      },
+      "properties": {
+        "x": 123.55,
+        "y": 7.933333,
+        "name": "Unnamed",
+        "elevation": "0.276"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.541667, 7.916667]
+      },
+      "properties": {
+        "x": 123.541667,
+        "y": 7.916667,
+        "name": "Unnamed",
+        "elevation": "0.492"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.516667, 7.925]
+      },
+      "properties": {
+        "x": 123.516667,
+        "y": 7.925,
+        "name": "Unnamed",
+        "elevation": "0.472"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.520833, 7.891667]
+      },
+      "properties": {
+        "x": 123.520833,
+        "y": 7.891667,
+        "name": "Unnamed",
+        "elevation": "0.088"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.516667, 7.95]
+      },
+      "properties": {
+        "x": 123.516667,
+        "y": 7.95,
+        "name": "Unnamed",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.483333, 7.95]
+      },
+      "properties": {
+        "x": 123.483333,
+        "y": 7.95,
+        "name": "Unnamed",
+        "elevation": "0.36"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.475, 7.933333]
+      },
+      "properties": {
+        "x": 123.475,
+        "y": 7.933333,
+        "name": "Unnamed",
+        "elevation": "0.331"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.458333, 7.958333]
+      },
+      "properties": {
+        "x": 123.458333,
+        "y": 7.958333,
+        "name": "Unnamed",
+        "elevation": "0.59"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.008333, 6.033333]
+      },
+      "properties": {
+        "x": 120.0083333,
+        "y": 6.033333334,
+        "name": "BUD DATU",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.266667, 5.033333]
+      },
+      "properties": {
+        "x": 120.2666667,
+        "y": 5.033333336,
+        "name": "MANTABUAN",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.833333, 5.683333]
+      },
+      "properties": {
+        "x": 120.8333333,
+        "y": 5.683333333,
+        "name": "LUGUS",
+        "elevation": "0.297"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.973333, 5.94]
+      },
+      "properties": {
+        "x": 120.9733333,
+        "y": 5.94,
+        "name": "MAKAM",
+        "elevation": "0.427"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.066667, 6.033333]
+      },
+      "properties": {
+        "x": 121.0666667,
+        "y": 6.033333333,
+        "name": "MATANDING",
+        "elevation": "0.4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.116667, 5.933333]
+      },
+      "properties": {
+        "x": 121.1166667,
+        "y": 5.933333334,
+        "name": "MAHALA",
+        "elevation": "0.287"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.925, 6.316667]
+      },
+      "properties": {
+        "x": 121.925,
+        "y": 6.316666666,
+        "name": "LINAWAN",
+        "elevation": "0.112"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.983333, 6.5]
+      },
+      "properties": {
+        "x": 121.9833333,
+        "y": 6.5,
+        "name": "ABONGABONG",
+        "elevation": "0.863"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.3, 6.533333]
+      },
+      "properties": {
+        "x": 122.3,
+        "y": 6.533333333,
+        "name": "MATANAL",
+        "elevation": "0.611"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.183333, 7.55]
+      },
+      "properties": {
+        "x": 123.1833333,
+        "y": 7.550000001,
+        "name": "MARGOSA TUBIG",
+        "elevation": "0.412"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5, 7.917]
+      },
+      "properties": {
+        "x": 123.5,
+        "y": 7.916999999,
+        "name": "Unnamed",
+        "elevation": "0.366"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5208, 7.925]
+      },
+      "properties": {
+        "x": 123.5208,
+        "y": 7.925,
+        "name": "Unnamed",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.645, 8.228333]
+      },
+      "properties": {
+        "x": 123.645,
+        "y": 8.228333333,
+        "name": "MALINDANG",
+        "elevation": "2.404"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.133333, 7.966667]
+      },
+      "properties": {
+        "x": 124.1333333,
+        "y": 7.966666668,
+        "name": "MAMOT",
+        "elevation": "1.002"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.591667, 7.576667]
+      },
+      "properties": {
+        "x": 124.5916667,
+        "y": 7.576666667,
+        "name": "MARIYUG",
+        "elevation": "1.49"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.598, 7.618333]
+      },
+      "properties": {
+        "x": 124.598,
+        "y": 7.618333334,
+        "name": "MAGAMPAO",
+        "elevation": "1.468"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.567, 7.7917]
+      },
+      "properties": {
+        "x": 124.567,
+        "y": 7.7917,
+        "name": "MARANAT",
+        "elevation": "1.858"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.9, 6.191667]
+      },
+      "properties": {
+        "x": 124.9,
+        "y": 6.191666666,
+        "name": "MALIBAO",
+        "elevation": "1.5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.008333, 8.508333]
+      },
+      "properties": {
+        "x": 125.0083333,
+        "y": 8.508333333,
+        "name": "MANGABAN",
+        "elevation": "0.78"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.717, 9.183]
+      },
+      "properties": {
+        "x": 124.717,
+        "y": 9.183000001,
+        "name": "MAMBAJAO",
+        "elevation": "1.525"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.7641, 9.1239]
+      },
+      "properties": {
+        "x": 124.7641,
+        "y": 9.1239,
+        "name": "UHAY",
+        "elevation": "0.679"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.311667, 7.653333]
+      },
+      "properties": {
+        "x": 125.3116667,
+        "y": 7.653333334,
+        "name": "MALAMBO",
+        "elevation": "900"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.1, 6.87]
+      },
+      "properties": {
+        "x": 125.1,
+        "y": 6.870000003,
+        "name": "Unnamed",
+        "elevation": "0.792"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.81, 11.0137]
+      },
+      "properties": {
+        "x": 124.81,
+        "y": 11.0137,
+        "name": "LOBI",
+        "elevation": "1.3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.683333, 11.216667]
+      },
+      "properties": {
+        "x": 124.6833333,
+        "y": 11.21666667,
+        "name": "MACAPE",
+        "elevation": "0.315"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.691667, 11.025]
+      },
+      "properties": {
+        "x": 124.6916667,
+        "y": 11.025,
+        "name": "MAAGONOC",
+        "elevation": "0.68"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.3917, 11.6683]
+      },
+      "properties": {
+        "x": 124.3917,
+        "y": 11.6683,
+        "name": "BILIRAN",
+        "elevation": "1.056"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.45, 11.65]
+      },
+      "properties": {
+        "x": 124.45,
+        "y": 11.65,
+        "name": "MALIWATAN",
+        "elevation": "1.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.5, 11.575]
+      },
+      "properties": {
+        "x": 124.5,
+        "y": 11.575,
+        "name": "SAYAO",
+        "elevation": "1.266"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.52, 11.6183]
+      },
+      "properties": {
+        "x": 124.52,
+        "y": 11.6183,
+        "name": "CAMALOBAGOAN",
+        "elevation": "1.048"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.0617, 11.225]
+      },
+      "properties": {
+        "x": 121.0617,
+        "y": 11.225,
+        "name": "MARACANAO",
+        "elevation": "0.131"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.141667, 11.125]
+      },
+      "properties": {
+        "x": 121.1416667,
+        "y": 11.125,
+        "name": "MATARAWIT",
+        "elevation": "0.1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.716667, 10.966667]
+      },
+      "properties": {
+        "x": 120.7166667,
+        "y": 10.96666667,
+        "name": "LUBID",
+        "elevation": "0.135"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.15, 12.8]
+      },
+      "properties": {
+        "x": 124.15,
+        "y": 12.8,
+        "name": "MARAUT-BANUA",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.7279, 13.1621]
+      },
+      "properties": {
+        "x": 123.7279,
+        "y": 13.1621,
+        "name": "LIGNON",
+        "elevation": "0.156"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.583333, 13.333333]
+      },
+      "properties": {
+        "x": 123.5833333,
+        "y": 13.33333333,
+        "name": "MASARAGA",
+        "elevation": "1.328"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.6, 13.233]
+      },
+      "properties": {
+        "x": 123.6,
+        "y": 13.233,
+        "name": "Unnamed",
+        "elevation": "0.2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.6, 13.217]
+      },
+      "properties": {
+        "x": 123.6,
+        "y": 13.217,
+        "name": "Unnamed",
+        "elevation": "0.235"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.583, 13.225]
+      },
+      "properties": {
+        "x": 123.583,
+        "y": 13.225,
+        "name": "Unnamed",
+        "elevation": "0.283"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.575, 13.2417]
+      },
+      "properties": {
+        "x": 123.575,
+        "y": 13.2417,
+        "name": "Unnamed",
+        "elevation": "0.219"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5583, 13.233]
+      },
+      "properties": {
+        "x": 123.5583,
+        "y": 13.233,
+        "name": "Unnamed",
+        "elevation": "0.274"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.5542, 13.225]
+      },
+      "properties": {
+        "x": 123.5542,
+        "y": 13.225,
+        "name": "Unnamed",
+        "elevation": "0.22"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.55, 13.225]
+      },
+      "properties": {
+        "x": 123.55,
+        "y": 13.225,
+        "name": "Unnamed",
+        "elevation": "0.18"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.7, 12.916667]
+      },
+      "properties": {
+        "x": 121.7,
+        "y": 12.91666667,
+        "name": "MAESTRE DE CAMPO",
+        "elevation": "0.343"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.3, 13.683333]
+      },
+      "properties": {
+        "x": 121.3,
+        "y": 13.68333333,
+        "name": "LOBO",
+        "elevation": "0.972"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.183333, 13.7]
+      },
+      "properties": {
+        "x": 121.1833333,
+        "y": 13.7,
+        "name": "LIGUAYEN (LINGUAYAN)",
+        "elevation": "0.968"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.9, 13.433333]
+      },
+      "properties": {
+        "x": 120.9,
+        "y": 13.43333333,
+        "name": "MALASIMBO",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.066667, 14.016667]
+      },
+      "properties": {
+        "x": 121.0666667,
+        "y": 14.01666667,
+        "name": "LIPA pt.",
+        "elevation": "0.22"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.05, 13.916667]
+      },
+      "properties": {
+        "x": 121.05,
+        "y": 13.91666667,
+        "name": "MACOLOD (Makulot Macolog)",
+        "elevation": "0.957"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.233333, 13.95]
+      },
+      "properties": {
+        "x": 121.2333333,
+        "y": 13.95,
+        "name": "MALEPUNYO",
+        "elevation": "0.963"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.129, 14.091]
+      },
+      "properties": {
+        "x": 121.129,
+        "y": 14.091,
+        "name": "TANAUAN HILL",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.162, 14.144]
+      },
+      "properties": {
+        "x": 121.162,
+        "y": 14.144,
+        "name": "CALAMBA HILL",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.166, 14.163]
+      },
+      "properties": {
+        "x": 121.166,
+        "y": 14.163,
+        "name": "BIJIANG",
+        "elevation": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.166667, 14.166667]
+      },
+      "properties": {
+        "x": 121.1666667,
+        "y": 14.16666667,
+        "name": "ALLIGATOR",
+        "elevation": "0.069"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.216667, 14.2]
+      },
+      "properties": {
+        "x": 121.2166667,
+        "y": 14.2,
+        "name": "MAYONDON",
+        "elevation": "0.09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.2, 14.133333]
+      },
+      "properties": {
+        "x": 121.2,
+        "y": 14.13333333,
+        "name": "MAQUILIN PANSO",
+        "elevation": "1.09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.4, 14.133333]
+      },
+      "properties": {
+        "x": 121.4,
+        "y": 14.13333333,
+        "name": "MALAUBAN - LANSAY",
+        "elevation": "0.319"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.3083, 15.7183]
+      },
+      "properties": {
+        "x": 120.3083,
+        "y": 15.7183,
+        "name": "MALABOBO",
+        "elevation": "0.329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.875, 15.783333]
+      },
+      "properties": {
+        "x": 120.875,
+        "y": 15.78333333,
+        "name": "LIMLINGAN",
+        "elevation": "0.135"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.883333, 18.858333]
+      },
+      "properties": {
+        "x": 121.8833333,
+        "y": 18.85833333,
+        "name": "MALABSING",
+        "elevation": "0.51"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.967, 20.43]
+      },
+      "properties": {
+        "x": 121.967,
+        "y": 20.43,
+        "name": "MAHATAO",
+        "elevation": "0.165"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.933333, 20.383333]
+      },
+      "properties": {
+        "x": 121.9333333,
+        "y": 20.38333333,
+        "name": "MATAREM (MAFAREM MAHTAREM)",
+        "elevation": "0.459"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.916667, 20.933333]
+      },
+      "properties": {
+        "x": 121.9166667,
+        "y": 20.93333333,
+        "name": "MABUDIS",
+        "elevation": "0.234"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.191066, 14.130771]
+      },
+      "properties": {
+        "x": 121.1910658,
+        "y": 14.13077106,
+        "name": "Makiling",
+        "elevation": 0
+      }
+    }
+  ]
+}

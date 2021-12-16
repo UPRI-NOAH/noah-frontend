@@ -1,0 +1,357 @@
+{
+  "type": "FeatureCollection",
+  "generator": "UPRI-NOAH",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.271299, 6.987414]
+      },
+      "properties": {
+        "x": 125.2712993,
+        "y": 6.987413604,
+        "name": "Apo",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [125.376455, 5.39837]
+      },
+      "properties": {
+        "x": 125.3764546,
+        "y": 5.398369754,
+        "name": "Balut",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.773932, 11.066317]
+      },
+      "properties": {
+        "x": 124.7739322,
+        "y": 11.06631697,
+        "name": "Cancanajag",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.574234, 14.382765]
+      },
+      "properties": {
+        "x": 120.5742339,
+        "y": 14.38276525,
+        "name": "Corregidor",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.18089, 9.24503]
+      },
+      "properties": {
+        "x": 123.1808897,
+        "y": 9.245030473,
+        "name": "Cuernos de Negros",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.905935, 5.731419]
+      },
+      "properties": {
+        "x": 120.9059346,
+        "y": 5.731419205,
+        "name": "Dakut",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.816667, 5.556667]
+      },
+      "properties": {
+        "x": 120.816667,
+        "y": 5.556667,
+        "name": "Gorra",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.382267, 13.655671]
+      },
+      "properties": {
+        "x": 123.3822671,
+        "y": 13.6556707,
+        "name": "Isarog",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.802633, 7.954685]
+      },
+      "properties": {
+        "x": 124.8026333,
+        "y": 7.954685336,
+        "name": "Kalatungan",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.787383, 14.01301]
+      },
+      "properties": {
+        "x": 122.7873833,
+        "y": 14.0130098,
+        "name": "Labo",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.761478, 5.515908]
+      },
+      "properties": {
+        "x": 120.7614782,
+        "y": 5.515908131,
+        "name": "Lapac",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.613131, 13.415836]
+      },
+      "properties": {
+        "x": 123.6131314,
+        "y": 13.41583615,
+        "name": "Malinao",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [122.013477, 13.241259]
+      },
+      "properties": {
+        "x": 122.013477,
+        "y": 13.24125936,
+        "name": "Malindig (Marlanga)",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.206064, 10.657579]
+      },
+      "properties": {
+        "x": 123.2060642,
+        "y": 10.65757939,
+        "name": "Mandalagan",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.319523, 11.788933]
+      },
+      "properties": {
+        "x": 124.3195228,
+        "y": 11.78893345,
+        "name": "Maripipi",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.480564, 14.527141]
+      },
+      "properties": {
+        "x": 120.4805644,
+        "y": 14.52714056,
+        "name": "Mariveles",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.377284, 14.706243]
+      },
+      "properties": {
+        "x": 120.3772844,
+        "y": 14.70624348,
+        "name": "Natib",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.344128, 15.082272]
+      },
+      "properties": {
+        "x": 120.3441283,
+        "y": 15.08227192,
+        "name": "Negron",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.162123, 5.811878]
+      },
+      "properties": {
+        "x": 121.1621226,
+        "y": 5.811878028,
+        "name": "Parang",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.407965, 5.971261]
+      },
+      "properties": {
+        "x": 121.4079654,
+        "y": 5.971260632,
+        "name": "Parangan",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.301308, 5.906728]
+      },
+      "properties": {
+        "x": 121.301308,
+        "y": 5.906728273,
+        "name": "Pitogo",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.422965, 14.062492]
+      },
+      "properties": {
+        "x": 121.4229647,
+        "y": 14.06249245,
+        "name": "San Cristobal",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [123.218357, 10.765782]
+      },
+      "properties": {
+        "x": 123.2183573,
+        "y": 10.76578191,
+        "name": "Silay",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.1, 6.033333]
+      },
+      "properties": {
+        "x": 121.1,
+        "y": 6.033333,
+        "name": "Sinumaan",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.952098, 5.931488]
+      },
+      "properties": {
+        "x": 120.9520978,
+        "y": 5.931488071,
+        "name": "Tukay",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [120.962109, 5.996624]
+      },
+      "properties": {
+        "x": 120.9621089,
+        "y": 5.996623978,
+        "name": "Tumatangas",
+        "elevation": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [124.647104, 9.212756]
+      },
+      "properties": {
+        "x": 124.647104,
+        "y": 9.212756,
+        "name": "Vulcan",
+        "elevation": 0.5279136
+      }
+    }
+  ]
+}

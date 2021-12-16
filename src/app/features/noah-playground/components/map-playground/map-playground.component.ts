@@ -50,6 +50,7 @@ import {
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  VolcanoType,
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
@@ -132,6 +133,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
+        this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
       });
@@ -266,6 +268,42 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           )
         );
     });
+  }
+
+  initVolcanoes() {
+    // 0 - declare the source json files
+    const volcanoSourceFiles: Record<VolcanoType, { url: string }> = {
+      active: {
+        url: 'assets/geojson/active_volcano.json',
+      },
+      'potentially-active': {
+        url: 'assets/geojson/volcanoes_potentially_active.json',
+      },
+      inactive: {
+        url: 'assets/geojson/volcanoes_inactive.json',
+      },
+    };
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(volcanoSourceFiles).forEach((volcanoType: VolcanoType) => {
+      const volcanoObjData = volcanoSourceFiles[volcanoType];
+
+      this.map.addLayer({
+        id: volcanoType,
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: volcanoObjData.url,
+        },
+        paint: {
+          'circle-color': 'red',
+          'circle-radius': 5,
+          'circle-opacity': 1,
+        },
+      });
+    });
+
+    // 2 - listen to the values from the store (group and individual)
   }
 
   showDataPoints(sensorType: SensorType) {
