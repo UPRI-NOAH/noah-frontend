@@ -14,6 +14,8 @@ import {
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
+  VolcanoGroupState,
+  VolcanoType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -51,6 +53,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.criticalFacilities.shown)
     );
+  }
+
+  get volcanoGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.volcanoes.shown));
+  }
+
+  get volcanoGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
   }
 
   get sensorsGroupShown$(): Observable<boolean> {
@@ -279,6 +289,39 @@ export class NoahPlaygroundService {
     this.store.patch(
       { criticalFacilities },
       `CriticalFacility - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setVolcanoGroupProperty(value: boolean, property: 'expanded' | 'shown') {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    volcanoes[property] = value;
+    this.store.patch({ volcanoes }, `Volcanoes ${property}, ${value}`);
+  }
+
+  setVolcanoSoloOpacity(value: number, type: VolcanoType) {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    volcanoes.types[type].opacity = value;
+    this.store.patch(
+      { volcanoes },
+      `Volcano - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setVolcanoSoloShown(value: boolean, type: VolcanoType) {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    volcanoes.types[type].shown = value;
+    this.store.patch(
+      { volcanoes },
+      `Volcano - update ${type}'s shown to ${value}`
     );
   }
 
