@@ -96,6 +96,19 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type VolcanoGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<VolcanoType, VolcanoState>;
+};
+
+export type VolcanoType = 'active' | 'potentially-active' | 'inactive';
+
+export type VolcanoState = {
+  shown: boolean;
+  opacity: number;
+};
+
 export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
@@ -128,6 +141,7 @@ type NoahPlaygroundState = {
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
+  volcanoes: VolcanoGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
@@ -216,6 +230,24 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 85,
         color: 'noah-red',
         shown: false,
+      },
+    },
+  },
+  volcanoes: {
+    shown: false,
+    expanded: false,
+    types: {
+      active: {
+        shown: false,
+        opacity: 100,
+      },
+      'potentially-active': {
+        shown: false,
+        opacity: 100,
+      },
+      inactive: {
+        shown: false,
+        opacity: 100,
       },
     },
   },
