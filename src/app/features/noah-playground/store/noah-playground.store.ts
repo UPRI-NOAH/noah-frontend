@@ -123,6 +123,12 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
+export type TyphoonTrackState = {
+  shown: boolean;
+  expanded: boolean;
+  opacity: number;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -133,6 +139,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  typhoonTrack: TyphoonTrackState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -253,6 +260,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 80,
       },
     },
+  },
+  typhoonTrack: {
+    shown: true,
+    expanded: true,
+    opacity: 100,
   },
   center: null,
   currentLocation: '-----',
