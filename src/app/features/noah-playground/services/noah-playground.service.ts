@@ -14,6 +14,7 @@ import {
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
+  TyphoonTrackState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -89,6 +90,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.contourMaps.selectedType)
     );
+  }
+
+  get typhoonTrack$(): Observable<TyphoonTrackState> {
+    return this.store.state$.pipe(map((state) => state.typhoonTrack));
+  }
+
+  getTyphoonTrack(): TyphoonTrackState {
+    return this.store.state.typhoonTrack;
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -280,6 +289,10 @@ export class NoahPlaygroundService {
       { criticalFacilities },
       `CriticalFacility - update ${type}'s shown to ${value}`
     );
+  }
+
+  setTyphoonTrack(typhoonTrack: TyphoonTrackState) {
+    this.store.patch({ typhoonTrack }, 'updated typhoon track state');
   }
 
   setCenter(center: { lat: number; lng: number }) {
