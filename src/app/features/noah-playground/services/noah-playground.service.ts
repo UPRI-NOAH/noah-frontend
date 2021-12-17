@@ -299,13 +299,14 @@ export class NoahPlaygroundService {
     );
   }
 
-  setVolcanoGroupProperty(value: boolean, property: 'expanded' | 'shown') {
+  toggleVolcanoGroupProperty(property: 'expanded' | 'shown') {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
     };
 
-    volcanoes[property] = value;
-    this.store.patch({ volcanoes }, `Volcanoes ${property}, ${value}`);
+    const currentValue = volcanoes[property];
+    volcanoes[property] = !currentValue;
+    this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
