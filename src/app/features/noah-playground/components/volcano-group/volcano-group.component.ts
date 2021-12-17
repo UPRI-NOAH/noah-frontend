@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import { VolcanoType } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -9,6 +10,8 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./volcano-group.component.scss'],
 })
 export class VolcanoGroupComponent implements OnInit {
+  volcanoTypeList: VolcanoType[] = ['active', 'potentially-active', 'inactive'];
+
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
 

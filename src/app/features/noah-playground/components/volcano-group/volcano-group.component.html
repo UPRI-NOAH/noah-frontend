@@ -54,12 +54,10 @@
     <hr class="pb-4" />
     <div class="pl-6">
       <div class="items-center">
-        <!-- CRITICAL FACILITY START -->
-        <!-- <noah-facility
-          *ngFor="let facility of facilityList"
-          [name]="facility"
-        ></noah-facility> -->
-        <!-- CRITICAL FACILITY END -->
+        <noah-volcano-solo
+          *ngFor="let volcanoType of volcanoTypeList"
+          [volcanoType]="volcanoType"
+        ></noah-volcano-solo>
         <hr class="p-2" />
       </div>
     </div>
