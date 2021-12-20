@@ -610,7 +610,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
     // Add point layer
     this.map.addLayer({
-      id: 'typhoon-layer',
+      id: 'typhoon-track-icon',
       type: 'symbol',
       source: 'typhoonTrack',
       layout: {
@@ -620,7 +620,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
     // Add line layer
     this.map.addLayer({
-      id: 'typhoon-track-layer',
+      id: 'typhoon-track-line',
       type: 'line',
       source: 'typhoonTrack',
       paint: {
@@ -646,12 +646,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
       .subscribe((opacity) => {
         this.map.setPaintProperty(
-          'typhoon-layer',
+          'typhoon-track-icon',
           'icon-opacity',
           opacity / 100
         );
         this.map.setPaintProperty(
-          'typhoon-track-layer',
+          'typhoon-track-line',
           'line-opacity',
           opacity / 100
         );
@@ -674,9 +674,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
         }
 
-        this.map.setPaintProperty('typhoon-layer', 'icon-opacity', newOpacity);
         this.map.setPaintProperty(
-          'typhoon-track-layer',
+          'typhoon-track-icon',
+          'icon-opacity',
+          newOpacity
+        );
+        this.map.setPaintProperty(
+          'typhoon-track-line',
           'line-opacity',
           newOpacity
         );
