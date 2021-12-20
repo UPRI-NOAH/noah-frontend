@@ -133,6 +133,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initHazardLayers();
         this.initSensors();
         this.initWeatherSatelliteLayers();
+        this.initTyphoonTrackLayers();
         this.showContourMaps();
       });
   }
@@ -591,6 +592,95 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
       }
     );
+  }
+
+  initTyphoonTrackLayers() {
+    this.map.loadImage(
+      'https://prince-sme-test.s3.amazonaws.com/geojson/typhoon.png',
+      (error, image) => {
+        if (error) throw error;
+        this.map.addImage('custom-marker', image);
+      }
+    );
+    this.map.addSource('typhoonTrack', {
+      type: 'geojson',
+      // Use a URL for the value for the `data` property.
+      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/typhoon.geojson',
+    });
+
+    // Add point layer
+    this.map.addLayer({
+      id: 'typhoon-layer',
+      type: 'symbol',
+      source: 'typhoonTrack',
+      layout: {
+        'icon-image': 'custom-marker',
+        'icon-size': 0.02,
+      },
+    });
+    // Add line layer
+    this.map.addLayer({
+      id: 'typhoon-track-layer',
+      type: 'line',
+      source: 'typhoonTrack',
+      paint: {
+        'line-color': 'gray',
+        'line-width': 1,
+        'line-dasharray': [2, 1],
+      },
+      filter: ['==', 'name', 'typhoon-track'],
+    });
+
+    // Add probability radius per point
+    // for (const feature of track.features) {
+    //   const rad = feature.properties.radius
+    //   console.log(rad);
+    //   let myCircle = new MapboxCircle({lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}, 300, {
+    //     editable: false,
+    //     fillColor: '#29AB87'
+    // }).addTo(map).setRadius(rad); //
+    // };
+
+    this.pgService.typhoonTrack$
+      .pipe(pluck('opacity'), distinctUntilChanged())
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe((opacity) => {
+        this.map.setPaintProperty(
+          'typhoon-layer',
+          'icon-opacity',
+          opacity / 100
+        );
+        this.map.setPaintProperty(
+          'typhoon-track-layer',
+          'line-opacity',
+          opacity / 100
+        );
+      });
+
+    this.pgService.typhoonTrack$
+      .pipe(
+        distinctUntilChanged((prev, next) => prev.shown === next.shown),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe((typhoonTrack) => {
+        let newOpacity = 0;
+        if (typhoonTrack.shown) {
+          newOpacity = typhoonTrack.opacity / 100;
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 4,
+            essential: true,
+          });
+        }
+
+        this.map.setPaintProperty('typhoon-layer', 'icon-opacity', newOpacity);
+        this.map.setPaintProperty(
+          'typhoon-track-layer',
+          'line-opacity',
+          newOpacity
+        );
+      });
   }
 
   showContourMaps() {
