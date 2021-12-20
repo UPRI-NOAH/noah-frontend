@@ -607,6 +607,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       // Use a URL for the value for the `data` property.
       data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/typhoon.geojson',
     });
+    this.map.addSource('PAR', {
+      type: 'geojson',
+      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/PAR.geojson',
+    });
 
     // Add point layer
     this.map.addLayer({
@@ -629,6 +633,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         'line-dasharray': [2, 1],
       },
       filter: ['==', 'name', 'typhoon-track'],
+    });
+    // Add PAR layer
+    this.map.addLayer({
+      id: 'par',
+      type: 'line',
+      source: 'PAR',
+      paint: {
+        'line-color': 'white',
+        'line-width': 2,
+      },
     });
 
     // Add probability radius per point
@@ -673,7 +687,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             essential: true,
           });
         }
-
         this.map.setPaintProperty(
           'typhoon-track-icon',
           'icon-opacity',
@@ -684,6 +697,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'line-opacity',
           newOpacity
         );
+        this.map.setPaintProperty('par', 'line-opacity', newOpacity);
       });
   }
 
