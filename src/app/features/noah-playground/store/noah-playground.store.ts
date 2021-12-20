@@ -262,8 +262,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   typhoonTrack: {
-    shown: true,
-    expanded: true,
+    shown: false,
+    expanded: false,
     opacity: 100,
   },
   center: null,
