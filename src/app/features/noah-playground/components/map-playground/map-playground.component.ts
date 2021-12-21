@@ -41,7 +41,6 @@ import {
 import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
-
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
@@ -56,6 +55,9 @@ import {
   WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+import { type } from 'os';
+import { P } from '@angular/cdk/keycodes';
+import { url } from 'inspector';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -88,7 +90,6 @@ type LH2Subtype = 'af' | 'df';
 
 // hazardOpacity$: Observable<number>;
 // hazardShown$: Observable<boolean>;
-
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -134,6 +135,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initSensors();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initWindy();
       });
   }
 
@@ -499,6 +501,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
     });
+  }
+
+  initWindy() {
+    // let windy;
+    // let timeout;
+    // this.map.addLayer({
+    //   id: windy,
+    //   type: 'fill',
+    //   source: {
+    //     type: 'geojson',
+    //     data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/wind_map/wind_map.json',
+    //   }
+    // })
+    // this.map.doubleClickZoom.disable();
   }
 
   initWeatherSatelliteLayers() {

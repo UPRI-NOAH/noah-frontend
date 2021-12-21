@@ -112,6 +112,14 @@ export type WeatherSatelliteTypesState = {
   'himawari-GSMAP': WeatherSatelliteTypeState;
 };
 
+export type WindyNoah = {
+  shown: boolean;
+  expanded: boolean;
+};
+export type WindyNoahTypeState = {
+  opacity: number;
+};
+
 export type SensorTypeState = {
   fetched: boolean;
   shown: boolean;
@@ -130,6 +138,7 @@ type NoahPlaygroundState = {
   'storm-surge': StormSurgeState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
+  windy: WindyNoah;
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -256,6 +265,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   center: null,
   currentLocation: '-----',
+  windy: {
+    shown: false,
+    expanded: false,
+  },
   sensors: {
     shown: false,
     expanded: false,
