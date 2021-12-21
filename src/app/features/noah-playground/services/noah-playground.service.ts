@@ -71,6 +71,14 @@ export class NoahPlaygroundService {
     );
   }
 
+  get windyShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.windy.shown));
+  }
+
+  get windyExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.windy.expanded));
+  }
+
   get selectedWeatherSatellite$(): Observable<WeatherSatelliteType> {
     return this.store.state$.pipe(
       map((state) => state.weatherSatellite.selectedType)
@@ -95,6 +103,15 @@ export class NoahPlaygroundService {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
+  getWindyData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/wind_map/wind_map.json'
       )
       .pipe(first())
       .toPromise();
@@ -401,6 +418,24 @@ export class NoahPlaygroundService {
       { weatherSatellite },
       `toggle weather satellite expansion`
     );
+  }
+
+  toggleWindyVisibility(): void {
+    const windy = {
+      ...this.store.state.windy,
+    };
+
+    windy.shown = !windy.shown;
+    this.store.patch({ windy }, `toggle windy noah visibility`);
+  }
+
+  toggleWindyExpansion(): void {
+    const windy = {
+      ...this.store.state.windy,
+    };
+
+    windy.expanded = !windy.expanded;
+    this.store.patch({ windy }, `toggle windy noah expansion`);
   }
 
   setSensorTypeFetched(sensorType: SensorType, fetched = true): void {
