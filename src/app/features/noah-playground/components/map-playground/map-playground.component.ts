@@ -6,6 +6,7 @@ import mapboxgl, {
   Map,
   Marker,
 } from 'mapbox-gl';
+import { MapboxCircle } from 'mapbox-gl-circle';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
@@ -619,7 +620,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       source: 'typhoonTrack',
       layout: {
         'icon-image': 'custom-marker',
-        'icon-size': 0.02,
+        'icon-allow-overlap': true,
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
       },
     });
     // Add line layer
@@ -629,7 +631,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       source: 'typhoonTrack',
       paint: {
         'line-color': 'gray',
-        'line-width': 1,
+        'line-width': 1.5,
         'line-dasharray': [2, 1],
       },
       filter: ['==', 'name', 'typhoon-track'],
@@ -646,7 +648,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
 
     // Add probability radius per point
-    // for (const feature of track.features) {
+    // for (const feature of typhoonTrack.features) {
     //   const rad = feature.properties.radius
     //   console.log(rad);
     //   let myCircle = new MapboxCircle({lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}, 300, {
