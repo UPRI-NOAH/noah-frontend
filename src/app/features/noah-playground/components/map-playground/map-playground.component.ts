@@ -348,7 +348,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   [
                     'concat',
                     '\n(',
-                    ['*', ['get', 'elevation'], 1000],
+                    ['round', ['*', ['get', 'elevation'], 1000]],
                     ' MASL)',
                   ],
                 ],
