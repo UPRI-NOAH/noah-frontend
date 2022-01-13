@@ -338,7 +338,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-optional': true,
               'text-anchor': 'top',
               'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
-              'text-field': ['get', 'name'],
+              'text-field': [
+                'concat',
+                ['get', 'name'],
+                [
+                  'case',
+                  ['==', ['get', 'elevation'], 'No Available Data'],
+                  '',
+                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
+                ],
+              ],
               'text-offset': [0, 2],
               'text-size': 12,
               'text-letter-spacing': 0.08,
