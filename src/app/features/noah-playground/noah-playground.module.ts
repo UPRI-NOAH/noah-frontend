@@ -20,6 +20,8 @@ import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.compon
 import { WeatherComponent } from './components/weather/weather.component';
 import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
 import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
+import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.component';
+import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { WeatherSatellitePlaygroundComponent } from './components/weather-satell
     WeatherComponent,
     ContourMapsComponent,
     WeatherSatellitePlaygroundComponent,
+    VolcanoGroupComponent,
+    VolcanoSoloComponent,
   ],
   imports: [
     CommonModule,
