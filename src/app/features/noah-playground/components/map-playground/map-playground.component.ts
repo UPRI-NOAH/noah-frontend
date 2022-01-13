@@ -338,6 +338,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-optional': true,
               'text-anchor': 'top',
               'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+              // If elevation is available, display it below the volcano name
               'text-field': [
                 'concat',
                 ['get', 'name'],
@@ -345,12 +346,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   'case',
                   ['<=', ['get', 'elevation'], 0],
                   '',
-                  [
-                    'concat',
-                    '\n(',
-                    ['round', ['*', ['get', 'elevation'], 1000]],
-                    ' MASL)',
-                  ],
+                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
                 ],
               ],
               'text-offset': [0, 2],
