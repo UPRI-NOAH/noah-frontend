@@ -596,13 +596,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initTyphoonTrackLayers() {
-    this.map.loadImage(
-      'https://prince-sme-test.s3.amazonaws.com/geojson/typhoon.png',
-      (error, image) => {
-        if (error) throw error;
-        this.map.addImage('custom-marker', image);
-      }
-    );
+    this.map.loadImage('assets/icons/typhoon.png', (error, image) => {
+      if (error) throw error;
+      this.map.addImage('custom-marker', image);
+    });
     this.map.addSource('typhoonTrack', {
       type: 'geojson',
       // Use a URL for the value for the `data` property.
