@@ -345,7 +345,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   'case',
                   ['==', ['get', 'elevation'], 'No Available Data'],
                   '',
-                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
+                  [
+                    'concat',
+                    '\n(',
+                    ['*', ['get', 'elevation'], 1000],
+                    ' MASL)',
+                  ],
                 ],
               ],
               'text-offset': [0, 2],
