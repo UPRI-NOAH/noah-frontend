@@ -343,7 +343,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 ['get', 'name'],
                 [
                   'case',
-                  ['==', ['get', 'elevation'], 'No Available Data'],
+                  ['<=', ['get', 'elevation'], 0],
                   '',
                   [
                     'concat',
