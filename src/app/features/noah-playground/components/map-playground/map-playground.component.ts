@@ -335,7 +335,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             layout: {
               'icon-image': volcanoType,
               'icon-allow-overlap': true,
-              'text-allow-overlap': true,
+              'text-optional': true,
               'text-anchor': 'top',
               'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
               'text-field': ['get', 'name'],
