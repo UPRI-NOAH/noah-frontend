@@ -51,6 +51,7 @@ import {
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  VolcanoType,
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
@@ -133,6 +134,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
+        this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.initTyphoonTrackLayers();
         this.showContourMaps();
@@ -267,6 +269,112 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             `Unable to fetch data from DOST for sensors of type "${sensorType}"`
           )
         );
+    });
+  }
+
+  initVolcanoes() {
+    // 0 - declare the source json files
+    const volcanoSourceFiles: Record<VolcanoType, { url: string }> = {
+      active: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/active_volcano.geojson',
+      },
+      'potentially-active': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_potentially_active.geojson',
+      },
+      inactive: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_inactive.geojson',
+      },
+    };
+
+    const volcanoColorMap: Record<VolcanoType, string> = {
+      active: 'red',
+      inactive: 'gray',
+      'potentially-active': 'yellow',
+    };
+
+    const allShown$ = this.pgService.volcanoGroupShown$.pipe(
+      distinctUntilChanged()
+    );
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(volcanoSourceFiles).forEach((volcanoType: VolcanoType) => {
+      const volcanoObjData = volcanoSourceFiles[volcanoType];
+
+      // 2 - load volcano icon (the sprite corresponding to the volcano type)
+      const _this = this;
+      this.map.loadImage(
+        `assets/map-sprites/volcano-${volcanoType}.png`,
+        (error, image) => {
+          if (error) throw error;
+          // 3 - add volcano icon
+          _this.map.addImage(volcanoType, image);
+
+          // 4 - add source
+          const volcanoMapSource = `${volcanoType}-map-source`;
+          _this.map.addSource(volcanoMapSource, {
+            type: 'geojson',
+            data: volcanoObjData.url,
+          });
+
+          // 5 - add layer
+          const layerID = `${volcanoType}-map-layer`;
+          this.map.addLayer({
+            id: layerID,
+            type: 'symbol',
+            source: volcanoMapSource,
+            paint: {
+              'icon-opacity': 1,
+              'text-opacity': 1,
+              'text-color':
+                _this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+              'text-halo-color':
+                _this.mapStyle === 'terrain'
+                  ? 'rgba(255, 255, 255, 1)'
+                  : 'rgba(0, 0, 0, 1)',
+              'text-halo-width': 0.5,
+              'text-halo-blur': 0.5,
+            },
+            layout: {
+              'icon-image': volcanoType,
+              'icon-allow-overlap': true,
+              'text-optional': true,
+              'text-anchor': 'top',
+              'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+              // If elevation is available, display it below the volcano name
+              'text-field': [
+                'concat',
+                ['get', 'name'],
+                [
+                  'case',
+                  ['<=', ['get', 'elevation'], 0],
+                  '',
+                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
+                ],
+              ],
+              'text-offset': [0, 2],
+              'text-size': 12,
+              'text-letter-spacing': 0.08,
+            },
+          });
+
+          // 6 - listen to the values from the store (group and individual)
+          const volcano$ = this.pgService
+            .getVolcano$(volcanoType)
+            .pipe(shareReplay(1));
+
+          combineLatest([allShown$, volcano$])
+            .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+            .subscribe(([allShown, volcano]) => {
+              let newOpacity = 0;
+              if (volcano.shown && allShown) {
+                newOpacity = volcano.opacity / 100;
+              }
+
+              this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
+              this.map.setPaintProperty(layerID, 'text-opacity', newOpacity);
+            });
+        }
+      );
     });
   }
 
