@@ -627,7 +627,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       type: 'line',
       source: 'typhoonTrack',
       paint: {
-        'line-color': 'gray',
+        'line-color': '#bdd9f1',
         'line-width': 1.5,
         'line-dasharray': [2, 1],
       },
