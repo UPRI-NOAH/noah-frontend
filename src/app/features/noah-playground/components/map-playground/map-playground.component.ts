@@ -729,6 +729,30 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
       },
     });
+    // Add radius layer
+    // this.map.addLayer({
+    //   id: 'typhoon-track-radius',
+    //   type: 'circle',
+    //   source: 'typhoonTrack',
+    //   paint: {
+    //     'circle-color': '#bdd9f1',
+    //     'circle-radius': 30,
+    //     'circle-opacity': 0.1,
+    //   },
+    // });
+
+    // Add radius layer
+    // this.map.addLayer({
+    //   id: 'typhoon-track-radius',
+    //   type: 'circle',
+    //   source: 'typhoonTrack',
+    //   paint: {
+    //     'circle-color': '#bdd9f1',
+    //     'circle-radius': 30,
+    //     'circle-opacity': 0.1,
+    //   },
+    // });
+
     // Add line layer
     this.map.addLayer({
       id: 'typhoon-track-line',
@@ -752,14 +776,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     });
 
+    // const myCircle = new MapboxCircle({lat: 16.4, lng: 110.4}, 25000, {
+    //   editable: true,
+    //   minRadius: 1500,
+    //   fillColor: '#29AB87'
+    // }).addTo(this.map);
+
     // Add probability radius per point
-    // for (const feature of typhoonTrack.features) {
+    const fetchData = this.pgService.getTyphoonData();
+    console.log(fetchData + 'test data');
+
+    // for (const feature of fetchData.features) {
     //   const rad = feature.properties.radius
     //   console.log(rad);
     //   let myCircle = new MapboxCircle({lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}, 300, {
     //     editable: false,
     //     fillColor: '#29AB87'
-    // }).addTo(map).setRadius(rad); //
+    // }).addTo(this.map).setRadius(rad); //
     // };
 
     this.pgService.typhoonTrack$
@@ -778,6 +811,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
       });
 
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+    });
+    const _this = this;
+
     this.pgService.typhoonTrack$
       .pipe(
         distinctUntilChanged((prev, next) => prev.shown === next.shown),
@@ -793,6 +832,38 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             zoom: 4,
             essential: true,
           });
+          const fetchData = this.map.on('mouseover', (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            const dateTime = e.features[0].properties.datetime;
+            const typhoonName = e.features[0].properties.typhoon_name;
+            const typhoonClass = e.features[0].properties.typhoon_class;
+
+            while (Math.abs(e.lnglat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            _this.map.getCanvas().style.cursor = 'pointer';
+            popUp
+              .setLngLat(coordinates)
+              .setHTML(
+                `
+                <div style="color: #333333;">
+                  <div><strong>#${typhoonName}</strong></div>
+                  <div>Date: ${dateTime}</div>
+                  <div>Class: ${typhoonClass}</div>                 
+                </div>
+              `
+              )
+              .addTo(_this.map);
+          });
+        } else {
+          popUp.remove();
+          this.map.on('mouseover', (e) => {
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+          });
         }
         this.map.setPaintProperty(
           'typhoon-track-icon',
@@ -804,6 +875,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'line-opacity',
           newOpacity
         );
+        // this.map.setPaintProperty(
+        //   'typhoon-track-radius',
+        //   'circle-opacity',
+        //   newOpacity
+        // );
         this.map.setPaintProperty('par', 'line-opacity', newOpacity);
       });
   }

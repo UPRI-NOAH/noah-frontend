@@ -120,6 +120,15 @@ export class NoahPlaygroundService {
       .toPromise();
   }
 
+  getTyphoonData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/typhoon.geojson'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
   }
