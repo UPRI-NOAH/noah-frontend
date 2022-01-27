@@ -301,7 +301,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       // 2 - load volcano icon (the sprite corresponding to the volcano type)
       const _this = this;
       this.map.loadImage(
-        `assets/map-sprites/volcano-${volcanoType}.png`,
+        `assets/map-sprites/${volcanoType}.png`,
         (error, image) => {
           if (error) throw error;
           // 3 - add volcano icon
