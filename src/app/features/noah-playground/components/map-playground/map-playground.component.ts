@@ -274,7 +274,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // 0 - declare the source json files
     const volcanoSourceFiles: Record<VolcanoType, { url: string }> = {
       active: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/active_volcano.geojson',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/active_volcano_rad.geojson',
       },
       'potentially-active': {
         url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_potentially_active.geojson',
