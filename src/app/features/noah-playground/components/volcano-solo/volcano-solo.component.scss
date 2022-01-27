@@ -1,0 +1,26 @@
+.active {
+  --color: #de4545;
+  background-color: #de4545;
+  &,
+  input {
+    --border-color: #de4545;
+  }
+}
+
+.potentially-active {
+  --color: #f2c94c;
+  background-color: #f2c94c;
+  &,
+  input {
+    --border-color: #f2c94c;
+  }
+}
+
+.inactive {
+  --color: #828282;
+  background-color: #828282;
+  &,
+  input {
+    --border-color: #828282;
+  }
+}
