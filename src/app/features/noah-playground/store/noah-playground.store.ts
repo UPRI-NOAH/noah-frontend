@@ -245,7 +245,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       active: {
-        shown: false,
+        shown: true,
         opacity: 100,
       },
       'potentially-active': {
