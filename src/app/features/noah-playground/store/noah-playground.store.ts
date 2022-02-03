@@ -109,6 +109,19 @@ export type VolcanoState = {
   opacity: number;
 };
 
+export type TyphoonTrackGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<TyphoonTrackType, TyphoonTrackState>;
+};
+
+export type TyphoonTrackType = 'PAR' | 'typhoon-track';
+
+export type TyphoonTrackState = {
+  shown: boolean;
+  opacity: number;
+};
+
 export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
@@ -136,12 +149,6 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
-export type TyphoonTrackState = {
-  shown: boolean;
-  expanded: boolean;
-  opacity: number;
-};
-
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -153,7 +160,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
-  typhoonTrack: TyphoonTrackState;
+  typhoonTrack: TyphoonTrackGroupState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -296,7 +303,16 @@ const createInitialValue = (): NoahPlaygroundState => ({
   typhoonTrack: {
     shown: false,
     expanded: false,
-    opacity: 100,
+    types: {
+      PAR: {
+        shown: true,
+        opacity: 100,
+      },
+      'typhoon-track': {
+        shown: false,
+        opacity: 100,
+      },
+    },
   },
   center: null,
   currentLocation: '-----',
