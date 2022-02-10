@@ -20,9 +20,10 @@ import { SensorSoloComponent } from './components/sensor-solo/sensor-solo.compon
 import { WeatherComponent } from './components/weather/weather.component';
 import { ContourMapsComponent } from './components/contour-maps/contour-maps.component';
 import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
-import { TyphoonTrackComponent } from './components/typhoon-track/typhoon-track.component';
 import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.component';
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
+import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
+import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typhoon-track-group.component';
 
 @NgModule({
   declarations: [
@@ -40,9 +41,10 @@ import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.com
     WeatherComponent,
     ContourMapsComponent,
     WeatherSatellitePlaygroundComponent,
-    TyphoonTrackComponent,
     VolcanoGroupComponent,
     VolcanoSoloComponent,
+    TyphoonTrackSoloComponent,
+    TyphoonTrackGroupComponent,
   ],
   imports: [
     CommonModule,

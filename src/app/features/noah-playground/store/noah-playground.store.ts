@@ -115,7 +115,7 @@ export type TyphoonTrackGroupState = {
   types: Record<TyphoonTrackType, TyphoonTrackState>;
 };
 
-export type TyphoonTrackType = 'PAR' | 'typhoon-track';
+export type TyphoonTrackType = 'typhoon-track' | 'PAR';
 
 export type TyphoonTrackState = {
   shown: boolean;
@@ -304,12 +304,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     types: {
-      PAR: {
-        shown: true,
-        opacity: 100,
-      },
       'typhoon-track': {
         shown: false,
+        opacity: 100,
+      },
+      PAR: {
+        shown: true,
         opacity: 100,
       },
     },

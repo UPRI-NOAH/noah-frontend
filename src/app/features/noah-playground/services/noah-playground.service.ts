@@ -14,11 +14,11 @@ import {
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
-  TyphoonTrackState,
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
   TyphoonTrackType,
+  TyphoonTrackState,
   TyphoonTrackGroupState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
