@@ -2,20 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import { Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
 @Component({
-  selector: 'noah-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss'],
+  selector: 'noah-login-page',
+  templateUrl: './login-page.component.html',
+  styleUrls: ['./login-page.component.scss'],
 })
-export class NavigationComponent implements OnInit {
+export class LoginPageComponent implements OnInit {
+  isLoginModal = this.kyhService.loginModal;
   searchTerm: string;
-  isMenu: boolean = false;
-  isList: number;
-  isSearch: boolean = false;
-  isLoginModal: boolean = false;
-
   constructor(
     private kyhService: KyhService,
     private router: Router,
@@ -23,8 +17,6 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
-
-  openLoginModal() {}
 
   selectPlace(selectedPlace) {
     this.kyhService.setCurrentLocation(selectedPlace.text);

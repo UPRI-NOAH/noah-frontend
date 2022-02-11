@@ -9,6 +9,7 @@ import { KnowYourHazardsModule } from '@features/know-your-hazards/know-your-haz
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 import { BibliographyComponent } from './pages/bibliography/bibliography.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { BibliographyComponent } from './pages/bibliography/bibliography.compone
     NavigationComponent,
     FooterComponent,
     BibliographyComponent,
+    LoginPageComponent,
   ],
   imports: [
     CommonModule,

@@ -15,6 +15,7 @@ import { HazardsService } from './hazards.service';
   providedIn: 'root',
 })
 export class KyhService {
+  loginModal: boolean = true;
   criticalFacilities$: Observable<FeatureCollection>;
 
   constructor(
