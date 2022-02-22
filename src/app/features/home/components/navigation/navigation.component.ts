@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+
 @Component({
   selector: 'noah-navigation',
   templateUrl: './navigation.component.html',
@@ -14,17 +17,48 @@ export class NavigationComponent implements OnInit {
   isMenu: boolean = false;
   isList: number;
   isSearch: boolean = false;
-  isLoginModal: boolean = false;
+  isLoginModal: boolean;
+  loading = false;
+  email: string;
+  password: string;
+  showAdminresult: boolean;
 
   constructor(
     private kyhService: KyhService,
     private router: Router,
-    private title: Title
+    private title: Title,
+    private pgService: NoahPlaygroundService
   ) {}
 
-  ngOnInit(): void {}
+  loginForm = new FormGroup({
+    emailValidation: new FormControl('', Validators.required),
+    passwordValidation: new FormControl('', Validators.required),
+  });
 
-  openLoginModal() {}
+  get emailValidation() {
+    return this.loginForm.get('emailValidation');
+  }
+
+  get passwordValidation() {
+    return this.loginForm.get('passwordValidation');
+  }
+  ngOnInit(): void {
+    this.isLoginModal = this.pgService.loginModal;
+  }
+
+  loginUser() {
+    if (this.email == 'admin' && this.password == 'admin') {
+      this.router.navigate(['noah-playground']);
+      console.log('Welcome', this.email);
+      this.pgService.showAdmin();
+    } else {
+      alert('Please Enter Valid Details');
+    }
+  }
+
+  hideAdminn() {
+    this.pgService.hideAdmin();
+  }
 
   selectPlace(selectedPlace) {
     this.kyhService.setCurrentLocation(selectedPlace.text);
@@ -32,5 +66,14 @@ export class NavigationComponent implements OnInit {
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
     this.router.navigate(['know-your-hazards']);
+  }
+
+  loginModal() {
+    this.pgService.showLoginModal();
+  }
+
+  clearForm(form: FormGroup) {
+    this.isLoginModal = false;
+    form.reset();
   }
 }

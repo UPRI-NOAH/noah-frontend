@@ -35,6 +35,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
+  qcadmin = 'admin';
+  showAdminResult: boolean;
+  loginModal: boolean;
+
   constructor(
     private gaService: GoogleAnalyticsService,
     private http: HttpClient,
@@ -491,5 +495,25 @@ export class NoahPlaygroundService {
 
     contourMaps.expanded = !contourMaps.expanded;
     this.store.patch({ contourMaps }, `toggle expansion`);
+  }
+
+  showAdmin(): void {
+    this.showAdminResult = true;
+    console.log('SHOW');
+  }
+
+  hideAdmin(): void {
+    this.showAdminResult = false;
+    console.log('HIDE');
+  }
+
+  showLoginModal(): void {
+    this.loginModal = true;
+    console.log('SHOW MODAL');
+  }
+
+  hideLoginModal(): void {
+    this.loginModal = false;
+    console.log('HIDE MODAL');
   }
 }

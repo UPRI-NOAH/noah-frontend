@@ -141,6 +141,7 @@
           border-gray-600 border-2
         "
         routerLink="noah-playground"
+        (click)="hideAdminn()"
       >
         NOAH Studio
       </button>
@@ -460,7 +461,7 @@
 >
   <div
     class="absolute bg-black opacity-80 inset-0 z-0"
-    (click)="isLoginModal = false"
+    (click)="loginModal()"
   ></div>
   <!--content-->
   <div
@@ -510,7 +511,8 @@
             <h1 class="font-bold text-3xl text-gray-900">Login Your Account</h1>
             <p>Enter your information to login</p>
           </div>
-          <div>
+
+          <form [formGroup]="loginForm">
             <div class="flex -mx-3">
               <div class="w-full px-3 mb-5">
                 <label for="" class="text-xs font-semibold px-1">Email</label>
@@ -530,6 +532,7 @@
                     <i class="mdi mdi-email-outline text-gray-400 text-lg"></i>
                   </div>
                   <input
+                    name="email"
                     type="email"
                     class="
                       w-full
@@ -542,9 +545,16 @@
                       outline-none
                       focus:border-indigo-500
                     "
+                    [(ngModel)]="email"
+                    formControlName="emailValidation"
                     placeholder="email@example.com"
                   />
                 </div>
+                <span
+                  *ngIf="emailValidation.invalid && emailValidation.touched"
+                  class="text-red-600 whitespace-pre-wrap"
+                  >Email is required</span
+                >
               </div>
             </div>
             <div class="flex -mx-3">
@@ -568,6 +578,7 @@
                     <i class="mdi mdi-lock-outline text-gray-400 text-lg"></i>
                   </div>
                   <input
+                    name="password"
                     type="password"
                     class="
                       w-full
@@ -580,9 +591,18 @@
                       outline-none
                       focus:border-indigo-500
                     "
+                    [(ngModel)]="password"
+                    formControlName="passwordValidation"
                     placeholder="************"
                   />
                 </div>
+                <span
+                  *ngIf="
+                    passwordValidation.invalid && passwordValidation.touched
+                  "
+                  class="text-red-600"
+                  >Password is required</span
+                >
               </div>
             </div>
             <div class="flex space-x-4 ...">
@@ -601,7 +621,7 @@
                     py-3
                     font-semibold
                   "
-                  (click)="isLoginModal = false"
+                  (click)="clearForm(loginForm)"
                 >
                   Cancel
                 </button>
@@ -622,12 +642,13 @@
                     py-3
                     font-semibold
                   "
+                  (click)="loginUser()"
                 >
                   Login
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

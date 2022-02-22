@@ -245,16 +245,17 @@
           />
         </svg>
       </div>
-      <!-- QC IOT ACCOUNT    -->
+      <!-- QC IOT ACCOUNT LOCAL   -->
       <img
         class="w-10 h-10 rounded-full mx-auto"
-        src="assets/icons/up.png"
+        src="https://th.bing.com/th/id/R.0e46cbc8c39a4c607359ca736c2c6ec3?rik=j7NvGiGXEIqUYQ&riu=http%3a%2f%2f3.bp.blogspot.com%2f-Kyen0ow8-ZM%2fVL9G10YOXHI%2fAAAAAAAAE9c%2fbzXXi8foQFg%2fs355%2fQCSealnew.png&ehk=VLaZJ5SLWlVst6pIxmgIzOjx%2fQPDP8Kq%2fvAPxI5t6Fs%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1"
         alt=""
         width="384"
         height="512"
+        *ngIf="showAdmin"
       />
-      <div class="dropdown inline-block relative">
-        <button class="ml-2 text-base whitespace-nowrap">QC Admin</button>
+      <div class="dropdown inline-block relative" *ngIf="showAdmin">
+        <button class="ml-2 text-base whitespace-nowrap">{{ qcAdmin }}</button>
         <ul
           class="
             dropdown-menu
@@ -286,12 +287,14 @@
                 focus:outline-none focus:bg-gray-100
               "
               role="button"
+              (click)="logout()"
               >Logout</a
             >
           </li>
         </ul>
       </div>
-      <!-- QC IOT ACCOUNT    -->
+      <!-- QC IOT ACCOUNT LOCAL -->
+
       <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
         <button
           class="

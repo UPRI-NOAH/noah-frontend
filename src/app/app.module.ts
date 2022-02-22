@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '@env/environment';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import {
   NgxGoogleAnalyticsModule,
@@ -20,6 +21,7 @@ import {
     HttpClientModule,
     NgxGoogleAnalyticsModule.forRoot(environment.gaTag),
     NgxGoogleAnalyticsRouterModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
