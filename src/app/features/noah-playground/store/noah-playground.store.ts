@@ -15,6 +15,12 @@ export const PH_DEFAULT_CENTER = {
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
+export type QuezonCitySensorType =
+  | 'sensor1'
+  | 'sensor2'
+  | 'sensor3'
+  | 'sensor4';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -136,6 +142,17 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
+export type QuezonCitySensorTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type QuezonCitySensorsState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -147,6 +164,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  qcSensors: QuezonCitySensorsState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -305,6 +323,28 @@ const createInitialValue = (): NoahPlaygroundState => ({
         fetched: false,
       },
       wlmsarg: {
+        shown: true,
+        fetched: false,
+      },
+    },
+  },
+  qcSensors: {
+    shown: false,
+    expanded: false,
+    types: {
+      sensor1: {
+        shown: true,
+        fetched: false,
+      },
+      sensor2: {
+        shown: true,
+        fetched: false,
+      },
+      sensor3: {
+        shown: true,
+        fetched: false,
+      },
+      sensor4: {
         shown: true,
         fetched: false,
       },
