@@ -141,6 +141,36 @@
           border-gray-600 border-2
         "
         routerLink="noah-playground"
+        *ngIf="showAdminButton"
+        (click)="showAdminn()"
+      >
+        NOAH Studio
+      </button>
+      <button
+        type="button"
+        class="
+          text-xs
+          uppercase
+          font-bold
+          bg-white
+          rounded-full
+          px-10
+          py-2
+          my-4
+          inline-flex
+          items-center
+          justify-center
+          text-gray-800
+          focus:outline-none
+          mx-auto
+          lg:mx-0
+          tracking-widest
+          hover:bg-gray-100
+          focus:ring-opacity-50
+          border-gray-600 border-2
+        "
+        routerLink="noah-playground"
+        *ngIf="hideAdminButton"
         (click)="hideAdminn()"
       >
         NOAH Studio
@@ -170,10 +200,14 @@
           focus:ring-opacity-50
           border-primary border-2
         "
+        *ngIf="showAdminresult"
         (click)="isLoginModal = true"
       >
         Login
       </button>
+      <span *ngIf="showAdmin"
+        >Hi <b>{{ qcAdmin }}</b></span
+      >
     </div>
   </div>
   <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />

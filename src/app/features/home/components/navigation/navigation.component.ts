@@ -22,6 +22,11 @@ export class NavigationComponent implements OnInit {
   email: string;
   password: string;
   showAdminresult: boolean;
+  qcAdmin: string;
+  showAdmin: boolean;
+  hideAdminButton: boolean;
+  showAdminButton: boolean;
+  kyhShow: boolean;
 
   constructor(
     private kyhService: KyhService,
@@ -44,13 +49,25 @@ export class NavigationComponent implements OnInit {
   }
   ngOnInit(): void {
     this.isLoginModal = this.pgService.loginModal;
+    this.showAdminresult = true;
+    this.showAdmin = false;
+    this.hideAdminButton = true;
+    this.showAdminButton = false;
   }
 
   loginUser() {
     if (this.email == 'admin' && this.password == 'admin') {
-      this.router.navigate(['noah-playground']);
+      // this.router.navigate(['noah-playground']);
       console.log('Welcome', this.email);
       this.pgService.showAdmin();
+      alert('You are Logged In');
+      this.isLoginModal = false;
+      this.showAdminresult = false;
+      this.qcAdmin = this.pgService.qcadmin;
+      this.showAdmin = true;
+      this.hideAdminButton = false;
+      this.showAdminButton = true;
+      this.kyhService.kyhShowAdmin();
     } else {
       alert('Please Enter Valid Details');
     }
@@ -58,6 +75,10 @@ export class NavigationComponent implements OnInit {
 
   hideAdminn() {
     this.pgService.hideAdmin();
+  }
+
+  showAdminn() {
+    this.pgService.showAdmin();
   }
 
   selectPlace(selectedPlace) {

@@ -47,8 +47,9 @@
       alt=""
       width="384"
       height="512"
+      *ngIf="kyhShowAdmin"
     />
-    <div class="dropdown inline-block relative">
+    <div class="dropdown inline-block relative" *ngIf="kyhShowAdmin">
       <button class="ml-1 sm:text-xs text-base whitespace-nowrap">
         QC Admin
       </button>

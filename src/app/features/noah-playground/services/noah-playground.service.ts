@@ -35,7 +35,7 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
-  qcadmin = 'admin';
+  qcadmin = 'QC admin';
   showAdminResult: boolean;
   loginModal: boolean;
 
