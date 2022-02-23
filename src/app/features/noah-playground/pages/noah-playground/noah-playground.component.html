@@ -258,13 +258,14 @@
         <button class="ml-2 text-base whitespace-nowrap">{{ qcAdmin }}</button>
         <ul
           class="
+            z-50
             dropdown-menu
             rounded-lg
             shadow-2xl
             drop-shadow-xl
             bg-white
             right-0
-            top-1
+            top-6
             absolute
             hidden
             text-sm text-gray-700
@@ -359,7 +360,7 @@
       ></noah-weather-satellite-playground>
       <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group>
-      <noah-qc-sensors-group></noah-qc-sensors-group>
+      <noah-qc-sensors-group *ngIf="showAdmin"></noah-qc-sensors-group>
     </div>
   </nav>
   <!-- //Customizing Mapbox attribution -->
