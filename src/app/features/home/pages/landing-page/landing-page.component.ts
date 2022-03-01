@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 @Component({
@@ -9,9 +10,15 @@ export class LandingPageComponent implements OnInit {
   searchTerm: string;
   isDropdownOpen = false;
 
-  constructor(private kyhService: KyhService, private router: Router) {}
+  constructor(
+    private kyhService: KyhService,
+    private router: Router,
+    private title: Title
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.title.setTitle('NOAH - Nationwide Operational Assessment of Hazards');
+  }
 
   selectPlace(selectedPlace) {
     this.kyhService.setCurrentLocation(selectedPlace.text);

@@ -9,9 +9,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-      },
+      boxShadow: ['active'],
       colors: {
         primary: 'var(--color-primary)',
         low: 'var(--color-low)',
@@ -60,7 +58,13 @@ module.exports = {
           high: '#333333',
         },
       },
-      boxShadow: ['active'],
+      fontFamily: {
+        sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+      },
+      width: {
+        120: '26.5625rem',
+        136: '37.5rem',
+      },
     },
     listStyleType: {
       none: 'none',

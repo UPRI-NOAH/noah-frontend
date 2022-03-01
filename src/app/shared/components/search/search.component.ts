@@ -14,6 +14,7 @@ import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
 import { LocationService } from '@core/services/location.service';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
   selector: 'noah-search',
@@ -34,6 +35,7 @@ export class SearchComponent implements OnInit {
   @ViewChildren('locationOptions') locationOptions: QueryList<ElementRef>;
 
   constructor(
+    private gaService: GoogleAnalyticsService,
     private mapService: MapService,
     private locationService: LocationService
   ) {}
@@ -123,8 +125,9 @@ export class SearchComponent implements OnInit {
         center: [coords.lng, coords.lat],
       };
 
-      this.selectPlace.emit(selectedPlace);
+      this.gaService.event('select_location', 'geolocation');
       this.searchTermCtrl.setValue(userPlaceName);
+      this.selectPlace.emit(selectedPlace);
     } catch (error) {
       console.error({ error });
       alert('Unable to find your location');
@@ -135,6 +138,7 @@ export class SearchComponent implements OnInit {
   }
 
   pickPlace(place) {
+    this.gaService.event('select_location', 'dropdown_option');
     this.searchTermCtrl.setValue(place.text);
     this.isDropdownOpen = false;
     this.selectPlace.emit(place);

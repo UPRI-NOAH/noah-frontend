@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FloodKyhComponent } from './flood-kyh.component';
+import { EvalComponent } from './eval.component';
 
-describe('FloodKyhComponent', () => {
-  let component: FloodKyhComponent;
-  let fixture: ComponentFixture<FloodKyhComponent>;
+describe('EvalComponent', () => {
+  let component: EvalComponent;
+  let fixture: ComponentFixture<EvalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FloodKyhComponent],
+      declarations: [EvalComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FloodKyhComponent);
+    fixture = TestBed.createComponent(EvalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -22,6 +22,13 @@ export class MapService {
     });
   }
 
+  getNewAttributionControl() {
+    return new mapboxgl.AttributionControl({
+      customAttribution:
+        '<a href="https://doh.gov.ph" target="_blank">© Department of Health</a>',
+    });
+  }
+
   /**
    * Returns the geographic coordinates given a string address
    */

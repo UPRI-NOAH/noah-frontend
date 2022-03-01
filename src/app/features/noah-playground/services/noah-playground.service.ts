@@ -10,8 +10,13 @@ import {
   HazardLevelState,
   CriticalFacilitiesState,
   CriticalFacilityTypeState,
-  WeatherState,
   ContourMapType,
+  WeatherSatelliteState,
+  WeatherSatelliteType,
+  WeatherSatelliteTypeState,
+  VolcanoGroupState,
+  VolcanoType,
+  VolcanoState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -19,6 +24,8 @@ import { first, map } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
+import { state } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +36,7 @@ export class NoahPlaygroundService {
   }
 
   constructor(
+    private gaService: GoogleAnalyticsService,
     private http: HttpClient,
     private sensorService: SensorService,
     private store: NoahPlaygroundStore
@@ -48,6 +56,14 @@ export class NoahPlaygroundService {
     );
   }
 
+  get volcanoGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.volcanoes.shown));
+  }
+
+  get volcanoGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
+  }
+
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
@@ -56,8 +72,20 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.sensors.expanded));
   }
 
-  get weather$(): Observable<WeatherState> {
-    return this.store.state$.pipe(map((state) => state.weather));
+  get weatherSatellitesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.weatherSatellite.shown));
+  }
+
+  get weatherSatellitesExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherSatellite.expanded)
+    );
+  }
+
+  get selectedWeatherSatellite$(): Observable<WeatherSatelliteType> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherSatellite.selectedType)
+    );
   }
 
   get contourMapGroupExpanded$(): Observable<boolean> {
@@ -99,16 +127,18 @@ export class NoahPlaygroundService {
     );
   }
 
+  getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
+    return this.store.state$.pipe(
+      map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
   }
 
   getExaggeration(): ExaggerationState {
     return this.store.state.exaggeration;
-  }
-
-  getWeather(): WeatherState {
-    return this.store.state.weather;
   }
 
   getHazard(
@@ -164,6 +194,12 @@ export class NoahPlaygroundService {
   getSensorTypeShown$(sensorType: SensorType): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.sensors.types[sensorType].shown)
+    );
+  }
+
+  getSensorTypeFetched$(sensorType: SensorType): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.sensors.types[sensorType].fetched)
     );
   }
 
@@ -263,12 +299,47 @@ export class NoahPlaygroundService {
     );
   }
 
+  toggleVolcanoGroupProperty(property: 'expanded' | 'shown') {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    const currentValue = volcanoes[property];
+    volcanoes[property] = !currentValue;
+    this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
+  }
+
+  setVolcanoSoloOpacity(value: number, type: VolcanoType) {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    volcanoes.types[type].opacity = value;
+    this.store.patch(
+      { volcanoes },
+      `Volcano - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setVolcanoSoloShown(value: boolean, type: VolcanoType) {
+    const volcanoes: VolcanoGroupState = {
+      ...this.store.state.volcanoes,
+    };
+
+    volcanoes.types[type].shown = value;
+    this.store.patch(
+      { volcanoes },
+      `Volcano - update ${type}'s shown to ${value}`
+    );
+  }
+
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
   }
 
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
+    this.gaService.event('change_location', 'noah_studio');
   }
 
   toggleSensorsGroupExpanded(): void {
@@ -312,8 +383,87 @@ export class NoahPlaygroundService {
     );
   }
 
-  setWeather(weather: WeatherState) {
-    this.store.patch({ weather }, 'updated weather state');
+  getWeatherSatellites(): WeatherSatelliteState {
+    return this.store.state.weatherSatellite;
+  }
+
+  getWeatherSatellite(type: WeatherSatelliteType): WeatherSatelliteTypeState {
+    return this.store.state.weatherSatellite.types[type];
+  }
+
+  getWeatherSatellite$(
+    type: WeatherSatelliteType
+  ): Observable<WeatherSatelliteTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherSatellite.types[type])
+    );
+  }
+
+  getWeatherSatelliteOpacity(weatherType: WeatherSatelliteType): number {
+    return this.store.state.weatherSatellite.types[weatherType].opacity;
+  }
+
+  setWeatherSatelliteOpacity(
+    opacity: number,
+    weatherType: WeatherSatelliteType
+  ) {
+    const weatherSatellite: WeatherSatelliteState = {
+      ...this.store.state.weatherSatellite,
+    };
+
+    weatherSatellite.types[weatherType].opacity = opacity;
+    this.store.patch(
+      { weatherSatellite },
+      `Weather Satellite - update ${weatherType}'s opacity to ${opacity}`
+    );
+  }
+
+  selectWeatherSatelliteType(weatherType: WeatherSatelliteType): void {
+    const weatherSatellite = {
+      ...this.store.state.weatherSatellite,
+    };
+
+    weatherSatellite.selectedType = weatherType;
+    this.store.patch(
+      { weatherSatellite },
+      `Select Weather Satellite type: ${weatherType}`
+    );
+  }
+
+  toggleWeatherSatelliteGroupVisibility(): void {
+    const weatherSatellite = {
+      ...this.store.state.weatherSatellite,
+    };
+
+    weatherSatellite.shown = !weatherSatellite.shown;
+    this.store.patch(
+      { weatherSatellite },
+      `toggle weather satellite visibility`
+    );
+  }
+
+  toggleWeatherSatelliteGroupExpansion(): void {
+    const weatherSatellite = {
+      ...this.store.state.weatherSatellite,
+    };
+
+    weatherSatellite.expanded = !weatherSatellite.expanded;
+    this.store.patch(
+      { weatherSatellite },
+      `toggle weather satellite expansion`
+    );
+  }
+
+  setSensorTypeFetched(sensorType: SensorType, fetched = true): void {
+    const sensors = {
+      ...this.store.state.sensors,
+    };
+
+    sensors.types[sensorType].fetched = fetched;
+    this.store.patch(
+      { sensors },
+      `change sensor's fetched status ${sensorType}' to ${!fetched}`
+    );
   }
 
   selectContourMapType(type: ContourMapType): void {

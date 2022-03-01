@@ -11,14 +11,13 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
 import {
-  KYHPage,
   HazardType,
+  MapStyle,
 } from '@features/know-your-hazards/store/kyh.store';
 import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
-
-type MapStyle = 'terrain' | 'satellite';
+import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
   selector: 'noah-map-kyh',
@@ -30,11 +29,15 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
-  isMapboxAttrib;
-  isOpenedList;
-  private _unsub = new Subject();
 
-  constructor(private mapService: MapService, private kyhService: KyhService) {}
+  private _unsub = new Subject();
+  private _changeStyle = new Subject();
+
+  constructor(
+    private gaService: GoogleAnalyticsService,
+    private mapService: MapService,
+    private kyhService: KyhService
+  ) {}
 
   ngOnInit(): void {
     this.initMap();
@@ -44,6 +47,7 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initGeocoder();
         this.initGeolocation();
+        this.initAttribution();
         this.initCenterListener();
         this.initGeolocationListener();
       });
@@ -59,6 +63,11 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  initAttribution() {
+    const attribution = this.mapService.getNewAttributionControl();
+    this.map.addControl(attribution, 'bottom-right');
   }
 
   initCenterListener() {
@@ -207,7 +216,7 @@ export class MapKyhComponent implements OnInit {
           .isHazardShown$(hazardType)
           .pipe(
             takeUntil(this._unsub),
-            // takeUntil(this._changeStyle),
+            takeUntil(this._changeStyle),
             distinctUntilChanged()
           )
           .subscribe((shown: boolean) => {
@@ -287,12 +296,33 @@ export class MapKyhComponent implements OnInit {
           id: 'criticalFacilities',
           type: 'symbol',
           source: 'cfSource',
+          paint: {
+            'icon-opacity': 1,
+            'icon-halo-color':
+              this.mapStyle === 'terrain'
+                ? 'rgba(255, 255, 255, 1)'
+                : 'rgba(0, 0, 0, 1)',
+            'icon-halo-width': 0.5,
+            'icon-halo-blur': 0.5,
+            'text-opacity': 1,
+            'text-color': this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+            'text-halo-color':
+              this.mapStyle === 'terrain'
+                ? 'rgba(255, 255, 255, 1)'
+                : 'rgba(0, 0, 0, 1)',
+            'text-halo-width': 0.5,
+            'text-halo-blur': 0.5,
+          },
           layout: {
             'icon-image': ['get', 'amenity'],
             'text-anchor': 'top',
             'text-field': ['get', 'name'],
             'text-offset': [0, 2],
-            'text-size': 10,
+            'text-size': 12,
+            'text-letter-spacing': 0.08,
+            'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+            'icon-allow-overlap': true,
+            'text-allow-overlap': true,
           },
         });
       });
@@ -308,8 +338,10 @@ export class MapKyhComponent implements OnInit {
     if (this.mapStyle === style) return;
 
     if (style in environment.mapbox.styles) {
+      this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
     }
   }
 }

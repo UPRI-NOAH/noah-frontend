@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LandslideKyhComponent } from './landslide-kyh.component';
+import { StormSurgeComponent } from './storm-surge.component';
 
-describe('LandslideKyhComponent', () => {
-  let component: LandslideKyhComponent;
-  let fixture: ComponentFixture<LandslideKyhComponent>;
+describe('StormSurgeComponent', () => {
+  let component: StormSurgeComponent;
+  let fixture: ComponentFixture<StormSurgeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LandslideKyhComponent],
+      declarations: [StormSurgeComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LandslideKyhComponent);
+    fixture = TestBed.createComponent(StormSurgeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

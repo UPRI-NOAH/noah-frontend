@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
-import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
+import mapboxgl, {
+  AnySourceData,
+  GeolocateControl,
+  Map,
+  Marker,
+} from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
@@ -14,6 +19,7 @@ import {
   pluck,
   shareReplay,
   takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -39,12 +45,19 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
+  ContourMapType,
   HazardLevel,
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  VolcanoType,
+  WeatherSatelliteState,
+  WeatherSatelliteType,
+  WeatherSatelliteTypeState,
+  WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+
 type MapStyle = 'terrain' | 'satellite';
 
 type LayerSettingsParam = {
@@ -64,6 +77,8 @@ type RawHazardLevel =
 export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr';
 
 export type RawStormSurgeAdvisory = 'ssa1' | 'ssa2' | 'ssa3' | 'ssa4';
+
+export type RawWeatherSatellite = 'himawari' | 'himawari-GSMAP';
 
 export type RawLandslideHazards =
   | 'lh1' // landslide
@@ -118,7 +133,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
-        this.initWeatherLayer();
+        this.initVolcanoes();
+        this.initWeatherSatelliteLayers();
         this.showContourMaps();
       });
   }
@@ -242,9 +258,121 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               );
             });
 
+          this.pgService.setSensorTypeFetched(sensorType, true);
           // show mouse event listeners
           this.showDataPoints(sensorType);
-        });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from DOST for sensors of type "${sensorType}"`
+          )
+        );
+    });
+  }
+
+  initVolcanoes() {
+    // 0 - declare the source json files
+    const volcanoSourceFiles: Record<VolcanoType, { url: string }> = {
+      active: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/active_volcano_rad.geojson',
+      },
+      'potentially-active': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_potentially_active.geojson',
+      },
+      inactive: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_inactive.geojson',
+      },
+    };
+
+    const volcanoColorMap: Record<VolcanoType, string> = {
+      active: 'red',
+      inactive: 'gray',
+      'potentially-active': 'yellow',
+    };
+
+    const allShown$ = this.pgService.volcanoGroupShown$.pipe(
+      distinctUntilChanged()
+    );
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(volcanoSourceFiles).forEach((volcanoType: VolcanoType) => {
+      const volcanoObjData = volcanoSourceFiles[volcanoType];
+
+      // 2 - load volcano icon (the sprite corresponding to the volcano type)
+      const _this = this;
+      this.map.loadImage(
+        `assets/map-sprites/${volcanoType}.png`,
+        (error, image) => {
+          if (error) throw error;
+          // 3 - add volcano icon
+          _this.map.addImage(volcanoType, image);
+
+          // 4 - add source
+          const volcanoMapSource = `${volcanoType}-map-source`;
+          _this.map.addSource(volcanoMapSource, {
+            type: 'geojson',
+            data: volcanoObjData.url,
+          });
+
+          // 5 - add layer
+          const layerID = `${volcanoType}-map-layer`;
+          this.map.addLayer({
+            id: layerID,
+            type: 'symbol',
+            source: volcanoMapSource,
+            paint: {
+              'icon-opacity': 1,
+              'text-opacity': 1,
+              'text-color':
+                _this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+              'text-halo-color':
+                _this.mapStyle === 'terrain'
+                  ? 'rgba(255, 255, 255, 1)'
+                  : 'rgba(0, 0, 0, 1)',
+              'text-halo-width': 0.5,
+              'text-halo-blur': 0.5,
+            },
+            layout: {
+              'icon-image': volcanoType,
+              'icon-allow-overlap': true,
+              'text-optional': true,
+              'text-anchor': 'top',
+              'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+              // If elevation is available, display it below the volcano name
+              'text-field': [
+                'concat',
+                ['get', 'name'],
+                [
+                  'case',
+                  ['<=', ['get', 'elevation'], 0],
+                  '',
+                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
+                ],
+              ],
+              'text-offset': [0, 2],
+              'text-size': 12,
+              'text-letter-spacing': 0.08,
+            },
+          });
+
+          // 6 - listen to the values from the store (group and individual)
+          const volcano$ = this.pgService
+            .getVolcano$(volcanoType)
+            .pipe(shareReplay(1));
+
+          combineLatest([allShown$, volcano$])
+            .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+            .subscribe(([allShown, volcano]) => {
+              let newOpacity = 0;
+              if (volcano.shown && allShown) {
+                newOpacity = volcano.opacity / 100;
+              }
+
+              this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
+              this.map.setPaintProperty(layerID, 'text-opacity', newOpacity);
+            });
+        }
+      );
     });
   }
 
@@ -481,82 +609,162 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  initWeatherLayer() {
-    const layerID = 'himawari-satellite-image';
-
-    this.map.addLayer({
-      id: layerID,
-      type: 'raster',
-      source: {
+  initWeatherSatelliteLayers() {
+    const weatherSatelliteImages = {
+      himawari: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
         type: 'video',
-        urls: [
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/himawari/ph_himawari.webm',
-        ],
-        coordinates: [
-          [100.0, 29.25], // top-left
-          [160.0, 29.25], // top-right
-          [160.0, 5.0], // bottom-right
-          [100.0, 5.0], // bottom-left
-        ],
       },
-      paint: {
-        'raster-opacity': 0,
+      'himawari-GSMAP': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        type: 'video',
       },
-    });
+    };
 
-    this.pgService.weather$
-      .pipe(pluck('opacity'), distinctUntilChanged())
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe((opacity) => {
-        this.map.setPaintProperty(layerID, 'raster-opacity', opacity / 100);
-      });
+    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (weatherSatelliteDetails.type) {
+        case 'video':
+          return {
+            type: 'video',
+            urls: [weatherSatelliteDetails.url],
+            coordinates: [
+              [100.0, 29.25], // top-left
+              [160.0, 29.25], // top-right
+              [160.0, 5.0], // bottom-right
+              [100.0, 5.0], // bottom-left
+            ],
+          };
+        default:
+          throw new Error(
+            '[MapPlayground] Unable to get weather satellite source'
+          );
+      }
+    };
 
-    this.pgService.weather$
-      .pipe(
-        distinctUntilChanged((prev, next) => prev.shown === next.shown),
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle)
-      )
-      .subscribe((weather) => {
-        let newOpacity = 0;
-        if (weather.shown) {
-          newOpacity = weather.opacity / 100;
-          this.map.flyTo({
-            center: PH_DEFAULT_CENTER,
-            zoom: 4,
-            essential: true,
+    Object.keys(weatherSatelliteImages).forEach(
+      (weatherType: WeatherSatelliteType) => {
+        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
+
+        // 1. Add source per weather satellite type
+        this.map.addSource(
+          weatherType,
+          getWeatherSatelliteSource(weatherSatelliteDetails)
+        );
+
+        // 2. Add layer per weather satellite source
+        this.map.addLayer({
+          id: weatherType,
+          type: 'raster',
+          source: weatherType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        // 3. Check for group and individual visibility and opacity
+        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
+          tap(() => {
+            this.map.flyTo({
+              center: PH_DEFAULT_CENTER,
+              zoom: 4,
+              essential: true,
+            });
+          }),
+          shareReplay(1)
+        );
+        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
+          shareReplay(1)
+        );
+        const weatherTypeOpacity$ = this.pgService
+          .getWeatherSatellite$(weatherType)
+          .pipe(
+            map((weather) => weather.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
+            let opacity = +(allShown && selectedWeather === weatherType);
+            if (opacity) {
+              opacity = weatherTypeOpacity / 100;
+            }
+
+            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
-        }
-
-        this.map.setPaintProperty(layerID, 'raster-opacity', newOpacity);
-      });
+      }
+    );
   }
 
   showContourMaps() {
     const contourMapImages = {
-      '1hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
-      '3hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
-      '6hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
-      '12hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
-      '24hr':
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+      '1hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '3hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '6hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '12hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr-lapse': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+        type: 'video',
+      },
+    };
+
+    const getContourMapSource = (contourMapDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (contourMapDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: contourMapDetails.url,
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        case 'video':
+          return {
+            type: 'video',
+            urls: [contourMapDetails.url],
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get contour map source');
+      }
     };
 
     Object.keys(contourMapImages).forEach((contourType) => {
-      this.map.addSource(contourType, {
-        type: 'image',
-        url: contourMapImages[contourType],
-        coordinates: [
-          [115.35, 21.55], // top-left
-          [128.25, 21.55], // top-right
-          [128.25, 3.85], // bottom-right
-          [115.35, 3.85], // bottom-left
-        ],
-      });
+      const contourMapDetails = contourMapImages[contourType];
+
+      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
       this.map.addLayer({
         id: contourType,
@@ -878,7 +1086,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
 
       _this.map.addLayer(getCircleLayer(name));
-      _this.map.addLayer(getSymbolLayer(name));
+      _this.map.addLayer(getSymbolLayer(name, this.mapStyle));
       _this.map.addLayer(getClusterTextCount(name));
 
       // opacity

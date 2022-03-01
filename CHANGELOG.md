@@ -1,4 +1,19 @@
-# 1.0.0-beta (2021-10-04)
+## [1.0.1](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.0...v1.0.1) (2021-10-31)
+
+### Bug Fixes
+
+- **know-your-hazard:** optimize tilequery calls; refactored module ([#223](https://github.com/UPRI-NOAH/noah-frontend/issues/223)) ([4a7d506](https://github.com/UPRI-NOAH/noah-frontend/commit/4a7d5065a6cd259697b35db8808b614a1cdce210))
+- **landing-page:** add blog link and noah logo link for bibliography page ([#214](https://github.com/UPRI-NOAH/noah-frontend/issues/214)) ([faefee0](https://github.com/UPRI-NOAH/noah-frontend/commit/faefee0f9e0eb47e14f3e5218c77b75a699df6b1))
+- **playground:** disable mouseover popup if sensors are not visible ([#206](https://github.com/UPRI-NOAH/noah-frontend/issues/206)) ([5b13f3e](https://github.com/UPRI-NOAH/noah-frontend/commit/5b13f3ebe16fef32cb95506b30850bc0399db647))
+- **playground:** new image for contour legend ([#215](https://github.com/UPRI-NOAH/noah-frontend/issues/215)) ([584f8b8](https://github.com/UPRI-NOAH/noah-frontend/commit/584f8b84dd774b6e9f6467a05155e29723e89ddf))
+- **studio:** zoom in on ios ([#192](https://github.com/UPRI-NOAH/noah-frontend/issues/192)) ([fe3e5d1](https://github.com/UPRI-NOAH/noah-frontend/commit/fe3e5d153811643852ed43bc557dd0299d3c97b3))
+
+### Features
+
+- add links to download raw files ([#212](https://github.com/UPRI-NOAH/noah-frontend/issues/212)) ([4be2b96](https://github.com/UPRI-NOAH/noah-frontend/commit/4be2b965271cb74690c26f0d786c10094c119358))
+- **tracking:** add google analytics ([#216](https://github.com/UPRI-NOAH/noah-frontend/issues/216)) ([812dba9](https://github.com/UPRI-NOAH/noah-frontend/commit/812dba9899d8d06552b7f69f5f199e0e12fcc8f1))
+
+# 1.0.0 (2021-10-04)
 
 ### Bug Fixes
 

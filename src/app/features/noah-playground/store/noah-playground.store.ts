@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
-import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
 
@@ -33,7 +32,17 @@ export type LandslideHazards =
   | 'debris-flow'
   | 'unstable-slopes-maps';
 
-export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
+export type ContourMapType =
+  | '1hr'
+  | '3hr'
+  | '6hr'
+  | '12hr'
+  | '24hr'
+  | '24hr-lapse';
+
+export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
+
+export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
 export type HazardLevel =
   | FloodReturnPeriod
@@ -74,12 +83,6 @@ export type CriticalFacilityTypeState = {
   opacity: number;
 };
 
-export type WeatherState = {
-  shown: boolean;
-  expanded: boolean;
-  opacity: number;
-};
-
 export type CriticalFacilityTypesState = {
   'fire-station': CriticalFacilityTypeState;
   'police-station': CriticalFacilityTypeState;
@@ -93,10 +96,44 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type VolcanoGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<VolcanoType, VolcanoState>;
+};
+
+export type VolcanoType = 'active' | 'potentially-active' | 'inactive';
+
+export type VolcanoState = {
+  shown: boolean;
+  opacity: number;
+};
+
+export type WeatherSatelliteState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: WeatherSatelliteType;
+  types: WeatherSatelliteTypesState;
+};
+
+export type WeatherSatelliteTypeState = {
+  opacity: number;
+};
+
+export type WeatherSatelliteTypesState = {
+  himawari: WeatherSatelliteTypeState;
+  'himawari-GSMAP': WeatherSatelliteTypeState;
+};
+
+export type SensorTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
 export type SensorsState = {
   shown: boolean;
   expanded: boolean;
-  types: Record<SensorType, { shown: boolean }>;
+  types: Record<SensorType, SensorTypeState>;
 };
 
 type NoahPlaygroundState = {
@@ -104,8 +141,9 @@ type NoahPlaygroundState = {
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
+  volcanoes: VolcanoGroupState;
   criticalFacilities: CriticalFacilitiesState;
-  weather: WeatherState;
+  weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -195,6 +233,24 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+  volcanoes: {
+    shown: false,
+    expanded: false,
+    types: {
+      active: {
+        shown: true,
+        opacity: 100,
+      },
+      'potentially-active': {
+        shown: false,
+        opacity: 100,
+      },
+      inactive: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
   criticalFacilities: {
     shown: false,
     expanded: false,
@@ -217,10 +273,18 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
-  weather: {
+  weatherSatellite: {
     shown: false,
     expanded: false,
-    opacity: 80,
+    selectedType: 'himawari',
+    types: {
+      himawari: {
+        opacity: 80,
+      },
+      'himawari-GSMAP': {
+        opacity: 80,
+      },
+    },
   },
   center: null,
   currentLocation: '-----',
@@ -230,15 +294,19 @@ const createInitialValue = (): NoahPlaygroundState => ({
     types: {
       arg: {
         shown: true,
+        fetched: false,
       },
       wlms: {
         shown: true,
+        fetched: false,
       },
       aws: {
         shown: true,
+        fetched: false,
       },
       wlmsarg: {
         shown: true,
+        fetched: false,
       },
     },
   },
