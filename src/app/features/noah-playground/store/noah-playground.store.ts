@@ -13,12 +13,17 @@ export const PH_DEFAULT_CENTER = {
   lng: 120.443461,
 };
 
+export const QC_DEFAULT_CENTER = {
+  lat: 14.6492,
+  lng: 121.0732,
+};
+
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
 export type QuezonCitySensorType =
-  | 'sensor1'
-  | 'sensor2'
-  | 'sensor3'
+  | 'humidity'
+  | 'pressure'
+  | 'temperature'
   | 'sensor4';
 
 export type FloodReturnPeriod =
@@ -332,15 +337,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     types: {
-      sensor1: {
+      humidity: {
         shown: true,
         fetched: false,
       },
-      sensor2: {
+      pressure: {
         shown: true,
         fetched: false,
       },
-      sensor3: {
+      temperature: {
         shown: true,
         fetched: false,
       },

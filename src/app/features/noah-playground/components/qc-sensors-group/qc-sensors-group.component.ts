@@ -10,9 +10,9 @@ import { Observable } from 'rxjs';
 })
 export class QcSensorsGroupComponent implements OnInit {
   qcSensorTypes: QuezonCitySensorType[] = [
-    'sensor1',
-    'sensor2',
-    'sensor3',
+    'humidity',
+    'pressure',
+    'temperature',
     'sensor4',
   ];
 

@@ -1,4 +1,4 @@
-.sensor1 {
+.humidity {
   --color: #a405b0;
   background-color: #a405b0;
   &,
@@ -8,7 +8,7 @@
   }
 }
 
-.sensor2 {
+.pressure {
   --color: #718a01;
   background-color: #718a01;
   &,
@@ -18,7 +18,7 @@
   }
 }
 
-.sensor3 {
+.sensor4 {
   --color: #0dc642;
   background-color: #0dc642;
   &,
@@ -28,7 +28,7 @@
   }
 }
 
-.sensor4 {
+.temperature {
   --color: #d85518;
   background-color: #d85518;
   &,

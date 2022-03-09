@@ -36,7 +36,7 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
-  qcadmin = 'QC admin';
+  qcadmin = 'QC Admin';
   showAdminResult: boolean;
   loginModal: boolean;
 
@@ -123,6 +123,30 @@ export class NoahPlaygroundService {
       .pipe(first())
       .toPromise();
   }
+
+  getIOTData(pk: number) {
+    return this.http.get(
+      `https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json`
+    );
+  }
+
+  // getIOTData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+  //   return this.http
+  //     .get<{ url: string; sourceLayer: string[] }[]>(
+  //       'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+  //     )
+  //     .pipe(first())
+  //     .toPromise();
+  // }
+
+  // getIOTData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+  //   return this.http
+  //     .get<{ url: string; sourceLayer: string[] }[]>(
+  //       'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+  //     )
+  //     .pipe(first())
+  //     .toPromise();
+  // }
 
   getCriticalFacilities(): CriticalFacilitiesState {
     return this.store.state.criticalFacilities;
