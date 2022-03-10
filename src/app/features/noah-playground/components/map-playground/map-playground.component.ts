@@ -38,7 +38,7 @@ import {
   SensorService,
   SensorType,
 } from '@features/noah-playground/services/sensor.service';
-import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
+import { IOT_SENSOR_COLORS, SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
@@ -50,11 +50,10 @@ import {
   HazardType,
   LandslideHazards,
   PH_DEFAULT_CENTER,
+  QC_DEFAULT_CENTER,
+  QuezonCitySensorType,
   VolcanoType,
-  WeatherSatelliteState,
   WeatherSatelliteType,
-  WeatherSatelliteTypeState,
-  WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
@@ -86,6 +85,13 @@ export type RawLandslideHazards =
   | 'lh3'; // unstable slopes
 
 type LH2Subtype = 'af' | 'df';
+
+export const QCSensors: QuezonCitySensorType[] = [
+  'humidity',
+  'pressure',
+  'temperature',
+  'sensor4',
+];
 
 // hazardOpacity$: Observable<number>;
 // hazardShown$: Observable<boolean>;
@@ -133,6 +139,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
+        this.initQuezonCitySensors();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
@@ -220,6 +227,78 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  initQuezonCitySensors() {
+    const iotSourceFiles: Record<QuezonCitySensorType, { url: string }> = {
+      humidity: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/hum_iot.json',
+      },
+      pressure: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/pres_iot.json',
+      },
+      temperature: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/temp_iot.json',
+      },
+      sensor4: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot_data.json',
+      },
+    };
+
+    const iotColorMap: Record<QuezonCitySensorType, string> = {
+      humidity: '#a405b0',
+      pressure: '#718a01',
+      temperature: '#d85518',
+      sensor4: '#0dc642',
+    };
+
+    const allShown$ = this.pgService.qcSensorsGroupShown$
+      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
+      .subscribe((center) => {
+        this.map.flyTo({
+          center: QC_DEFAULT_CENTER,
+          zoom: 16,
+          essential: true,
+        });
+      });
+
+    Object.keys(iotSourceFiles).forEach(
+      (qcSensorType: QuezonCitySensorType) => {
+        const iotObjData = iotSourceFiles[qcSensorType];
+
+        const iotMapSource = `${qcSensorType}-map-source`;
+        this.map.addSource(iotMapSource, {
+          type: 'geojson',
+          data: iotObjData.url,
+        });
+
+        const layerID = `${qcSensorType}-map-layer`;
+        this.map.addLayer({
+          id: layerID,
+          type: 'circle',
+          source: iotMapSource,
+          paint: {
+            'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+            'circle-radius': 5,
+            'circle-opacity': 0,
+          },
+        });
+
+        combineLatest([
+          this.pgService.qcSensorsGroupShown$,
+          this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+        ])
+          .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+          .subscribe(([groupShown, soloShown]) => {
+            this.map.setPaintProperty(
+              qcSensorType,
+              'circle-opacity',
+              +(groupShown && soloShown)
+            );
+          });
+        this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+      }
+    );
   }
 
   initSensors() {

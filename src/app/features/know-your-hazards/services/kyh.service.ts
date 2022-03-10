@@ -15,6 +15,8 @@ import { HazardsService } from './hazards.service';
   providedIn: 'root',
 })
 export class KyhService {
+  loginModal: boolean = true;
+  KyhshowAdminResult: boolean;
   criticalFacilities$: Observable<FeatureCollection>;
 
   constructor(
@@ -155,6 +157,15 @@ export class KyhService {
       { currentView: viewedHazard },
       `set current view to ${viewedHazard}`
     );
+  }
+  kyhShowAdmin(): void {
+    this.KyhshowAdminResult = true;
+    console.log('SHOW KYH');
+  }
+
+  kyhHideAdmin(): void {
+    this.KyhshowAdminResult = false;
+    console.log('HIDE KYH');
   }
 
   private _getAllTilesetNames(): string {

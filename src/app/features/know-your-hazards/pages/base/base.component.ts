@@ -9,11 +9,12 @@ import { Observable } from 'rxjs';
 })
 export class BaseComponent implements OnInit {
   currentLocation$: Observable<string>;
-
+  kyhShowAdmin: boolean;
   constructor(private kyhService: KyhService) {}
 
   ngOnInit(): void {
     this.currentLocation$ = this.kyhService.currentLocation$;
+    this.kyhShowAdmin = this.kyhService.KyhshowAdminResult;
   }
 
   selectPlace(selectedPlace) {

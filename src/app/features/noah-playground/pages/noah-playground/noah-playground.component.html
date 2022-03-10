@@ -209,7 +209,6 @@
         alt="Sidebar background"
       />
     </div>
-
     <div class="relative flex items-center justify-between mb-2">
       <div class="w-full" routerLink="/" role="button">
         <svg
@@ -246,6 +245,57 @@
           />
         </svg>
       </div>
+      <!-- QC IOT ACCOUNT LOCAL   -->
+      <img
+        class="w-10 h-10 rounded-full mx-auto"
+        src="https://th.bing.com/th/id/R.0e46cbc8c39a4c607359ca736c2c6ec3?rik=j7NvGiGXEIqUYQ&riu=http%3a%2f%2f3.bp.blogspot.com%2f-Kyen0ow8-ZM%2fVL9G10YOXHI%2fAAAAAAAAE9c%2fbzXXi8foQFg%2fs355%2fQCSealnew.png&ehk=VLaZJ5SLWlVst6pIxmgIzOjx%2fQPDP8Kq%2fvAPxI5t6Fs%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1"
+        alt=""
+        width="384"
+        height="512"
+        *ngIf="showAdmin"
+      />
+      <div class="dropdown inline-block relative" *ngIf="showAdmin">
+        <button class="ml-2 text-base whitespace-nowrap">{{ qcAdmin }}</button>
+        <ul
+          class="
+            z-50
+            dropdown-menu
+            rounded-lg
+            shadow-2xl
+            drop-shadow-xl
+            bg-white
+            right-0
+            top-6
+            absolute
+            hidden
+            text-sm text-gray-700
+          "
+        >
+          <li class="">
+            <a
+              class="
+                rounded-lg
+                block
+                px-4
+                py-2
+                text-sm
+                leading-5
+                text-gray-700
+                transition
+                duration-150
+                ease-in-out
+                hover:bg-gray-100
+                focus:outline-none focus:bg-gray-100
+              "
+              role="button"
+              (click)="logout()"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- QC IOT ACCOUNT LOCAL -->
+
       <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
         <button
           class="
@@ -310,6 +360,7 @@
       ></noah-weather-satellite-playground>
       <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group>
+      <noah-qc-sensors-group *ngIf="showAdmin"></noah-qc-sensors-group>
     </div>
   </nav>
   <!-- //Customizing Mapbox attribution -->

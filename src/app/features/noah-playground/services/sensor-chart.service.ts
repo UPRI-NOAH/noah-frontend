@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Options } from 'highcharts';
+import { QuezonCitySensorType } from '../store/noah-playground.store';
 import { SensorType } from './sensor.service';
 
 export type SensorChartOpts = {
   data: any;
   sensorType: SensorType;
+};
+
+export type QCSensorChartOpts = {
+  data: any;
+  qcSensorType: QuezonCitySensorType;
 };
 
 @Injectable({

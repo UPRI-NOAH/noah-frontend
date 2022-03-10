@@ -1,4 +1,16 @@
-<div class="px-6 md:px-8 py-4 lg:py-2 flex items-center bg-white shadow">
+<div
+  class="
+    px-6
+    md:px-8
+    py-4
+    lg:py-2
+    flex
+    items-center
+    bg-white
+    shadow
+    justify-between
+  "
+>
   <a
     class="
       toggleColour
@@ -28,6 +40,56 @@
       </div>
     </div>
   </a>
+  <div class="flex justify-between">
+    <img
+      class="w-8 h-8 rounded-full mx-auto"
+      src="assets/icons/up.png"
+      alt=""
+      width="384"
+      height="512"
+      *ngIf="kyhShowAdmin"
+    />
+    <div class="dropdown inline-block relative" *ngIf="kyhShowAdmin">
+      <button class="ml-1 sm:text-xs text-base whitespace-nowrap">
+        QC Admin
+      </button>
+      <ul
+        class="
+          dropdown-menu
+          rounded-lg
+          shadow-2xl
+          drop-shadow-xl
+          bg-white
+          left-1
+          top-1
+          absolute
+          hidden
+          text-sm text-gray-700
+        "
+      >
+        <li class="">
+          <a
+            class="
+              rounded-lg
+              block
+              px-4
+              py-2
+              text-sm
+              leading-5
+              text-gray-700
+              transition
+              duration-150
+              ease-in-out
+              hover:bg-gray-100
+              focus:outline-none focus:bg-gray-100
+            "
+            role="button"
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <noah-search
