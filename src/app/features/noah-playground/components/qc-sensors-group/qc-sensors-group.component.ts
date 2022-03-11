@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
+import {
+  QCSENSORS,
+  QcSensorType,
+} from '@features/noah-playground/services/iot.service';
 
 @Component({
   selector: 'noah-qc-sensors-group',
@@ -9,12 +13,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./qc-sensors-group.component.scss'],
 })
 export class QcSensorsGroupComponent implements OnInit {
-  qcSensorTypes: QuezonCitySensorType[] = [
-    'humidity',
-    'pressure',
-    'temperature',
-    'sensor4',
-  ];
+  qcSensorTypes: QcSensorType[] = QCSENSORS;
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;

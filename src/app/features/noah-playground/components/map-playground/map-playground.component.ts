@@ -41,9 +41,12 @@ import {
 import { IOT_SENSOR_COLORS, SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
-
+import {
+  QcSensorType,
+  QcSensorService,
+} from '@features/noah-playground/services/iot.service';
+import { IotSensorChartService } from '@features/noah-playground/services/iot-sensor-chart.service';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
 import {
   ContourMapType,
   HazardLevel,
@@ -86,13 +89,6 @@ export type RawLandslideHazards =
 
 type LH2Subtype = 'af' | 'df';
 
-export const QCSensors: QuezonCitySensorType[] = [
-  'humidity',
-  'pressure',
-  'temperature',
-  'sensor4',
-];
-
 // hazardOpacity$: Observable<number>;
 // hazardShown$: Observable<boolean>;
 
@@ -117,7 +113,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private qcSensorService: QcSensorService,
+    private qcSensorChartService: IotSensorChartService
   ) {}
 
   ngOnInit(): void {
@@ -230,22 +228,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQuezonCitySensors() {
-    const iotSourceFiles: Record<QuezonCitySensorType, { url: string }> = {
+    const iotSourceFiles: Record<QcSensorType, { url: string }> = {
       humidity: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/hum_iot.json',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
       },
       pressure: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/pres_iot.json',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
       },
       temperature: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/temp_iot.json',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
       },
       sensor4: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot_data.json',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.jsonn',
       },
     };
 
-    const iotColorMap: Record<QuezonCitySensorType, string> = {
+    const iotColorMap: Record<QcSensorType, string> = {
       humidity: '#a405b0',
       pressure: '#718a01',
       temperature: '#d85518',
@@ -262,43 +260,150 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
       });
 
-    Object.keys(iotSourceFiles).forEach(
-      (qcSensorType: QuezonCitySensorType) => {
-        const iotObjData = iotSourceFiles[qcSensorType];
+    Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
+      const iotObjData = iotSourceFiles[qcSensorType];
+      const iotMapSource = `${qcSensorType}-map-source`;
 
-        const iotMapSource = `${qcSensorType}-map-source`;
-        this.map.addSource(iotMapSource, {
-          type: 'geojson',
-          data: iotObjData.url,
+      this.map.addSource(iotMapSource, {
+        type: 'geojson',
+        data: iotObjData.url,
+      });
+
+      const layerID = `${qcSensorType}-map-layer`;
+      this.map.addLayer({
+        id: qcSensorType,
+        type: 'circle',
+        source: iotMapSource,
+        paint: {
+          'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+          'circle-radius': 5,
+          'circle-opacity': 0,
+        },
+      });
+
+      combineLatest([
+        this.pgService.qcSensorsGroupShown$,
+        this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+      ])
+        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+        .subscribe(([groupShown, soloShown]) => {
+          console.log('FETCH ME');
+          this.map.setPaintProperty(
+            qcSensorType,
+            'circle-opacity',
+            +(groupShown && soloShown)
+          );
         });
+      this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+      this.showQcDataPoints(qcSensorType);
+    });
+  }
 
-        const layerID = `${qcSensorType}-map-layer`;
-        this.map.addLayer({
-          id: layerID,
-          type: 'circle',
-          source: iotMapSource,
-          paint: {
-            'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-            'circle-radius': 5,
-            'circle-opacity': 0,
-          },
-        });
+  showQcDataPoints(qcSensorType: QcSensorType) {
+    const graphDiv = document.getElementById('graph-dom');
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+    });
+    const _this = this;
 
-        combineLatest([
-          this.pgService.qcSensorsGroupShown$,
-          this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-        ])
-          .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-          .subscribe(([groupShown, soloShown]) => {
-            this.map.setPaintProperty(
-              qcSensorType,
-              'circle-opacity',
-              +(groupShown && soloShown)
-            );
+    combineLatest([
+      this.pgService.qcSensorsGroupShown$,
+      this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        if (groupShown && soloShown) {
+          this.map.on('mouseover', qcSensorType, (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            const deviceId = e.features[0].properties.device_id;
+            const appID = e.features[0].properties.application_id;
+            const pk = e.features[0].properties.pk;
+            while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+              coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+            }
+            _this.map.getCanvas().style.cursor = 'pointer';
+            popUp
+              .setLngLat(coordinates)
+              .setHTML(
+                `<div style="color: #333333;">
+            <div><strong>#${pk}</strong></div>
+            <div>Device ID: ${deviceId}</div>
+            <div>Application ID: ${appID} </div>
+
+          </div>`
+              )
+              .addTo(_this.map);
           });
-        this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-      }
-    );
+          this.map.on('click', qcSensorType, function (e) {
+            graphDiv.hidden = false;
+            _this.map.flyTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+              zoom: 11,
+              essential: true,
+            });
+            const deviceId = e.features[0].properties.device_id;
+            const appID = e.features[0].properties.application_id;
+            const pk = e.features[0].properties.pk;
+
+            popUp.setDOMContent(graphDiv).setMaxWidth('900px');
+            _this.showQcChart(+pk, deviceId, appID, qcSensorType);
+
+            _this._graphShown = true;
+          });
+        } else {
+          popUp.remove();
+          this.map.on('mouseover', qcSensorType, (e) => {
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+          });
+          this.map.on('click', qcSensorType, function (e) {
+            _this.map.flyTo({});
+            _this._graphShown = false;
+          });
+        }
+      });
+    popUp.on('close', () => (_this._graphShown = false));
+    this.map.on('mouseleave', qcSensorType, function () {
+      if (_this._graphShown) return;
+
+      _this.map.getCanvas().style.cursor = '';
+      popUp.remove();
+    });
+  }
+  async showQcChart(
+    pk: number,
+    deviceId: string,
+    appID: string,
+    qcSensorType: QcSensorType
+  ) {
+    const options: any = {
+      title: {
+        text: `#${deviceId} - ${appID}`,
+      },
+      credits: {
+        enabled: false,
+      },
+      ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
+    };
+    const chart = Highcharts.chart('graph-dom', options);
+    chart.showLoading();
+
+    const response: any = await this.qcSensorService
+      .getQcSensorData(pk)
+      .pipe(first())
+      .toPromise();
+
+    chart.hideLoading();
+
+    const qcSensorChartOpts = {
+      data: response.results,
+      qcSensorType,
+    };
+    this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
 
   initSensors() {

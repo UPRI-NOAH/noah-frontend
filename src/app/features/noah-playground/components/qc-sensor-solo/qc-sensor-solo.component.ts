@@ -3,8 +3,9 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { QcSensorType } from '@features/noah-playground/services/iot.service';
 
-export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
+export const QC_SENSOR_NAMES: Record<QcSensorType, string> = {
   humidity: 'Relative Humidity',
   pressure: 'Air Pressure',
   temperature: 'Temperature (Celsius)',
@@ -17,7 +18,7 @@ export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
   styleUrls: ['./qc-sensor-solo.component.scss'],
 })
 export class QcSensorSoloComponent implements OnInit, OnDestroy {
-  @Input() qcSensorType: QuezonCitySensorType;
+  @Input() qcSensorType: QcSensorType;
 
   shown$: Observable<boolean>;
   fetchFailed: boolean;

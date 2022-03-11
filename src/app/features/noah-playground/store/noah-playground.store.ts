@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
+import { QcSensorType } from '../services/iot.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -155,7 +156,7 @@ export type QuezonCitySensorTypeState = {
 export type QuezonCitySensorsState = {
   shown: boolean;
   expanded: boolean;
-  types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
+  types: Record<QcSensorType, QuezonCitySensorTypeState>;
 };
 
 type NoahPlaygroundState = {

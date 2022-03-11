@@ -27,6 +27,7 @@ import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
+import { QcSensorType, QcSensorService } from './iot.service';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +45,8 @@ export class NoahPlaygroundService {
     private gaService: GoogleAnalyticsService,
     private http: HttpClient,
     private sensorService: SensorService,
-    private store: NoahPlaygroundStore
+    private store: NoahPlaygroundStore,
+    private qcSensorService: QcSensorService
   ) {}
 
   get center$(): Observable<{ lng: number; lat: number }> {
@@ -241,7 +243,7 @@ export class NoahPlaygroundService {
   }
 
   getQuezonCitySensorTypeShown$(
-    qcSensorType: QuezonCitySensorType
+    qcSensorType: QcSensorType
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcSensors.types[qcSensorType].shown)
@@ -249,7 +251,7 @@ export class NoahPlaygroundService {
   }
 
   getQuezonCitySensorTypeFetched$(
-    qcSensorType: QuezonCitySensorType
+    qcSensorType: QcSensorType
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcSensors.types[qcSensorType].fetched)
