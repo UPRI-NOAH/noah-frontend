@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Options } from 'highcharts';
-import { QuezonCitySensorType } from '../store/noah-playground.store';
 import { QcSensorType } from './iot.service';
 
 export type QCSensorChartOpts = {
   data: any;
-  qcSensorType: QuezonCitySensorType;
+  qcSensorType: QcSensorType;
 };
 @Injectable({
   providedIn: 'root',
@@ -27,19 +26,20 @@ export class IotSensorChartService {
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
     const { data, qcSensorType } = payload;
     if (!data || data?.length) {
-      chart.showLoading('No Data Available');
+      //chart.showLoading('No Data Available');
     }
 
     const sortedData = data.sort((a: any, b: any) => {
       return (
-        new Date(a.dateTimeRead).getTime() - new Date(b.dateTimeRead).getTime()
+        new Date(a.datetime_read).getTime() -
+        new Date(b.datetime_read).getTime()
       );
     });
 
     // X AXIS
     chart.xAxis[0].update(
       {
-        categories: sortedData.map((d) => d.dateTimeRead),
+        categories: sortedData.map((d) => d.datetime_read),
         tickInterval: 5,
       },
       true
@@ -48,13 +48,19 @@ export class IotSensorChartService {
     switch (qcSensorType) {
       case 'humidity':
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.humRh)),
+          sortedData.map((d) => Number(d.hum_rh)),
+          true
+        );
+        break;
+      case 'temperature':
+        chart.series[0].setData(
+          sortedData.map((d) => Number(d.temp_c)),
           true
         );
         break;
       default:
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.tempC)),
+          sortedData.map((d) => Number(d.pres_hpa)),
           true
         );
         break;
@@ -62,13 +68,13 @@ export class IotSensorChartService {
   }
   private _getHumChartOtps(): any {
     return {
-      chart: { type: 'area' },
+      chart: { type: 'spline' },
       yAxis: {
         alignTicks: false,
       },
       series: [
         {
-          name: 'humidity',
+          name: 'Humidity',
           data: [],
         },
       ],
@@ -77,7 +83,7 @@ export class IotSensorChartService {
 
   private _getTempChartOtps(): any {
     return {
-      chart: { type: 'area' },
+      chart: { type: 'spline' },
       yAxis: {
         alignTicks: false,
       },

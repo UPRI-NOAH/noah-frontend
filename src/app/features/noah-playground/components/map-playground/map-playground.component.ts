@@ -393,7 +393,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     chart.showLoading();
 
     const response: any = await this.qcSensorService
-      .getQcSensorData(pk)
+      .getQcSensorData()
       .pipe(first())
       .toPromise();
 

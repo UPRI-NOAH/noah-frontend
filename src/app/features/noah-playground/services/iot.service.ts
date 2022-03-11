@@ -23,7 +23,9 @@ export class QcSensorService {
   //     return this.http.get(`${this.BASE_URL}/api/sensors/${param}`);
   // }
 
-  getQcSensorData(pk: number) {
-    return this.http.get(`${this.BASE_URL}/api/sensor-data/?sensor=${pk}`);
+  getQcSensorData() {
+    return this.http.get(
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot-data.json'
+    );
   }
 }
