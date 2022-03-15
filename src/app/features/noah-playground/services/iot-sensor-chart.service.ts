@@ -25,6 +25,7 @@ export class IotSensorChartService {
 
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
     const { data, qcSensorType } = payload;
+
     if (!data || data?.length) {
       //chart.showLoading('No Data Available');
     }
@@ -40,7 +41,7 @@ export class IotSensorChartService {
     chart.xAxis[0].update(
       {
         categories: sortedData.map((d) => d.datetime_read),
-        tickInterval: 5,
+        tickInterval: 1, //x axis display
       },
       true
     );

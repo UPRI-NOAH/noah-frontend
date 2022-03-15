@@ -25,7 +25,7 @@ export class QcSensorService {
 
   getQcSensorData() {
     return this.http.get(
-      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot-data.json'
+      `https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot-data-2.json`
     );
   }
 }
