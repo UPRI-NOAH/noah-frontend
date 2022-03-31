@@ -14,18 +14,16 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private BASE_URL = 'https://noah-api.up.edu.ph';
+  private QCBASE_URL = 'https://ce7d-136-158-11-77.ngrok.io';
 
   constructor(private http: HttpClient) {}
 
-  // getQcSensors(type: QcSensorType){
-  //     const param = type ? `sensor_type${type}` : '';
-  //     return this.http.get(`${this.BASE_URL}/api/sensors/${param}`);
-  // }
+  getQcSensors(type: QcSensorType) {
+    const param = type ? `?format=${type}` : '';
+    return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
+  }
 
-  getQcSensorData() {
-    return this.http.get(
-      `https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot-data-2.json`
-    );
+  getQcSensorData(pk: number) {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?format=${pk}`);
   }
 }

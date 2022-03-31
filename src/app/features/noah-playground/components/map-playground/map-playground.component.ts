@@ -44,6 +44,7 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import {
   QcSensorType,
   QcSensorService,
+  QCSENSORS,
 } from '@features/noah-playground/services/iot.service';
 import { IotSensorChartService } from '@features/noah-playground/services/iot-sensor-chart.service';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -228,20 +229,47 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQuezonCitySensors() {
-    const iotSourceFiles: Record<QcSensorType, { url: string }> = {
-      humidity: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
-      },
-      pressure: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
-      },
-      temperature: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.json',
-      },
-      sensor4: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/iot-devices/iot.jsonn',
-      },
-    };
+    QCSENSORS.forEach((qcSensorType) => {
+      this.qcSensorService
+        .getQcSensors(qcSensorType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          this.map.addLayer({
+            id: qcSensorType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+              'circle-radius': 5,
+              'circle-opacity': 0,
+            },
+          });
+
+          combineLatest([
+            this.pgService.qcSensorsGroupShown$,
+            this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                qcSensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+          this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+          this.showQcDataPoints(qcSensorType);
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch Data from IOT Quezon City for sensors of type "${qcSensorType}"`
+          )
+        );
+    });
 
     const iotColorMap: Record<QcSensorType, string> = {
       humidity: '#a405b0',
@@ -255,48 +283,48 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center: QC_DEFAULT_CENTER,
-          zoom: 16,
+          zoom: 15,
           essential: true,
         });
       });
 
-    Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
-      const iotObjData = iotSourceFiles[qcSensorType];
-      const iotMapSource = `${qcSensorType}-map-source`;
+    // Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
+    //   const iotObjData = iotSourceFiles[qcSensorType];
+    //   const iotMapSource = `${qcSensorType}-map-source`;
 
-      this.map.addSource(iotMapSource, {
-        type: 'geojson',
-        data: iotObjData.url,
-      });
+    //   this.map.addSource(iotMapSource, {
+    //     type: 'geojson',
+    //     data: iotObjData.url,
+    //   });
 
-      const layerID = `${qcSensorType}-map-layer`;
-      this.map.addLayer({
-        id: qcSensorType,
-        type: 'circle',
-        source: iotMapSource,
-        paint: {
-          'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-          'circle-radius': 5,
-          'circle-opacity': 0,
-        },
-      });
+    //   const layerID = `${qcSensorType}-map-layer`;
+    //   this.map.addLayer({
+    //     id: qcSensorType,
+    //     type: 'circle',
+    //     source: iotMapSource,
+    //     paint: {
+    //       'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+    //       'circle-radius': 5,
+    //       'circle-opacity': 0,
+    //     },
+    //   });
 
-      combineLatest([
-        this.pgService.qcSensorsGroupShown$,
-        this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-      ])
-        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-        .subscribe(([groupShown, soloShown]) => {
-          console.log('FETCH ME');
-          this.map.setPaintProperty(
-            qcSensorType,
-            'circle-opacity',
-            +(groupShown && soloShown)
-          );
-        });
-      this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-      this.showQcDataPoints(qcSensorType);
-    });
+    //   combineLatest([
+    //     this.pgService.qcSensorsGroupShown$,
+    //     this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+    //   ])
+    //     .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+    //     .subscribe(([groupShown, soloShown]) => {
+    //       console.log('FETCH ME');
+    //       this.map.setPaintProperty(
+    //         qcSensorType,
+    //         'circle-opacity',
+    //         +(groupShown && soloShown)
+    //       );
+    //     });
+    //   this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+    //   this.showQcDataPoints(qcSensorType);
+    // });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -320,7 +348,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             ).coordinates.slice();
             const deviceId = e.features[0].properties.device_id;
             const appID = e.features[0].properties.application_id;
-            const pk = e.features[0].properties.pk;
+            const id = e.features[0].properties.id;
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
@@ -329,7 +357,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `<div style="color: #333333;">
-            <div><strong>#${pk}</strong></div>
+            <div><strong>#${id}</strong></div>
             <div>Device ID: ${deviceId}</div>
             <div>Application ID: ${appID} </div>
 
@@ -393,7 +421,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     chart.showLoading();
 
     const response: any = await this.qcSensorService
-      .getQcSensorData()
+      .getQcSensorData(pk)
       .pipe(first())
       .toPromise();
 

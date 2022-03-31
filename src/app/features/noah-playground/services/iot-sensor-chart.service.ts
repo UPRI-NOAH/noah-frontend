@@ -27,20 +27,19 @@ export class IotSensorChartService {
     const { data, qcSensorType } = payload;
 
     if (!data || data?.length) {
-      //chart.showLoading('No Data Available');
+      chart.showLoading('No Data Available');
     }
 
     const sortedData = data.sort((a: any, b: any) => {
       return (
-        new Date(a.datetime_read).getTime() -
-        new Date(b.datetime_read).getTime()
+        new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
 
     // X AXIS
     chart.xAxis[0].update(
       {
-        categories: sortedData.map((d) => d.datetime_read),
+        categories: sortedData.map((d) => d.received_at),
         tickInterval: 1, //x axis display
       },
       true
