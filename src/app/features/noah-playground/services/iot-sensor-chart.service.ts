@@ -15,18 +15,18 @@ export class IotSensorChartService {
   getQcChartOpts(qcSensorType: QcSensorType) {
     switch (qcSensorType) {
       case 'humidity':
-        return this._getHumChartOtps();
-      case 'temperature':
-        return this._getTempChartOtps();
+        return this._getWeatherOtps();
+      case 'weather':
+        return this._getWeatherOtps();
       default:
-        return this._getAirChartOtps();
+        return this._getHumChartOtps();
     }
   }
 
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
     const { data, qcSensorType } = payload;
 
-    if (!data || data?.length) {
+    if (!data || !data?.length) {
       chart.showLoading('No Data Available');
     }
 
@@ -40,7 +40,7 @@ export class IotSensorChartService {
     chart.xAxis[0].update(
       {
         categories: sortedData.map((d) => d.received_at),
-        tickInterval: 1, //x axis display
+        tickInterval: 5, //x axis display
       },
       true
     );
@@ -52,23 +52,16 @@ export class IotSensorChartService {
           true
         );
         break;
-      case 'temperature':
+      default:
         chart.series[0].setData(
           sortedData.map((d) => Number(d.temp_c)),
           true
         );
-        break;
-      default:
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.pres_hpa)),
-          true
-        );
-        break;
     }
   }
   private _getHumChartOtps(): any {
     return {
-      chart: { type: 'spline' },
+      chart: { type: 'area' },
       yAxis: {
         alignTicks: false,
       },
@@ -81,22 +74,7 @@ export class IotSensorChartService {
     };
   }
 
-  private _getTempChartOtps(): any {
-    return {
-      chart: { type: 'spline' },
-      yAxis: {
-        alignTicks: false,
-      },
-      series: [
-        {
-          name: 'Temperature',
-          data: [],
-        },
-      ],
-    };
-  }
-
-  private _getAirChartOtps(): any {
+  private _getWeatherOtps(): any {
     return {
       chart: { type: 'spline' },
       yAxis: {
@@ -142,9 +120,8 @@ export class IotSensorChartService {
             from: 15,
             to: 30,
             // color: 'orange',
-            color: '#fcba03',
+            color: '#ffa500',
             label: {
-              text: 'Intense',
               style: {
                 color: 'black',
               },
@@ -167,7 +144,7 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'Air Pressure',
+          name: 'Temperature',
           data: [],
         },
       ],

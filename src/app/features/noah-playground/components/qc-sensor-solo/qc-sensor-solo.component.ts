@@ -8,8 +8,8 @@ import { QcSensorType } from '@features/noah-playground/services/iot.service';
 export const QC_SENSOR_NAMES: Record<QcSensorType, string> = {
   humidity: 'Relative Humidity',
   pressure: 'Air Pressure',
-  temperature: 'Temperature (Celsius)',
-  sensor4: 'Proximity Zone Detection',
+  weather: 'Temperature (Celsius)',
+  temperature: 'Proximity Zone Detection ',
 };
 
 @Component({

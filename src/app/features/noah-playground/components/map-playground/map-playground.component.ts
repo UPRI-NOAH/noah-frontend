@@ -244,7 +244,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             paint: {
               'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-              'circle-radius': 5,
+              'circle-radius': 8,
               'circle-opacity': 0,
             },
           });
@@ -271,60 +271,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
     });
 
-    const iotColorMap: Record<QcSensorType, string> = {
-      humidity: '#a405b0',
-      pressure: '#718a01',
-      temperature: '#d85518',
-      sensor4: '#0dc642',
-    };
-
     const allShown$ = this.pgService.qcSensorsGroupShown$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
           center: QC_DEFAULT_CENTER,
-          zoom: 15,
+          zoom: 14,
           essential: true,
         });
       });
-
-    // Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
-    //   const iotObjData = iotSourceFiles[qcSensorType];
-    //   const iotMapSource = `${qcSensorType}-map-source`;
-
-    //   this.map.addSource(iotMapSource, {
-    //     type: 'geojson',
-    //     data: iotObjData.url,
-    //   });
-
-    //   const layerID = `${qcSensorType}-map-layer`;
-    //   this.map.addLayer({
-    //     id: qcSensorType,
-    //     type: 'circle',
-    //     source: iotMapSource,
-    //     paint: {
-    //       'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-    //       'circle-radius': 5,
-    //       'circle-opacity': 0,
-    //     },
-    //   });
-
-    //   combineLatest([
-    //     this.pgService.qcSensorsGroupShown$,
-    //     this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-    //   ])
-    //     .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-    //     .subscribe(([groupShown, soloShown]) => {
-    //       console.log('FETCH ME');
-    //       this.map.setPaintProperty(
-    //         qcSensorType,
-    //         'circle-opacity',
-    //         +(groupShown && soloShown)
-    //       );
-    //     });
-    //   this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-    //   this.showQcDataPoints(qcSensorType);
-    // });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -346,9 +301,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
-            const deviceId = e.features[0].properties.device_id;
             const appID = e.features[0].properties.application_id;
             const id = e.features[0].properties.id;
+            const iotType = e.features[0].properties.iot_type;
+            const deviceId = e.features[0].properties.device_id;
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
@@ -357,8 +313,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `<div style="color: #333333;">
-            <div><strong>#${id}</strong></div>
-            <div>Device ID: ${deviceId}</div>
+            <div><strong>#${deviceId}</strong></div>
+            <div>IOT Type: ${iotType}</div>
             <div>Application ID: ${appID} </div>
 
           </div>`

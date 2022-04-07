@@ -18,9 +18,10 @@
   }
 }
 
-.sensor4 {
-  --color: #0dc642;
-  background-color: #0dc642;
+.weather {
+  --color: #d85518;
+  background-color: #d85518;
+
   &,
   input {
     border-radius: 100% !important;
@@ -29,8 +30,8 @@
 }
 
 .temperature {
-  --color: #d85518;
-  background-color: #d85518;
+  --color: #0dc642;
+  background-color: #0dc642;
   &,
   input {
     border-radius: 100% !important;

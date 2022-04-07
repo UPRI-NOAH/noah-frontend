@@ -60,6 +60,6 @@ export const SENSOR_COLORS: Record<SensorType, string> = {
 export const IOT_SENSOR_COLORS: Record<QuezonCitySensorType, string> = {
   humidity: '#a405b0',
   pressure: '#718a01',
-  temperature: '#d85518',
-  sensor4: '#0dc642',
+  temperature: '#0dc642',
+  weather: '#d85518',
 };
