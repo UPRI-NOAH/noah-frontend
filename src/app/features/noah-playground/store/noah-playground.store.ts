@@ -350,10 +350,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
         shown: true,
         fetched: false,
       },
-      weather: {
-        shown: true,
-        fetched: false,
-      },
+      // weather: {
+      //   shown: false,
+      //   fetched: false,
+      // },
     },
   },
   contourMaps: {

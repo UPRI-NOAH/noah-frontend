@@ -109,6 +109,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
+  private QCBASE_URL = 'https://7c05-136-158-11-17.ngrok.io';
 
   constructor(
     private mapService: MapService,
@@ -229,47 +230,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQuezonCitySensors() {
-    QCSENSORS.forEach((qcSensorType) => {
-      this.qcSensorService
-        .getQcSensors(qcSensorType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          this.map.addLayer({
-            id: qcSensorType,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-              'circle-radius': 8,
-              'circle-opacity': 0,
-            },
-          });
+    const iotSourceFiles: Record<QcSensorType, { url: any }> = {
+      humidity: {
+        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
+      },
+      pressure: {
+        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
+      },
+      temperature: {
+        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
+      },
+    };
 
-          combineLatest([
-            this.pgService.qcSensorsGroupShown$,
-            this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-          ])
-            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-            .subscribe(([groupShown, soloShown]) => {
-              this.map.setPaintProperty(
-                qcSensorType,
-                'circle-opacity',
-                +(groupShown && soloShown)
-              );
-            });
-          this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-          this.showQcDataPoints(qcSensorType);
-        })
-        .catch(() =>
-          console.error(
-            `Unable to fetch Data from IOT Quezon City for sensors of type "${qcSensorType}"`
-          )
-        );
-    });
+    const iotColorMap: Record<QcSensorType, string> = {
+      humidity: '#a405b0',
+      pressure: '#718a01',
+      temperature: '#d85518',
+    };
 
     const allShown$ = this.pgService.qcSensorsGroupShown$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
@@ -280,6 +257,43 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           essential: true,
         });
       });
+
+    Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
+      const iotObjData = iotSourceFiles[qcSensorType];
+      const iotMapSource = `${qcSensorType}-map-source`;
+
+      this.map.addSource(iotMapSource, {
+        type: 'geojson',
+        data: iotObjData.url,
+      });
+
+      const layerID = `${qcSensorType}-map-layer`;
+      this.map.addLayer({
+        id: qcSensorType,
+        type: 'circle',
+        source: iotMapSource,
+        paint: {
+          'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+          'circle-radius': 5,
+          'circle-opacity': 0,
+        },
+      });
+
+      combineLatest([
+        this.pgService.qcSensorsGroupShown$,
+        this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+      ])
+        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+        .subscribe(([groupShown, soloShown]) => {
+          this.map.setPaintProperty(
+            qcSensorType,
+            'circle-opacity',
+            +(groupShown && soloShown)
+          );
+        });
+      this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+      this.showQcDataPoints(qcSensorType);
+    });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
