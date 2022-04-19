@@ -255,7 +255,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center: QC_DEFAULT_CENTER,
-          zoom: 16,
+          zoom: 17,
           essential: true,
         });
       });
@@ -341,7 +341,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             graphDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 11,
+              zoom: 17,
               essential: true,
             });
             const deviceId = e.features[0].properties.device_id;
