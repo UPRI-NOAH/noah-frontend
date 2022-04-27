@@ -569,8 +569,8 @@
                     <i class="mdi mdi-email-outline text-gray-400 text-lg"></i>
                   </div>
                   <input
-                    name="email"
-                    type="email"
+                    name="username"
+                    type="text"
                     class="
                       w-full
                       -ml-10
@@ -582,13 +582,15 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    [(ngModel)]="email"
-                    formControlName="emailValidation"
-                    placeholder="email@example.com"
+                    [(ngModel)]="username"
+                    formControlName="userNameValidation"
+                    placeholder="Username"
                   />
                 </div>
                 <span
-                  *ngIf="emailValidation.invalid && emailValidation.touched"
+                  *ngIf="
+                    userNameValidation.invalid && userNameValidation.touched
+                  "
                   class="text-red-600 whitespace-pre-wrap"
                   >Email is required</span
                 >

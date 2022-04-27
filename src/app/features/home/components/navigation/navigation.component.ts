@@ -19,7 +19,7 @@ export class NavigationComponent implements OnInit {
   isSearch: boolean = false;
   isLoginModal: boolean;
   loading = false;
-  email: string;
+  username: string;
   password: string;
   showAdminresult: boolean;
   qcAdmin: string;
@@ -36,12 +36,12 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   loginForm = new FormGroup({
-    emailValidation: new FormControl('', Validators.required),
+    userNameValidation: new FormControl('', Validators.required),
     passwordValidation: new FormControl('', Validators.required),
   });
 
-  get emailValidation() {
-    return this.loginForm.get('emailValidation');
+  get userNameValidation() {
+    return this.loginForm.get('userNameValidation');
   }
 
   get passwordValidation() {
@@ -56,9 +56,9 @@ export class NavigationComponent implements OnInit {
   }
 
   loginUser() {
-    if (this.email == 'admin' && this.password == 'admin') {
+    if (this.username == 'admin' && this.password == 'admin') {
       // this.router.navigate(['noah-playground']);
-      console.log('Welcome', this.email);
+      console.log('Welcome', this.username);
       this.pgService.showAdmin();
       alert('You are Logged In');
       this.isLoginModal = false;
