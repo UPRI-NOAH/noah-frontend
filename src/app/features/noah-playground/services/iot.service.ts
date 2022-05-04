@@ -13,12 +13,13 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://7c05-136-158-11-17.ngrok.io';
+  private QCBASE_URL = 'https://0a50-136-158-11-17.ngrok.io';
 
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
-    const param = type ? `?iot_type=${type}` : '';
+    const param = type ? `?iot-type=${type}` : '';
+    console.log(param);
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
   }
 

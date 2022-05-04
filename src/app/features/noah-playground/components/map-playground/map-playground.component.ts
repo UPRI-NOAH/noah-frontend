@@ -109,7 +109,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
-  private QCBASE_URL = 'https://7c05-136-158-11-17.ngrok.io';
 
   constructor(
     private mapService: MapService,
@@ -230,70 +229,114 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQuezonCitySensors() {
-    const iotSourceFiles: Record<QcSensorType, { url: any }> = {
-      humidity: {
-        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
-      },
-      pressure: {
-        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
-      },
-      temperature: {
-        url: `${this.QCBASE_URL}/api/iot-sensors/?format=json`,
-      },
-    };
+    // const iotSourceFiles: Record<QcSensorType, { url: any }> = {
+    //   humidity: {
+    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
+    //   },
+    //   pressure: {
+    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
+    //   },
+    //   temperature: {
+    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
+    //   },
+    // };
 
-    const iotColorMap: Record<QcSensorType, string> = {
-      humidity: '#a405b0',
-      pressure: '#718a01',
-      temperature: '#d85518',
-    };
+    // const iotColorMap: Record<QcSensorType, string> = {
+    //   humidity: '#a405b0',
+    //   pressure: '#718a01',
+    //   temperature: '#d85518',
+    // };
+    // Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
+    //   const iotObjData = iotSourceFiles[qcSensorType];
+    //   const iotMapSource = `${qcSensorType}-map-source`;
+
+    //   this.map.addSource(iotMapSource, {
+    //     type: 'geojson',
+    //     data: iotObjData.url,
+    //   });
+
+    //   const layerID = `${qcSensorType}-map-layer`;
+    //   this.map.addLayer({
+    //     id: qcSensorType,
+    //     type: 'circle',
+    //     source: iotMapSource,
+    //     paint: {
+    //       'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+    //       'circle-radius': 5,
+    //       'circle-opacity': 0,
+    //     },
+    //   });
+
+    //   combineLatest([
+    //     this.pgService.qcSensorsGroupShown$,
+    //     this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+    //   ])
+    //     .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+    //     .subscribe(([groupShown, soloShown]) => {
+    //       this.map.setPaintProperty(
+    //         qcSensorType,
+    //         'circle-opacity',
+    //         +(groupShown && soloShown)
+    //       );
+    //     });
+    //   this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+    //   this.showQcDataPoints(qcSensorType);
+    // });
+    QCSENSORS.forEach((qcSensorType) => {
+      this.qcSensorService
+        .getQcSensors(qcSensorType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: qcSensorType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+              'circle-radius': 5,
+              'circle-opacity': 0,
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcSensorsGroupShown$,
+            this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                qcSensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+
+          this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+          // show mouse event listeners
+          this.showQcDataPoints(qcSensorType);
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from QC for sensors of type "${qcSensorType}"`
+          )
+        );
+    });
 
     const allShown$ = this.pgService.qcSensorsGroupShown$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
           center: QC_DEFAULT_CENTER,
-          zoom: 14,
+          zoom: 12,
           essential: true,
         });
       });
-
-    Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
-      const iotObjData = iotSourceFiles[qcSensorType];
-      const iotMapSource = `${qcSensorType}-map-source`;
-
-      this.map.addSource(iotMapSource, {
-        type: 'geojson',
-        data: iotObjData.url,
-      });
-
-      const layerID = `${qcSensorType}-map-layer`;
-      this.map.addLayer({
-        id: qcSensorType,
-        type: 'circle',
-        source: iotMapSource,
-        paint: {
-          'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-          'circle-radius': 5,
-          'circle-opacity': 0,
-        },
-      });
-
-      combineLatest([
-        this.pgService.qcSensorsGroupShown$,
-        this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-      ])
-        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-        .subscribe(([groupShown, soloShown]) => {
-          this.map.setPaintProperty(
-            qcSensorType,
-            'circle-opacity',
-            +(groupShown && soloShown)
-          );
-        });
-      this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-      this.showQcDataPoints(qcSensorType);
-    });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -316,7 +359,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               e.features[0].geometry as any
             ).coordinates.slice();
             const appID = e.features[0].properties.application_id;
-            const id = e.features[0].properties.id;
             const iotType = e.features[0].properties.iot_type;
             const deviceId = e.features[0].properties.device_id;
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {

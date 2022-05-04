@@ -16,12 +16,10 @@ export class IotSensorChartService {
     switch (qcSensorType) {
       case 'humidity':
         return this._getHumChartOtps();
-      case 'temperature':
-        return this._getWeatherOtps();
       case 'pressure':
         return this._getPressOtps();
       default:
-        return this._getHumChartOtps();
+        return this._getTempOtps();
     }
   }
 
@@ -50,19 +48,19 @@ export class IotSensorChartService {
     switch (qcSensorType) {
       case 'humidity':
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.hum_rh)),
+          sortedData.map((d) => Number(d.distance_m)),
           true
         );
         break;
       case 'pressure':
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.pres_hpa)),
+          sortedData.map((d) => Number(d.distance)),
           true
         );
         break;
       default:
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.temp_c)),
+          sortedData.map((d) => Number(d.sensor_1)),
           true
         );
         break;
@@ -78,9 +76,9 @@ export class IotSensorChartService {
           {
             from: 0,
             to: 2.5,
-            color: '#4ac6ff',
+            color: '#DB1F48',
             label: {
-              text: 'Light',
+              //text: 'Light',
               // style: {
               //   color: 'black'
               // }
@@ -138,7 +136,9 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'Humidity',
+          name: 'distance_m',
+          color: '#FF8300',
+          //name: 'Humidity',
           data: [],
         },
       ],
@@ -146,25 +146,11 @@ export class IotSensorChartService {
   }
   private _getPressOtps(): any {
     return {
-      chart: { type: 'area' },
-      yAxis: {
-        alignTicks: false,
-      },
-      series: [
-        {
-          name: 'Pressure',
-          data: [],
-        },
-      ],
-    };
-  }
-
-  private _getWeatherOtps(): any {
-    return {
       chart: { type: 'spline' },
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
+        color: '#0C2D48',
         plotBands: [
           {
             from: 0,
@@ -181,11 +167,11 @@ export class IotSensorChartService {
             from: 2.5,
             to: 7.5,
             // color: 'blue',
-            color: '#0073ff',
+            color: '#FF8300',
             label: {
               text: 'Moderate',
               style: {
-                color: 'white',
+                color: '#0C2D48',
               },
             },
           },
@@ -193,11 +179,11 @@ export class IotSensorChartService {
             from: 7.5,
             to: 15,
             // color: 'dark blue',
-            color: '#0011ad',
+            color: '#FF8300',
             label: {
               text: 'Heavy',
               style: {
-                color: 'white',
+                color: '#0C2D48',
               },
             },
           },
@@ -205,10 +191,10 @@ export class IotSensorChartService {
             from: 15,
             to: 30,
             // color: 'orange',
-            color: '#ffa500',
+            color: '#FF8300',
             label: {
               style: {
-                color: 'black',
+                color: '#0C2D48',
               },
             },
           },
@@ -217,11 +203,11 @@ export class IotSensorChartService {
             from: 30,
             to: 500,
             // color: 'red',
-            color: '#fc3d03',
+            color: '#FF8300',
             label: {
               text: 'Torrential',
               style: {
-                color: 'black',
+                color: '#0C2D48',
               },
             },
           },
@@ -229,7 +215,89 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'Temperature',
+          name: 'distance',
+          // name: 'Air Pressure',
+          color: '#0C2D48',
+          data: [],
+        },
+      ],
+    };
+  }
+
+  private _getTempOtps(): any {
+    return {
+      chart: { type: 'spline' },
+      yAxis: {
+        alignTicks: false,
+        tickInterval: 0.5,
+        color: '#0C2D48',
+        plotBands: [
+          {
+            from: 0,
+            to: 2.5,
+            color: '#4ac6ff',
+            label: {
+              text: 'Light',
+              // style: {
+              //   color: 'black'
+              // }
+            },
+          },
+          {
+            from: 2.5,
+            to: 7.5,
+            // color: 'blue',
+            color: '#FF8300',
+            label: {
+              text: 'Moderate',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 7.5,
+            to: 15,
+            // color: 'dark blue',
+            color: '#FF8300',
+            label: {
+              text: 'Heavy',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 15,
+            to: 30,
+            // color: 'orange',
+            color: '#FF8300',
+            label: {
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+
+          {
+            from: 30,
+            to: 500,
+            // color: 'red',
+            color: '#FF8300',
+            label: {
+              // text: 'Torrential',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'Sensor 1',
+          // name: 'Temperature',
+          color: '#0C2D48',
           data: [],
         },
       ],
