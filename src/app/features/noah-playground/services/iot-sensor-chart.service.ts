@@ -18,8 +18,14 @@ export class IotSensorChartService {
         return this._getHumChartOtps();
       case 'pressure':
         return this._getPressOtps();
-      default:
+      case 'temperature':
         return this._getTempOtps();
+      // case 'distance':
+      //   return this._getDistanceOtps();
+      case 'distance_m':
+        return this._getDistanceMOtps();
+      default:
+        return this._getSensor1Otps();
     }
   }
 
@@ -40,7 +46,7 @@ export class IotSensorChartService {
     chart.xAxis[0].update(
       {
         categories: sortedData.map((d) => d.received_at),
-        tickInterval: 5, //x axis display
+        tickInterval: 6, //x axis display
       },
       true
     );
@@ -48,13 +54,31 @@ export class IotSensorChartService {
     switch (qcSensorType) {
       case 'humidity':
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.distance_m)),
+          sortedData.map((d) => Number(d.hum_rh)),
           true
         );
         break;
       case 'pressure':
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.distance)),
+          sortedData.map((d) => Number(d.pres_hpa)),
+          true
+        );
+        break;
+      case 'temperature':
+        chart.series[0].setData(
+          sortedData.map((d) => Number(d.temp_c)),
+          true
+        );
+        break;
+        // case 'distance':
+        //   chart.series[0].setData(
+        //     sortedData.map((d) => Number (d.distance)),
+        //     true
+        //   )
+        break;
+      case 'distance_m':
+        chart.series[0].setData(
+          sortedData.map((d) => Number(d.distance_m)),
           true
         );
         break;
@@ -136,9 +160,8 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'distance_m',
           color: '#FF8300',
-          //name: 'Humidity',
+          name: 'Humidity',
           data: [],
         },
       ],
@@ -215,8 +238,7 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'distance',
-          // name: 'Air Pressure',
+          name: 'Air Pressure',
           color: '#0C2D48',
           data: [],
         },
@@ -295,12 +317,257 @@ export class IotSensorChartService {
       },
       series: [
         {
-          name: 'Sensor 1',
-          // name: 'Temperature',
+          name: 'Temperature',
           color: '#0C2D48',
           data: [],
         },
       ],
     };
   }
+  //FLOOD SENSORS
+  private _getDistanceOtps(): any {
+    return {
+      chart: { type: 'spline' },
+      yAxis: {
+        alignTicks: false,
+        tickInterval: 0.5,
+        color: '#0C2D48',
+        plotBands: [
+          {
+            from: 0,
+            to: 2.5,
+            color: '#40B0DF',
+            label: {
+              text: 'Light',
+              // style: {
+              //   color: 'black'
+              // }
+            },
+          },
+          {
+            from: 2.5,
+            to: 7.5,
+            // color: 'blue',
+            color: '#40B0DF',
+            label: {
+              text: 'Moderate',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 7.5,
+            to: 15,
+            // color: 'dark blue',
+            color: '#40B0DF',
+            label: {
+              text: 'Heavy',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 15,
+            to: 30,
+            // color: 'orange',
+            color: '#40B0DF',
+            label: {
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+
+          {
+            from: 30,
+            to: 500,
+            // color: 'red',
+            color: '#40B0DF',
+            label: {
+              // text: 'Torrential',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'Distance',
+          color: '#0C2D48',
+          data: [],
+        },
+      ],
+    };
+  }
+  private _getDistanceMOtps(): any {
+    return {
+      // 0 - 0.5m low
+      // 0.5-1.5m Moderate
+      // 1.5 above High
+      chart: { type: 'spline' },
+      yAxis: {
+        alignTicks: false,
+        tickInterval: 0.5,
+        color: '#0C2D48',
+        plotBands: [
+          {
+            from: 0,
+            to: 0.5,
+            color: '#0067B3',
+            label: {
+              text: 'Low',
+              // style: {
+              //   color: 'black'
+              // }
+            },
+          },
+          {
+            from: 0.6,
+            to: 1.5,
+            // color: 'blue',
+            color: '#6AF2F0',
+            label: {
+              text: 'Moderate',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 1.6,
+            to: 15,
+            // color: 'dark blue',
+            color: '#004369',
+            label: {
+              text: 'High',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 15,
+            to: 30,
+            // color: 'orange',
+            color: '#0067B3',
+            label: {
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+
+          {
+            from: 30,
+            to: 500,
+            // color: 'red',
+            color: '#0067B3',
+            label: {
+              // text: 'Torrential',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'Flood Height',
+          color: '#0C2D48',
+          data: [],
+          // lineWidth: 4,
+          // marker:{
+          //   enabled: false
+          // },
+          // hover:{
+          //   lineWidth: 5
+          // }
+        },
+      ],
+    };
+  }
+  private _getSensor1Otps(): any {
+    return {
+      chart: { type: 'spline' },
+      yAxis: {
+        alignTicks: false,
+        tickInterval: 0.5,
+        color: '#0C2D48',
+        plotBands: [
+          {
+            from: 0,
+            to: 2.5,
+            color: '#5885AF',
+            label: {
+              text: 'Light',
+              // style: {
+              //   color: 'black'
+              // }
+            },
+          },
+          {
+            from: 2.5,
+            to: 7.5,
+            // color: 'blue',
+            color: '#5885AF',
+            label: {
+              text: 'Moderate',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 7.5,
+            to: 15,
+            // color: 'dark blue',
+            color: '#5885AF',
+            label: {
+              text: 'Heavy',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+          {
+            from: 15,
+            to: 30,
+            // color: 'orange',
+            color: '#5885AF',
+            label: {
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+
+          {
+            from: 30,
+            to: 500,
+            // color: 'red',
+            color: '#5885AF',
+            label: {
+              // text: 'Torrential',
+              style: {
+                color: '#0C2D48',
+              },
+            },
+          },
+        ],
+      },
+      series: [
+        {
+          name: 'Sensor 1',
+          color: '#0C2D48',
+          data: [],
+        },
+      ],
+    };
+  }
+  //FLOOD SENSORS END
 }

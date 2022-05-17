@@ -9,6 +9,9 @@ export const QC_SENSOR_NAMES: Record<QcSensorType, string> = {
   humidity: 'Relative Humidity',
   pressure: 'Air Pressure',
   temperature: 'Temperature (Celsius)',
+  // distance: 'Distance',
+  distance_m: 'Flood Height',
+  //sensor_1: 'sensor_1'
 };
 
 @Component({

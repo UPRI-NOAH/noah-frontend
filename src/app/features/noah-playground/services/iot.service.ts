@@ -1,19 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-export type QcSensorType = 'humidity' | 'pressure' | 'temperature';
+export type QcSensorType =
+  | 'humidity'
+  | 'pressure'
+  | 'temperature'
+  //| 'distance'
+  | 'distance_m';
+//| 'sensor_1';
 
 export const QCSENSORS: QcSensorType[] = [
   'humidity',
   'pressure',
   'temperature',
+  // 'distance',
+  'distance_m',
+  //'sensor_1'
 ];
 
 @Injectable({
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://0a50-136-158-11-17.ngrok.io';
+  private QCBASE_URL = 'https://dfe2-136-158-11-77.ngrok.io';
 
   constructor(private http: HttpClient) {}
 

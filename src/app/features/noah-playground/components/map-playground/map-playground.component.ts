@@ -40,6 +40,10 @@ import {
 } from '@features/noah-playground/services/sensor.service';
 import { IOT_SENSOR_COLORS, SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
+import HC_exporting from 'highcharts/modules/exporting';
+import HC_Data from 'highcharts/modules/export-data';
+import Accessbility from 'highcharts/modules/accessibility';
+
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 import {
   QcSensorType,
@@ -93,6 +97,9 @@ type LH2Subtype = 'af' | 'df';
 // hazardOpacity$: Observable<number>;
 // hazardShown$: Observable<boolean>;
 
+HC_exporting(Highcharts);
+HC_Data(Highcharts);
+Accessbility(Highcharts);
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
@@ -298,7 +305,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             paint: {
               'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-              'circle-radius': 5,
+              'circle-radius': 10,
               'circle-opacity': 0,
             },
           });
@@ -358,9 +365,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
-            const appID = e.features[0].properties.application_id;
+            const name = e.features[0].properties.name;
             const iotType = e.features[0].properties.iot_type;
-            const deviceId = e.features[0].properties.device_id;
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
@@ -369,9 +375,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `<div style="color: #333333;">
-            <div><strong>#${deviceId}</strong></div>
+            <div>Name: ${name} </div>
             <div>IOT Type: ${iotType}</div>
-            <div>Application ID: ${appID} </div>
+         
 
           </div>`
               )
@@ -384,52 +390,64 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               zoom: 11,
               essential: true,
             });
-            const deviceId = e.features[0].properties.device_id;
-            const appID = e.features[0].properties.application_id;
+            const name = e.features[0].properties.name;
             const pk = e.features[0].properties.pk;
 
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
-            _this.showQcChart(+pk, deviceId, appID, qcSensorType);
+            _this.showQcChart(+pk, name, qcSensorType);
 
             _this._graphShown = true;
           });
         } else {
           popUp.remove();
-          this.map.on('mouseover', qcSensorType, (e) => {
+          this.map.on('mouseenter', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
           });
-          this.map.on('click', qcSensorType, function (e) {
-            _this.map.flyTo({});
-            _this._graphShown = false;
+          _this.map.on('click', qcSensorType, function (e) {
+            _this.map.easeTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+            });
+            _this._graphShown = true;
           });
         }
       });
     popUp.on('close', () => (_this._graphShown = false));
     this.map.on('mouseleave', qcSensorType, function () {
       if (_this._graphShown) return;
-
       _this.map.getCanvas().style.cursor = '';
       popUp.remove();
     });
   }
-  async showQcChart(
-    pk: number,
-    deviceId: string,
-    appID: string,
-    qcSensorType: QcSensorType
-  ) {
+  async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
       title: {
-        text: `#${deviceId} - ${appID}`,
+        text: `${appID}`,
       },
       credits: {
         enabled: false,
       },
+      exporting: {
+        enabled: true,
+        showTable: false,
+        fileName: 'Quezon IoT Data',
+        buttons: {
+          contextButton: {
+            menuItems: [
+              'printChart',
+              'downloadCSV',
+              'downloadPNG',
+              'downloadJPEG',
+              'viewFullscreen',
+            ],
+          },
+        },
+      },
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
     const chart = Highcharts.chart('graph-dom', options);
+
     chart.showLoading();
 
     const response: any = await this.qcSensorService
@@ -682,7 +700,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
     this.map.on('mouseleave', sensorType, function () {
       if (_this._graphShown) return;
-
       _this.map.getCanvas().style.cursor = '';
       popUp.remove();
     });

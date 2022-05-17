@@ -25,7 +25,9 @@ export type QuezonCitySensorType =
   | 'humidity'
   | 'pressure'
   | 'temperature'
-  | 'weather';
+  //| 'distance'
+  | 'distance_m';
+// | 'sensor_1';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -339,18 +341,26 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       humidity: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       pressure: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       temperature: {
+        shown: false,
+        fetched: false,
+      },
+      // distance: {
+      //   shown: false,
+      //   fetched: false,
+      // },
+      distance_m: {
         shown: true,
         fetched: false,
       },
-      // weather: {
+      // sensor_1: {
       //   shown: false,
       //   fetched: false,
       // },
