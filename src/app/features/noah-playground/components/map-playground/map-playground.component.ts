@@ -246,59 +246,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   // start OF QC IOT
   initQuezonCitySensors() {
-    // const iotSourceFiles: Record<QcSensorType, { url: any }> = {
-    //   humidity: {
-    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
-    //   },
-    //   pressure: {
-    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
-    //   },
-    //   temperature: {
-    //     url: `${this.qcSensorService.QCBASE_URL + '/api/iot-sensors/?format=json'}`,
-    //   },
-    // };
-
-    // const iotColorMap: Record<QcSensorType, string> = {
-    //   humidity: '#a405b0',
-    //   pressure: '#718a01',
-    //   temperature: '#d85518',
-    // };
-    // Object.keys(iotSourceFiles).forEach((qcSensorType: QcSensorType) => {
-    //   const iotObjData = iotSourceFiles[qcSensorType];
-    //   const iotMapSource = `${qcSensorType}-map-source`;
-
-    //   this.map.addSource(iotMapSource, {
-    //     type: 'geojson',
-    //     data: iotObjData.url,
-    //   });
-
-    //   const layerID = `${qcSensorType}-map-layer`;
-    //   this.map.addLayer({
-    //     id: qcSensorType,
-    //     type: 'circle',
-    //     source: iotMapSource,
-    //     paint: {
-    //       'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-    //       'circle-radius': 5,
-    //       'circle-opacity': 0,
-    //     },
-    //   });
-
-    //   combineLatest([
-    //     this.pgService.qcSensorsGroupShown$,
-    //     this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
-    //   ])
-    //     .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-    //     .subscribe(([groupShown, soloShown]) => {
-    //       this.map.setPaintProperty(
-    //         qcSensorType,
-    //         'circle-opacity',
-    //         +(groupShown && soloShown)
-    //       );
-    //     });
-    //   this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
-    //   this.showQcDataPoints(qcSensorType);
-    // });
     QCSENSORS.forEach((qcSensorType) => {
       this.qcSensorService
         .getQcSensors(qcSensorType)
@@ -385,10 +332,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `<div style="color: #333333;">
-            <div>Name: ${name} </div>
-            <div>IOT Type: ${iotType}</div>
-         
-
+            <div><b>Name:</b> ${name} </div>
+            <div><b>IOT Type:</b> ${iotType}</div>
           </div>`
               )
               .addTo(_this.map);
