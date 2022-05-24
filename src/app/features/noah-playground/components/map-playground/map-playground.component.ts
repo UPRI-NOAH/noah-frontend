@@ -40,6 +40,9 @@ import {
 } from '@features/noah-playground/services/sensor.service';
 
 import * as Highcharts from 'highcharts';
+import HC_exporting from 'highcharts/modules/exporting';
+import HC_Data from 'highcharts/modules/export-data';
+import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -102,6 +105,9 @@ type LH2Subtype = 'af' | 'df';
 
 // hazardOpacity$: Observable<number>;
 // hazardShown$: Observable<boolean>;
+HC_exporting(Highcharts);
+HC_Data(Highcharts);
+Accessbility(Highcharts);
 
 @Component({
   selector: 'noah-map-playground',
