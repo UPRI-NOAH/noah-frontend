@@ -308,7 +308,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
+      maxWidth: 'auto',
     });
+
     const _this = this;
 
     combineLatest([
@@ -331,7 +333,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp
               .setLngLat(coordinates)
               .setHTML(
-                `<div style="color: #333333;">
+                `<div style="color: #333333;font-size: 13px;">
             <div><b>Name:</b> ${name} </div>
             <div><b>IOT Type:</b> ${iotType}</div>
           </div>`
@@ -579,6 +581,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
+      maxWidth: 'auto',
     });
     const _this = this;
 
@@ -609,7 +612,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-              <div style="color: #333333;">
+              <div style="color: #333333; font-size: 13px;">
                 <div><strong>#${stationID} - ${location}</strong></div>
                 <div>Type: ${typeName}</div>
                 <div>Status: ${status}</div>
