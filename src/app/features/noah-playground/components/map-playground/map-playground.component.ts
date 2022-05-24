@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -113,6 +113,7 @@ Accessbility(Highcharts);
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
   styleUrls: ['./map-playground.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
@@ -333,7 +334,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp
               .setLngLat(coordinates)
               .setHTML(
-                `<div style="color: #333333;font-size: 13px;">
+                `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
             <div><b>Name:</b> ${name} </div>
             <div><b>IOT Type:</b> ${iotType}</div>
           </div>`
@@ -612,7 +613,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-              <div style="color: #333333; font-size: 13px;">
+              <div style="color: #333333; font-size: 13px; padding-top: 4px;">
                 <div><strong>#${stationID} - ${location}</strong></div>
                 <div>Type: ${typeName}</div>
                 <div>Status: ${status}</div>
