@@ -340,15 +340,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       humidity: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       pressure: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       temperature: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       distance_m: {
