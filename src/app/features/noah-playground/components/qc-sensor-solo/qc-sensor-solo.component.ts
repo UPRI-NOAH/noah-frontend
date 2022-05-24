@@ -5,10 +5,12 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
-  sensor1: 'Automated Factory Systems',
-  sensor2: 'Water Level Measurement',
-  sensor3: 'Flood Monitoring',
-  sensor4: 'Proximity Zone Detection',
+  humidity: 'Relative Humidity',
+  pressure: 'Air Pressure',
+  temperature: 'Temperature (Celsius)',
+  distance_m: 'Flood Height',
+  // distance: 'Distance',
+  // sensor_1: 'Sensor_1'
 };
 
 @Component({
