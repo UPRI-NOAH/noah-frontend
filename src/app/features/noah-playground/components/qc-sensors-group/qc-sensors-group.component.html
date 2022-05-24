@@ -69,9 +69,18 @@
 
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
-
+    <div class="pl-5">
+      <p class="text-s italic mt-2">Weather Sensors</p>
+    </div>
     <noah-qc-sensor-solo
       *ngFor="let qcSensorType of qcSensorTypes"
+      [qcSensorType]="qcSensorType"
+    ></noah-qc-sensor-solo>
+    <div class="pl-5">
+      <p class="text-s italic mt-2">Flood Sensors</p>
+    </div>
+    <noah-qc-sensor-solo
+      *ngFor="let qcSensorType of qcWeatherTypes"
       [qcSensorType]="qcSensorType"
     ></noah-qc-sensor-solo>
 
