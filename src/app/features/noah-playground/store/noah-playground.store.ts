@@ -13,7 +13,18 @@ export const PH_DEFAULT_CENTER = {
   lng: 120.443461,
 };
 
+export const QC_DEFAULT_CENTER = {
+  lat: 14.6492,
+  lng: 121.0732,
+};
+
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
+
+export type QuezonCitySensorType =
+  | 'humidity'
+  | 'pressure'
+  | 'temperature'
+  | 'distance_m';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -136,6 +147,17 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
+export type QuezonCitySensorTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type QuezonCitySensorsState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -147,6 +169,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  qcSensors: QuezonCitySensorsState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -305,6 +328,28 @@ const createInitialValue = (): NoahPlaygroundState => ({
         fetched: false,
       },
       wlmsarg: {
+        shown: true,
+        fetched: false,
+      },
+    },
+  },
+  qcSensors: {
+    shown: false,
+    expanded: false,
+    types: {
+      humidity: {
+        shown: false,
+        fetched: false,
+      },
+      pressure: {
+        shown: false,
+        fetched: false,
+      },
+      temperature: {
+        shown: false,
+        fetched: false,
+      },
+      distance_m: {
         shown: true,
         fetched: false,
       },

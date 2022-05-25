@@ -17,6 +17,7 @@ import {
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
+  QuezonCitySensorType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -70,6 +71,14 @@ export class NoahPlaygroundService {
 
   get sensorsGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.expanded));
+  }
+
+  get qcSensorsGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcSensors.shown));
+  }
+
+  get qcSensorsGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcSensors.expanded));
   }
 
   get weatherSatellitesShown$(): Observable<boolean> {
@@ -200,6 +209,22 @@ export class NoahPlaygroundService {
   getSensorTypeFetched$(sensorType: SensorType): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.sensors.types[sensorType].fetched)
+    );
+  }
+
+  getQuezonCitySensorTypeShown$(
+    qcSensorType: QuezonCitySensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcSensors.types[qcSensorType].shown)
+    );
+  }
+
+  getQuezonCitySensorTypeFetched$(
+    qcSensorType: QuezonCitySensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcSensors.types[qcSensorType].fetched)
     );
   }
 
@@ -383,6 +408,47 @@ export class NoahPlaygroundService {
     );
   }
 
+  toggleQuezonCitySensorsGroupExpanded(): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    const { expanded } = qcSensors;
+    qcSensors.expanded = !expanded;
+
+    this.store.patch(
+      { qcSensors },
+      `update quezon city sensor group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleQuezonCitySensorsGroupShown(): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    const { shown } = qcSensors;
+    qcSensors.shown = !shown;
+
+    this.store.patch(
+      { qcSensors },
+      `update quezon city sensor group state shown to ${!shown}`
+    );
+  }
+
+  setQuezonCitySensorTypeShown(qcSensorType: QuezonCitySensorType): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    const { shown } = qcSensors.types[qcSensorType];
+    qcSensors.types[qcSensorType].shown = !shown;
+    this.store.patch(
+      { qcSensors },
+      `change quezon city sensor ${qcSensorType}'visibility to ${!shown}`
+    );
+  }
+
   getWeatherSatellites(): WeatherSatelliteState {
     return this.store.state.weatherSatellite;
   }
@@ -463,6 +529,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `change sensor's fetched status ${sensorType}' to ${!fetched}`
+    );
+  }
+
+  setQuezonCitySensorTypeFetched(
+    qcSensorType: QuezonCitySensorType,
+    fetched = true
+  ): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    qcSensors.types[qcSensorType].fetched = fetched;
+    this.store.patch(
+      { qcSensors },
+      `change quezon city sensor's fetched status ${qcSensorType}' to ${!fetched}`
     );
   }
 
