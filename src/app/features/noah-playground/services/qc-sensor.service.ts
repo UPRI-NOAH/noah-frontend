@@ -18,7 +18,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://noah-api.up.edu.ph/';
+  private QCBASE_URL = 'https://noah-api.up.edu.ph';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
