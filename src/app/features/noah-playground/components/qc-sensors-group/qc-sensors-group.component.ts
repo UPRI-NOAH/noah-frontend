@@ -9,8 +9,12 @@ import { Observable } from 'rxjs';
   styleUrls: ['./qc-sensors-group.component.scss'],
 })
 export class QcSensorsGroupComponent implements OnInit {
-  qcSensorTypes: QuezonCitySensorType[] = ['sensor1', 'sensor2'];
-  qcWeatherTypes: QuezonCitySensorType[] = ['sensor3', 'sensor4'];
+  qcSensorTypes: QuezonCitySensorType[] = [
+    'humidity',
+    'pressure',
+    'temperature',
+  ];
+  qcWeatherTypes: QuezonCitySensorType[] = ['distance_m'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;

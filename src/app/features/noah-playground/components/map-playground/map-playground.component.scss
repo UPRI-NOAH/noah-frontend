@@ -8,3 +8,8 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+.mapboxgl-popup-close-button {
+  z-index: 1;
+  font-size: 20px;
+  right: 5px;
+}
