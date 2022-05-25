@@ -25,8 +25,6 @@ export type QuezonCitySensorType =
   | 'pressure'
   | 'temperature'
   | 'distance_m';
-// | 'distance'
-// | 'sensor_1';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -355,14 +353,6 @@ const createInitialValue = (): NoahPlaygroundState => ({
         shown: true,
         fetched: false,
       },
-      // distance:{
-      //   shown: true,
-      //   fetched: false,
-      // },
-      // sensor_1:{
-      //   shown: true,
-      //   fetched: false
-      // }
     },
   },
   contourMaps: {

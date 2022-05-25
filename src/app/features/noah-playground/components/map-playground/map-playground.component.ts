@@ -103,8 +103,6 @@ export type RawLandslideHazards =
 
 type LH2Subtype = 'af' | 'df';
 
-// hazardOpacity$: Observable<number>;
-// hazardShown$: Observable<boolean>;
 HC_exporting(Highcharts);
 HC_Data(Highcharts);
 Accessbility(Highcharts);

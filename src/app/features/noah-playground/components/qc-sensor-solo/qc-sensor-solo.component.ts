@@ -9,8 +9,6 @@ export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
   pressure: 'Air Pressure',
   temperature: 'Temperature (Celsius)',
   distance_m: 'Flood Height',
-  // distance: 'Distance',
-  // sensor_1: 'Sensor_1'
 };
 
 @Component({

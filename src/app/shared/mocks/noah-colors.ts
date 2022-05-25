@@ -61,7 +61,5 @@ export const IOT_SENSOR_COLORS: Record<QuezonCitySensorType, string> = {
   humidity: '#a405b0',
   pressure: '#718a01',
   temperature: '#0dc642',
-  //distance: '#064635',
   distance_m: '#519259',
-  //sensor_1: '#F0BB62',
 };
