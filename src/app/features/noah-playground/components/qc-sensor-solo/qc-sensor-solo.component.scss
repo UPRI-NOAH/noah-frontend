@@ -1,0 +1,50 @@
+.humidity {
+  --color: #a405b0;
+  background-color: #a405b0;
+  &,
+  input {
+    border-radius: 100% !important;
+    --border-color: #9ca3af;
+  }
+}
+
+.pressure {
+  --color: #718a01;
+  background-color: #718a01;
+  &,
+  input {
+    border-radius: 100% !important;
+    --border-color: #9ca3af;
+  }
+}
+
+.weather {
+  --color: #d85518;
+  background-color: #d85518;
+
+  &,
+  input {
+    border-radius: 100% !important;
+    --border-color: #9ca3af;
+  }
+}
+
+.temperature {
+  --color: #0dc642;
+  background-color: #0dc642;
+  &,
+  input {
+    border-radius: 100% !important;
+    --border-color: #9ca3af;
+  }
+}
+
+.distance_m {
+  --color: #519259;
+  background-color: #519259;
+  &,
+  input {
+    border-radius: 100% !important;
+    --border-color: #9ca3af;
+  }
+}
