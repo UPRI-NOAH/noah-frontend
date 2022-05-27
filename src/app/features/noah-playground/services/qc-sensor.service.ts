@@ -17,7 +17,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://noah-api.up.edu.ph';
+  private QCBASE_URL = 'https://e0f5-136-158-11-205.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
