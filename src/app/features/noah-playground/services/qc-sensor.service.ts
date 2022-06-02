@@ -17,7 +17,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://noah-api.up.edu.ph';
+  private QCBASE_URL = 'https://8fdc-136-158-11-205.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
@@ -28,4 +28,6 @@ export class QcSensorService {
   getQcSensorData(pk: number) {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
   }
+  //http://127.0.0.1:8000/api/iot-data/?received_at__gte=2022-05-05&received_at__lte=2022-05-12
+  //sample date Range
 }

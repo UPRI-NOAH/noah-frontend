@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+} from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -46,7 +52,7 @@ import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
+import { MatDatepicker } from '@angular/material/datepicker';
 import {
   QcSensorType,
   QcSensorService,
@@ -67,7 +73,6 @@ import {
   QC_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
 import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
-
 import {
   NOAH_COLORS,
   IOT_SENSOR_COLORS,
@@ -381,7 +386,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       title: {
         text: `${appID}`,
       },
-
       credits: {
         enabled: false,
       },
@@ -420,7 +424,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
   // END OF QC IOT
-
   initSensors() {
     SENSORS.forEach((sensorType) => {
       this.sensorService

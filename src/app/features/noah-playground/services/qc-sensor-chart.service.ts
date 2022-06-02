@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { QcSensorType } from './qc-sensor.service';
+import Highcharts from 'highcharts/highstock';
+import HC_exporting from 'highcharts/modules/exporting';
+HC_exporting(Highcharts);
 
 export type QCSensorChartOpts = {
   data: any;
@@ -9,8 +12,9 @@ export type QCSensorChartOpts = {
   providedIn: 'root',
 })
 export class QcSensorChartService {
-  constructor() {}
+  Highcharts: typeof Highcharts = Highcharts;
 
+  constructor() {}
   getQcChartOpts(qcSensorType: QcSensorType) {
     switch (qcSensorType) {
       case 'temperature':
@@ -20,11 +24,11 @@ export class QcSensorChartService {
       case 'pressure':
         return this._getPressOtps();
       default:
-        return this._getDistanceMOtps();
+        return this._getFloodHeightOtps();
     }
   }
 
-  qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
+  qcShowChart(chart: Highcharts.StockChart, payload: QCSensorChartOpts) {
     const { data, qcSensorType } = payload;
 
     if (!data || !data?.length) {
@@ -42,6 +46,10 @@ export class QcSensorChartService {
       {
         categories: sortedData.map((d) => d.received_at),
         tickInterval: 6, //x axis display
+        type: 'datetime',
+        labels: {
+          format: '{value:%a %d %b}',
+        },
       },
       true
     );
@@ -284,9 +292,32 @@ export class QcSensorChartService {
     };
   }
   //FLOOD SENSORS
-  private _getDistanceMOtps(): any {
+  private _getFloodHeightOtps(): any {
     return {
       chart: { type: 'spline' },
+      rangeSelector: {
+        enabled: true,
+        allButtonsEnabled: true,
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1d',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1m',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
+      },
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
@@ -295,7 +326,7 @@ export class QcSensorChartService {
           {
             from: 0,
             to: 0.5,
-            color: '#0067B3',
+            color: '',
             label: {
               text: 'Low',
             },
@@ -349,7 +380,18 @@ export class QcSensorChartService {
         {
           name: 'Flood Height',
           color: '#0C2D48',
-          data: [],
+          data: [].map(function (point) {
+            return [new Date(point[0].getTime(), point[1])];
+          }),
+          pointStart: Date.UTC(2022, 4, 10),
+          pointInterval: 24 * 3600 * 1000,
+          lineWidth: 1.5,
+          marker: {
+            enabled: false,
+          },
+          hover: {
+            lineWidth: 5,
+          },
         },
       ],
     };
