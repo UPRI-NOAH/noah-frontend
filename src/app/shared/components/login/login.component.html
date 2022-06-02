@@ -104,141 +104,148 @@
             <p>Enter your information to login</p>
           </div>
 
-          <!-- <form [formGroup]="loginForm"> -->
-          <div class="flex -mx-3">
-            <div class="w-full px-3 mb-5">
-              <label for="" class="text-xs font-semibold px-1">Username</label>
-              <div class="flex">
-                <div
-                  class="
-                    w-10
-                    z-10
-                    pl-1
-                    text-center
-                    pointer-events-none
-                    flex
-                    items-center
-                    justify-center
-                  "
+          <form [formGroup]="loginForm">
+            <div class="flex -mx-3">
+              <div class="w-full px-3 mb-5">
+                <label for="" class="text-xs font-semibold px-1"
+                  >Username</label
                 >
-                  <i class="mdi mdi-email-outline text-gray-400 text-lg"></i>
+                <div class="flex">
+                  <div
+                    class="
+                      w-10
+                      z-10
+                      pl-1
+                      text-center
+                      pointer-events-none
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+                    <i class="mdi mdi-email-outline text-gray-400 text-lg"></i>
+                  </div>
+                  <input
+                    name="username"
+                    type="text"
+                    class="
+                      w-full
+                      -ml-10
+                      pl-10
+                      pr-3
+                      py-2
+                      rounded-lg
+                      border-2 border-gray-200
+                      outline-none
+                      focus:border-indigo-500
+                    "
+                    [(ngModel)]="input.username"
+                    formControlName="userNameValidation"
+                    placeholder="Username"
+                  />
                 </div>
-                <input
-                  name="username"
-                  type="text"
-                  class="
-                    w-full
-                    -ml-10
-                    pl-10
-                    pr-3
-                    py-2
-                    rounded-lg
-                    border-2 border-gray-200
-                    outline-none
-                    focus:border-indigo-500
-                  "
-                  [(ngModel)]="input.username"
-                  placeholder="Username"
-                />
-              </div>
-              <!-- <span
+                <span
                   *ngIf="
                     userNameValidation.invalid && userNameValidation.touched
                   "
                   class="text-red-600 whitespace-pre-wrap"
                   >Username is required</span
-                > -->
-            </div>
-          </div>
-          <div class="flex -mx-3">
-            <div class="w-full px-3 mb-12">
-              <label for="" class="text-xs font-semibold px-1">Password</label>
-              <div class="flex">
-                <div
-                  class="
-                    w-10
-                    z-10
-                    pl-1
-                    text-center
-                    pointer-events-none
-                    flex
-                    items-center
-                    justify-center
-                  "
                 >
-                  <i class="mdi mdi-lock-outline text-gray-400 text-lg"></i>
-                </div>
-                <input
-                  name="password"
-                  type="password"
-                  class="
-                    w-full
-                    -ml-10
-                    pl-10
-                    pr-3
-                    py-2
-                    rounded-lg
-                    border-2 border-gray-200
-                    outline-none
-                    focus:border-indigo-500
-                  "
-                  [(ngModel)]="input.password"
-                  placeholder="************"
-                />
               </div>
-              <!-- <span
+            </div>
+            <div class="flex -mx-3">
+              <div class="w-full px-3 mb-12">
+                <label for="" class="text-xs font-semibold px-1"
+                  >Password</label
+                >
+                <div class="flex">
+                  <div
+                    class="
+                      w-10
+                      z-10
+                      pl-1
+                      text-center
+                      pointer-events-none
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+                    <i class="mdi mdi-lock-outline text-gray-400 text-lg"></i>
+                  </div>
+                  <input
+                    name="password"
+                    type="password"
+                    class="
+                      w-full
+                      -ml-10
+                      pl-10
+                      pr-3
+                      py-2
+                      rounded-lg
+                      border-2 border-gray-200
+                      outline-none
+                      focus:border-indigo-500
+                    "
+                    [(ngModel)]="input.password"
+                    formControlName="passwordValidation"
+                    placeholder="************"
+                  />
+                </div>
+                <span
                   *ngIf="
                     passwordValidation.invalid && passwordValidation.touched
                   "
                   class="text-red-600"
                   >Password is required</span
-                > -->
+                >
+              </div>
             </div>
-          </div>
-          <div class="flex space-x-4 ...">
-            <div class="w-full px-3 mb-5">
-              <button
-                class="
-                  block
-                  w-full
-                  max-w-xs
-                  mx-auto
-                  bg-gray-200
-                  hover:bg-gray-300
-                  focus:bg-gray-300
-                  rounded-lg
-                  px-3
-                  py-3
-                  font-semibold
-                "
-                (click)="clearForm(loginForm)"
-              >
-                Cancel
-              </button>
+            <div class="flex space-x-4 ...">
+              <div class="w-full px-3 mb-5">
+                <button
+                  class="
+                    block
+                    w-full
+                    max-w-xs
+                    mx-auto
+                    bg-gray-200
+                    hover:bg-gray-300
+                    focus:bg-gray-300
+                    rounded-lg
+                    px-3
+                    py-3
+                    font-semibold
+                  "
+                  (click)="clearForm(loginForm)"
+                >
+                  Cancel
+                </button>
+              </div>
+              <div class="w-full px-3 mb-5">
+                <button
+                  class="
+                    block
+                    w-full
+                    max-w-xs
+                    mx-auto
+                    bg-primary
+                    hover:bg-blue-800
+                    focus:bg-blue-800
+                    text-white
+                    rounded-lg
+                    px-3
+                    py-3
+                    font-semibold
+                  "
+                  routerLink="noah-playground"
+                  (click)="onLogin()"
+                >
+                  Login
+                </button>
+              </div>
             </div>
-            <div class="w-full px-3 mb-5">
-              <button
-                class="
-                  block
-                  w-full
-                  max-w-xs
-                  mx-auto
-                  bg-primary
-                  hover:bg-blue-800
-                  focus:bg-blue-800
-                  text-white
-                  rounded-lg
-                  px-3
-                  py-3
-                  font-semibold
-                "
-                (click)="onLogin()"
-              >
-                Login
-              </button>
-            </div>
-          </div>
-          <!-- </form> -->
+          </form>
         </div>
       </div>
     </div>
