@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class QcLoginService {
+  private QCBASE_URL = 'http://ed86-136-158-11-9.ngrok.io';
   loginModal: boolean;
   qcadmin = 'QC Admin';
   showAdminResult: boolean;
@@ -13,10 +14,7 @@ export class QcLoginService {
   constructor(private http: HttpClient) {}
 
   loginUser(userData): Observable<any> {
-    return this.http.post(
-      'http://c8d3-136-158-11-9.ngrok.io/api/auth/token/login/',
-      userData
-    );
+    return this.http.post(`${this.QCBASE_URL}/api/auth/token/login/`, userData);
   }
 
   showAdmin(): void {
