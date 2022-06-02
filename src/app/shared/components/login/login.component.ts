@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class LoginComponent implements OnInit {
   isLoginModal: boolean;
   input;
 
-  constructor(private loginService: QcLoginService) {}
+  constructor(private loginService: QcLoginService, private router: Router) {}
 
   loginForm = new FormGroup({
     userNameValidation: new FormControl('', Validators.required),
@@ -38,11 +39,13 @@ export class LoginComponent implements OnInit {
     this.loginService.loginUser(this.input).subscribe(
       (response) => {
         console.log(response);
-        alert('User ' + this.input.username + ' logged.');
+        // alert('User ' + this.input.username + ' logged.');
         this.isLoginModal = false;
+        this.router.navigate(['noah-playground']);
       },
       (error) => {
         console.log('error', error);
+        alert('Please Enter Valid Details');
       }
     );
   }
