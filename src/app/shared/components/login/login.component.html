@@ -137,6 +137,7 @@
                     outline-none
                     focus:border-indigo-500
                   "
+                  [(ngModel)]="input.username"
                   placeholder="Username"
                 />
               </div>
@@ -145,7 +146,7 @@
                     userNameValidation.invalid && userNameValidation.touched
                   "
                   class="text-red-600 whitespace-pre-wrap"
-                  >Email is required</span
+                  >Username is required</span
                 > -->
             </div>
           </div>
@@ -181,6 +182,7 @@
                     outline-none
                     focus:border-indigo-500
                   "
+                  [(ngModel)]="input.password"
                   placeholder="************"
                 />
               </div>
@@ -209,6 +211,7 @@
                   py-3
                   font-semibold
                 "
+                (click)="clearForm(loginForm)"
               >
                 Cancel
               </button>
@@ -229,6 +232,7 @@
                   py-3
                   font-semibold
                 "
+                (click)="onLogin()"
               >
                 Login
               </button>

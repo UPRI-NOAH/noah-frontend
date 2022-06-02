@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +10,14 @@ export class QcLoginService {
   qcadmin = 'QC Admin';
   showAdminResult: boolean;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  loginUser(userData): Observable<any> {
+    return this.http.post(
+      'http://c8d3-136-158-11-9.ngrok.io/api/auth/token/login/',
+      userData
+    );
+  }
 
   showAdmin(): void {
     this.showAdminResult = true;
