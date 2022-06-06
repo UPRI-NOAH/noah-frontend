@@ -18,6 +18,7 @@ export class QcSensorsGroupComponent implements OnInit {
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
+  isLoginModal: boolean;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
@@ -33,7 +34,7 @@ export class QcSensorsGroupComponent implements OnInit {
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-
+    this.isLoginModal = true;
     this.pgService.toggleQuezonCitySensorsGroupShown();
   }
 }
