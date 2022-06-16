@@ -83,7 +83,9 @@
       *ngFor="let qcSensorType of qcWeatherTypes"
       [qcSensorType]="qcSensorType"
     ></noah-qc-sensor-solo>
-    <noah-summary></noah-summary>
+    <noah-summary
+      [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
+    ></noah-summary>
   </div>
 </div>
 <noah-disclaimer *ngIf="isLoginModal"></noah-disclaimer>
