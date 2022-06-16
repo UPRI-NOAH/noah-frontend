@@ -383,6 +383,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
   async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
+      type: 'StockChart',
       title: {
         text: `${appID}`,
       },

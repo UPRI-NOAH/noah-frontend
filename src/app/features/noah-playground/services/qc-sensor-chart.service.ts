@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QcSensorType } from './qc-sensor.service';
 import Highcharts from 'highcharts/highstock';
-import HC_exporting from 'highcharts/modules/exporting';
-HC_exporting(Highcharts);
 
 export type QCSensorChartOpts = {
   data: any;
@@ -13,8 +11,10 @@ export type QCSensorChartOpts = {
 })
 export class QcSensorChartService {
   Highcharts: typeof Highcharts = Highcharts;
+  // Load Highcharts Maps as a module
 
   constructor() {}
+
   getQcChartOpts(qcSensorType: QcSensorType) {
     switch (qcSensorType) {
       case 'temperature':
@@ -28,7 +28,7 @@ export class QcSensorChartService {
     }
   }
 
-  qcShowChart(chart: Highcharts.StockChart, payload: QCSensorChartOpts) {
+  qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
     const { data, qcSensorType } = payload;
 
     if (!data || !data?.length) {
@@ -41,14 +41,18 @@ export class QcSensorChartService {
       );
     });
 
+    const getDateTime: any = sortedData.map(
+      (d) => (d.received_at = new Date().getTime())
+    );
+    console.log('Whole number date', getDateTime);
     // X AXIS
     chart.xAxis[0].update(
       {
-        categories: sortedData.map((d) => d.received_at),
+        categories: getDateTime,
         tickInterval: 6, //x axis display
         type: 'datetime',
         labels: {
-          format: '{value:%a %d %b}',
+          format: '{value:%Y-%b-%e}',
         },
       },
       true
@@ -380,11 +384,7 @@ export class QcSensorChartService {
         {
           name: 'Flood Height',
           color: '#0C2D48',
-          data: [].map(function (point) {
-            return [new Date(point[0].getTime(), point[1])];
-          }),
-          pointStart: Date.UTC(2022, 4, 10),
-          pointInterval: 24 * 3600 * 1000,
+          data: [],
           lineWidth: 1.5,
           marker: {
             enabled: false,
