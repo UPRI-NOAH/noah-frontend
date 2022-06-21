@@ -157,11 +157,20 @@ export class KyhService {
     );
   }
 
+  // private _getAllTilesetNames(): string {
+  //   const tilesetNames = {
+  //     flood: 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata_tls',
+  //     landslide:
+  //       'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls',
+  //     'storm-surge': 'upri-noah.ph_ssh_ssa4_tls',
+  //   };
+
+  //   return `${tilesetNames['flood']},${tilesetNames['landslide']},${tilesetNames['storm-surge']}`;
+  // }
   private _getAllTilesetNames(): string {
     const tilesetNames = {
       flood: 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata_tls',
-      landslide:
-        'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls,upri-noah.ph_lh_lh3_tls',
+      landslide: 'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls',
       'storm-surge': 'upri-noah.ph_ssh_ssa4_tls',
     };
 
