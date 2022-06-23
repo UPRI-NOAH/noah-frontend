@@ -301,7 +301,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center: QC_DEFAULT_CENTER,
-          zoom: 12,
+          zoom: 13,
           essential: true,
         });
       });

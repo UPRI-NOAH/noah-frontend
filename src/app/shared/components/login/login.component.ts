@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
+import { QC_DEFAULT_CENTER } from '@features/noah-playground/store/noah-playground.store';
+import { Map } from 'mapbox-gl';
 
 @Component({
   selector: 'noah-login',
@@ -9,6 +11,7 @@ import { QcLoginService } from '@features/noah-playground/services/qc-login.serv
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
+  map!: Map;
   isLoginModal: boolean;
   input;
 
@@ -42,6 +45,11 @@ export class LoginComponent implements OnInit {
         // alert('User ' + this.input.username + ' logged.');
         this.isLoginModal = false;
         this.router.navigate(['noah-playground']);
+        this.map.flyTo({
+          center: QC_DEFAULT_CENTER,
+          zoom: 13,
+          essential: true,
+        });
       },
       (error) => {
         console.log('error', error);

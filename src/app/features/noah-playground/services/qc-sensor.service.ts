@@ -18,7 +18,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://e339-136-158-11-205.ngrok.io';
+  private QCBASE_URL = 'http://8d52-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {

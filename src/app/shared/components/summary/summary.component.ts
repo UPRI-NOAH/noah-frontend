@@ -36,9 +36,9 @@ export class SummaryComponent implements OnInit {
           const currentFeature = data.features[i];
           const locationName = currentFeature.properties.name;
           const iotType = currentFeature.properties.iot_type;
-          //console.log(locationName)
+          console.log(locationName + iotType + '  yesy');
           this.location = currentFeature.properties.name;
-          console.log(this.location);
+          console.log(this.location + 'location');
         }
       });
 

@@ -89,8 +89,8 @@
               Quezon City Latest Data Summary Dashboard
             </h1>
             <p class="text-lg">
-              <b class="text-primary">11</b> Active Sensors out of
-              <b class="text-black">36</b> Total Sensors
+              <b class="text-primary">7</b> Active Sensors out of
+              <b class="text-black">10</b> Total Sensors
             </p>
             <p class="italic text-lg">
               As of {{ todayString | date: 'fullDate' }}
@@ -173,7 +173,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let loc of location | async">
+                      <tr *ngFor="let loc of location">
                         <td
                           class="
                             px-5
@@ -186,7 +186,7 @@
                           <div class="flex items-center">
                             <div class="ml-3">
                               <p class="text-gray-900 whitespace-no-wrap">
-                                {{ loc }}
+                                {{ loc.locationName }}
                               </p>
                             </div>
                           </div>
@@ -200,7 +200,9 @@
                             text-sm
                           "
                         >
-                          <p class="text-gray-900 whitespace-no-wrap">flood</p>
+                          <p class="text-gray-900 whitespace-no-wrap">
+                            {{ loc.iotType }}
+                          </p>
                         </td>
                         <td
                           class="
