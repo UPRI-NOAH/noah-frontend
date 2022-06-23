@@ -6,7 +6,6 @@ export type QcSensorType =
   | 'pressure'
   | 'temperature'
   | 'distance_m';
-//waterlevel
 
 export const QCSENSORS: QcSensorType[] = [
   'humidity',
@@ -18,7 +17,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://noah.up.edu.ph';
+  private QCBASE_URL = 'http://971b-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {

@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   ViewChild,
+  Input,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -45,7 +46,10 @@ import {
   SensorType,
 } from '@features/noah-playground/services/sensor.service';
 
-import * as Highcharts from 'highcharts';
+const Highcharts = require('highcharts/highstock');
+// Load Highcharts Maps as a module
+require('highcharts/modules/map')(Highcharts);
+declare const require: any;
 import HC_exporting from 'highcharts/modules/exporting';
 import HC_Data from 'highcharts/modules/export-data';
 import Accessbility from 'highcharts/modules/accessibility';
@@ -72,7 +76,10 @@ import {
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
-import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
+import {
+  QCSensorChartOpts,
+  QcSensorChartService,
+} from '@features/noah-playground/services/qc-sensor-chart.service';
 import {
   NOAH_COLORS,
   IOT_SENSOR_COLORS,
@@ -383,7 +390,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
   async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
-      type: 'StockChart',
       title: {
         text: `${appID}`,
       },
@@ -405,10 +411,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             ],
           },
         },
+        rangeSelector: {
+          selected: 1,
+        },
       },
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    const chart = Highcharts.chart('graph-dom', options);
+    const chart = Highcharts.stockChart('graph-dom', options);
     chart.showLoading();
 
     const response: any = await this.qcSensorService

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { QcSensorType } from './qc-sensor.service';
 import Highcharts from 'highcharts/highstock';
 
@@ -6,25 +6,23 @@ export type QCSensorChartOpts = {
   data: any;
   qcSensorType: QcSensorType;
 };
+
 @Injectable({
   providedIn: 'root',
 })
 export class QcSensorChartService {
-  Highcharts: typeof Highcharts = Highcharts;
-  // Load Highcharts Maps as a module
-
   constructor() {}
 
   getQcChartOpts(qcSensorType: QcSensorType) {
     switch (qcSensorType) {
-      case 'temperature':
-        return this._getTempOtps();
+      case 'distance_m':
+        return this._getFloodHeightOtps();
       case 'humidity':
         return this._getHumChartOtps();
       case 'pressure':
         return this._getPressOtps();
       default:
-        return this._getFloodHeightOtps();
+        return this._getTempOtps();
     }
   }
 
@@ -41,49 +39,23 @@ export class QcSensorChartService {
       );
     });
 
-    const getDateTime: any = sortedData.map(
+    const getDateTime: any = data.map(
       (d) => (d.received_at = new Date().getTime())
     );
-    console.log('Whole number date', getDateTime);
+    console.log('Whole number date', payload);
+    localStorage.setItem('dateDateTime', JSON.stringify(data));
+
     // X AXIS
     chart.xAxis[0].update(
       {
         categories: getDateTime,
-        tickInterval: 6, //x axis display
-        type: 'datetime',
+        tickInterval: 7, //x axis display
         labels: {
-          format: '{value:%Y-%b-%e}',
+          format: '{value:%b-%e-%Y-%H:%M}',
         },
       },
       true
     );
-    // Y AXIS
-    switch (qcSensorType) {
-      case 'humidity':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.hum_rh)),
-          true
-        );
-        break;
-      case 'pressure':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.pres_hpa)),
-          true
-        );
-        break;
-      case 'temperature':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.temp_c)),
-          true
-        );
-        break;
-      default:
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.distance_m)),
-          true
-        );
-        break;
-    }
   }
   private _getHumChartOtps(): any {
     return {
@@ -297,9 +269,23 @@ export class QcSensorChartService {
   }
   //FLOOD SENSORS
   private _getFloodHeightOtps(): any {
+    const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
+    const processedData = calendarDate.map((el) => ({
+      x: new Date(el.received_at).getTime(),
+      y: el.distance_m,
+    }));
     return {
       chart: { type: 'spline' },
+      xAxis: {
+        labels: {
+          format: '%b %e, %Y %H:%M',
+        },
+      },
+      subtitle: {
+        text: 'Flood Height',
+      },
       rangeSelector: {
+        inputDateFormat: '%b %e, %Y %H:%M',
         enabled: true,
         allButtonsEnabled: true,
         buttons: [
@@ -326,6 +312,7 @@ export class QcSensorChartService {
         alignTicks: false,
         tickInterval: 0.5,
         color: '#0C2D48',
+        opposite: false,
         plotBands: [
           {
             from: 0,
@@ -384,7 +371,7 @@ export class QcSensorChartService {
         {
           name: 'Flood Height',
           color: '#0C2D48',
-          data: [],
+          data: processedData,
           lineWidth: 1.5,
           marker: {
             enabled: false,
