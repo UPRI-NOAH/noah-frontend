@@ -16,6 +16,7 @@ export class SummaryComponent implements OnInit {
   dropDownList;
   todayString: string = new Date().toDateString();
   location: any = [];
+  summaryData = [];
   constructor(private qcSensorService: QcSensorService) {}
 
   ngOnInit(): void {
@@ -29,6 +30,7 @@ export class SummaryComponent implements OnInit {
   }
 
   viewSummary() {
+    this.qcSensorService.getQcSummaryData().subscribe;
     this.qcSensorService
       .getLocation()
       .subscribe((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {

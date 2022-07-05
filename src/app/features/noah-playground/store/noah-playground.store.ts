@@ -14,8 +14,8 @@ export const PH_DEFAULT_CENTER = {
 };
 
 export const QC_DEFAULT_CENTER = {
-  lat: 14.6492,
-  lng: 121.0732,
+  lat: 14.65146,
+  lng: 121.04925,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
@@ -167,6 +167,7 @@ type NoahPlaygroundState = {
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
+  qcCenter: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
   qcSensors: QuezonCitySensorsState;
@@ -310,6 +311,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   center: null,
+  qcCenter: QC_DEFAULT_CENTER,
   currentLocation: '-----',
   sensors: {
     shown: false,

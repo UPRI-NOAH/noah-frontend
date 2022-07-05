@@ -6,9 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class QcLoginService {
-  private QCBASE_URL = 'http://846d-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'https://noah-api.up.edu.ph';
   loginModal: boolean;
   qcadmin = 'QC Admin';
+  isLoginModal: boolean = false;
   showAdminResult: boolean;
 
   constructor(private http: HttpClient) {}
@@ -35,5 +36,34 @@ export class QcLoginService {
   hideLoginModal(): void {
     this.loginModal = false;
     console.log('HIDE MODAL');
+  }
+
+  getQuezonCityLocation(): Promise<{ lat: number; lng: number }> {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject();
+      }
+
+      function locationSuccess() {
+        // const latitude = position.coords.latitude;
+        // const longitude = position.coords.longitude;
+        const coords = { lng: 121.04925, lat: 14.65146 };
+        resolve(coords);
+      }
+
+      function locationError(error) {
+        reject(error);
+      }
+
+      const options = {
+        enableHighAccuracy: true,
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        locationSuccess,
+        locationError,
+        options
+      );
+    });
   }
 }

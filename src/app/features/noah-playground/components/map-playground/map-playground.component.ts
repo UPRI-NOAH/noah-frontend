@@ -305,6 +305,85 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           essential: true,
         });
       });
+
+    this.map.addSource('hospital-qc', {
+      type: 'geojson',
+      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson',
+      // data: 'https://noah-frontend.s3.ap-southeast-1.amazonaws.com/assets/geojson/hospitals-qc.geojson',
+    });
+    // this.map.addSource('barangay-qc', {
+    //   type: 'geojson',
+    //   data: 'https://noah-frontend.s3.ap-southeast-1.amazonaws.com/assets/geojson/hospitals-qc.geojson',
+    // });
+    this.map.addLayer({
+      id: 'p_school',
+      type: 'fill',
+      source: 'hospital-qc', // reference the data source
+      layout: {},
+      paint: {
+        'fill-color': '#0080ff', // blue color fill
+        'fill-opacity': 0.4,
+      },
+      filter: ['==', 'CF Type', 'Private School'],
+    });
+    // Add a black outline around the polygon.
+    this.map.addLayer({
+      id: 'ps_outline',
+      type: 'line',
+      source: 'hospital-qc',
+      layout: {},
+      paint: {
+        'line-color': '#0000ff',
+        'line-width': 3,
+      },
+      filter: ['==', 'CF Type', 'Private School'],
+    });
+    this.map.addLayer({
+      id: 'barangay',
+      type: 'fill',
+      source: 'hospital-qc', // reference the data source
+      layout: {},
+      paint: {
+        'fill-color': '#00ff00', // blue color fill
+        'fill-opacity': 0.4,
+      },
+      filter: ['==', 'CF Type', 'Barangay'],
+    });
+    // Add a black outline around the polygon.
+    this.map.addLayer({
+      id: 'b_outline',
+      type: 'line',
+      source: 'hospital-qc',
+      layout: {},
+      paint: {
+        'line-color': '#00ff00',
+        'line-width': 3,
+      },
+      filter: ['==', 'CF Type', 'Barangay'],
+    });
+    this.map.addLayer({
+      id: 'hospitals',
+      type: 'fill',
+      source: 'hospital-qc', // reference the data source
+      layout: {},
+      paint: {
+        'fill-color': '#804B9B', // blue color fill
+        'fill-opacity': 1,
+      },
+      filter: ['==', 'CF Type', 'Hospital'],
+    });
+    // Add a black outline around the polygon.
+    this.map.addLayer({
+      id: 'h_outline',
+      type: 'line',
+      source: 'hospital-qc',
+      layout: {},
+      paint: {
+        'line-color': '#804B9B',
+        'line-width': 3,
+      },
+      filter: ['==', 'CF Type', 'Hospital'],
+    });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {

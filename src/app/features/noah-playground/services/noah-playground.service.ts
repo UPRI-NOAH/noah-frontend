@@ -21,7 +21,7 @@ import {
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
@@ -45,6 +45,17 @@ export class NoahPlaygroundService {
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
+  }
+
+  get qcCenter$(): Observable<{ lng: number; lat: number }> {
+    return this.store.state$.pipe(
+      map((state) => state.qcCenter),
+      shareReplay(1)
+    );
+  }
+
+  get qcCenter(): { lng: number; lat: number } {
+    return this.store.state.qcCenter;
   }
 
   get currentLocation$(): Observable<string> {
@@ -360,6 +371,10 @@ export class NoahPlaygroundService {
 
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
+  }
+
+  setQcCenter(qcCenter: { lat: number; lng: number }) {
+    this.store.patch({ qcCenter });
   }
 
   setCurrentLocation(currentLocation: string): void {
