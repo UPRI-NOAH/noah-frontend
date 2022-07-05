@@ -363,8 +363,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             _this.showQcChart(+pk, name, qcSensorType);
-
             _this._graphShown = true;
+            console.log('pk', pk);
+            localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
+            _this.showUpdatePk();
+            _this.updatePkCalendar();
           });
         } else {
           popUp.remove();
@@ -388,6 +391,28 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       popUp.remove();
     });
   }
+  //update pk and chart
+  async showUpdatePk() {
+    try {
+      const response: any = await this.qcSensorService
+        .getQcIotSensorData()
+        .pipe(first())
+        .toPromise();
+      localStorage.setItem(
+        'calendarDateTime',
+        JSON.stringify(response.results)
+      );
+    } catch (error) {}
+  }
+  async updatePkCalendar() {
+    try {
+      const response: any = await this.qcSensorService
+        .getQcCalendar()
+        .pipe(first())
+        .toPromise();
+      localStorage.setItem('dateCalendar', JSON.stringify(response.results));
+    } catch (error) {}
+  }
   async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
       title: {
@@ -398,7 +423,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       exporting: {
         enabled: true,
-        showTable: false,
         fileName: 'Quezon IoT Data',
         buttons: {
           contextButton: {
@@ -411,13 +435,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             ],
           },
         },
-        rangeSelector: {
-          selected: 1,
-        },
       },
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    const chart = Highcharts.stockChart('graph-dom', options);
+    let chart = Highcharts.stockChart('graph-dom', options);
     chart.showLoading();
 
     const response: any = await this.qcSensorService
@@ -433,6 +454,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
+
   // END OF QC IOT
   initSensors() {
     SENSORS.forEach((sensorType) => {

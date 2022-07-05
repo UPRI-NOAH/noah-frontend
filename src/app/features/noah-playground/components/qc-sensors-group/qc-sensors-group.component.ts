@@ -21,7 +21,6 @@ export class QcSensorsGroupComponent implements OnInit {
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
   isLoginModal: boolean;
-  pk: any;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -31,20 +30,15 @@ export class QcSensorsGroupComponent implements OnInit {
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
     this.shown$ = this.pgService.qcSensorsGroupShown$;
-    this.showdata(this.pk);
+    this.showdata();
   }
 
   //storing data to localstorage
-  async showdata(pk: number) {
+  async showdata() {
     const response: any = await this.qcSensorService
-      .getQcSensorData(pk)
+      .getQcIotSensorData()
       .pipe(first())
       .toPromise();
-
-    const qcSensorChartOpts = {
-      data: response.results,
-    };
-    console.log('Data data data', response.results);
     localStorage.setItem('calendarDateTime', JSON.stringify(response.results));
   }
 
