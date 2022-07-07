@@ -25,17 +25,7 @@ export class QcSensorChartService {
   }
 
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
-    const { data, qcSensorType } = payload;
-
-    if (!data || !data?.length) {
-      chart.showLoading('No Data Available');
-    }
-
-    const sortedData = data.sort((a: any, b: any) => {
-      return (
-        new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
-      );
-    });
+    const { qcSensorType } = payload;
 
     const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
     const sortedCalendar = calendarDate.sort((a: any, b: any) => {
@@ -43,66 +33,20 @@ export class QcSensorChartService {
         new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
-    localStorage.setItem(
-      'xValue',
-      JSON.stringify(
-        sortedCalendar.map((el) => new Date(el.received_at).getTime())
-      )
-    );
 
     const pointStart = sortedCalendar.map((el) =>
       new Date(el.received_at).getTime()
     );
     localStorage.setItem('pointStart', JSON.stringify(pointStart));
-    //console.log('hahahah',data)
-    // const processedData = calendarDate.map((el) => ({
-    //   x: new Date(el.received_at).getTime(),
-    //   y: el.distance_m,
-    // }));
 
-    //  X AXIS
-    chart.xAxis[0].update({
-      categories: sortedCalendar.map((el) =>
-        new Date(el.received_at).getTime()
-      ),
-      labels: {
-        format: '{value:%b:%e}',
-      },
-    });
-    chart.xAxis[0].setExtremes(
-      pointStart[pointStart.length - 30],
-      pointStart[pointStart.length - 1],
-      false
+    const processedData = calendarDate.map((el) => ({
+      x: new Date(el.received_at).getTime(),
+      y: el.distance_m,
+    }));
+
+    const setPoints = sortedCalendar.map((el) =>
+      new Date(el.received_at).getTime()
     );
-    chart.redraw();
-
-    // // Y AXIS
-    switch (qcSensorType) {
-      case 'humidity':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.hum_rh)),
-          true
-        );
-        break;
-      case 'pressure':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.pres_hpa)),
-          true
-        );
-        break;
-      case 'temperature':
-        chart.series[0].setData(
-          sortedData.map((d) => Number(d.temp_c)),
-          true
-        );
-        break;
-      default:
-        chart.series[0].setData(
-          sortedCalendar.map((el) => Number(el.distance_m)),
-          true
-        );
-        break;
-    }
   }
   private _getHumChartOtps(): any {
     return {
@@ -318,24 +262,26 @@ export class QcSensorChartService {
   private _getFloodHeightOtps(): any {
     const firstPoint = JSON.parse(localStorage.getItem('xValue'));
     const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
-    // const sortedCalendar = calendarDate.sort((a: any, b: any) => {
-    //   return (
-    //     new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
-    //   )
-    // })
-    // const processedData = calendarDate.map((el) => {
-    //   return [
-    //     sortedCalendar
-    //     ,el.distance_m]
-    // })
-    // console.log(processedData)
-
+    const sortedCalendar = calendarDate.sort((a: any, b: any) => {
+      return (
+        new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
+      );
+    });
+    const processedData = calendarDate.map((el) => {
+      return [new Date(el.received_at).getTime(), el.distance_m];
+    });
     return {
       chart: {
         type: 'spline',
       },
       subtitle: {
         text: 'Flood Height',
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: {
+          format: '{value:%b:%e:%H:%M}',
+        },
       },
       rangeSelector: {
         selected: 0,
@@ -426,17 +372,17 @@ export class QcSensorChartService {
         {
           name: 'Flood Height',
           color: '#0C2D48',
-          //data: processedData,
-          data: [],
-          pointStart: new Date(firstPoint[0]).getTime(),
-          pointInterval: 0.09 * 3600 * 1000, // 5mins day
-          // lineWidth: 1.5,
-          // marker: {
-          //   enabled: false,
-          // },
-          // hover: {
-          //   lineWidth: 5,
-          // },
+          data: processedData,
+          dataGrouping: {
+            enabled: false,
+          },
+          lineWidth: 1.5,
+          marker: {
+            enabled: false,
+          },
+          hover: {
+            lineWidth: 5,
+          },
         },
       ],
     };

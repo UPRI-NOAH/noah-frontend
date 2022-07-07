@@ -315,7 +315,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
-    const graphDiv = document.getElementById('graph-dom');
+    const graphDiv = document.getElementById('qcIot');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -438,11 +438,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    let chart = Highcharts.stockChart('graph-dom', options);
+    const chart = Highcharts.stockChart('qcIot', options);
     chart.showLoading();
 
     const response: any = await this.qcSensorService
-      .getQcSensorData(pk)
+      .getQcIotSensorData()
       .pipe(first())
       .toPromise();
 
