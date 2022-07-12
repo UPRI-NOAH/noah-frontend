@@ -1,30 +1,82 @@
 <div class="px-6 justify-center items-center">
-  <button
-    class="
-      text-xs
-      uppercase
-      font-bold
-      bg-primary
-      rounded-full
-      px-10
-      py-2
-      my-4
-      inline-flex
-      items-center
-      justify-center
-      text-white
-      focus:outline-none
-      mx-auto
-      lg:mx-0
-      tracking-widest
-      hover:bg-blue-800
-      focus:ring-opacity-50
-      border-primary border-2
-    "
-    (click)="isLoginModal = true"
+  <div *ngIf="!(LoginStatus$ | async) as LoginStatus">
+    <button
+      class="
+        text-xs
+        uppercase
+        font-bold
+        bg-primary
+        rounded-full
+        px-10
+        py-2
+        my-4
+        inline-flex
+        items-center
+        justify-center
+        text-white
+        focus:outline-none
+        mx-auto
+        lg:mx-0
+        tracking-widest
+        hover:bg-blue-800
+        focus:ring-opacity-50
+        border-primary border-2
+      "
+      (click)="isLoginModal = true"
+      *ngIf="LoginStatus"
+    >
+      LOGIN
+    </button>
+  </div>
+  <div
+    class="dropdown inline-block relative"
+    *ngIf="LoginStatus$ | async as LoginStatus"
   >
-    LOGIN
-  </button>
+    <button
+      class="ml-2 text-base whitespace-nowrap font-bold"
+      *ngIf="UserName$ | async as UserName"
+    >
+      {{ UserName | uppercase }}
+    </button>
+    <ul
+      class="
+        z-50
+        dropdown-menu
+        rounded-lg
+        shadow-2xl
+        drop-shadow-xl
+        bg-white
+        right-0
+        top-6
+        absolute
+        hidden
+        text-sm text-gray-700
+      "
+    >
+      <li class="" *ngIf="LoginStatus.valueOf()">
+        <a
+          class="
+            rounded-lg
+            block
+            px-4
+            py-2
+            text-sm
+            leading-5
+            text-gray-700
+            transition
+            duration-150
+            ease-in-out
+            hover:bg-gray-100
+            focus:outline-none focus:bg-gray-100
+          "
+          role="button"
+          (click)="onLogout()"
+          *ngIf="LoginStatus"
+          >Logout</a
+        >
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- MODAL -->
@@ -52,7 +104,7 @@
 >
   <div
     class="absolute bg-black opacity-80 inset-0 z-0"
-    (click)="loginModal()"
+    (click)="closeModal()"
   ></div>
   <!--content-->
   <div
@@ -67,49 +119,26 @@
     "
   >
     <div
-      class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
+      class="bg-gray-100 rounded-3xl shadow-xl w-full lg:w-136 overflow-hidden"
       style="max-width: 1000px"
     >
       <div class="md:flex w-full">
-        <div class="hidden md:block w-1/2 bg-primary py-10 px-10">
-          <div
-            class="
-              flex
-              items-center
-              justify-center
-              p-4
-              bg-white
-              w-full
-              rounded-lg
-              shadow-xl
-            "
-          >
-            <div class="max-w-md">
-              <img
-                class="
-                  object-cover object-center
-                  h-auto
-                  w-full
-                  rounded-md
-                  shadow
-                "
-                src="assets/icons/qc_logo.jpg"
-              />
-            </div>
+        <div class="w-full py-10 px-5 md:px-10">
+          <div class="flex justify-center gap-x-4 mb-4">
+            <img src="assets/icons/up.png" />
+            <img src="assets/icons/logo-noah.svg" class="z-50 w-20" />
+            <img src="assets/icons/upri.png" />
           </div>
-        </div>
-        <div class="w-full md:w-1/2 py-10 px-5 md:px-10">
+
           <div class="text-center mb-10">
             <h1 class="font-bold text-3xl text-gray-900">Login Your Account</h1>
             <p>Enter your information to login</p>
           </div>
 
-          <form [formGroup]="loginForm">
+          <form [formGroup]="insertForm" (ngSubmit)="onSubmit()">
             <div class="flex -mx-3">
               <div class="w-full px-3 mb-5">
-                <label for="" class="text-xs font-semibold px-1"
-                  >Username</label
-                >
+                <label for="" class="text-s font-semibold px-1">Username</label>
                 <div class="flex">
                   <div
                     class="
@@ -139,25 +168,25 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    [(ngModel)]="input.username"
-                    formControlName="userNameValidation"
+                    formControlName="Username"
                     placeholder="Username"
                   />
                 </div>
-                <span
-                  *ngIf="
-                    userNameValidation.invalid && userNameValidation.touched
-                  "
-                  class="text-red-600 whitespace-pre-wrap"
-                  >Username is required</span
+                <div
+                  *ngIf="Username.touched && Username.errors"
+                  class="errorMessage"
                 >
+                  <span
+                    class="text-red-600"
+                    *ngIf="Username.hasError('required')"
+                    >Username is required.</span
+                  >
+                </div>
               </div>
             </div>
             <div class="flex -mx-3">
               <div class="w-full px-3 mb-12">
-                <label for="" class="text-xs font-semibold px-1"
-                  >Password</label
-                >
+                <label for="" class="text-s font-semibold px-1">Password</label>
                 <div class="flex">
                   <div
                     class="
@@ -177,6 +206,7 @@
                     name="password"
                     type="password"
                     class="
+                      form-control
                       w-full
                       -ml-10
                       pl-10
@@ -187,18 +217,20 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    [(ngModel)]="input.password"
-                    formControlName="passwordValidation"
+                    formControlName="Password"
                     placeholder="************"
                   />
                 </div>
-                <span
-                  *ngIf="
-                    passwordValidation.invalid && passwordValidation.touched
-                  "
-                  class="text-red-600"
-                  >Password is required</span
+                <div
+                  *ngIf="Password.touched && Password.errors"
+                  class="errorMessage"
                 >
+                  <span
+                    class="text-red-600"
+                    *ngIf="Password.hasError('required')"
+                    >Password is required.</span
+                  >
+                </div>
               </div>
             </div>
             <div class="flex space-x-4 ...">
@@ -217,7 +249,7 @@
                     py-3
                     font-semibold
                   "
-                  (click)="clearForm(loginForm)"
+                  (click)="clearForm(insertForm)"
                 >
                   Cancel
                 </button>
@@ -238,8 +270,8 @@
                     py-3
                     font-semibold
                   "
-                  routerLink="noah-playground"
-                  (click)="onLogin()"
+                  type="submit"
+                  [disabled]="insertForm.invalid"
                 >
                   Login
                 </button>

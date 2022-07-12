@@ -1,6 +1,9 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +14,82 @@ export class QcLoginService {
   qcadmin = 'QC Admin';
   isLoginModal: boolean = false;
   showAdminResult: boolean;
+  tokenResp: any;
 
-  constructor(private http: HttpClient) {}
+  private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
+  private UserName = new BehaviorSubject<string>(
+    localStorage.getItem('username')
+  );
 
-  loginUser(userData): Observable<any> {
-    return this.http.post(`${this.QCBASE_URL}/api/auth/token/login/`, userData);
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private _location: Location
+  ) {}
+
+  loginUser(username: string, password: string) {
+    return this.http
+      .post<any>(`${this.QCBASE_URL}/api/auth/token/login/`, {
+        username,
+        password,
+      })
+      .pipe(
+        map((response) => {
+          if (response && response.auth_token) {
+            this.loginStatus.next(true);
+            localStorage.setItem('loginStatus', '1');
+            localStorage.setItem('token', response.auth_token);
+            localStorage.setItem('username', username);
+            this.UserName.next(localStorage.getItem('username'));
+            console.log('username', username);
+          }
+          return response;
+        })
+      );
+  }
+
+  isLoggedIn() {
+    return localStorage.getItem('token') != null;
+  }
+
+  logout() {
+    alert('Your Session expired');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.setItem('loginStatus', '0');
+    console.log('Logged Out Successfully');
+    this.router
+      .navigateByUrl('/logout', { skipLocationChange: true })
+      .then(() => {
+        this.router.navigate([decodeURI(this._location.path())]);
+        window.location.reload();
+      });
+  }
+
+  getRoleByToken(auth_token: any) {
+    let _auth_token = auth_token.split('.')[1];
+    this.tokenResp = JSON.parse(atob(_auth_token));
+    return this.tokenResp.role;
+  }
+
+  getToken() {
+    return localStorage.getItem('token') || '';
+  }
+
+  checkLoginStatus(): boolean {
+    const loginCookie = localStorage.getItem('loginStatus');
+    if (loginCookie == '1') {
+      return true;
+    }
+    return false;
+  }
+
+  get isLoggesIn() {
+    return this.loginStatus.asObservable();
+  }
+
+  get currentUserName() {
+    return this.UserName.asObservable();
   }
 
   showAdmin(): void {
@@ -36,34 +110,5 @@ export class QcLoginService {
   hideLoginModal(): void {
     this.loginModal = false;
     console.log('HIDE MODAL');
-  }
-
-  getQuezonCityLocation(): Promise<{ lat: number; lng: number }> {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject();
-      }
-
-      function locationSuccess() {
-        // const latitude = position.coords.latitude;
-        // const longitude = position.coords.longitude;
-        const coords = { lng: 121.04925, lat: 14.65146 };
-        resolve(coords);
-      }
-
-      function locationError(error) {
-        reject(error);
-      }
-
-      const options = {
-        enableHighAccuracy: true,
-      };
-
-      navigator.geolocation.getCurrentPosition(
-        locationSuccess,
-        locationError,
-        options
-      );
-    });
   }
 }
