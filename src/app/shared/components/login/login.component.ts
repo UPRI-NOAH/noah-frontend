@@ -42,12 +42,13 @@ export class LoginComponent implements OnInit {
   ErrorMessage: string;
   Username: FormControl;
   Password: FormControl;
-
+  disclaimerModal: boolean;
   constructor(
     private qcLoginService: QcLoginService,
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private pgService: NoahPlaygroundService
   ) {}
 
   LoginStatus$: Observable<boolean>;
@@ -89,6 +90,7 @@ export class LoginComponent implements OnInit {
           console.log(this.returnUrl);
           this.router.navigateByUrl(this.returnUrl);
           this.isLoginModal = false;
+          this.pgService.toggleQuezonCitySensorsGroupShown();
           this.router.navigateByUrl('/noah-playground');
         },
         (error) => {

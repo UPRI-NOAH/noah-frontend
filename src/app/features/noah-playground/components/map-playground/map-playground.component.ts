@@ -14,7 +14,7 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, from, fromEvent, Subject } from 'rxjs';
+import { combineLatest, from, fromEvent, Observable, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -78,6 +78,7 @@ import {
   IOT_SENSOR_COLORS,
   SENSOR_COLORS,
 } from '@shared/mocks/noah-colors';
+import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -125,23 +126,24 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
+  disclaimerModal: boolean;
 
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
-
+  LoginStatus$: Observable<boolean>;
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
-    private qcSensorChartService: QcSensorChartService
+    private qcSensorChartService: QcSensorChartService,
+    private qcLoginService: QcLoginService
   ) {}
 
   ngOnInit(): void {
     this.initMap();
-
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
@@ -162,6 +164,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initQcCenterListener();
       });
   }
 
@@ -212,6 +215,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         this.centerMarker.setLngLat(center);
       });
+  }
+
+  initQcCenterListener() {
+    const centerQC = localStorage.getItem('loginStatus');
+    if (centerQC == '1') {
+      this.map.flyTo({
+        center: QC_DEFAULT_CENTER,
+        zoom: 13,
+        essential: true,
+      });
+    }
   }
 
   /**

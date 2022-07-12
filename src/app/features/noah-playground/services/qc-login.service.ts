@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NoahPlaygroundService } from './noah-playground.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ export class QcLoginService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private _location: Location
+    private _location: Location,
+    private pgService: NoahPlaygroundService
   ) {}
 
   loginUser(username: string, password: string) {
@@ -66,19 +68,10 @@ export class QcLoginService {
       });
   }
 
-  getRoleByToken(auth_token: any) {
-    let _auth_token = auth_token.split('.')[1];
-    this.tokenResp = JSON.parse(atob(_auth_token));
-    return this.tokenResp.role;
-  }
-
-  getToken() {
-    return localStorage.getItem('token') || '';
-  }
-
   checkLoginStatus(): boolean {
     const loginCookie = localStorage.getItem('loginStatus');
     if (loginCookie == '1') {
+      this.pgService.toggleQuezonCitySensorsGroupShown();
       return true;
     }
     return false;

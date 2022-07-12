@@ -374,7 +374,7 @@ export class NoahPlaygroundService {
   }
 
   setQcCenter(qcCenter: { lat: number; lng: number }) {
-    this.store.patch({ qcCenter });
+    this.store.patch({ qcCenter }, 'Update Quezon City Location');
   }
 
   setCurrentLocation(currentLocation: string): void {
