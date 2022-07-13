@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  Input,
+} from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -39,14 +46,17 @@ import {
   SensorType,
 } from '@features/noah-playground/services/sensor.service';
 
-import * as Highcharts from 'highcharts';
+const Highcharts = require('highcharts/highstock');
+// Load Highcharts Maps as a module
+require('highcharts/modules/map')(Highcharts);
+declare const require: any;
 import HC_exporting from 'highcharts/modules/exporting';
 import HC_Data from 'highcharts/modules/export-data';
 import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
+import { MatDatepicker } from '@angular/material/datepicker';
 import {
   QcSensorType,
   QcSensorService,
@@ -66,8 +76,10 @@ import {
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
-import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
-
+import {
+  QCSensorChartOpts,
+  QcSensorChartService,
+} from '@features/noah-playground/services/qc-sensor-chart.service';
 import {
   NOAH_COLORS,
   IOT_SENSOR_COLORS,
@@ -303,7 +315,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
-    const graphDiv = document.getElementById('graph-dom');
+    const graphDiv = document.getElementById('qcIot');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -351,8 +363,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             _this.showQcChart(+pk, name, qcSensorType);
-
             _this._graphShown = true;
+            console.log('pk', pk);
+            localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
+            _this.showUpdatePk();
+            _this.updatePkCalendar();
           });
         } else {
           popUp.remove();
@@ -376,18 +391,38 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       popUp.remove();
     });
   }
+  //update pk and chart
+  async showUpdatePk() {
+    try {
+      const response: any = await this.qcSensorService
+        .getQcIotSensorData()
+        .pipe(first())
+        .toPromise();
+      localStorage.setItem(
+        'calendarDateTime',
+        JSON.stringify(response.results)
+      );
+    } catch (error) {}
+  }
+  async updatePkCalendar() {
+    try {
+      const response: any = await this.qcSensorService
+        .getQcCalendar()
+        .pipe(first())
+        .toPromise();
+      localStorage.setItem('dateCalendar', JSON.stringify(response.results));
+    } catch (error) {}
+  }
   async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
       title: {
         text: `${appID}`,
       },
-
       credits: {
         enabled: false,
       },
       exporting: {
         enabled: true,
-        showTable: false,
         fileName: 'Quezon IoT Data',
         buttons: {
           contextButton: {
@@ -403,11 +438,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    const chart = Highcharts.chart('graph-dom', options);
+    const chart = Highcharts.stockChart('qcIot', options);
     chart.showLoading();
 
     const response: any = await this.qcSensorService
-      .getQcSensorData(pk)
+      .getQcIotSensorData()
       .pipe(first())
       .toPromise();
 
@@ -419,8 +454,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
-  // END OF QC IOT
 
+  // END OF QC IOT
   initSensors() {
     SENSORS.forEach((sensorType) => {
       this.sensorService
