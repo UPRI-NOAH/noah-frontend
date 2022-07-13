@@ -6,12 +6,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./disclaimer.component.scss'],
 })
 export class DisclaimerComponent implements OnInit {
-  isLoginModal = true;
+  disclaimerModal = true;
   constructor() {}
 
   ngOnInit(): void {}
-  closeModal() {
-    this.isLoginModal = false;
-    console.log('asdasdas');
+
+  closeModal(): boolean {
+    const discStatus = localStorage.getItem('disclaimerStatus');
+    this.disclaimerModal = false;
+    if (discStatus == '1') {
+      this.disclaimerModal = false;
+      localStorage.setItem('disclaimerStatus', '0');
+      return true;
+    } else {
+      return false;
+    }
   }
 }

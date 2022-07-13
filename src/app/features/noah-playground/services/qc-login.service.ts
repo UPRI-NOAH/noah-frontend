@@ -18,6 +18,9 @@ export class QcLoginService {
   tokenResp: any;
 
   private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
+  private disclaimerStatus = new BehaviorSubject<boolean>(
+    this.checkDisclaimerStatus()
+  );
   private UserName = new BehaviorSubject<string>(
     localStorage.getItem('username')
   );
@@ -39,9 +42,11 @@ export class QcLoginService {
         map((response) => {
           if (response && response.auth_token) {
             this.loginStatus.next(true);
+            this.disclaimerStatus.next(true);
             localStorage.setItem('loginStatus', '1');
             localStorage.setItem('token', response.auth_token);
             localStorage.setItem('username', username);
+            localStorage.setItem('disclaimerStatus', '1');
             this.UserName.next(localStorage.getItem('username'));
             console.log('username', username);
           }
@@ -77,8 +82,22 @@ export class QcLoginService {
     return false;
   }
 
+  checkDisclaimerStatus(): boolean {
+    const disclaimerCookie = localStorage.getItem('disclaimerStatus');
+    if (disclaimerCookie == '1') {
+      localStorage.setItem('disclaimerStatus', '0');
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   get isLoggesIn() {
     return this.loginStatus.asObservable();
+  }
+
+  get isDisclaimerStatus() {
+    return this.disclaimerStatus.asObservable();
   }
 
   get currentUserName() {
