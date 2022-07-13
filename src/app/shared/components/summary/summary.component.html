@@ -1,0 +1,240 @@
+<div class="px-6 justify-center items-center">
+  <button
+    class="
+      text-xs
+      font-bold
+      bg-green-600
+      rounded-full
+      px-10
+      py-2
+      my-4
+      inline-flex
+      items-center
+      justify-center
+      text-white
+      focus:outline-none
+      mx-auto
+      lg:mx-0
+      tracking-widest
+      hover:bg-green-700
+      focus:ring-opacity-50
+      border-2
+    "
+    (click)="isLoginModal = true"
+  >
+    View Data Summary
+  </button>
+</div>
+
+<!-- MODAL -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+    w-full
+  "
+  id="modal"
+  *ngIf="isLoginModal"
+>
+  <div
+    class="absolute bg-black opacity-80 inset-0 z-0"
+    (click)="closeModal()"
+  ></div>
+  <!--content-->
+  <div
+    class="
+      min-w-screen min-h-screen
+      flex
+      items-center
+      z-10
+      justify-center
+      px-5
+      py-5
+    "
+  >
+    <div
+      class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
+      style="max-width: 1000px"
+    >
+      <div class="mr-2 mt-1">
+        <svg
+          class="ml-auto fill-current text-gray-700 w-6 h-6 cursor-pointer"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 18 18"
+          (click)="closeModal()"
+        >
+          <path
+            d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+          />
+        </svg>
+      </div>
+      <div class="md:flex w-full">
+        <div class="w-full py-10 px-5 md:px-10">
+          <div class="text-center mb-10">
+            <h1 class="font-bold text-3xl text-gray-900">
+              Quezon City Latest Data Summary Dashboard
+            </h1>
+            <p class="text-lg">
+              <b class="text-primary">11</b> Active Sensors out of
+              <b class="text-black">36</b> Total Sensors
+            </p>
+            <p class="italic text-lg">
+              As of {{ todayString | date: 'fullDate' }}
+            </p>
+
+            <div>
+              <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div
+                  class="
+                    inline-block
+                    min-w-full
+                    shadow
+                    rounded-lg
+                    overflow-hidden
+                  "
+                >
+                  <table class="min-w-full leading-normal">
+                    <thead>
+                      <tr>
+                        <th
+                          class="
+                            px-5
+                            py-3
+                            border-b-2 border-gray-200
+                            bg-gray-100
+                            text-left text-xs
+                            font-semibold
+                            text-gray-600
+                            uppercase
+                            tracking-wider
+                          "
+                        >
+                          Location
+                        </th>
+                        <th
+                          class="
+                            px-5
+                            py-3
+                            border-b-2 border-gray-200
+                            bg-gray-100
+                            text-left text-xs
+                            font-semibold
+                            text-gray-600
+                            uppercase
+                            tracking-wider
+                          "
+                        >
+                          Sensor Type
+                        </th>
+                        <th
+                          class="
+                            px-5
+                            py-3
+                            border-b-2 border-gray-200
+                            bg-gray-100
+                            text-left text-xs
+                            font-semibold
+                            text-gray-600
+                            uppercase
+                            tracking-wider
+                          "
+                        >
+                          Latest Data
+                        </th>
+                        <th
+                          class="
+                            px-5
+                            py-3
+                            border-b-2 border-gray-200
+                            bg-gray-100
+                            text-left text-xs
+                            font-semibold
+                            text-gray-600
+                            uppercase
+                            tracking-wider
+                          "
+                        >
+                          Critical Level
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let loc of location | async">
+                        <td
+                          class="
+                            px-5
+                            py-5
+                            border-b border-gray-200
+                            bg-white
+                            text-sm
+                          "
+                        >
+                          <div class="flex items-center">
+                            <div class="ml-3">
+                              <p class="text-gray-900 whitespace-no-wrap">
+                                {{ loc }}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          class="
+                            px-5
+                            py-5
+                            border-b border-gray-200
+                            bg-white
+                            text-sm
+                          "
+                        >
+                          <p class="text-gray-900 whitespace-no-wrap">flood</p>
+                        </td>
+                        <td
+                          class="
+                            px-5
+                            py-5
+                            border-b border-gray-200
+                            bg-white
+                            text-sm
+                          "
+                        >
+                          <p class="text-gray-900 whitespace-no-wrap">32m</p>
+                        </td>
+                        <td
+                          class="
+                            px-5
+                            py-5
+                            border-b border-gray-200
+                            bg-white
+                            text-sm
+                          "
+                        >
+                          <p class="text-red-500 whitespace-no-wrap">
+                            High (30m +)
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
