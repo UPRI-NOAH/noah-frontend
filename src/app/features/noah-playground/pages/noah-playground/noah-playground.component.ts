@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 export class NoahPlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
   searchTerm: string;
+  disclaimerModal: boolean;
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
   isList;
@@ -41,6 +42,7 @@ export class NoahPlaygroundComponent implements OnInit {
   }
 
   onLogout() {
+    this.disclaimerModal = false;
     this.qcLoginService.logout();
   }
 }

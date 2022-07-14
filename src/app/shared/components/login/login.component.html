@@ -282,4 +282,74 @@
       </div>
     </div>
   </div>
+  <!-- alert login -->
+  <div class="absolute top-0 flex items-center z-10 justify-center px-5 py-5">
+    <div
+      class="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700"
+      role="alertModal"
+      *ngIf="alertError"
+    >
+      <svg
+        class="w-5 h-5 inline mr-3"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      <div>
+        <span class="font-medium">Error!</span> Invalid Username or Password
+      </div>
+    </div>
+  </div>
+  <!-- alert login -->
+  <div
+    class="
+      w-full
+      h-full
+      flex
+      items-center
+      z-10
+      justify-center
+      absolute
+      px-5
+      py-5
+    "
+    *ngIf="loadingNoah"
+  >
+    <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+
+    <div
+      class="shadow-xl w-full z-10 lg:w-136 overflow-hidden"
+      style="max-width: 1000px"
+    >
+      <div class="md:flex w-full">
+        <div class="w-full py-10 px-5 md:px-10">
+          <div class="flex justify-center gap-x-4 mb-4">
+            <div class="flex items-center justify-center bottom-0">
+              <div
+                class="
+                  w-40
+                  h-40
+                  border-t-4 border-b-4 border-white
+                  rounded-full
+                  animate-spin
+                  absolute
+                "
+              ></div>
+              <img
+                src="assets/icons/logo-noah.svg"
+                class="w-24 h-24 animate-none"
+                fill="none"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

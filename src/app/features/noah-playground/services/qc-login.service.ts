@@ -12,10 +12,8 @@ import { NoahPlaygroundService } from './noah-playground.service';
 export class QcLoginService {
   private QCBASE_URL = 'https://noah-api.up.edu.ph';
   loginModal: boolean;
-  qcadmin = 'QC Admin';
   isLoginModal: boolean = false;
   showAdminResult: boolean;
-  tokenResp: any;
 
   private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
   private disclaimerStatus = new BehaviorSubject<boolean>(
@@ -53,10 +51,6 @@ export class QcLoginService {
           return response;
         })
       );
-  }
-
-  isLoggedIn() {
-    return localStorage.getItem('token') != null;
   }
 
   logout() {

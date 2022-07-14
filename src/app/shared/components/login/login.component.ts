@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -16,15 +8,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
-import {
-  NoahPlaygroundStore,
-  QC_DEFAULT_CENTER,
-} from '@features/noah-playground/store/noah-playground.store';
-import mapboxgl, { Map } from 'mapbox-gl';
-import { GoogleAnalyticsService } from 'ngx-google-analytics';
-import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Location } from '@angular/common';
 @Component({
   selector: 'noah-login',
   templateUrl: './login.component.html',
@@ -43,17 +28,21 @@ export class LoginComponent implements OnInit {
   Username: FormControl;
   Password: FormControl;
   disclaimerModal: boolean;
+  alertError: boolean = false;
+  loadingNoah: boolean = false;
   constructor(
     private qcLoginService: QcLoginService,
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private pgService: NoahPlaygroundService
+    private pgService: NoahPlaygroundService,
+    private _location: Location
   ) {}
 
   LoginStatus$: Observable<boolean>;
   UserName$: Observable<string>;
   ButtonShow$: Observable<boolean>;
+
   loginForm = new FormGroup({
     userNameValidation: new FormControl('', Validators.required),
     passwordValidation: new FormControl('', Validators.required),
@@ -75,31 +64,56 @@ export class LoginComponent implements OnInit {
 
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
+    this.alertError = false;
+    this.loadingNoah = false;
   }
 
   onSubmit() {
     const userLogin = this.insertForm.value;
+    this.onLoadingNoah();
     this.qcLoginService
       .loginUser(userLogin.Username, userLogin.Password)
       .subscribe(
         (response) => {
           const auth_token = (<any>response).auth_token;
-          console.log(auth_token);
-          console.log('User Logged In Successfully');
           this.invalidLogin = false;
           console.log(this.returnUrl);
           this.router.navigateByUrl(this.returnUrl);
           this.isLoginModal = false;
           this.pgService.toggleQuezonCitySensorsGroupShown();
           this.router.navigateByUrl('/noah-playground');
+          setTimeout(() => {
+            //SESSION EXPIRATION
+            localStorage.removeItem('token');
+            alert('Your Session expired');
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.setItem('loginStatus', '0');
+            this.router
+              .navigateByUrl('/logout', { skipLocationChange: true })
+              .then(() => {
+                this.router.navigate([decodeURI(this._location.path())]);
+                window.location.reload();
+              });
+          }, 86400000); //1 day
         },
         (error) => {
           this.invalidLogin = true;
           this.ErrorMessage = error.error.loginError;
           console.log(this.ErrorMessage);
-          alert('Invalid Credential');
+          this.alertError = true;
+          setTimeout(() => {
+            this.alertError = false;
+          }, 2000); //3secs
         }
       );
+  }
+
+  onLoadingNoah() {
+    this.loadingNoah = true;
+    setTimeout(() => {
+      this.loadingNoah = false;
+    }, 3000);
   }
 
   onLogout() {

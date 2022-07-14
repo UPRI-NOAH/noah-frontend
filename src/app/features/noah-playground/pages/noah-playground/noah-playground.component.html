@@ -431,5 +431,7 @@
   </main>
 </div>
 <div *ngIf="DisclaimerStatus$ | async as DisclaimerStatus">
-  <noah-disclaimer *ngIf="DisclaimerStatus"></noah-disclaimer>
+  <noah-disclaimer
+    *ngIf="DisclaimerStatus || disclaimerModal"
+  ></noah-disclaimer>
 </div>
