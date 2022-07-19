@@ -8,8 +8,9 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'noah-login',
   templateUrl: './login.component.html',
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit {
   Username: FormControl;
   Password: FormControl;
   disclaimerModal: boolean;
+  destroy = new Subject<any>();
   alertError: boolean = false;
   loadingNoah: boolean = false;
   constructor(
@@ -66,6 +68,11 @@ export class LoginComponent implements OnInit {
     this.UserName$ = this.qcLoginService.currentUserName;
     this.alertError = false;
     this.loadingNoah = false;
+
+    //Pop up login directly in url
+    if (window.location.href.indexOf('login') != -1) {
+      this.isLoginModal = true;
+    }
   }
 
   onSubmit() {
@@ -98,6 +105,7 @@ export class LoginComponent implements OnInit {
           }, 86400000); //1 day
         },
         (error) => {
+          this.loadingNoah = false;
           this.invalidLogin = true;
           this.ErrorMessage = error.error.loginError;
           console.log(this.ErrorMessage);
@@ -109,11 +117,18 @@ export class LoginComponent implements OnInit {
       );
   }
 
+  popUpLogin() {
+    this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
+      this.router.navigate(['login']);
+      this.isLoginModal = true;
+    });
+  }
+
   onLoadingNoah() {
     this.loadingNoah = true;
     setTimeout(() => {
       this.loadingNoah = false;
-    }, 3000);
+    }, 1000);
   }
 
   onLogout() {
@@ -127,8 +142,18 @@ export class LoginComponent implements OnInit {
   clearForm(form: FormGroup) {
     this.isLoginModal = false;
     form.reset();
+    this.router.navigate([''], {
+      relativeTo: this.route,
+    });
   }
   closeModal() {
     this.isLoginModal = false;
+    this.router.navigate([''], {
+      relativeTo: this.route,
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy.next();
   }
 }

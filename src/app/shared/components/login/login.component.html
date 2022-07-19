@@ -1,6 +1,7 @@
 <div class="px-6 justify-center items-center">
   <div *ngIf="!(LoginStatus$ | async) as LoginStatus">
     <button
+      type="button"
       class="
         text-xs
         uppercase
@@ -22,8 +23,9 @@
         focus:ring-opacity-50
         border-primary border-2
       "
-      (click)="isLoginModal = true"
+      (click)="popUpLogin()"
       *ngIf="LoginStatus"
+      routerLink="login"
     >
       LOGIN
     </button>
@@ -117,6 +119,7 @@
       px-5
       py-5
     "
+    routerLink="['/login', {modal: 'true'}]"
   >
     <div
       class="bg-gray-100 rounded-3xl shadow-xl w-full lg:w-136 overflow-hidden"
