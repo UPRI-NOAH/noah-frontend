@@ -6,7 +6,7 @@ import mapboxgl, {
   Map,
   Marker,
 } from 'mapbox-gl';
-import { MapboxCircle } from 'mapbox-gl-circle';
+// import { MapboxCircle } from 'mapbox-gl-circle';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
