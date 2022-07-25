@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   insertForm: FormGroup;
   isLoginModal: boolean;
+  qcLoginModal: boolean;
   currentRole: any;
   returnUrl: string;
   invalidLogin: boolean;
@@ -70,8 +71,17 @@ export class LoginComponent implements OnInit {
     this.loadingNoah = false;
 
     //Pop up login directly in url
+    const loggedIn = localStorage.getItem('loginStatus');
+    if (loggedIn == '1') {
+      this.router.navigate([this.returnUrl]);
+    }
     if (window.location.href.indexOf('login') != -1) {
       this.isLoginModal = true;
+    }
+
+    if (window.location.href.indexOf('qc-login') != -1) {
+      this.isLoginModal = false;
+      this.qcLoginModal = true;
     }
   }
 
@@ -141,6 +151,7 @@ export class LoginComponent implements OnInit {
 
   clearForm(form: FormGroup) {
     this.isLoginModal = false;
+    this.qcLoginModal = false;
     form.reset();
     this.router.navigate([''], {
       relativeTo: this.route,
@@ -148,6 +159,7 @@ export class LoginComponent implements OnInit {
   }
   closeModal() {
     this.isLoginModal = false;
+    this.qcLoginModal = false;
     this.router.navigate([''], {
       relativeTo: this.route,
     });
