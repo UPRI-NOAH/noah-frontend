@@ -15,14 +15,16 @@ export const QCSENSORS: QcSensorType[] = [
 ];
 
 export type SummaryItem = {
-  locationName: string;
-  iotType: string;
+  name: string;
+  iot_type: string;
+  latest_data: string;
+  critical_level: string;
 };
 @Injectable({
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://916c-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://823e-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   url: string = '@shared/';
@@ -34,6 +36,10 @@ export class QcSensorService {
 
   getLocation() {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
+  }
+
+  getSummaryData() {
+    return this.http.get('/assets/geojson/summary_data.json');
   }
 
   getQcSensorData(pk: number) {

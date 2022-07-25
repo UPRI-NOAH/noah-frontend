@@ -89,14 +89,31 @@
               Quezon City Latest Data Summary Dashboard
             </h1>
             <p class="text-lg">
-              <b class="text-primary">8</b> Active Sensors out of
-              <b class="text-black">11</b> Total Sensors
+              <b class="text-primary">{{ total }}</b> Active Sensors out of
+              <b class="text-black">{{ total }}</b> Total Sensors
             </p>
             <p class="italic text-lg">
               As of {{ todayString | date: 'fullDate' }}
             </p>
 
             <div>
+              <input
+                [(ngModel)]="searchValue"
+                type="search"
+                placeholder="Search Filter"
+                autocomplete="off"
+                class="
+                  rounded-full
+                  w-full
+                  py-2
+                  px-2
+                  border-2 border-gray-200
+                  text-gray-700
+                  leading-tight
+                  focus:outline-none
+                  mt-4
+                "
+              />
               <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                 <div
                   class="
@@ -107,136 +124,14 @@
                     overflow-hidden
                   "
                 >
-                  <!-- <table class="min-w-full leading-normal">
+                  <table class="w-full leading-normal">
                     <thead>
                       <tr>
                         <th
                           class="
                             px-5
                             py-3
-                            border-b-2 border-gray-200
-                            bg-gray-100
-                            text-left text-xs
-                            font-semibold
-                            text-gray-600
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Location
-                        </th>
-                        <th
-                          class="
-                            px-5
-                            py-3
-                            border-b-2 border-gray-200
-                            bg-gray-100
-                            text-left text-xs
-                            font-semibold
-                            text-gray-600
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Sensor Type
-                        </th>
-                        <th
-                          class="
-                            px-5
-                            py-3
-                            border-b-2 border-gray-200
-                            bg-gray-100
-                            text-left text-xs
-                            font-semibold
-                            text-gray-600
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Latest Data
-                        </th>
-                        <th
-                          class="
-                            px-5
-                            py-3
-                            border-b-2 border-gray-200
-                            bg-gray-100
-                            text-left text-xs
-                            font-semibold
-                            text-gray-600
-                            uppercase
-                            tracking-wider
-                          "
-                        >
-                          Critical Level
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let loc of location | async">
-                        <td
-                          class="
-                            px-5
-                            py-5
-                            border-b border-gray-200
-                            bg-white
-                            text-sm
-                          "
-                        >
-                          <div class="flex items-center">
-                            <div class="ml-3">
-                              <p class="text-gray-900 whitespace-no-wrap">
-                                {{ loc }}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td
-                          class="
-                            px-5
-                            py-5
-                            border-b border-gray-200
-                            bg-white
-                            text-sm
-                          "
-                        >
-                          <p class="text-gray-900 whitespace-no-wrap">flood</p>
-                        </td>
-                        <td
-                          class="
-                            px-5
-                            py-5
-                            border-b border-gray-200
-                            bg-white
-                            text-sm
-                          "
-                        >
-                          <p class="text-gray-900 whitespace-no-wrap">32m</p>
-                        </td>
-                        <td
-                          class="
-                            px-5
-                            py-5
-                            border-b border-gray-200
-                            bg-white
-                            text-sm
-                          "
-                        >
-                          <p class="text-red-500 whitespace-no-wrap">
-                            High (30m +)
-                          </p>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table> -->
-                  <table class="min-w-full leading-normal">
-                    <thead>
-                      <tr>
-                        <th
-                          class="
-                            px-5
-                            py-3
-                            border-b-2 border-gray-200
+                            border-t-2 border-gray-200
                             bg-gray-100
                             text-left text-xs
                             font-semibold
@@ -246,12 +141,33 @@
                           "
                           *ngFor="let col of columns"
                         >
-                          {{ col }}
+                          <div
+                            (click)="sortedColumn = col"
+                            class="cursor-pointer inline-flex"
+                          >
+                            {{ col }}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="mr-1 h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                              />
+                            </svg>
+                          </div>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let data of summaryData">
+                      <tr
+                        *ngFor="
+                          let data of summaryData
+                            | sort: sortedColumn
+                            | searchfilter: searchValue
+                        "
+                      >
                         <td
                           class="
                             px-5
