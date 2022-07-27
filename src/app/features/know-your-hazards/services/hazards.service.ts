@@ -191,7 +191,7 @@ export class HazardsService {
         return 'high';
 
       default:
-        return 'low';
+        return 'little to none';
     }
   }
 }
