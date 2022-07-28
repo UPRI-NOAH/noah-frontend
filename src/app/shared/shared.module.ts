@@ -6,12 +6,18 @@ import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
 import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { SummaryComponent } from './components/summary/summary.component';
+import { LoginComponent } from './components/login/login.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
   ChangeStyleButtonComponent,
   SearchComponent,
   BannerComponent,
+  DisclaimerComponent,
+  SummaryComponent,
+  LoginComponent,
 ];
 const directives = [];
 const pipes = [ReplacePipe];
