@@ -13,12 +13,21 @@ export const QCSENSORS: QcSensorType[] = [
   'temperature',
   'distance_m',
 ];
+
+export type SummaryItem = {
+  name: string;
+  iot_type: string;
+  latest_data: string;
+  critical_level: string;
+};
 @Injectable({
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://e6b9-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://823e-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
+
+  url: string = '@shared/';
 
   getQcSensors(type: QcSensorType) {
     const param = type ? `?iot-type=${type}` : '';
@@ -27,6 +36,10 @@ export class QcSensorService {
 
   getLocation() {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
+  }
+
+  getSummaryData() {
+    return this.http.get('/assets/geojson/summary_data.json');
   }
 
   getQcSensorData(pk: number) {

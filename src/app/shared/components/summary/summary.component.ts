@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   QCSENSORS,
   QcSensorService,
+  SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -15,8 +16,19 @@ export class SummaryComponent implements OnInit {
   isLoginModal: boolean;
   dropDownList;
   todayString: string = new Date().toDateString();
-  location: any = [];
+  summaryDataItem: SummaryItem[];
+  // locationName: string;
+  // iotType: string;
+  sortedColumn: string;
+  total: number;
+  countSensors: number;
+
+  summaryData: SummaryItem[];
+  searchValue: string;
+
   constructor(private qcSensorService: QcSensorService) {}
+
+  columns = ['LOCATION', 'SENSOR TYPE', 'LATEST DATA', 'CRITICAL LEVEL'];
 
   ngOnInit(): void {
     this.viewSummary();
@@ -29,6 +41,16 @@ export class SummaryComponent implements OnInit {
   }
 
   viewSummary() {
+    this.qcSensorService.getSummaryData().subscribe((result: SummaryItem[]) => {
+      this.summaryData = result;
+      this.columns = Object.keys(this.summaryData[0]);
+      const total = 0;
+      this.total = Object.keys(this.summaryData).length;
+      console.log(this.total + '___total');
+      console.log(this.summaryData, '___summaryData');
+      console.log(this.columns, '___columns');
+    });
+
     this.qcSensorService
       .getLocation()
       .subscribe((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
@@ -36,25 +58,8 @@ export class SummaryComponent implements OnInit {
           const currentFeature = data.features[i];
           const locationName = currentFeature.properties.name;
           const iotType = currentFeature.properties.iot_type;
-          //console.log(locationName)
-          this.location = currentFeature.properties.name;
-          console.log(this.location);
+          console.log(locationName + '---' + iotType);
         }
       });
-
-    // QCSENSORS.forEach((qcSensorType) => {
-    //   this.qcSensorService.getQcSensors(qcSensorType)
-    //     .pipe(first())
-    //     .toPromise()
-    //     .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-    //       for (let i = 0; i < data.features.length; i++) {
-    //         const currentFeature = data.features[i]
-    //         const locationName = currentFeature.properties.name
-    //         const iotType = currentFeature.properties.iot_type
-    //         console.log(locationName)
-    //         this.location = locationName
-    //       }
-    //     })
-    // })
   }
 }

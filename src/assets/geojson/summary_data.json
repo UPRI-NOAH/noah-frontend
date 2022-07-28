@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Brgy. Bagumbayan (Calle Industria St.)",
+    "iot_type": "flood",
+    "latest_data": "2",
+    "critical_level": "high (1.5m +)"
+  },
+  {
+    "name": "Brgy. Villa Maria Clara (Tomas Mascardo St.)",
+    "iot_type": "flood",
+    "latest_data": "0.3",
+    "critical_level": "low (0 - 0.5m)"
+  },
+  {
+    "name": "Brgy. QMC (in front of Quezon City Hall)",
+    "iot_type": "flood",
+    "latest_data": "0.8",
+    "critical_level": "medium (0.5 - 1.5m)"
+  },
+  {
+    "name": "Brgy. Sacred Heart (Tomas Morato Avenue)",
+    "iot_type": "water level",
+    "latest_data": "1.2",
+    "critical_level": "medium (0.5 - 1.5m)"
+  },
+  {
+    "name": "Brgy. Central (East Ave Matalino St. Intersection )",
+    "iot_type": "flood",
+    "latest_data": "1.0",
+    "critical_level": "medium (0.5 - 1.5m)"
+  },
+  {
+    "name": "Brgy. Central (BIR Rd.)",
+    "iot_type": "flood",
+    "latest_data": "0.45",
+    "critical_level": "low (0 - 0.5m)"
+  },
+  {
+    "name": "Brgy. Fairview (Jaguar St.)",
+    "iot_type": "flood",
+    "latest_data": "0.1",
+    "critical_level": "low (0 - 0.5m)"
+  },
+  {
+    "name": "Brgy. Fairview (Dahlia Avenue)",
+    "iot_type": "water level",
+    "latest_data": "0.25",
+    "critical_level": "low (0 - 0.5m)"
+  }
+]

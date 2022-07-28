@@ -8,6 +8,8 @@ import { ReplacePipe } from './pipes/replace.pipe';
 import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { SortPipe } from './pipes/sort.pipe';
+import { SearchfilterPipe } from './pipes/searchfilter.pipe';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -18,15 +20,9 @@ const components = [
   SummaryComponent,
 ];
 const directives = [];
-const pipes = [ReplacePipe];
+const pipes = [ReplacePipe, SortPipe, SearchfilterPipe];
 @NgModule({
-  declarations: [
-    ...components,
-    ...directives,
-    ...pipes,
-    DisclaimerComponent,
-    SummaryComponent,
-  ],
+  declarations: [...components, ...directives, ...pipes],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })
