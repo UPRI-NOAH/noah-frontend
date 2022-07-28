@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
+import {
+  QcCriticalFacilitiesState,
+  QuezonCitySensorType,
+} from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
-
+import { shareReplay } from 'rxjs/operators';
 @Component({
   selector: 'noah-qc-sensors-group',
   templateUrl: './qc-sensors-group.component.html',
@@ -18,13 +21,18 @@ export class QcSensorsGroupComponent implements OnInit {
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
-  isLoginModal: boolean;
+  qcShown: QcCriticalFacilitiesState;
+  disclaimerModal: boolean;
 
+  get shown(): boolean {
+    return this.qcShown.shown;
+  }
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
     this.shown$ = this.pgService.qcSensorsGroupShown$;
+    this.qcShown = this.pgService.getQcCritFac();
   }
 
   toggleExpansion() {
@@ -34,7 +42,14 @@ export class QcSensorsGroupComponent implements OnInit {
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.isLoginModal = true;
+    this.disclaimerModal = true;
     this.pgService.toggleQuezonCitySensorsGroupShown();
+
+    const shown = !this.shown;
+    this.qcShown = {
+      ...this.qcShown,
+      shown,
+    };
+    this.pgService.setQcCritFac(this.qcShown);
   }
 }

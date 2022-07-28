@@ -43,7 +43,7 @@ export class QcLoginService {
             this.disclaimerStatus.next(true);
             localStorage.setItem('loginStatus', '1');
             localStorage.setItem('token', response.auth_token);
-            localStorage.setItem('username', username);
+            localStorage.setItem('username', 'Qc Admin');
             localStorage.setItem('disclaimerStatus', '1');
             this.UserName.next(localStorage.getItem('username'));
             console.log('username', username);

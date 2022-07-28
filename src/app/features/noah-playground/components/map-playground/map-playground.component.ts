@@ -4,6 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -14,7 +15,7 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, from, fromEvent, Observable, Subject } from 'rxjs';
+import { combineLatest, from, fromEvent, Observable, of, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -71,6 +72,7 @@ import {
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
+  QcCritFacilitiesType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
 import {
@@ -132,6 +134,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   LoginStatus$: Observable<boolean>;
+  @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
@@ -165,6 +168,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
         this.initQcCenterListener();
+        this.showQcCriticalFac();
       });
   }
 
@@ -284,7 +288,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'circle-opacity': 0,
             },
           });
-
           // add show/hide listeners
           combineLatest([
             this.pgService.qcSensorsGroupShown$,
@@ -294,7 +297,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .subscribe(([groupShown, soloShown]) => {
               this.map.setPaintProperty(
                 qcSensorType,
-                'circle-opacity',
+                'hospital-qc',
                 +(groupShown && soloShown)
               );
             });
@@ -310,7 +313,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
     });
 
-    const allShown$ = this.pgService.qcSensorsGroupShown$
+    this.pgService.qcSensorsGroupShown$
       .pipe(distinctUntilChanged(), takeUntil(this._unsub))
       .subscribe((center) => {
         this.map.flyTo({
@@ -319,16 +322,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           essential: true,
         });
       });
+  }
 
+  showQcCriticalFac() {
     this.map.addSource('hospital-qc', {
       type: 'geojson',
       data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson',
-      // data: 'https://noah-frontend.s3.ap-southeast-1.amazonaws.com/assets/geojson/hospitals-qc.geojson',
     });
-    // this.map.addSource('barangay-qc', {
-    //   type: 'geojson',
-    //   data: 'https://noah-frontend.s3.ap-southeast-1.amazonaws.com/assets/geojson/hospitals-qc.geojson',
-    // });
     this.map.addLayer({
       id: 'p_school',
       type: 'fill',
@@ -352,6 +352,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       filter: ['==', 'CF Type', 'Private School'],
     });
+
     this.map.addLayer({
       id: 'barangay',
       type: 'fill',
@@ -363,6 +364,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       filter: ['==', 'CF Type', 'Barangay'],
     });
+
     // Add a black outline around the polygon.
     this.map.addLayer({
       id: 'b_outline',
@@ -375,6 +377,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       filter: ['==', 'CF Type', 'Barangay'],
     });
+
     this.map.addLayer({
       id: 'hospitals',
       type: 'fill',
@@ -386,7 +389,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       filter: ['==', 'CF Type', 'Hospital'],
     });
+
     // Add a black outline around the polygon.
+
     this.map.addLayer({
       id: 'h_outline',
       type: 'line',
@@ -398,6 +403,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       filter: ['==', 'CF Type', 'Hospital'],
     });
+
+    this.pgService.qcCritFac$
+      .pipe(
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
+        distinctUntilChanged()
+      )
+      .subscribe((qcShown) => {
+        if (qcShown.shown) {
+          this.map.setLayoutProperty('CF Type', 'visibility', 'none');
+          return;
+        }
+      });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -661,6 +679,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               let newOpacity = 0;
               if (volcano.shown && allShown) {
                 newOpacity = volcano.opacity / 100;
+                console.log('show');
               }
 
               this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);

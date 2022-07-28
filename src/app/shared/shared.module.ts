@@ -9,6 +9,7 @@ import { ChangeStyleButtonComponent } from './components/change-style-button/cha
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
+import { QcLoginComponent } from './components/qc-login/qc-login.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -22,7 +23,7 @@ const components = [
 const directives = [];
 const pipes = [ReplacePipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
+  declarations: [...components, ...directives, ...pipes, QcLoginComponent],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })
