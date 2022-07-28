@@ -6,17 +6,27 @@ import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
 import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { SummaryComponent } from './components/summary/summary.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
   ChangeStyleButtonComponent,
   SearchComponent,
   BannerComponent,
+  DisclaimerComponent,
+  SummaryComponent,
 ];
 const directives = [];
 const pipes = [ReplacePipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
+  declarations: [
+    ...components,
+    ...directives,
+    ...pipes,
+    DisclaimerComponent,
+    SummaryComponent,
+  ],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })

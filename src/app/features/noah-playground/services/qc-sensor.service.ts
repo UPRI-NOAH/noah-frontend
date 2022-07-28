@@ -17,7 +17,7 @@ export const QCSENSORS: QcSensorType[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://noah-api.up.edu.ph';
+  private QCBASE_URL = 'http://e6b9-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
@@ -25,7 +25,25 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
   }
 
+  getLocation() {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
+  }
+
   getQcSensorData(pk: number) {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
+  }
+
+  getQcIotSensorData() {
+    const sensor_id = JSON.parse(localStorage.getItem('pk'));
+    return this.http.get(
+      `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${sensor_id}`
+    );
+  }
+
+  getQcCalendar() {
+    const sensor_id = JSON.parse(localStorage.getItem('pk'));
+    return this.http.get(
+      `${this.QCBASE_URL}/api/iot-data2/?iot_sensor=${sensor_id}`
+    );
   }
 }
