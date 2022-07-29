@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   QCSENSORS,
   QcSensorService,
+  QcSensorType,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
 import { Observable } from 'rxjs';
@@ -13,7 +14,7 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  isLoginModal: boolean;
+  summaryModal: boolean;
   dropDownList;
   todayString: string = new Date().toDateString();
   summaryDataItem: SummaryItem[];
@@ -21,45 +22,53 @@ export class SummaryComponent implements OnInit {
   // iotType: string;
   sortedColumn: string;
   total: number;
+  activeSensor: number;
   countSensors: number;
 
   summaryData: SummaryItem[];
   searchValue: string;
-
+  location: string;
   constructor(private qcSensorService: QcSensorService) {}
 
-  columns = ['LOCATION', 'SENSOR TYPE', 'LATEST DATA', 'CRITICAL LEVEL'];
+  columns = [
+    'LOCATION',
+    'SENSOR TYPE',
+    'LATEST DATA',
+    'LATEST DATE',
+    'CRITICAL LEVEL',
+  ];
 
   ngOnInit(): void {
     this.viewSummary();
   }
   closeModal() {
-    this.isLoginModal = false;
+    this.summaryModal = false;
   }
   getColumn(): string[] {
     return ['name', 'iot_type'];
   }
 
-  viewSummary() {
-    this.qcSensorService.getSummaryData().subscribe((result: SummaryItem[]) => {
-      this.summaryData = result;
-      this.columns = Object.keys(this.summaryData[0]);
-      const total = 0;
-      this.total = Object.keys(this.summaryData).length;
-      console.log(this.total + '___total');
-      console.log(this.summaryData, '___summaryData');
-      console.log(this.columns, '___columns');
-    });
-
-    this.qcSensorService
-      .getLocation()
-      .subscribe((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-        for (let i = 0; i < data.features.length; i++) {
-          const currentFeature = data.features[i];
-          const locationName = currentFeature.properties.name;
-          const iotType = currentFeature.properties.iot_type;
-          console.log(locationName + '---' + iotType);
-        }
+  async viewSummary() {
+    try {
+      const response: any = await this.qcSensorService
+        .getLocation()
+        .pipe(first())
+        .toPromise();
+      const locationArr = response.features
+        .filter((a) => a.properties.name !== null && a.properties.name !== '')
+        .map((a) => {
+          return {
+            name: a.properties.name,
+            iot_type: a.properties.iot_type,
+          };
+        });
+      const totalSensor = response.features.map((a) => {
+        return;
       });
+      this.summaryData = locationArr;
+      console.log('luh', totalSensor.length);
+      this.activeSensor = locationArr.length;
+      this.total = totalSensor.length;
+    } catch (error) {}
   }
 }
