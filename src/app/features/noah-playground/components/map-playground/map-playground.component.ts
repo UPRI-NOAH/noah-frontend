@@ -426,7 +426,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             graphDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 11,
+              zoom: 13,
               essential: true,
             });
 
@@ -602,7 +602,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      zoom: 5,
+      zoom: 5.5,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
@@ -665,16 +665,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         });
 
+        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+        //   distinctUntilChanged(),
+        //   tap(() => {
+        //     this.map.flyTo({
+        //       center: PH_DEFAULT_CENTER,
+        //       zoom: 4,
+        //       essential: true,
+        //     });
+        //   }),
+        //   shareReplay(1)
+        // );
+
         // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-          distinctUntilChanged(),
-          tap(() => {
-            this.map.flyTo({
-              center: PH_DEFAULT_CENTER,
-              zoom: 4,
-              essential: true,
-            });
-          }),
           shareReplay(1)
         );
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
