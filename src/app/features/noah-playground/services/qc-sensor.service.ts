@@ -22,7 +22,7 @@ export type SummaryItem = {
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://9927-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://a7b3-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   url: string = '@shared/';
