@@ -66,7 +66,6 @@ export class SummaryComponent implements OnInit {
         return;
       });
       this.summaryData = locationArr;
-      console.log('luh', totalSensor.length);
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {}

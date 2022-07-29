@@ -14,8 +14,9 @@ export class SearchfilterPipe implements PipeTransform {
         data.name
           .toLocaleLowerCase()
           .includes(searchValue.toLocaleLowerCase()) ||
-        data.iot_type.toLocaleLowerCase()
-      //   .includes(searchValue.toLocaleLowerCase()) ||
+        data.iot_type
+          .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase())
       // data.latest_data
       //   .toLocaleLowerCase()
       //   .includes(searchValue.toLocaleLowerCase()) ||

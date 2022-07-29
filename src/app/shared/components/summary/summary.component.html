@@ -55,19 +55,9 @@
     (click)="closeModal()"
   ></div>
   <!--content-->
-  <div
-    class="
-      min-w-screen min-h-screen
-      flex
-      items-center
-      z-10
-      justify-center
-      px-5
-      py-5
-    "
-  >
+  <div class="w-full flex items-center z-10 justify-center px-5 py-5">
     <div
-      class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
+      class="bg-gray-100 rounded-3xl shadow-xl w-full"
       style="max-width: 1000px"
     >
       <div class="mr-2 mt-1">
@@ -83,7 +73,7 @@
         </svg>
       </div>
       <div class="md:flex w-full">
-        <div class="w-full py-10 px-5 md:px-10">
+        <div class="w-full py-10 md:px-10">
           <div class="text-center mb-10">
             <h1 class="font-bold text-3xl text-gray-900">
               Quezon City Latest Data Summary Dashboard
@@ -125,11 +115,10 @@
                   "
                 >
                   <table class="w-full leading-normal">
-                    <thead>
+                    <thead class="mx-2">
                       <tr>
                         <th
                           class="
-                            px-5
                             py-3
                             border-t-2 border-gray-200
                             bg-gray-100
@@ -148,7 +137,7 @@
                             {{ col }}
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              class="mr-1 h-5 w-5"
+                              class="mr-1 h-5 w-5 text-left"
                               viewBox="0 0 20 20"
                               fill="currentColor"
                             >
