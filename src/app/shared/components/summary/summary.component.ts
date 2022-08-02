@@ -24,6 +24,8 @@ export class SummaryComponent implements OnInit {
   total: number;
   activeSensor: number;
   countSensors: number;
+  loading = false;
+  pk: number;
 
   summaryData: SummaryItem[];
   searchValue: string;
@@ -33,8 +35,8 @@ export class SummaryComponent implements OnInit {
   columns = [
     'LOCATION',
     'SENSOR TYPE',
-    'LATEST DATA',
     'LATEST DATE',
+    'LATEST DATA',
     'CRITICAL LEVEL',
   ];
 
@@ -54,20 +56,49 @@ export class SummaryComponent implements OnInit {
         .getLocation()
         .pipe(first())
         .toPromise();
+
+      const res: any = await this.qcSensorService
+        .getQcSensorData(this.pk)
+        .pipe(first())
+        .toPromise();
+      const myArr = res.results.map((a) => {
+        return {
+          latest_date: new Date(a.received_at).getTime(),
+          latest_data: a.distance_m,
+          iot_sensor: a.iot_sensor,
+        };
+      });
+
       const locationArr = response.features
         .filter((a) => a.properties.name !== null && a.properties.name !== '')
         .map((a) => {
           return {
             name: a.properties.name,
             iot_type: a.properties.iot_type,
+            pk: a.properties.pk,
           };
         });
       const totalSensor = response.features.map((a) => {
         return;
       });
-      this.summaryData = locationArr;
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
-    } catch (error) {}
+      const newArr = [];
+      for (let i = 0; i < locationArr.length; i++) {
+        for (let j = 0; j < myArr.length; j++) {
+          if (locationArr[i].pk == myArr[j].iot_sensor) {
+            newArr.push({ ...locationArr[i], ...myArr[j] });
+            break;
+          }
+        }
+      }
+      this.summaryData = newArr; //display data
+    } catch (error) {
+      alert('Unable to Fetch Data');
+    }
+
+    // High (1.5m +)
+    // Medium (0.5 - 1.5m)
+    // Low (0 - 0.5m)
   }
 }

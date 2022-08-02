@@ -90,7 +90,7 @@
               <input
                 [(ngModel)]="searchValue"
                 type="search"
-                placeholder="Search Filter"
+                placeholder="Search Location"
                 autocomplete="off"
                 class="
                   rounded-full
@@ -114,7 +114,7 @@
                     overflow-hidden
                   "
                 >
-                  <table class="w-full leading-normal">
+                  <table class="w-full leading-normal overflow-auto">
                     <thead class="mx-5">
                       <tr>
                         <th
@@ -203,7 +203,9 @@
                         >
                           <div class="flex text-left">
                             <div class="ml-3">
-                              <p class="text-gray-900 whitespace-no-wrap"></p>
+                              <p class="text-gray-900 whitespace-no-wrap">
+                                {{ data.latest_date | date }}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -216,9 +218,11 @@
                             text-sm
                           "
                         >
-                          <div class="flex text-left">
+                          <div class="flex text-center">
                             <div class="ml-3">
-                              <p class="text-gray-900 whitespace-no-wrap"></p>
+                              <p class="text-gray-900 whitespace-no-wrap">
+                                {{ data.latest_data }}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -231,9 +235,61 @@
                             text-sm
                           "
                         >
-                          <div class="flex text-left">
+                          <div
+                            class="flex text-left"
+                            *ngIf="
+                              data.latest_data == '0' ||
+                              data.latest_data == '0.5'
+                            "
+                          >
                             <div class="ml-3">
-                              <p class="text-gray-900 whitespace-no-wrap"></p>
+                              <p
+                                class="
+                                  text-yellow-400
+                                  font-bold
+                                  whitespace-no-wrap
+                                "
+                              >
+                                Low (0 - 0.5m)
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="flex text-left"
+                            *ngIf="
+                              data.latest_data == '0.5' ||
+                              data.latest_data == '1.5'
+                            "
+                          >
+                            <div class="ml-3">
+                              <p
+                                class="
+                                  text-yellow-700
+                                  font-bold
+                                  whitespace-no-wrap
+                                "
+                              >
+                                Medium (0.5 - 1.5m)
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="flex text-left"
+                            *ngIf="
+                              data.latest_data == '1.5' ||
+                              data.latest_data == '2'
+                            "
+                          >
+                            <div class="ml-3">
+                              <p
+                                class="
+                                  text-red-700
+                                  font-bold
+                                  whitespace-no-wrap
+                                "
+                              >
+                                High (1.5m +)
+                              </p>
                             </div>
                           </div>
                         </td>
