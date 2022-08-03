@@ -28,7 +28,7 @@ export class SummaryComponent implements OnInit {
   columns = [
     'LOCATION',
     'SENSOR TYPE',
-    'LATEST DATE',
+    'LATEST DATE/TIME',
     'LATEST DATA',
     'CRITICAL LEVEL',
   ];

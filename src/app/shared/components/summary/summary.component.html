@@ -55,7 +55,18 @@
     (click)="closeModal()"
   ></div>
   <!--content-->
-  <div class="w-full flex items-center z-10 justify-center px-5 py-5">
+  <div
+    class="
+      w-full
+      flex
+      items-center
+      z-10
+      justify-center
+      px-5
+      py-5
+      overflow-y-auto
+    "
+  >
     <div
       class="bg-gray-100 rounded-3xl shadow-xl w-full"
       style="max-width: 1000px"
@@ -104,7 +115,7 @@
                   mt-4
                 "
               />
-              <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+              <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-y-auto">
                 <div
                   class="
                     inline-block
@@ -116,26 +127,41 @@
                 >
                   <ng-container *ngIf="loading; else dataSummary">
                     <div tabindex="0" class="justify-center">
-                      <ul class="list-none">
-                        <li
-                          class="
-                            block
-                            w-full
-                            px-4
-                            py-4
-                            font-bold
-                            text-sm text-gray-700
-                            transition
-                            duration-300
-                            ease-in-out
-                            focus:outline-none
-                            group
-                            text-center
-                          "
-                        >
-                          Loading...
-                        </li>
-                      </ul>
+                      <div
+                        class="shadow-xl w-full z-10 overflow-hidden"
+                        style="max-width: 1000px"
+                      >
+                        <div class="md:flex w-full">
+                          <div class="w-full py-10 px-5 md:px-10">
+                            <div class="flex justify-center gap-x-4 mb-4">
+                              <div
+                                class="
+                                  flex
+                                  items-center
+                                  justify-center
+                                  bottom-0
+                                "
+                              >
+                                <div
+                                  class="
+                                    w-14
+                                    h-14
+                                    border-t-4 border-b-4 border-black
+                                    rounded-full
+                                    animate-spin
+                                    absolute
+                                  "
+                                ></div>
+                                <img
+                                  src="assets/icons/logo-noah.svg"
+                                  class="w-10 h-10 animate-none"
+                                  fill="none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </ng-container>
                   <ng-template #dataSummary>
@@ -235,7 +261,7 @@
                             <div class="flex text-left">
                               <div class="ml-3">
                                 <p class="text-gray-900 whitespace-no-wrap">
-                                  {{ data.latest_date | date }}
+                                  {{ data.latest_date | date: 'medium' }}
                                 </p>
                               </div>
                             </div>
