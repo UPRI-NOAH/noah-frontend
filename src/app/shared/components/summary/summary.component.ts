@@ -62,7 +62,7 @@ export class SummaryComponent implements OnInit {
         .getQcSensorData(this.pk)
         .pipe(first())
         .toPromise();
-      const myArr = res.results.map((a) => {
+      const dataArr = res.results.map((a) => {
         return {
           latest_date: new Date(a.received_at).getTime(),
           latest_data: a.distance_m,
@@ -85,9 +85,9 @@ export class SummaryComponent implements OnInit {
 
       const newArr = [];
       for (let i = 0; i < locationArr.length; i++) {
-        for (let j = 0; j < myArr.length; j++) {
-          if (locationArr[i].pk == myArr[j].iot_sensor) {
-            newArr.push({ ...locationArr[i], ...myArr[j] });
+        for (let j = 0; j < dataArr.length; j++) {
+          if (locationArr[i].pk == dataArr[j].iot_sensor) {
+            newArr.push({ ...locationArr[i], ...dataArr[j] });
             break;
           }
         }
