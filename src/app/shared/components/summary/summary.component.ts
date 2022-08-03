@@ -40,18 +40,19 @@ export class SummaryComponent implements OnInit {
     'CRITICAL LEVEL',
   ];
 
-  ngOnInit(): void {
-    this.viewSummary();
-  }
+  ngOnInit(): void {}
   closeModal() {
     this.summaryModal = false;
   }
-  getColumn(): string[] {
-    return ['name', 'iot_type'];
-  }
 
   async viewSummary() {
+    if (this.loading) {
+      return;
+    }
+
     try {
+      this.summaryModal = true;
+      this.loading = true;
       const response: any = await this.qcSensorService
         .getLocation()
         .pipe(first())
@@ -81,8 +82,7 @@ export class SummaryComponent implements OnInit {
       const totalSensor = response.features.map((a) => {
         return;
       });
-      this.activeSensor = locationArr.length;
-      this.total = totalSensor.length;
+
       const newArr = [];
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < myArr.length; j++) {
@@ -93,12 +93,12 @@ export class SummaryComponent implements OnInit {
         }
       }
       this.summaryData = newArr; //display data
+      this.activeSensor = locationArr.length;
+      this.total = totalSensor.length;
     } catch (error) {
       alert('Unable to Fetch Data');
+    } finally {
+      this.loading = false;
     }
-
-    // High (1.5m +)
-    // Medium (0.5 - 1.5m)
-    // Low (0 - 0.5m)
   }
 }
