@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  QCSENSORS,
   QcSensorService,
-  QcSensorType,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
-import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -15,15 +12,11 @@ import { first } from 'rxjs/operators';
 })
 export class SummaryComponent implements OnInit {
   summaryModal: boolean;
-  dropDownList;
   todayString: string = new Date().toDateString();
   summaryDataItem: SummaryItem[];
-  // locationName: string;
-  // iotType: string;
   sortedColumn: string;
   total: number;
   activeSensor: number;
-  countSensors: number;
   loading = false;
   pk: number;
 
