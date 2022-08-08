@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Feature } from 'geojson';
 import { type } from 'os';
+import { QuezonCitySensorType } from '../store/noah-playground.store';
 
 export type QcSensorType =
   | 'humidity'
   | 'pressure'
   | 'temperature'
   | 'distance_m';
-//waterlevel
+// //waterlevel
 
 export type QCViewSummaryDisplay =
   | 'location'
@@ -33,7 +34,7 @@ export type SummaryItem = {
   pk: number;
 };
 
-export const QCSENSORS: QcSensorType[] = [
+export const QCSENSORS: QuezonCitySensorType[] = [
   'humidity',
   'pressure',
   'temperature',
@@ -46,7 +47,7 @@ export class QcSensorService {
   private QCBASE_URL = 'http://83b6-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
-  getQcSensors(type: QcSensorType) {
+  getQcSensors(type: QuezonCitySensorType) {
     const param = type ? `?iot-type=${type}` : '';
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
   }
