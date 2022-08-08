@@ -21,18 +21,18 @@ export class QcSensorsGroupComponent implements OnInit {
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
-  qcShown: QcCriticalFacilitiesState;
+  // qcShown: QcCriticalFacilitiesState;
   disclaimerModal: boolean;
 
-  get shown(): boolean {
-    return this.qcShown.shown;
-  }
+  // get shown(): boolean {
+  //   return this.qcShown.shown;
+  // }
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
     this.shown$ = this.pgService.qcSensorsGroupShown$;
-    this.qcShown = this.pgService.getQcCritFac();
+    // this.qcShown = this.pgService.getQcCritFac();
   }
 
   toggleExpansion() {
@@ -45,11 +45,11 @@ export class QcSensorsGroupComponent implements OnInit {
     this.disclaimerModal = true;
     this.pgService.toggleQuezonCitySensorsGroupShown();
 
-    const shown = !this.shown;
-    this.qcShown = {
-      ...this.qcShown,
-      shown,
-    };
-    this.pgService.setQcCritFac(this.qcShown);
+    // const shown = !this.shown;
+    // this.qcShown = {
+    //   ...this.qcShown,
+    //   shown,
+    // };
+    // this.pgService.setQcCritFac(this.qcShown);
   }
 }

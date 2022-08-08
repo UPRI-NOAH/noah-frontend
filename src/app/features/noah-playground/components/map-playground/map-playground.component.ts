@@ -473,7 +473,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             graphDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 11,
+              zoom: 13,
               essential: true,
             });
             const name = e.features[0].properties.name;
