@@ -24,6 +24,7 @@ import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
 import { QcSensorsGroupComponent } from './components/qc-sensors-group/qc-sensors-group.component';
 import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-solo.component';
+import { QcCriticalFacilitiesComponent } from './components/qc-critical-facilities/qc-critical-facilities.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-sol
     VolcanoSoloComponent,
     QcSensorsGroupComponent,
     QcSensorSoloComponent,
+    QcCriticalFacilitiesComponent,
   ],
   imports: [
     CommonModule,
