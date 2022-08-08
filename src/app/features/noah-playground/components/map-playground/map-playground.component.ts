@@ -224,11 +224,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initQcCenterListener() {
     const centerQC = localStorage.getItem('loginStatus');
     if (centerQC == '1') {
-      this.map.flyTo({
-        center: QC_DEFAULT_CENTER,
-        zoom: 13,
-        essential: true,
-      });
+      this.pgService.qcSensorsGroupShown$
+        .pipe(
+          distinctUntilChanged(),
+          takeUntil(this._unsub),
+          filter((center) => center !== null)
+        )
+        .subscribe((center) => {
+          this.map.flyTo({
+            center: QC_DEFAULT_CENTER,
+            zoom: 13,
+            essential: true,
+          });
+        });
     }
   }
 
@@ -288,6 +296,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'circle-opacity': 0,
             },
           });
+
           // add show/hide listeners
           combineLatest([
             this.pgService.qcSensorsGroupShown$,
@@ -305,6 +314,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
           // show mouse event listeners
           this.showQcDataPoints(qcSensorType);
+          this.initQcCenterListener();
         })
         .catch(() =>
           console.error(
@@ -313,15 +323,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
     });
 
-    this.pgService.qcSensorsGroupShown$
-      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
-      .subscribe((center) => {
-        this.map.flyTo({
-          center: QC_DEFAULT_CENTER,
-          zoom: 13,
-          essential: true,
-        });
-      });
+    // this.pgService.qcSensorsGroupShown$
+    //   .pipe
+    //     (distinctUntilChanged(),
+    //     takeUntil(this._unsub),
+    //     filter((center) => center !== null)
+    //     )
+    //   .subscribe((center) => {
+    //     this.map.flyTo({
+    //       center: QC_DEFAULT_CENTER,
+    //       zoom: 13,
+    //       essential: true,
+    //     });
+    //   });
   }
 
   showQcCriticalFac() {
