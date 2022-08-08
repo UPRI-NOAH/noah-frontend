@@ -19,7 +19,6 @@ export class SummaryComponent implements OnInit {
   activeSensor: number;
   loading = false;
   pk: number;
-
   summaryData: SummaryItem[];
   searchValue: string;
   location: string;
@@ -57,7 +56,7 @@ export class SummaryComponent implements OnInit {
         .toPromise();
       const dataArr = res.results.map((a) => {
         return {
-          latest_date: new Date(a.received_at).getTime(),
+          latest_date: a.received_at,
           latest_data: a.distance_m,
           iot_sensor: a.iot_sensor,
         };
@@ -86,10 +85,11 @@ export class SummaryComponent implements OnInit {
         }
       }
       this.summaryData = newArr; //display data
+      console.log(newArr);
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
-      alert('Unable to Fetch Data');
+      alert('Unable to Fetch Summary Data');
     } finally {
       this.loading = false;
     }

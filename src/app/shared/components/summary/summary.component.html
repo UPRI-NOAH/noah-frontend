@@ -239,7 +239,7 @@
                                 whitespace-nowrap
                               "
                             >
-                              {{ data.latest_date | date: 'medium' }}
+                              {{ data.latest_date | date: 'medium':'+0000' }}
                             </td>
 
                             <td
@@ -247,7 +247,8 @@
                                 p-3
                                 text-sm text-gray-700
                                 whitespace-nowrap
-                                items-center
+                                text-center
+                                justify-center
                               "
                             >
                               {{ data.latest_data }}
@@ -350,7 +351,13 @@
                         </div>
                         <div class="flex items-center space-x-2 text-sm">
                           <div>
-                            <a class="font-bold hover:underline">
+                            <a
+                              class="
+                                font-bold
+                                hover:underline
+                                first-letter:capitalize
+                              "
+                            >
                               {{ data.iot_type }}
                             </a>
                           </div>

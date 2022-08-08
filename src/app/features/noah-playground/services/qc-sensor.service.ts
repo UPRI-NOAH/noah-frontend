@@ -26,7 +26,7 @@ export type SummaryItem = {
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://6cbc-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://f629-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
