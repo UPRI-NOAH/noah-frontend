@@ -87,7 +87,7 @@ export class QcLoginComponent implements OnInit {
           console.log(this.returnUrl);
           this.router.navigateByUrl(this.returnUrl);
           this.qcLoginModal = false;
-          this.pgService.toggleQuezonCitySensorsGroupShown();
+          this.pgService.toggleQuezonCityIOTGroupShown();
           this.router.navigateByUrl('/noah-playground');
           setTimeout(() => {
             //SESSION EXPIRATION

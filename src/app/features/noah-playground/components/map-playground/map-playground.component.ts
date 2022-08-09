@@ -58,6 +58,7 @@ import {
   QcSensorType,
   QcSensorService,
   QCSENSORS,
+  QCCRITFAC,
 } from '@features/noah-playground/services/qc-sensor.service';
 
 import {
@@ -72,7 +73,8 @@ import {
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
-  QcCritFacilitiesType,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
 } from '@features/noah-playground/store/noah-playground.store';
 import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
 import {
@@ -164,11 +166,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initHazardLayers();
         this.initSensors();
         this.initQuezonCitySensors();
+        this.initQCCritFac();
+        // this.showQcCriticalFacilities();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
         this.initQcCenterListener();
-        this.showQcCriticalFac();
       });
   }
 
@@ -224,19 +227,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initQcCenterListener() {
     const centerQC = localStorage.getItem('loginStatus');
     if (centerQC == '1') {
-      this.pgService.qcSensorsGroupShown$
-        .pipe(
-          distinctUntilChanged(),
-          takeUntil(this._unsub),
-          filter((center) => center !== null)
-        )
-        .subscribe((center) => {
-          this.map.flyTo({
-            center: QC_DEFAULT_CENTER,
-            zoom: 13,
-            essential: true,
-          });
-        });
+      this.map.flyTo({
+        center: QC_DEFAULT_CENTER,
+        zoom: 13,
+        essential: true,
+      });
     }
   }
 
@@ -306,7 +301,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .subscribe(([groupShown, soloShown]) => {
               this.map.setPaintProperty(
                 qcSensorType,
-                'hospital-qc',
+                'circle-opacity',
                 +(groupShown && soloShown)
               );
             });
@@ -314,7 +309,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
           // show mouse event listeners
           this.showQcDataPoints(qcSensorType);
-          this.initQcCenterListener();
         })
         .catch(() =>
           console.error(
@@ -322,114 +316,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           )
         );
     });
-
-    // this.pgService.qcSensorsGroupShown$
-    //   .pipe
-    //     (distinctUntilChanged(),
-    //     takeUntil(this._unsub),
-    //     filter((center) => center !== null)
-    //     )
-    //   .subscribe((center) => {
-    //     this.map.flyTo({
-    //       center: QC_DEFAULT_CENTER,
-    //       zoom: 13,
-    //       essential: true,
-    //     });
-    //   });
-  }
-
-  showQcCriticalFac() {
-    this.map.addSource('hospital-qc', {
-      type: 'geojson',
-      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson',
-    });
-    this.map.addLayer({
-      id: 'p_school',
-      type: 'fill',
-      source: 'hospital-qc', // reference the data source
-      layout: {},
-      paint: {
-        'fill-color': '#0080ff', // blue color fill
-        'fill-opacity': 0.4,
-      },
-      filter: ['==', 'CF Type', 'Private School'],
-    });
-    // Add a black outline around the polygon.
-    this.map.addLayer({
-      id: 'ps_outline',
-      type: 'line',
-      source: 'hospital-qc',
-      layout: {},
-      paint: {
-        'line-color': '#0000ff',
-        'line-width': 3,
-      },
-      filter: ['==', 'CF Type', 'Private School'],
-    });
-
-    this.map.addLayer({
-      id: 'barangay',
-      type: 'fill',
-      source: 'hospital-qc', // reference the data source
-      layout: {},
-      paint: {
-        'fill-color': '#00ff00', // blue color fill
-        'fill-opacity': 0.4,
-      },
-      filter: ['==', 'CF Type', 'Barangay'],
-    });
-
-    // Add a black outline around the polygon.
-    this.map.addLayer({
-      id: 'b_outline',
-      type: 'line',
-      source: 'hospital-qc',
-      layout: {},
-      paint: {
-        'line-color': '#00ff00',
-        'line-width': 3,
-      },
-      filter: ['==', 'CF Type', 'Barangay'],
-    });
-
-    this.map.addLayer({
-      id: 'hospitals',
-      type: 'fill',
-      source: 'hospital-qc', // reference the data source
-      layout: {},
-      paint: {
-        'fill-color': '#804B9B', // blue color fill
-        'fill-opacity': 1,
-      },
-      filter: ['==', 'CF Type', 'Hospital'],
-    });
-
-    // Add a black outline around the polygon.
-
-    this.map.addLayer({
-      id: 'h_outline',
-      type: 'line',
-      source: 'hospital-qc',
-      layout: {},
-      paint: {
-        'line-color': '#804B9B',
-        'line-width': 3,
-      },
-      filter: ['==', 'CF Type', 'Hospital'],
-    });
-
-    this.pgService.qcCritFac$
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged()
-      )
-      .subscribe((qcShown) => {
-        if (qcShown.shown) {
-          this.map.setLayoutProperty('CF Type', 'visibility', 'none');
-          return;
-        }
-      });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -548,6 +434,210 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
+
+  initQCCritFac() {
+    QCCRITFAC.forEach((qcCriticalFacilities: QuezonCityCriticalFacilities) => {
+      this.qcSensorService
+        .getQcCriticalFacilities()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'p_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#0080ff', // blue color fill
+              'fill-opacity': 0.4,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'barangay',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#00ff00', // green color fill
+              'fill-opacity': 0.4,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'hospitals',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#804B9B', // purple color fill
+              'fill-opacity': 0.4,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+          // 4 - add a outline around the polygon
+          this.map.addLayer({
+            id: 'ps_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#0000ff',
+              'line-width': 3,
+              'line-opacity': 0.5,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'b_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#00ff00',
+              'line-width': 3,
+              'line-opacity': 0.5,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'h_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#804B9B',
+              'line-width': 3,
+              'line-opacity': 0.5,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcCriticalFacilitiesShown$,
+            this.pgService.getQcCriticalFacilitiesShown$(qcCriticalFacilities),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                'p_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'barangay',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hospitals',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'ps_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'b_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'h_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from DOST for sensors of type "${qcCriticalFacilities}"`
+          )
+        );
+    });
+  }
+
+  // QC CRITICAL FACILITIES
+  showQcCriticalFacilities() {
+    // 0 - declare the source json files
+    const qcCritFacSourceFile: Record<
+      QuezonCityCriticalFacilities,
+      { url: string }
+    > = {
+      'qc-critical-facilities': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson',
+      },
+    };
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(qcCritFacSourceFile).forEach(
+      (qcCriticalFacilities: QuezonCityCriticalFacilities) => {
+        const qcCritFacObjData = qcCritFacSourceFile[qcCriticalFacilities];
+        // 2 - add source
+        this.map.addSource('hospital-qc', {
+          type: 'geojson',
+          data: qcCritFacObjData.url,
+        });
+        // 3 - add layer
+        this.map.addLayer({
+          id: 'p_school',
+          type: 'fill',
+          source: 'hospital-qc', // reference the data source
+          paint: {
+            'fill-color': '#0080ff', // blue color fill
+            'fill-opacity': 0.4,
+          },
+          filter: ['==', 'CF Type', 'Private School'],
+        });
+        // 4 - add a outline around the polygon
+        this.map.addLayer({
+          id: 'ps_outline',
+          type: 'line',
+          source: 'hospital-qc',
+          paint: {
+            'line-color': '#0000ff',
+            'line-width': 3,
+            'line-opacity': 0.75,
+          },
+          filter: ['==', 'CF Type', 'Private School'],
+        });
+
+        // 5 - listen to the values from the store
+        combineLatest([
+          this.pgService.qcCriticalFacilitiesShown$,
+          this.pgService.getQcCriticalFacilitiesShown$(qcCriticalFacilities),
+        ])
+          .pipe(
+            takeUntil(this._changeStyle),
+            takeUntil(this._unsub),
+            map(([groupShown, soloShown]) => {
+              return +(groupShown && soloShown);
+            })
+          )
+          .subscribe((opacity: number) => {
+            this.map.setPaintProperty('p_school', 'fill-opacity', opacity);
+            this.map.setPaintProperty('ps_outline', 'line-opacity', opacity);
+          });
+      }
+    );
+  }
+
   // END OF QC IOT
   initSensors() {
     SENSORS.forEach((sensorType) => {

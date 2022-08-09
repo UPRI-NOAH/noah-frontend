@@ -19,7 +19,7 @@
         <input
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
-          [checked]="shown$ | async"
+          [checked]="shown$ && qcshown$ | async"
           (click)="toggleShown($event)"
         />
       </label>
@@ -40,7 +40,7 @@
         "
       >
         <svg
-          [class.hidden]="expanded$ | async"
+          [class.hidden]="expanded$ && qcexpanded$ | async"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1000 1000"
           width="18"
@@ -51,7 +51,7 @@
           />
         </svg>
         <svg
-          [class.hidden]="!(expanded$ | async)"
+          [class.hidden]="!(expanded$ && qcexpanded$ | async)"
           xmlns="http://www.w3.org/2000/svg"
           width="12"
           height="12"
@@ -67,7 +67,7 @@
     </div>
   </div>
 
-  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="(expanded$ && qcexpanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
     <div class="pl-5">
       <p class="text-s italic mt-2">Weather Sensors</p>
@@ -84,6 +84,8 @@
       [qcSensorType]="qcSensorType"
     ></noah-qc-sensor-solo>
     <noah-qc-critical-facilities
+      *ngFor="let qcCriticalFacilities of qcCritFac"
+      [qcCriticalFacilities]="qcCriticalFacilities"
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
     ></noah-qc-critical-facilities>
     <noah-summary

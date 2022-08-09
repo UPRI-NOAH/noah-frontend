@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
-  QcCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
+  QuezonCityCriticalFacilitiesState,
   QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
@@ -18,38 +19,36 @@ export class QcSensorsGroupComponent implements OnInit {
     'temperature',
   ];
   qcWeatherTypes: QuezonCitySensorType[] = ['distance_m'];
+  qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
-  // qcShown: QcCriticalFacilitiesState;
+  qcshown$: Observable<boolean>;
+  qcexpanded$: Observable<boolean>;
+  qcShown: QuezonCityCriticalFacilitiesState;
   disclaimerModal: boolean;
 
-  // get shown(): boolean {
-  //   return this.qcShown.shown;
-  // }
+  get qcshown(): boolean {
+    return this.qcShown.qcshown;
+  }
+
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
     this.shown$ = this.pgService.qcSensorsGroupShown$;
-    // this.qcShown = this.pgService.getQcCritFac();
+    this.qcshown$ = this.pgService.qcCriticalFacilitiesShown$;
+    this.qcexpanded$ = this.pgService.qcCriticalFacilitiesExpanded$;
   }
 
   toggleExpansion() {
-    this.pgService.toggleQuezonCitySensorsGroupExpanded();
+    this.pgService.toggleQuezonCityIOTGroupExpanded();
   }
 
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     this.disclaimerModal = true;
-    this.pgService.toggleQuezonCitySensorsGroupShown();
-
-    // const shown = !this.shown;
-    // this.qcShown = {
-    //   ...this.qcShown,
-    //   shown,
-    // };
-    // this.pgService.setQcCritFac(this.qcShown);
+    this.pgService.toggleQuezonCityIOTGroupShown();
   }
 }

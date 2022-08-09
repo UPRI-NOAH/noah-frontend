@@ -70,7 +70,7 @@ export class QcLoginService {
   checkLoginStatus(): boolean {
     const loginCookie = localStorage.getItem('loginStatus');
     if (loginCookie == '1') {
-      this.pgService.toggleQuezonCitySensorsGroupShown();
+      this.pgService.toggleQuezonCityIOTGroupShown();
       return true;
     }
     return false;

@@ -26,6 +26,8 @@ export type QuezonCitySensorType =
   | 'temperature'
   | 'distance_m';
 
+export type QuezonCityCriticalFacilities = 'qc-critical-facilities';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -152,30 +154,44 @@ export type QuezonCitySensorTypeState = {
   shown: boolean;
 };
 
+export type QuezonCityCriticalFacilitiesTypeState = {
+  shown: boolean;
+};
+
+export type QuezonCityCriticalFacilitiesTypesState = {
+  'qc-critical-facilities': QuezonCityCriticalFacilitiesTypeState;
+};
+
+export type QuezonCityCriticalFacilitiesState = {
+  qcshown: boolean;
+  qcexpanded: boolean;
+  types: QuezonCityCriticalFacilitiesTypesState;
+};
+
 export type QuezonCitySensorsState = {
   shown: boolean;
   expanded: boolean;
   types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
 };
 
-export type QcCritFacilitiesType =
-  | 'p_school'
-  | 'ps_outline'
-  | 'barangay'
-  | 'b_outline'
-  | 'hospitals'
-  | 'h_outline';
+// export type QcCritFacilitiesType =
+//   | 'p_school'
+//   | 'ps_outline'
+//   | 'barangay'
+//   | 'b_outline'
+//   | 'hospitals'
+//   | 'h_outline';
 
-export type QcCriticalFacilitiesState = {
-  shown: boolean;
-  types: Record<QcCritFacilitiesType, QcCriticalFacilitiesTypeState>;
-};
+// export type QcCriticalFacilitiesState = {
+//   shown: boolean;
+//   types: Record<QcCritFacilitiesType, QcCriticalFacilitiesTypeState>;
+// };
 
-export type QcCriticalFacilitiesTypeState = {
-  shown: boolean;
-  fetched: boolean;
-  opacity: number;
-};
+// export type QcCriticalFacilitiesTypeState = {
+//   shown: boolean;
+//   fetched: boolean;
+//   opacity: number;
+// };
 
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
@@ -190,7 +206,7 @@ type NoahPlaygroundState = {
   currentLocation: string;
   sensors: SensorsState;
   qcSensors: QuezonCitySensorsState;
-  qcCriticalfacilities: QcCriticalFacilitiesState;
+  qcCriticalfacilities: QuezonCityCriticalFacilitiesState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -378,37 +394,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   qcCriticalfacilities: {
-    shown: false,
+    qcshown: false,
+    qcexpanded: false,
     types: {
-      b_outline: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
-      },
-      barangay: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
-      },
-      h_outline: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
-      },
-      hospitals: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
-      },
-      p_school: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
-      },
-      ps_outline: {
-        shown: false,
-        fetched: false,
-        opacity: 100,
+      'qc-critical-facilities': {
+        shown: true,
       },
     },
   },
