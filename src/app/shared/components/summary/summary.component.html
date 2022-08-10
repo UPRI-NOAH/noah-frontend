@@ -27,6 +27,7 @@
 </div>
 
 <!-- MODAL -->
+
 <div
   class="
     min-w-screen
@@ -54,7 +55,7 @@
     (click)="closeModal()"
   ></div>
   <!--content-->
-  <div class="min-w-screen min-h-screen flex items-center z-10 justify-center">
+  <div class="min-w-screen min-h-screen flex items-center z-40 justify-center">
     <div
       class="
         flex
@@ -111,7 +112,7 @@
                     Sensors out of <b class="text-black">{{ total }}</b> Total
                     Sensors
                   </p>
-                  <p class="italic lg:text-lg text-m">
+                  <p class="italic lg:text-lg text-sm">
                     As of {{ todayString | date: 'fullDate' }}
                   </p>
                 </div>
@@ -185,10 +186,10 @@
                               *ngFor="let col of columns"
                             >
                               <div
-                                (click)="sortedColumn = col"
+                                (click)="sortedColumn = col.key"
                                 class="cursor-pointer inline-flex"
                               >
-                                {{ col }}
+                                {{ col.header }}
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   class="mr-1 h-5 w-5 text-left"
@@ -327,7 +328,7 @@
                         </tbody>
                       </table>
                     </div>
-
+                    <!-- MOBILE VIEW -->
                     <div
                       class="
                         grid grid-cols-1
@@ -341,30 +342,28 @@
                       <div
                         class="bg-white space-y-3 p-4 rounded-lg shadow"
                         *ngFor="
-                          let data of summaryData
-                            | sort: sortedColumn
-                            | searchfilter: searchValue
+                          let data of summaryData | searchfilter: searchValue
                         "
                       >
                         <div class="text-sm font-bold text-gray-700">
                           {{ data.name }}
                         </div>
-                        <div class="flex items-center space-x-2 text-sm">
-                          <div>
-                            <a
-                              class="
-                                font-bold
-                                hover:underline
-                                first-letter:capitalize
-                              "
-                            >
-                              {{ data.iot_type }}
-                            </a>
+                        <div
+                          class="
+                            flex
+                            items-center
+                            space-x-2
+                            text-sm
+                            divide-x divide-black
+                          "
+                        >
+                          <div class="text-black first-letter:capitalize">
+                            {{ data.iot_type }}
                           </div>
-                          <div class="text-gray-500">
+                          <div class="pl-2 text-black">
                             {{ data.latest_date | date: 'medium' }}
                           </div>
-                          <div class="text-sm font-medium text-black">
+                          <div class="pl-2 text-sm font-medium text-black">
                             {{ data.latest_data }}
                           </div>
                         </div>
@@ -440,6 +439,7 @@
                         </div>
                       </div>
                     </div>
+                    <!-- MOBILE VIEW -->
                   </div>
                 </ng-template>
               </div>

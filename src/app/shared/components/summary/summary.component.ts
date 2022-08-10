@@ -13,29 +13,40 @@ import { first } from 'rxjs/operators';
 export class SummaryComponent implements OnInit {
   summaryModal: boolean;
   todayString: string = new Date().toDateString();
-  summaryDataItem: SummaryItem[];
   sortedColumn: string;
   total: number;
   activeSensor: number;
   loading = false;
   pk: number;
   summaryData: SummaryItem[];
-  searchValue: string;
-  location: string;
-  constructor(private qcSensorService: QcSensorService) {}
 
+  searchValue: string;
+
+  constructor(private qcSensorService: QcSensorService) {}
   columns = [
-    'LOCATION',
-    'SENSOR TYPE',
-    'LATEST DATE/TIME',
-    'LATEST DATA',
-    'CRITICAL LEVEL',
+    {
+      key: 'name',
+      header: 'LOCATION',
+    },
+    {
+      key: 'iot_type',
+      header: 'SENSOR TYPE',
+    },
+    {
+      key: 'latest_date',
+      header: 'LATEST DATE/TIME',
+    },
+    {
+      key: 'latest_data',
+      header: 'LATEST DATA',
+    },
+    {
+      key: 'critical_level',
+      header: 'CRITICAL LEVEL',
+    },
   ];
 
   ngOnInit(): void {}
-  closeModal() {
-    this.summaryModal = false;
-  }
 
   async viewSummary() {
     if (this.loading) {
@@ -84,8 +95,9 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
-      this.summaryData = newArr; //display data
-      console.log(newArr);
+      this.summaryData = newArr;
+      this.summaryData.sort((a, b) => (a.name > b.name ? 1 : -1));
+
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
@@ -93,5 +105,9 @@ export class SummaryComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  closeModal() {
+    this.summaryModal = false;
   }
 }

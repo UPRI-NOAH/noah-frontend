@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export type QcSensorType =
   | 'humidity'
@@ -20,13 +21,17 @@ export type SummaryItem = {
   latest_date: string;
   latest_data: string;
   critical_level: string;
-  pk: number;
 };
+
+export interface todo {
+  userid: number;
+  id: number;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://f629-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://bb85-136-158-11-9.ngrok.io';
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QcSensorType) {
