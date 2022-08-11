@@ -444,15 +444,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
           // add layer to map
           this.map.addLayer({
-            id: 'p_school',
+            id: 'private_school',
             type: 'fill',
             source: {
               type: 'geojson',
               data,
             },
             paint: {
-              'fill-color': '#0080ff', // blue color fill
-              'fill-opacity': 0.4,
+              'fill-color': '#FF87CA', // PINK color fill
+              'fill-opacity': 0.75,
             },
             filter: ['==', 'CF Type', 'Private School'],
           });
@@ -464,23 +464,75 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               data,
             },
             paint: {
-              'fill-color': '#00ff00', // green color fill
-              'fill-opacity': 0.4,
+              'fill-color': '#9EA9F0', // BLUE color fill
+              'fill-opacity': 0.75,
             },
             filter: ['==', 'CF Type', 'Barangay'],
           });
           this.map.addLayer({
-            id: 'hospitals',
+            id: 'hospital',
             type: 'fill',
             source: {
               type: 'geojson',
               data,
             },
             paint: {
-              'fill-color': '#804B9B', // purple color fill
-              'fill-opacity': 0.4,
+              'fill-color': '#CD5D7D', // GREEN color fill
+              'fill-opacity': 0.75,
             },
             filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'health_center',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#F7D59C', // YELLOW color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'university',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#54BAB9', // TEAL color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'elem_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#B983FF', // purple color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'high_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#6E85B7', // LIGHT BLUE color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'High School'],
           });
           // 4 - add a outline around the polygon
           this.map.addLayer({
@@ -491,9 +543,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               data,
             },
             paint: {
-              'line-color': '#0000ff',
+              'line-color': '#FF87CA', // PINK LINE fill
               'line-width': 3,
-              'line-opacity': 0.5,
+              'line-opacity': 1,
             },
             filter: ['==', 'CF Type', 'Private School'],
           });
@@ -505,9 +557,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               data,
             },
             paint: {
-              'line-color': '#00ff00',
+              'line-color': '#9EA9F0', // BLUE LINE color
               'line-width': 3,
-              'line-opacity': 0.5,
+              'line-opacity': 1,
             },
             filter: ['==', 'CF Type', 'Barangay'],
           });
@@ -519,11 +571,67 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               data,
             },
             paint: {
-              'line-color': '#804B9B',
+              'line-color': '#CD5D7D', // red LINE color
               'line-width': 3,
-              'line-opacity': 0.5,
+              'line-opacity': 1,
             },
             filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'hc_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#F7D59C', // YELLOW LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'u_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#54BAB9', // TEAL LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'es_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#B983FF', // purple LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'hs_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#6E85B7', // LIGHT BLUE LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'High School'],
           });
 
           // add show/hide listeners
@@ -534,7 +642,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
               this.map.setPaintProperty(
-                'p_school',
+                'private_school',
                 'fill-opacity',
                 +(groupShown && soloShown)
               );
@@ -544,7 +652,27 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 +(groupShown && soloShown)
               );
               this.map.setPaintProperty(
-                'hospitals',
+                'hospital',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'health_center',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'university',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'elem_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'high_school',
                 'fill-opacity',
                 +(groupShown && soloShown)
               );
@@ -560,6 +688,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               );
               this.map.setPaintProperty(
                 'h_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hc_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'u_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'es_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hs_outline',
                 'line-opacity',
                 +(groupShown && soloShown)
               );

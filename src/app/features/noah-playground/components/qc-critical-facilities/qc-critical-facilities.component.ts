@@ -4,7 +4,7 @@ import { QuezonCityCriticalFacilities } from '@features/noah-playground/store/no
 import { Observable, Subject } from 'rxjs';
 
 export const QC_CRITFAC_NAME: Record<QuezonCityCriticalFacilities, string> = {
-  'qc-critical-facilities': 'Government-owned Facilities',
+  'qc-critical-facilities': 'Government-Owned Facilities',
 };
 
 @Component({

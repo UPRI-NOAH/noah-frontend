@@ -1,13 +1,40 @@
-<div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
-  <div class="inline-flex items-center checkbox {{ qcCritFacName }}">
-    <input
-      [checked]="shown$ | async"
-      type="checkbox"
-      class="h-5 w-5 text-blue-600"
-      name="input-{{ qcCritFacName }}"
-    />
+<div class="relative pb-2">
+  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ qcCritFacName }}">
+      <input
+        [checked]="shown$ | async"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ qcCritFacName }}"
+      />
+    </div>
+    <label class="ml-3" for="input-{{ qcCritFacName }}">
+      {{ qcCritFacName }}
+    </label>
   </div>
-  <label class="ml-3" for="input-{{ qcCritFacName }}">
-    {{ qcCritFacName }}
-  </label>
+  <div class="inline-flex left-0 bottom-0 text-s font-bold italic pl-16 ml-2">
+    <ul class="list-outside list-disc">
+      <li class="barangay">
+        <span>Barangay</span>
+      </li>
+      <li class="health">
+        <span>Health Center</span>
+      </li>
+      <li class="hospital">
+        <span>Hospital</span>
+      </li>
+      <li class="university">
+        <span>University</span>
+      </li>
+      <li class="e_school">
+        <span>Elementary School</span>
+      </li>
+      <li class="h_school">
+        <span>High School</span>
+      </li>
+      <li class="p_school">
+        <span>Private School</span>
+      </li>
+    </ul>
+  </div>
 </div>
