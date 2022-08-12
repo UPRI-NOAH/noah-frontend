@@ -168,7 +168,7 @@
                   </div>
                 </ng-container>
                 <ng-template #dataSummary>
-                  <div class="mt-2 bg-gray-100">
+                  <div class="mt-2">
                     <div
                       class="overflow-auto rounded-lg shadow hidden md:block"
                     >
@@ -264,8 +264,8 @@
                             >
                               <div
                                 *ngIf="
-                                  data.latest_data == '0' ||
-                                  data.latest_data == '0.5'
+                                  data.latest_data <= '0' ||
+                                  data.latest_data <= '0.5'
                                 "
                               >
                                 <span
@@ -284,8 +284,8 @@
                               </div>
                               <div
                                 *ngIf="
-                                  data.latest_data == '0.5' ||
-                                  data.latest_data == '1.5'
+                                  data.latest_data >= '0.6' ||
+                                  data.latest_data >= '1.5'
                                 "
                               >
                                 <span
@@ -299,13 +299,13 @@
                                     bg-yellow-700
                                     rounded-lg
                                   "
-                                  >Medium (0.5 - 1.5m)</span
+                                  >Medium (0.6 - 1.5m)</span
                                 >
                               </div>
                               <div
                                 *ngIf="
-                                  data.latest_data == '1.5' ||
-                                  data.latest_data == '2'
+                                  data.latest_data >= '1.6' ||
+                                  data.latest_data >= '2'
                                 "
                               >
                                 <span
@@ -320,7 +320,7 @@
                                     rounded-lg
                                   "
                                 >
-                                  High (1.5m +)
+                                  High (1.6m +)
                                 </span>
                               </div>
                             </td>
@@ -330,115 +330,216 @@
                     </div>
                     <!-- MOBILE VIEW -->
                     <div
+                      class="z-10 pl-2 h-16 w-36 flex flex-row py-2 md:hidden"
+                    >
+                      <div class="p-2">
+                        <div class="dropdown inline-block relative">
+                          <button
+                            class="
+                              bg-gray-200
+                              text-gray-800
+                              font-semibold
+                              py-1
+                              px-1
+                              ml-2
+                              rounded
+                              inline-flex
+                              items-center
+                              hover:bg-gray-200
+                              focus:outline-none
+                              focus:ring-2
+                              focus:ring-gray-600
+                              focus:ring-opacity-50
+                            "
+                          >
+                            Sort By:
+                          </button>
+                          <ul
+                            class="
+                              dropdown-menu
+                              z-50
+                              rounded-lg
+                              drop-shadow-xl
+                              bg-white
+                              left-20
+                              top-0
+                              absolute
+                              hidden
+                              text-sm text-gray-700
+                              w-32
+                              h-48
+                              overflow-y-auto
+                            "
+                          >
+                            <li class="w-32" *ngFor="let col of columns">
+                              <a
+                                class="
+                                  rounded-lg
+                                  block
+                                  px-4
+                                  py-2
+                                  text-sm
+                                  leading-5
+                                  text-gray-700
+                                  transition
+                                  duration-150
+                                  ease-in-out
+                                  hover:bg-gray-100
+                                  focus:outline-none focus:bg-gray-100
+                                "
+                                (click)="sortedColumn = col.key"
+                                role="button"
+                                >{{ col.mobileHeader }}</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
                       class="
+                        items-center
+                        justify-center
+                        py-2
+                        px-3
+                        md:hidden
                         grid grid-cols-1
                         h-96
                         overflow-y-auto
                         sm:grid-cols-2
                         gap-4
-                        md:hidden
                       "
                     >
                       <div
-                        class="bg-white space-y-3 p-4 rounded-lg shadow"
+                        class="
+                          md:w-96
+                          rounded-md
+                          drop-shadow-2xl
+                          py-4
+                          px-5
+                          w-full
+                          bg-white
+                        "
                         *ngFor="
-                          let data of summaryData | searchfilter: searchValue
+                          let data of summaryData
+                            | sort: sortedColumn
+                            | searchfilter: searchValue
                         "
                       >
-                        <div class="text-sm font-bold text-gray-700">
+                        <h1
+                          class="text-lg font-bold text-gray-800 leading-5 pt-2"
+                        >
                           {{ data.name }}
-                        </div>
-                        <div
-                          class="
-                            flex
-                            items-center
-                            space-x-2
-                            text-sm
-                            divide-x divide-black
-                          "
-                        >
-                          <div class="text-black first-letter:capitalize">
-                            {{ data.iot_type }}
+                        </h1>
+                        <div class="pt-2 relative">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                              <div
+                                class="w-2 h-2 rounded-full bg-blue-500"
+                              ></div>
+                              <span
+                                class="
+                                  text-blue-500 text-xs
+                                  italic
+                                  font-normal
+                                  pl-1
+                                "
+                              >
+                                {{ data.latest_date | date: 'medium':'+0000' }}
+                              </span>
+                            </div>
                           </div>
-                          <div class="pl-2 text-black">
-                            {{ data.latest_date | date: 'medium' }}
-                          </div>
-                          <div class="pl-2 text-sm font-medium text-black">
-                            {{ data.latest_data }}
-                          </div>
-                        </div>
-
-                        <div
-                          class="text-sm font-medium text-black"
-                          *ngIf="
-                            data.latest_data == '0' || data.latest_data == '0.5'
-                          "
-                        >
-                          <span
+                          <p
                             class="
-                              p-1.5
-                              text-xs
-                              font-medium
-                              uppercase
-                              tracking-wider
-                              text-yellow-600
-                              bg-yellow-400
-                              rounded-lg
-                              bg-opacity-50
+                              text-sm
+                              leading-none
+                              pt-2
+                              text-gray-600
+                              first
+                              capitalize
                             "
                           >
-                            Low (0 - 0.5m
-                          </span>
-                        </div>
-
-                        <div
-                          class="text-sm font-medium text-black"
-                          *ngIf="
-                            data.latest_data == '0.6' ||
-                            data.latest_data == '0.9'
-                          "
-                        >
-                          <span
-                            class="
-                              p-1.5
-                              text-xs
-                              font-medium
-                              uppercase
-                              tracking-wider
-                              text-yellow-900
-                              bg-yellow-700
-                              rounded-lg
-                              bg-opacity-50
+                            Sensor Type: {{ data.iot_type }}
+                          </p>
+                          <p
+                            class="text-xs italic pt-1 leading-3 text-gray-400"
+                          >
+                            Latest Data: {{ data.latest_data }}
+                          </p>
+                          <div
+                            class="flex items-center justify-left"
+                            *ngIf="
+                              data.latest_data <= '0' ||
+                              data.latest_data <= '0.5'
                             "
                           >
-                            Medium (0.5 - 1.5m)
-                          </span>
-                        </div>
-
-                        <div
-                          class="text-sm font-medium text-black"
-                          *ngIf="
-                            data.latest_data == '1' || data.latest_data == '2'
-                          "
-                        >
-                          <span
-                            class="
-                              p-1.5
-                              text-xs
-                              font-medium
-                              uppercase
-                              tracking-wider
-                              text-red-800
-                              bg-red-600
-                              rounded-lg
-                              bg-opacity-50
+                            <div
+                              class="
+                                text-yellow-400
+                                bg-yellow-200
+                                py-1
+                                px-2
+                                rounded
+                                text-xs
+                                leading-3
+                                mt-2
+                                pl-2
+                              "
+                            >
+                              Low (0 - 0.5m)
+                            </div>
+                          </div>
+                          <div
+                            class="flex items-center justify-left"
+                            *ngIf="
+                              data.latest_data >= '0.6' ||
+                              data.latest_data >= '1.5'
                             "
                           >
-                            High (1.5m +)
-                          </span>
+                            <div
+                              class="
+                                text-yellow-600
+                                bg-yellow-400
+                                py-1
+                                px-2
+                                rounded
+                                text-xs
+                                leading-3
+                                mt-2
+                                pl-2
+                              "
+                            >
+                              Medium (0.5 - 1.5m)
+                            </div>
+                          </div>
+                          <div
+                            class="flex items-center justify-left"
+                            *ngIf="
+                              data.latest_data >= '1.6' ||
+                              data.latest_data >= '2'
+                            "
+                          >
+                            <div
+                              class="
+                                text-red-600
+                                bg-red-400
+                                py-1
+                                px-2
+                                rounded
+                                text-xs
+                                leading-3
+                                mt-2
+                                pl-2
+                              "
+                            >
+                              High (1.5m +)
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                     <!-- MOBILE VIEW -->
                   </div>
                 </ng-template>

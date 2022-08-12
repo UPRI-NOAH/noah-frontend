@@ -27,22 +27,27 @@ export class SummaryComponent implements OnInit {
     {
       key: 'name',
       header: 'LOCATION',
+      mobileHeader: 'Location',
     },
     {
       key: 'iot_type',
       header: 'SENSOR TYPE',
+      mobileHeader: 'Sensor Type',
     },
     {
       key: 'latest_date',
       header: 'LATEST DATE/TIME',
+      mobileHeader: 'Date/Time',
     },
     {
       key: 'latest_data',
       header: 'LATEST DATA',
+      mobileHeader: 'Latest Data',
     },
     {
       key: 'critical_level',
       header: 'CRITICAL LEVEL',
+      mobileHeader: 'Critical Level',
     },
   ];
 
@@ -97,7 +102,6 @@ export class SummaryComponent implements OnInit {
       }
       this.summaryData = newArr;
       this.summaryData.sort((a, b) => (a.name > b.name ? 1 : -1));
-
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
