@@ -10,6 +10,7 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
 import { SummaryComponent } from './components/summary/summary.component';
 import { SortPipe } from './pipes/sort.pipe';
 import { SearchfilterPipe } from './pipes/searchfilter.pipe';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -22,7 +23,7 @@ const components = [
 const directives = [];
 const pipes = [ReplacePipe, SortPipe, SearchfilterPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
+  declarations: [...components, ...directives, ...pipes, PaginationComponent],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })

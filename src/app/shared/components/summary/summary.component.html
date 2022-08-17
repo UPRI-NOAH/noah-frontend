@@ -172,7 +172,7 @@
                     <div
                       class="overflow-auto rounded-lg shadow hidden md:block"
                     >
-                      <table class="w-full">
+                      <table class="w-full b-4">
                         <thead class="bg-gray-50 border-b-2 border-gray-200">
                           <tr>
                             <th
@@ -328,6 +328,10 @@
                         </tbody>
                       </table>
                     </div>
+                    <noah-pagination
+                      [allPagesNumber]="allPages"
+                      (changePage)="onPageChange($event)"
+                    ></noah-pagination>
                     <!-- MOBILE VIEW -->
                     <div
                       class="z-10 pl-2 h-16 w-36 flex flex-row py-2 md:hidden"

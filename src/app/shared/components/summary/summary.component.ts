@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {
   QcSensorService,
   SummaryItem,
@@ -18,9 +18,12 @@ export class SummaryComponent implements OnInit {
   activeSensor: number;
   loading = false;
   pk: number;
-  summaryData: SummaryItem[];
-
+  summaryData: SummaryItem[] = [];
+  fetchedData: SummaryItem[] = [];
   searchValue: string;
+
+  itemsPerPage: number = 10;
+  allPages: number;
 
   constructor(private qcSensorService: QcSensorService) {}
   columns = [
@@ -100,8 +103,11 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
-      this.summaryData = newArr;
-      this.summaryData.sort((a, b) => (a.name > b.name ? 1 : -1));
+      this.fetchedData = newArr;
+      this.onPageChange();
+      this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
+      this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
+      console.log('1', this.onPageChange());
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
@@ -113,5 +119,12 @@ export class SummaryComponent implements OnInit {
 
   closeModal() {
     this.summaryModal = false;
+  }
+
+  onPageChange(page: number = 1): void {
+    const startItem = (page - 1) * this.itemsPerPage;
+    const endItem = page * this.itemsPerPage;
+    this.summaryData = this.fetchedData.slice(startItem, endItem);
+    console.log(this.summaryData);
   }
 }
