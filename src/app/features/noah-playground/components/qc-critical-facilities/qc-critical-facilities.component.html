@@ -14,26 +14,11 @@
   </div>
   <div class="inline-flex left-0 bottom-0 text-s font-bold italic pl-16 ml-2">
     <ul class="list-outside list-disc">
-      <li class="barangay">
-        <span>Barangay</span>
-      </li>
-      <li class="health">
-        <span>Health Center</span>
-      </li>
-      <li class="hospital">
-        <span>Hospital</span>
-      </li>
-      <li class="university">
-        <span>University</span>
-      </li>
-      <li class="e_school">
-        <span>Elementary School</span>
-      </li>
-      <li class="h_school">
-        <span>High School</span>
-      </li>
-      <li class="p_school">
-        <span>Private School</span>
+      <li
+        class="{{ cf_type }} capitalize"
+        *ngFor="let cf_type of displayNameQCLegend"
+      >
+        <span>{{ cf_type | replace: '_':' ' }}</span>
       </li>
     </ul>
   </div>

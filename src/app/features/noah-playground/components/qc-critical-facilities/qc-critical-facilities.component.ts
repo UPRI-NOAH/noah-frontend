@@ -6,7 +6,6 @@ import { Observable, Subject } from 'rxjs';
 export const QC_CRITFAC_NAME: Record<QuezonCityCriticalFacilities, string> = {
   'qc-critical-facilities': 'Government-Owned Facilities',
 };
-
 @Component({
   selector: 'noah-qc-critical-facilities',
   templateUrl: './qc-critical-facilities.component.html',
@@ -14,6 +13,7 @@ export const QC_CRITFAC_NAME: Record<QuezonCityCriticalFacilities, string> = {
 })
 export class QcCriticalFacilitiesComponent implements OnInit, OnDestroy {
   @Input() qcCriticalFacilities: QuezonCityCriticalFacilities;
+
   shown$: Observable<boolean>;
 
   private _unsub = new Subject();
@@ -23,6 +23,16 @@ export class QcCriticalFacilitiesComponent implements OnInit, OnDestroy {
   }
 
   constructor(private pgService: NoahPlaygroundService) {}
+
+  displayNameQCLegend = [
+    'barangay',
+    'private_school',
+    'hospital',
+    'university',
+    'health',
+    'elementary_school',
+    'high_school',
+  ];
 
   ngOnInit(): void {
     this.shown$ = this.pgService.getQcCriticalFacilitiesShown$(

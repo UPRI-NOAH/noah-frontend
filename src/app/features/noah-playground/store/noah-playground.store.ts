@@ -174,25 +174,6 @@ export type QuezonCitySensorsState = {
   types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
 };
 
-// export type QcCritFacilitiesType =
-//   | 'p_school'
-//   | 'ps_outline'
-//   | 'barangay'
-//   | 'b_outline'
-//   | 'hospitals'
-//   | 'h_outline';
-
-// export type QcCriticalFacilitiesState = {
-//   shown: boolean;
-//   types: Record<QcCritFacilitiesType, QcCriticalFacilitiesTypeState>;
-// };
-
-// export type QcCriticalFacilitiesTypeState = {
-//   shown: boolean;
-//   fetched: boolean;
-//   opacity: number;
-// };
-
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
