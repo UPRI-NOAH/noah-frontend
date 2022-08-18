@@ -8,6 +8,8 @@ import { ReplacePipe } from './pipes/replace.pipe';
 import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { LoginComponent } from './components/login/login.component';
+// import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SortPipe } from './pipes/sort.pipe';
 import { SearchfilterPipe } from './pipes/searchfilter.pipe';
 import { PaginationComponent } from './components/pagination/pagination.component';
@@ -19,11 +21,13 @@ const components = [
   BannerComponent,
   DisclaimerComponent,
   SummaryComponent,
+  LoginComponent,
+  PaginationComponent,
 ];
 const directives = [];
 const pipes = [ReplacePipe, SortPipe, SearchfilterPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes, PaginationComponent],
+  declarations: [...components, ...directives, ...pipes],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })

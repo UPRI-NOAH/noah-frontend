@@ -76,7 +76,7 @@ export class HazardsService {
   ): Observable<FeatureCollection | null> {
     const baseURL = `https://api.mapbox.com/v4/${payload.tilesetName}/tilequery/${payload.coords.lng},${payload.coords.lat}.json`;
     const params = new HttpParams()
-      .set('radius', payload.radius ? String(payload.radius) : '50')
+      .set('radius', payload.radius ? String(payload.radius) : '0')
       .set('limit', payload.limit ? String(payload.limit) : '20')
       .set('access_token', environment.mapbox.accessToken);
 
@@ -191,7 +191,7 @@ export class HazardsService {
         return 'high';
 
       default:
-        return 'low';
+        return 'little to none';
     }
   }
 }

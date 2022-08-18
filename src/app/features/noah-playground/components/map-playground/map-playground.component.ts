@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewEncapsulation,
   ViewChild,
-  Input,
+  ElementRef,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -15,7 +15,7 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, from, fromEvent, Subject } from 'rxjs';
+import { combineLatest, from, fromEvent, Observable, of, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -56,11 +56,12 @@ import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { MatDatepicker } from '@angular/material/datepicker';
+
 import {
   QcSensorType,
   QcSensorService,
   QCSENSORS,
+  QCCRITFAC,
 } from '@features/noah-playground/services/qc-sensor.service';
 
 import {
@@ -75,6 +76,8 @@ import {
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -85,6 +88,7 @@ import {
   IOT_SENSOR_COLORS,
   SENSOR_COLORS,
 } from '@shared/mocks/noah-colors';
+import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -132,23 +136,25 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
+  disclaimerModal: boolean;
 
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
-
+  LoginStatus$: Observable<boolean>;
+  @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
-    private qcSensorChartService: QcSensorChartService
+    private qcSensorChartService: QcSensorChartService,
+    private qcLoginService: QcLoginService
   ) {}
 
   ngOnInit(): void {
     this.initMap();
-
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
@@ -166,9 +172,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initHazardLayers();
         this.initSensors();
         this.initQuezonCitySensors();
+        this.initQCCritFac();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initQcCenterListener();
       });
   }
 
@@ -219,6 +227,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         this.centerMarker.setLngLat(center);
       });
+  }
+
+  initQcCenterListener() {
+    const centerQC = localStorage.getItem('loginStatus');
+    if (centerQC == '1') {
+      this.map.flyTo({
+        center: QC_DEFAULT_CENTER,
+        zoom: 13,
+        essential: true,
+      });
+    }
   }
 
   /**
@@ -302,16 +321,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           )
         );
     });
-
-    const allShown$ = this.pgService.qcSensorsGroupShown$
-      .pipe(distinctUntilChanged(), takeUntil(this._unsub))
-      .subscribe((center) => {
-        this.map.flyTo({
-          center: QC_DEFAULT_CENTER,
-          zoom: 12,
-          essential: true,
-        });
-      });
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
@@ -355,7 +364,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             graphDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 11,
+              zoom: 13,
               essential: true,
             });
             const name = e.features[0].properties.name;
@@ -453,6 +462,292 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       qcSensorType,
     };
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
+  }
+
+  initQCCritFac() {
+    QCCRITFAC.forEach((qcCriticalFacilities: QuezonCityCriticalFacilities) => {
+      this.qcSensorService
+        .getQcCriticalFacilities()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'private_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#FF87CA', // PINK color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'barangay',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#9EA9F0', // BLUE color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'hospital',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#CD5D7D', // GREEN color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'health_center',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#F7D59C', // YELLOW color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'university',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#54BAB9', // TEAL color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'elem_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#B983FF', // purple color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'high_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#6E85B7', // LIGHT BLUE color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'High School'],
+          });
+          // 4 - add a outline around the polygon
+          this.map.addLayer({
+            id: 'ps_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#FF87CA', // PINK LINE fill
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'b_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#9EA9F0', // BLUE LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'h_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#CD5D7D', // red LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'hc_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#F7D59C', // YELLOW LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'u_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#54BAB9', // TEAL LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'es_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#B983FF', // purple LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'hs_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#6E85B7', // LIGHT BLUE LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'High School'],
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcCriticalFacilitiesShown$,
+            this.pgService.getQcCriticalFacilitiesShown$(qcCriticalFacilities),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                'private_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'barangay',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hospital',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'health_center',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'university',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'elem_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'high_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'ps_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'b_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'h_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hc_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'u_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'es_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hs_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from DOST for sensors of type "${qcCriticalFacilities}"`
+          )
+        );
+    });
   }
 
   // END OF QC IOT
@@ -661,7 +956,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             graphDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 11,
+              zoom: 13,
               essential: true,
             });
 
@@ -837,7 +1132,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: environment.mapbox.styles.terrain,
-      zoom: 5,
+      zoom: 5.5,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
@@ -900,16 +1195,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         });
 
+        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+        //   distinctUntilChanged(),
+        //   tap(() => {
+        //     this.map.flyTo({
+        //       center: PH_DEFAULT_CENTER,
+        //       zoom: 4,
+        //       essential: true,
+        //     });
+        //   }),
+        //   shareReplay(1)
+        // );
+
         // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-          distinctUntilChanged(),
-          tap(() => {
-            this.map.flyTo({
-              center: PH_DEFAULT_CENTER,
-              zoom: 4,
-              essential: true,
-            });
-          }),
           shareReplay(1)
         );
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(

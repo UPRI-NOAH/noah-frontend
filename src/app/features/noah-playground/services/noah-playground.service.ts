@@ -18,10 +18,12 @@ import {
   VolcanoType,
   VolcanoState,
   QuezonCitySensorType,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
@@ -35,6 +37,10 @@ export class NoahPlaygroundService {
   get exagerration$(): Observable<ExaggerationState> {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
+
+  // qcCriticalFacilities$(qcCriticalFacilities: QuezonCityCriticalFacilities): Observable<boolean> {
+  //   return this.store.state$.pipe(map((state) => state.qcCriticalfacilities.types[qcCriticalFacilities].qcshown));
+  // }
 
   constructor(
     private gaService: GoogleAnalyticsService,
@@ -79,6 +85,18 @@ export class NoahPlaygroundService {
 
   get qcSensorsGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.qcSensors.expanded));
+  }
+
+  get qcCriticalFacilitiesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcCriticalfacilities.qcshown)
+    );
+  }
+
+  get qcCriticalFacilitiesExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcCriticalfacilities.qcexpanded)
+    );
   }
 
   get weatherSatellitesShown$(): Observable<boolean> {
@@ -142,6 +160,14 @@ export class NoahPlaygroundService {
     );
   }
 
+  // getQcCriticalFac$(
+  //   qcCriticalFacType: QcCritFacilitiesType
+  // ): Observable<QcCriticalFacilitiesTypeState> {
+  //   return this.store.state$.pipe(
+  //     map((state) => state.qcCriticalfacilities.types[qcCriticalFacType])
+  //   );
+  // }
+
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
   }
@@ -150,6 +176,9 @@ export class NoahPlaygroundService {
     return this.store.state.exaggeration;
   }
 
+  getQcCriticalFacilities(): QuezonCityCriticalFacilitiesState {
+    return this.store.state.qcCriticalfacilities;
+  }
   getHazard(
     hazardType: HazardType
   ): FloodState | StormSurgeState | LandslideState {
@@ -228,6 +257,16 @@ export class NoahPlaygroundService {
     );
   }
 
+  getQcCriticalFacilitiesShown$(
+    qcCriticalFacilities: QuezonCityCriticalFacilities
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map(
+        (state) => state.qcCriticalfacilities.types[qcCriticalFacilities].shown
+      )
+    );
+  }
+
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
@@ -248,6 +287,10 @@ export class NoahPlaygroundService {
       { exaggeration },
       'updated 3D Terrain - Exaggeration level'
     );
+  }
+
+  setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
+    this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
   }
 
   setHazardExpansion(
@@ -334,6 +377,19 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
+  // toggleQcCritFac(property: 'shown') {
+  //   const qcCriticalfacilities: QcCriticalFacilitiesState = {
+  //     ...this.store.state.qcCriticalfacilities,
+  //   };
+
+  //   const currentValue = qcCriticalfacilities[property];
+  //   qcCriticalfacilities[property] = !currentValue;
+  //   this.store.patch(
+  //     { qcCriticalfacilities },
+  //     `Qc Critical Facilities ${property}, ${!currentValue}`
+  //   );
+  // }
+
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -360,6 +416,10 @@ export class NoahPlaygroundService {
 
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
+  }
+
+  setQcCenter(qcCenter: { lat: number; lng: number }) {
+    this.store.patch({ qcCenter }, 'Update Quezon City Location');
   }
 
   setCurrentLocation(currentLocation: string): void {
@@ -408,33 +468,56 @@ export class NoahPlaygroundService {
     );
   }
 
-  toggleQuezonCitySensorsGroupExpanded(): void {
+  toggleQuezonCityIOTGroupExpanded(): void {
     const qcSensors = {
       ...this.store.state.qcSensors,
+    };
+
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
     };
 
     const { expanded } = qcSensors;
+    const { qcexpanded } = qcCriticalfacilities;
     qcSensors.expanded = !expanded;
+    qcCriticalfacilities.qcexpanded = !qcexpanded;
 
     this.store.patch(
-      { qcSensors },
-      `update quezon city sensor group state expanded to ${!expanded}`
+      { qcSensors, qcCriticalfacilities },
+      `update quezon city iot group state expanded to ${!expanded} ${!qcexpanded}`
     );
   }
 
-  toggleQuezonCitySensorsGroupShown(): void {
+  toggleQuezonCityIOTGroupShown(): void {
     const qcSensors = {
       ...this.store.state.qcSensors,
     };
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
+    };
 
     const { shown } = qcSensors;
+    const { qcshown } = qcCriticalfacilities;
     qcSensors.shown = !shown;
+    qcCriticalfacilities.qcshown = !qcshown;
 
     this.store.patch(
-      { qcSensors },
-      `update quezon city sensor group state shown to ${!shown}`
+      { qcSensors, qcCriticalfacilities },
+      `update quezon city iot group state shown to ${!shown} ${!qcshown}`
     );
   }
+
+  // toggleQcCriticalFacility(): void {
+  //   const qcCriticalfacilities = {
+  //     ...this.store.state.qcCriticalfacilities,
+  //   };
+  //   const { shown } = qcCriticalfacilities;
+  //   qcCriticalfacilities.shown = !shown;
+  //   this.store.patch(
+  //     { qcCriticalfacilities },
+  //     `toggle Quezon City Critical Facility Visibility ${!shown}`
+  //   );
+  // }
 
   setQuezonCitySensorTypeShown(qcSensorType: QuezonCitySensorType): void {
     const qcSensors = {
@@ -446,6 +529,19 @@ export class NoahPlaygroundService {
     this.store.patch(
       { qcSensors },
       `change quezon city sensor ${qcSensorType}'visibility to ${!shown}`
+    );
+  }
+
+  setQuezonCityCritFacTypeShown(type: QuezonCityCriticalFacilities): void {
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
+    };
+
+    const { shown } = qcCriticalfacilities.types[type];
+    qcCriticalfacilities.types[type].shown = !shown;
+    this.store.patch(
+      { qcCriticalfacilities },
+      `change quezon city critical facilities ${type}'visibility to ${!shown}`
     );
   }
 

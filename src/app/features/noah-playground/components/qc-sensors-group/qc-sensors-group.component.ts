@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
-import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
+import {
+  QuezonCityCriticalFacilities,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCitySensorType,
+} from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-
+import { shareReplay } from 'rxjs/operators';
 @Component({
   selector: 'noah-qc-sensors-group',
   templateUrl: './qc-sensors-group.component.html',
@@ -17,10 +21,18 @@ export class QcSensorsGroupComponent implements OnInit {
     'temperature',
   ];
   qcWeatherTypes: QuezonCitySensorType[] = ['distance_m'];
+  qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
-  isLoginModal: boolean;
+  qcshown$: Observable<boolean>;
+  qcexpanded$: Observable<boolean>;
+  qcShown: QuezonCityCriticalFacilitiesState;
+  disclaimerModal: boolean;
+
+  // get qcshown(): boolean {
+  //   return this.qcShown.qcshown;
+  // }
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -30,6 +42,8 @@ export class QcSensorsGroupComponent implements OnInit {
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
     this.shown$ = this.pgService.qcSensorsGroupShown$;
+    this.qcshown$ = this.pgService.qcCriticalFacilitiesShown$;
+    this.qcexpanded$ = this.pgService.qcCriticalFacilitiesExpanded$;
     this.showdata();
   }
 
@@ -43,13 +57,13 @@ export class QcSensorsGroupComponent implements OnInit {
   }
 
   toggleExpansion() {
-    this.pgService.toggleQuezonCitySensorsGroupExpanded();
+    this.pgService.toggleQuezonCityIOTGroupExpanded();
   }
 
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.isLoginModal = true;
-    this.pgService.toggleQuezonCitySensorsGroupShown();
+    this.disclaimerModal = true;
+    this.pgService.toggleQuezonCityIOTGroupShown();
   }
 }

@@ -1,8 +1,9 @@
 import { Injectable, Input } from '@angular/core';
-import { QcSensorType } from './qc-sensor.service';
+import { QuezonCitySensorType } from '../store/noah-playground.store';
+
 export type QCSensorChartOpts = {
   data: any;
-  qcSensorType: QcSensorType;
+  qcSensorType: QuezonCitySensorType;
 };
 
 @Injectable({
@@ -10,8 +11,7 @@ export type QCSensorChartOpts = {
 })
 export class QcSensorChartService {
   constructor() {}
-
-  getQcChartOpts(qcSensorType: QcSensorType) {
+  getQcChartOpts(qcSensorType: QuezonCitySensorType) {
     switch (qcSensorType) {
       case 'humidity':
         return this._getHumChartOtps();
