@@ -107,7 +107,6 @@ export class SummaryComponent implements OnInit {
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
       this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
-      console.log('1', this.onPageChange());
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
@@ -125,6 +124,5 @@ export class SummaryComponent implements OnInit {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
-    console.log(this.summaryData);
   }
 }

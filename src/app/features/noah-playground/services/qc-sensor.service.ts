@@ -33,7 +33,8 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://83b6-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://75d3-136-158-11-9.ngrok.io';
+
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
   constructor(private http: HttpClient) {}
@@ -50,13 +51,6 @@ export class QcSensorService {
   getLocation() {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
   }
-
-  // getQcSummaryData() {
-  //   const sensor_id = JSON.parse(localStorage.getItem('pk'));
-  //   return this.http.get(
-  //     `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${sensor_id}`
-  //   );
-  // }
 
   getQcSensorData(pk: number) {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);

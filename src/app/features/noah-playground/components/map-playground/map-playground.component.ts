@@ -340,6 +340,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
+          //zoom to qc
+          this.map.flyTo({
+            center: QC_DEFAULT_CENTER,
+            zoom: 12,
+            essential: true,
+          });
           this.map.on('mouseover', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
@@ -376,7 +382,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             console.log('pk', pk);
             localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
             _this.showUpdatePk();
-            _this.updatePkCalendar();
           });
         } else {
           popUp.remove();
@@ -413,15 +418,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     } catch (error) {}
   }
-  async updatePkCalendar() {
-    try {
-      const response: any = await this.qcSensorService
-        .getQcCalendar()
-        .pipe(first())
-        .toPromise();
-      localStorage.setItem('dateCalendar', JSON.stringify(response.results));
-    } catch (error) {}
-  }
   async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
     const options: any = {
       title: {
@@ -445,6 +441,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         },
       },
+
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
     const chart = Highcharts.stockChart('qcIot', options);

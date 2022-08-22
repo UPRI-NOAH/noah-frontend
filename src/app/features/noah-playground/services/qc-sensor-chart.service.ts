@@ -33,20 +33,6 @@ export class QcSensorChartService {
         new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
-
-    const pointStart = sortedCalendar.map((el) =>
-      new Date(el.received_at).getTime()
-    );
-    localStorage.setItem('pointStart', JSON.stringify(pointStart));
-
-    const processedData = calendarDate.map((el) => ({
-      x: new Date(el.received_at).getTime(),
-      y: el.distance_m,
-    }));
-
-    const setPoints = sortedCalendar.map((el) =>
-      new Date(el.received_at).getTime()
-    );
   }
   private _getHumChartOtps(): any {
     return {
@@ -260,7 +246,6 @@ export class QcSensorChartService {
   }
   //FLOOD SENSORS
   private _getFloodHeightOtps(): any {
-    const firstPoint = JSON.parse(localStorage.getItem('xValue'));
     const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
     const sortedCalendar = calendarDate.sort((a: any, b: any) => {
       return (
