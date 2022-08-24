@@ -58,7 +58,7 @@
               rounded-lg
               px-3
               md:px-4
-              py-12
+              py-7
               flex flex-col
               justify-center
               items-center
@@ -147,7 +147,7 @@
                 </div>
               </div>
             </div>
-            <div class="overflow-y-auto overflow-auto h-96 px-12">
+            <div class="overflow-y-auto overflow-auto h-96 px-2 md:px-12">
               <h1
                 class="
                   mt-2
@@ -232,7 +232,7 @@
                 attributed to the use and reliance on any information found on
                 the said website.
               </p>
-              <p
+              <button
                 class="
                   flex
                   ml-auto
@@ -241,14 +241,14 @@
                   cursor-pointer
                   justify-end
                   italic
-                  sm:text-lg
-                  text-xs
+                  sm:text-base
+                  text-xs text-primary
                 "
                 *ngIf="hideSeemore"
                 (click)="showContent()"
               >
                 See more...
-              </p>
+              </button>
               <div *ngIf="contentFlow">
                 <p
                   class="
