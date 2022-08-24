@@ -1,6 +1,7 @@
 import { Injectable, Input } from '@angular/core';
 import { QuezonCitySensorType } from '../store/noah-playground.store';
-
+import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
+import { first } from 'rxjs/operators';
 export type QCSensorChartOpts = {
   data: any;
   qcSensorType: QuezonCitySensorType;
@@ -10,22 +11,27 @@ export type QCSensorChartOpts = {
   providedIn: 'root',
 })
 export class QcSensorChartService {
-  constructor() {}
+  pk: number;
+  constructor(private qcSensorService: QcSensorService) {}
   getQcChartOpts(qcSensorType: QuezonCitySensorType) {
     switch (qcSensorType) {
-      case 'humidity':
-        return this._getHumChartOtps();
+      case 'distance_m':
+        return this._getFloodHeightOtps();
       case 'pressure':
         return this._getPressOtps();
       case 'temperature':
         return this._getTempOtps();
       default:
-        return this._getFloodHeightOtps();
+        return this._getHumChartOtps();
     }
   }
 
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
-    const { qcSensorType } = payload;
+    const { data, qcSensorType } = payload;
+
+    if (!data || !data?.length) {
+      chart.showLoading('No Data Available');
+    }
 
     const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
     const sortedCalendar = calendarDate.sort((a: any, b: any) => {
@@ -33,7 +39,47 @@ export class QcSensorChartService {
         new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
+    const processedData = calendarDate.map((el) => {
+      return [new Date(el.received_at).getTime(), el.distance_m];
+    });
+
+    const sortedData = data.sort((a: any, b: any) => {
+      return (
+        new Date(a.dateTimeRead).getTime() - new Date(b.dateTimeRead).getTime()
+      );
+    });
+
+    //const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
+    // const sortedCalendar = calendarDate.sort((a: any, b: any) => {
+    //   return (
+    //     new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
+    //   );
+    // });
+    // const processedData = sortedData.map((el) => {
+    //   return [new Date(el.received_at).getTime(), el.distance_m]
+    // })
+
+    chart.xAxis[0].update({
+      categories: processedData,
+      type: 'datetime',
+      labels: {
+        format: '{value:%b:%e:%H:%M}',
+      },
+    });
+    // set Y axis
+    switch (qcSensorType) {
+      case 'distance_m':
+        chart.series[0].setData(processedData), true;
+        break;
+      default:
+        chart.series[0].setData(
+          sortedData.map((d) => Number(d.waterlevel)),
+          true
+        );
+        break;
+    }
   }
+
   private _getHumChartOtps(): any {
     return {
       chart: { type: 'spline' },
@@ -255,6 +301,7 @@ export class QcSensorChartService {
     const processedData = calendarDate.map((el) => {
       return [new Date(el.received_at).getTime(), el.distance_m];
     });
+
     return {
       chart: {
         type: 'spline',
@@ -268,31 +315,31 @@ export class QcSensorChartService {
           format: '{value:%b:%e:%H:%M}',
         },
       },
-      rangeSelector: {
-        selected: 0,
-        inputDateFormat: '%b %e, %Y %H:%M',
-        enabled: true,
-        allButtonsEnabled: true,
-        buttons: [
-          {
-            type: 'day',
-            count: 1,
-            text: '1d',
-          },
-          {
-            type: 'month',
-            count: 1,
-            text: '1m',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        buttonTheme: {
-          width: 60,
-        },
-      },
+      // rangeSelector: {
+      //   inputDateFormat: '%b %e, %Y %H:%M',
+      //   selected: 0,
+      //   enabled: true,
+      //   allButtonsEnabled: true,
+      //   buttons: [
+      //     {
+      //       type: 'day',
+      //       count: 1,
+      //       text: '1d',
+      //     },
+      //     {
+      //       type: 'month',
+      //       count: 1,
+      //       text: '1m',
+      //     },
+      //     {
+      //       type: 'all',
+      //       text: 'All',
+      //     },
+      //   ],
+      //   buttonTheme: {
+      //     width: 60,
+      //   },
+      // },
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
@@ -357,10 +404,9 @@ export class QcSensorChartService {
         {
           name: 'Flood Height',
           color: '#0C2D48',
-          data: processedData,
-          dataGrouping: {
-            enabled: false,
-          },
+          data: [],
+          //data: processedData,
+
           lineWidth: 1.5,
           marker: {
             enabled: false,

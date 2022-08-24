@@ -137,7 +137,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
   disclaimerModal: boolean;
-
+  alertError: boolean = false;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
@@ -304,6 +304,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
+              this.alertError = true;
               this.map.setPaintProperty(
                 qcSensorType,
                 'circle-opacity',
@@ -427,18 +428,75 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         enabled: false,
       },
       exporting: {
-        enabled: true,
         fileName: 'Quezon IoT Data',
         buttons: {
           contextButton: {
             menuItems: [
-              'printChart',
-              'downloadCSV',
-              'downloadPNG',
-              'downloadJPEG',
-              'viewFullscreen',
+              {
+                text: 'Download PDF',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+              },
+              {
+                text: 'Print Chart',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else {
+                    alert('Unable to Print Please Login First');
+                  }
+                },
+              },
+              {
+                text: 'Download JPEG',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+                separator: false,
+              },
             ],
           },
+        },
+      },
+      rangeSelector: {
+        selected: 1,
+        inputDateFormat: '%b %e, %Y %H:%M',
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1d',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1m',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
         },
       },
 
@@ -446,7 +504,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
     const chart = Highcharts.stockChart('qcIot', options);
     chart.showLoading();
-
     const response: any = await this.qcSensorService
       .getQcIotSensorData()
       .pipe(first())

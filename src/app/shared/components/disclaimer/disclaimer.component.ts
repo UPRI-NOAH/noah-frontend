@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DisclaimerComponent implements OnInit {
   disclaimerModal = true;
+  contentFlow = false;
+  hideSeemore = true;
   constructor() {}
 
   ngOnInit(): void {}
+
+  showContent() {
+    this.contentFlow = true;
+    this.hideSeemore = false;
+  }
 
   closeModal(): boolean {
     const discStatus = localStorage.getItem('disclaimerStatus');
