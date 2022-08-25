@@ -33,7 +33,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://d0b3-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'http://476f-136-158-11-9.ngrok.io';
 
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';

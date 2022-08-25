@@ -477,18 +477,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         },
       },
       rangeSelector: {
-        selected: 1,
+        selected: 0,
         inputDateFormat: '%b %e, %Y %H:%M',
         buttons: [
           {
             type: 'day',
             count: 1,
-            text: '1d',
+            text: '1 Day',
           },
           {
             type: 'month',
             count: 1,
-            text: '1m',
+            text: '1 Month',
           },
           {
             type: 'all',
