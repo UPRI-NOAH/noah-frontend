@@ -104,6 +104,9 @@ export class SummaryComponent implements OnInit {
         }
       }
       this.fetchedData = newArr;
+      setInterval(() => {
+        this.fetchedData;
+      }, 5000);
       this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);

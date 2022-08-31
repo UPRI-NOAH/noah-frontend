@@ -4,6 +4,8 @@ import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
+import { forkJoin } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 export type QcSensorType =
   | 'humidity'
@@ -33,8 +35,10 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://476f-136-158-11-9.ngrok.io';
-
+  private QCBASE_URL = 'https://eb45-136-158-11-9.ngrok.io';
+  loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
+    shareReplay(1)
+  );
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
   constructor(private http: HttpClient) {}
@@ -63,10 +67,7 @@ export class QcSensorService {
     );
   }
 
-  getQcCalendar() {
-    const sensor_id = JSON.parse(localStorage.getItem('pk'));
-    return this.http.get(
-      `${this.QCBASE_URL}/api/iot-data2/?iot_sensor=${sensor_id}`
-    );
+  getLoadOnceDisclaimer() {
+    return localStorage.setItem('disclaimerStatus', 'true');
   }
 }

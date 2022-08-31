@@ -82,12 +82,14 @@
     <noah-qc-sensor-solo
       *ngFor="let qcSensorType of qcWeatherTypes"
       [qcSensorType]="qcSensorType"
-    ></noah-qc-sensor-solo>
+    >
+    </noah-qc-sensor-solo>
     <noah-qc-critical-facilities
       *ngFor="let qcCriticalFacilities of qcCritFac"
       [qcCriticalFacilities]="qcCriticalFacilities"
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
-    ></noah-qc-critical-facilities>
+    >
+    </noah-qc-critical-facilities>
     <noah-summary
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
     ></noah-summary>

@@ -28,7 +28,7 @@ export class QcSensorsGroupComponent implements OnInit {
   qcshown$: Observable<boolean>;
   qcexpanded$: Observable<boolean>;
   qcShown: QuezonCityCriticalFacilitiesState;
-  disclaimerModal: boolean;
+  disclaimerModal = false;
 
   // get qcshown(): boolean {
   //   return this.qcShown.qcshown;
@@ -61,9 +61,16 @@ export class QcSensorsGroupComponent implements OnInit {
   }
 
   toggleShown(event: Event) {
+    this.showdata();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.disclaimerModal = true;
     this.pgService.toggleQuezonCityIOTGroupShown();
+    const discStatus = localStorage.getItem('disclaimerStatus');
+    if (discStatus == 'true') {
+      this.disclaimerModal = true;
+    }
+    if (discStatus == 'false') {
+      this.disclaimerModal = false;
+    }
   }
 }

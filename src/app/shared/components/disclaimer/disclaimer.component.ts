@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-disclaimer',
@@ -6,12 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./disclaimer.component.scss'],
 })
 export class DisclaimerComponent implements OnInit {
-  disclaimerModal = true;
   contentFlow = false;
   hideSeemore = true;
   constructor() {}
+  disclaimer: boolean;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const discStatus = localStorage.getItem('disclaimerStatus');
+    if (discStatus == 'true') {
+      this.disclaimer = true;
+    }
+    if (discStatus == 'false') {
+      this.disclaimer = false;
+    }
+  }
 
   showContent() {
     this.contentFlow = true;
@@ -20,10 +29,10 @@ export class DisclaimerComponent implements OnInit {
 
   closeModal(): boolean {
     const discStatus = localStorage.getItem('disclaimerStatus');
-    this.disclaimerModal = false;
-    if (discStatus == '1') {
-      this.disclaimerModal = false;
-      localStorage.setItem('disclaimerStatus', '0');
+    this.disclaimer = false;
+    if (discStatus == 'true') {
+      this.disclaimer = false;
+      localStorage.setItem('disclaimerStatus', 'false');
       return true;
     } else {
       return false;
