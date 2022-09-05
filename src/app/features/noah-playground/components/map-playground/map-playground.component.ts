@@ -325,7 +325,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   showQcDataPoints(qcSensorType: QcSensorType) {
-    const graphDiv = document.getElementById('qcIot');
+    const graphDiv = document.getElementById('graph-dom');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -427,6 +427,31 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       credits: {
         enabled: false,
       },
+      rangeSelector: {
+        enabled: true,
+        allButtonsEnabled: true,
+        selected: 0,
+        inputDateFormat: '%b %e, %Y %H:%M',
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1 Day',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1 Month',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
+      },
       exporting: {
         fileName: 'Quezon IoT Data',
         buttons: {
@@ -476,33 +501,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         },
       },
-      rangeSelector: {
-        selected: 0,
-        inputDateFormat: '%b %e, %Y %H:%M',
-        buttons: [
-          {
-            type: 'day',
-            count: 1,
-            text: '1 Day',
-          },
-          {
-            type: 'month',
-            count: 1,
-            text: '1 Month',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        buttonTheme: {
-          width: 60,
-        },
-      },
 
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    const chart = Highcharts.stockChart('qcIot', options);
+    const chart = Highcharts.stockChart('graph-dom', options);
+
     chart.showLoading();
     const response: any = await this.qcSensorService
       .getQcIotSensorData()
