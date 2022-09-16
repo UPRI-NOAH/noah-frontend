@@ -49,16 +49,6 @@ export class QcSensorChartService {
       );
     });
 
-    //const calendarDate = JSON.parse(localStorage.getItem('calendarDateTime'));
-    // const sortedCalendar = calendarDate.sort((a: any, b: any) => {
-    //   return (
-    //     new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
-    //   );
-    // });
-    // const processedData = sortedData.map((el) => {
-    //   return [new Date(el.received_at).getTime(), el.distance_m]
-    // })
-
     chart.xAxis[0].update({
       categories: processedData,
       type: 'datetime',
@@ -315,31 +305,6 @@ export class QcSensorChartService {
           format: '{value:%b:%e:%H:%M}',
         },
       },
-      // rangeSelector: {
-      //   inputDateFormat: '%b %e, %Y %H:%M',
-      //   selected: 0,
-      //   enabled: true,
-      //   allButtonsEnabled: true,
-      //   buttons: [
-      //     {
-      //       type: 'day',
-      //       count: 1,
-      //       text: '1d',
-      //     },
-      //     {
-      //       type: 'month',
-      //       count: 1,
-      //       text: '1m',
-      //     },
-      //     {
-      //       type: 'all',
-      //       text: 'All',
-      //     },
-      //   ],
-      //   buttonTheme: {
-      //     width: 60,
-      //   },
-      // },
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
@@ -405,8 +370,6 @@ export class QcSensorChartService {
           name: 'Flood Height',
           color: '#0C2D48',
           data: [],
-          //data: processedData,
-
           lineWidth: 1.5,
           marker: {
             enabled: false,

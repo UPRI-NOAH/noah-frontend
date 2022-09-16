@@ -4,8 +4,8 @@ import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
-import { forkJoin } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
 
 export type QcSensorType =
   | 'humidity'
@@ -35,12 +35,17 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://eb45-136-158-11-9.ngrok.io';
+  private _refresh$ = new Subject<void>();
+
+  private QCBASE_URL = 'http://609a-136-158-11-127.ngrok.io';
+
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );
+
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
+
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QuezonCitySensorType) {
@@ -56,8 +61,12 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
   }
 
-  getQcSensorData(pk: number) {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
+  getQcSensorData(pk: number): Observable<any> {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`).pipe(
+      tap(() => {
+        this._refresh$.next();
+      })
+    );
   }
 
   getQcIotSensorData() {
@@ -69,5 +78,9 @@ export class QcSensorService {
 
   getLoadOnceDisclaimer() {
     return localStorage.setItem('disclaimerStatus', 'true');
+  }
+
+  get refresh$() {
+    return this._refresh$;
   }
 }

@@ -50,7 +50,6 @@ export class QcLoginService {
               console.log(load)
             );
             this.UserName.next(localStorage.getItem('username'));
-            console.log('username', username);
           }
           return response;
         })
@@ -63,7 +62,6 @@ export class QcLoginService {
     localStorage.removeItem('username');
     localStorage.setItem('disclaimerStatus', 'false');
     localStorage.setItem('loginStatus', '0');
-    console.log('Logged Out Successfully');
     this.router
       .navigateByUrl('/logout', { skipLocationChange: true })
       .then(() => {
@@ -105,21 +103,17 @@ export class QcLoginService {
 
   showAdmin(): void {
     this.showAdminResult = true;
-    console.log('SHOW');
   }
 
   hideAdmin(): void {
     this.showAdminResult = false;
-    console.log('HIDE');
   }
 
   showLoginModal(): void {
     this.loginModal = true;
-    console.log('SHOW MODAL');
   }
 
   hideLoginModal(): void {
     this.loginModal = false;
-    console.log('HIDE MODAL');
   }
 }

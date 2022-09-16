@@ -3,6 +3,7 @@ import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
+import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -24,6 +25,9 @@ export class SummaryComponent implements OnInit {
 
   itemsPerPage: number = 10;
   allPages: number;
+
+  alert: boolean = false;
+  alertSummary: boolean = false;
 
   constructor(private qcSensorService: QcSensorService) {}
   columns = [
@@ -103,23 +107,22 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
+
       this.fetchedData = newArr;
-      setInterval(() => {
-        this.fetchedData;
-      }, 5000);
       this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
       this.activeSensor = locationArr.length;
       this.total = totalSensor.length;
     } catch (error) {
-      alert('Unable to Fetch Summary Data');
+      this.alertSummary = true;
     } finally {
       this.loading = false;
     }
   }
 
   closeModal() {
+    this.alert = !this.alert;
     this.summaryModal = false;
   }
 

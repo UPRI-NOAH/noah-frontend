@@ -380,7 +380,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             _this.showQcChart(+pk, name, qcSensorType);
             _this._graphShown = true;
-            console.log('pk', pk);
             localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
             _this.showUpdatePk();
           });
@@ -426,6 +425,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       credits: {
         enabled: false,
+      },
+      navigator: {
+        enabled: true,
       },
       rangeSelector: {
         enabled: true,
