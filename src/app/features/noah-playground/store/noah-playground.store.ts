@@ -20,11 +20,7 @@ export const QC_DEFAULT_CENTER = {
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
 
-export type QuezonCitySensorType =
-  | 'humidity'
-  | 'pressure'
-  | 'temperature'
-  | 'distance_m';
+export type QuezonCitySensorType = 'rain_accu' | 'distance_m';
 
 export type QuezonCityCriticalFacilities = 'qc-critical-facilities';
 
@@ -356,15 +352,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     types: {
-      humidity: {
-        shown: false,
-        fetched: false,
-      },
-      pressure: {
-        shown: false,
-        fetched: false,
-      },
-      temperature: {
+      rain_accu: {
         shown: false,
         fetched: false,
       },

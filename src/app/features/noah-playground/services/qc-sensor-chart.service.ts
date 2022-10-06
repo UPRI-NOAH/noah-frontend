@@ -17,12 +17,8 @@ export class QcSensorChartService {
     switch (qcSensorType) {
       case 'distance_m':
         return this._getFloodHeightOtps();
-      case 'pressure':
-        return this._getPressOtps();
-      case 'temperature':
-        return this._getTempOtps();
       default:
-        return this._getHumChartOtps();
+        return this._getRaintps();
     }
   }
 
@@ -63,154 +59,14 @@ export class QcSensorChartService {
         break;
       default:
         chart.series[0].setData(
-          sortedData.map((d) => Number(d.waterlevel)),
+          sortedData.map((d) => Number(d.rain_accu)),
           true
         );
         break;
     }
   }
 
-  private _getHumChartOtps(): any {
-    return {
-      chart: { type: 'spline' },
-      yAxis: {
-        alignTicks: false,
-        tickInterval: 0.5,
-        plotBands: [
-          {
-            from: 0,
-            to: 2.5,
-            color: '#DB1F48',
-            label: {},
-          },
-          {
-            from: 2.5,
-            to: 7.5,
-            color: '#0073ff',
-            label: {
-              text: 'Moderate',
-              style: {
-                color: 'white',
-              },
-            },
-          },
-          {
-            from: 7.5,
-            to: 15,
-            color: '#0011ad',
-            label: {
-              text: 'Heavy',
-              style: {
-                color: 'white',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            color: '#ffa500',
-            label: {
-              style: {
-                color: 'black',
-              },
-            },
-          },
-
-          {
-            from: 30,
-            to: 500,
-            color: '#fc3d03',
-            label: {
-              text: 'Torrential',
-              style: {
-                color: 'black',
-              },
-            },
-          },
-        ],
-      },
-      series: [
-        {
-          color: '#FF8300',
-          name: 'Humidity',
-          data: [],
-        },
-      ],
-    };
-  }
-  private _getPressOtps(): any {
-    return {
-      chart: { type: 'spline' },
-      yAxis: {
-        alignTicks: false,
-        tickInterval: 0.5,
-        color: '#0C2D48',
-        plotBands: [
-          {
-            from: 0,
-            to: 2.5,
-            color: '#4ac6ff',
-            label: {
-              text: 'Light',
-            },
-          },
-          {
-            from: 2.5,
-            to: 7.5,
-            color: '#FF8300',
-            label: {
-              text: 'Moderate',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 7.5,
-            to: 15,
-            color: '#FF8300',
-            label: {
-              text: 'Heavy',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            color: '#FF8300',
-            label: {
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-
-          {
-            from: 30,
-            to: 500,
-            color: '#FF8300',
-            label: {
-              text: 'Torrential',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-        ],
-      },
-      series: [
-        {
-          name: 'Air Pressure',
-          color: '#0C2D48',
-          data: [],
-        },
-      ],
-    };
-  }
-
-  private _getTempOtps(): any {
+  private _getRaintps(): any {
     return {
       chart: { type: 'spline' },
       yAxis: {
@@ -273,7 +129,7 @@ export class QcSensorChartService {
       },
       series: [
         {
-          name: 'Temperature',
+          name: 'Rainfall',
           color: '#0C2D48',
           data: [],
         },

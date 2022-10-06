@@ -3,8 +3,24 @@ import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
-import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import {
+  Observable,
+  of,
+  pipe,
+  Subject,
+  Subscription,
+  interval,
+  concat,
+  timer,
+} from 'rxjs';
+import {
+  first,
+  tap,
+  startWith,
+  switchMap,
+  take,
+  finalize,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'noah-summary',
@@ -25,7 +41,8 @@ export class SummaryComponent implements OnInit {
 
   itemsPerPage: number = 10;
   allPages: number;
-
+  subscription!: Subscription;
+  everyFiveSeconds: Observable<number> = timer(60000); //refresh every 1 minute
   alert: boolean = false;
   alertSummary: boolean = false;
 
@@ -107,12 +124,14 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
-
+      this.subscription = this.everyFiveSeconds.subscribe(() => {
+        this.viewSummary(); //auto refresh data every 1 minute
+      });
+      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       this.fetchedData = newArr;
-      this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
-      this.activeSensor = locationArr.length;
+      this.activeSensor = newArr.length;
       this.total = totalSensor.length;
     } catch (error) {
       this.alertSummary = true;
@@ -122,13 +141,18 @@ export class SummaryComponent implements OnInit {
   }
 
   closeModal() {
+    this.ngOnDestroy(); //stop popup modal
     this.alert = !this.alert;
-    this.summaryModal = false;
+    this.summaryModal = !this.summaryData;
   }
 
   onPageChange(page: number = 1): void {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

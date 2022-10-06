@@ -15,12 +15,7 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./qc-sensors-group.component.scss'],
 })
 export class QcSensorsGroupComponent implements OnInit {
-  qcSensorTypes: QuezonCitySensorType[] = [
-    'humidity',
-    'pressure',
-    'temperature',
-  ];
-  qcWeatherTypes: QuezonCitySensorType[] = ['distance_m'];
+  qcWeatherTypes: QuezonCitySensorType[] = ['distance_m', 'rain_accu'];
   qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
 
   expanded$: Observable<boolean>;

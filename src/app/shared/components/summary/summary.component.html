@@ -308,7 +308,7 @@
                             >
                               <div
                                 *ngIf="
-                                  data.latest_data <= '0' ||
+                                  data.latest_data <= '0' &&
                                   data.latest_data <= '0.5'
                                 "
                               >
@@ -328,7 +328,7 @@
                               </div>
                               <div
                                 *ngIf="
-                                  data.latest_data >= '0.6' ||
+                                  data.latest_data >= '0.6' &&
                                   data.latest_data >= '1.5'
                                 "
                               >
@@ -348,8 +348,8 @@
                               </div>
                               <div
                                 *ngIf="
-                                  data.latest_data >= '1.6' ||
-                                  data.latest_data >= '2'
+                                  data.latest_data >= '1.6' &&
+                                  data.latest_data <= '2'
                                 "
                               >
                                 <span
