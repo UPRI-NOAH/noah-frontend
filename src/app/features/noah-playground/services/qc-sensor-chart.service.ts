@@ -15,7 +15,7 @@ export class QcSensorChartService {
   constructor(private qcSensorService: QcSensorService) {}
   getQcChartOpts(qcSensorType: QuezonCitySensorType) {
     switch (qcSensorType) {
-      case 'distance_m':
+      case 'flood':
         return this._getFloodHeightOtps();
       default:
         return this._getRaintps();
@@ -38,23 +38,55 @@ export class QcSensorChartService {
     const processedData = calendarDate.map((el) => {
       return [new Date(el.received_at).getTime(), el.distance_m];
     });
+    const processedRainData = calendarDate.map((el) => {
+      return [new Date(el.received_at).getTime(), el.rain_accu];
+    });
 
     const sortedData = data.sort((a: any, b: any) => {
       return (
-        new Date(a.dateTimeRead).getTime() - new Date(b.dateTimeRead).getTime()
+        new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
 
-    chart.xAxis[0].update({
-      categories: processedData,
-      type: 'datetime',
-      labels: {
-        format: '{value:%b:%e:%H:%M}',
-      },
-    });
+    // chart.xAxis[0].update(
+    //   {
+    //     categories: sortedData.map((d) => d.dateTimeRead),
+    //     tickInterval: 5,
+    //   },
+    //   true
+    // );
+
+    // chart.xAxis[0].update({
+    //   categories: processedData,
+    //   type: 'datetime',
+    //   labels: {
+    //     format: '{value:%b:%e:%H:%M}',
+    //   },
+    // });
+    // set X axis
+    switch (qcSensorType) {
+      case 'flood':
+        chart.xAxis[0].update({
+          categories: processedData,
+          type: 'datetime',
+          labels: {
+            format: '{value:%b:%e:%H:%M}',
+          },
+        });
+        break;
+      default:
+        chart.xAxis[0].update({
+          categories: calendarDate.map((d) => d.dateTimeRead),
+          type: 'datetime',
+          labels: {
+            format: '{value:%b:%e:%H:%M}',
+          },
+        });
+        break;
+    }
     // set Y axis
     switch (qcSensorType) {
-      case 'distance_m':
+      case 'flood':
         chart.series[0].setData(processedData), true;
         break;
       default:
@@ -72,7 +104,6 @@ export class QcSensorChartService {
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
-        color: '#0C2D48',
         plotBands: [
           {
             from: 0,
@@ -80,37 +111,44 @@ export class QcSensorChartService {
             color: '#4ac6ff',
             label: {
               text: 'Light',
+              // style: {
+              //   color: 'black'
+              // }
             },
           },
           {
             from: 2.5,
             to: 7.5,
-            color: '#FF8300',
+            // color: 'blue',
+            color: '#0073ff',
             label: {
               text: 'Moderate',
               style: {
-                color: '#0C2D48',
+                color: 'white',
               },
             },
           },
           {
             from: 7.5,
             to: 15,
-            color: '#FF8300',
+            // color: 'dark blue',
+            color: '#0011ad',
             label: {
               text: 'Heavy',
               style: {
-                color: '#0C2D48',
+                color: 'white',
               },
             },
           },
           {
             from: 15,
             to: 30,
-            color: '#FF8300',
+            // color: 'orange',
+            color: '#fcba03',
             label: {
+              text: 'Intense',
               style: {
-                color: '#0C2D48',
+                color: 'black',
               },
             },
           },
@@ -118,10 +156,12 @@ export class QcSensorChartService {
           {
             from: 30,
             to: 500,
-            color: '#FF8300',
+            // color: 'red',
+            color: '#fc3d03',
             label: {
+              text: 'Torrential',
               style: {
-                color: '#0C2D48',
+                color: 'black',
               },
             },
           },
@@ -130,7 +170,7 @@ export class QcSensorChartService {
       series: [
         {
           name: 'Rainfall',
-          color: '#0C2D48',
+          // type: "xrange",
           data: [],
         },
       ],

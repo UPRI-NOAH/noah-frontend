@@ -58,7 +58,6 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
-  QcSensorType,
   QcSensorService,
   QCSENSORS,
   QCCRITFAC,
@@ -78,6 +77,7 @@ import {
   QC_DEFAULT_CENTER,
   QuezonCityCriticalFacilitiesState,
   QuezonCityCriticalFacilities,
+  QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -324,7 +324,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  showQcDataPoints(qcSensorType: QcSensorType) {
+  showQcDataPoints(qcSensorType: QuezonCitySensorType) {
     const graphDiv = document.getElementById('graph-dom');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
@@ -418,7 +418,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     } catch (error) {}
   }
-  async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
+  async showQcChart(
+    pk: number,
+    appID: string,
+    qcSensorType: QuezonCitySensorType
+  ) {
     const options: any = {
       title: {
         text: `${appID}`,
