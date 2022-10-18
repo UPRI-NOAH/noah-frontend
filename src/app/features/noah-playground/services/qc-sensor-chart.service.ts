@@ -107,9 +107,9 @@ export class QcSensorChartService {
             color: '#4ac6ff',
             label: {
               text: 'Light',
-              // style: {
-              //   color: 'black'
-              // }
+              style: {
+                color: 'black',
+              },
             },
           },
           {
@@ -216,10 +216,13 @@ export class QcSensorChartService {
             color: '#F2C94C',
             label: {
               text: 'Low',
+              style: {
+                color: '#0C2D48',
+              },
             },
           },
           {
-            from: 0.51,
+            from: 0.5,
             to: 1.5,
             color: '#F2994A',
             label: {
@@ -230,7 +233,7 @@ export class QcSensorChartService {
             },
           },
           {
-            from: 1.51,
+            from: 1.5,
             to: 15,
             color: '#EB5757',
             label: {
