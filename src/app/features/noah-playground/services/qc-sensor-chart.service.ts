@@ -1,7 +1,6 @@
 import { Injectable, Input } from '@angular/core';
 import { QuezonCitySensorType } from '../store/noah-playground.store';
 import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
-import { first } from 'rxjs/operators';
 export type QCSensorChartOpts = {
   data: any;
   qcSensorType: QuezonCitySensorType;
@@ -35,8 +34,15 @@ export class QcSensorChartService {
         new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
       );
     });
+
+    // Y axis data for flood height
     const processedData = calendarDate.map((el) => {
       return [new Date(el.received_at).getTime(), el.distance_m];
+    });
+
+    // Y axis data for rainfall
+    const RainProcessedData = calendarDate.map((el) => {
+      return [new Date(el.received_at).getTime(), el.rain_accu];
     });
 
     const sortedData = data.sort((a: any, b: any) => {
@@ -57,6 +63,9 @@ export class QcSensorChartService {
       case 'distance_m':
         chart.series[0].setData(processedData), true;
         break;
+      case 'rain_accu':
+        chart.series[0].setData(RainProcessedData), true;
+        break;
       default:
         chart.series[0].setData(
           sortedData.map((d) => Number(d.rain_accu)),
@@ -69,10 +78,14 @@ export class QcSensorChartService {
   private _getRaintps(): any {
     return {
       chart: { type: 'spline' },
+      subtitle: {
+        text: 'Rainfall',
+      },
       yAxis: {
         alignTicks: false,
         tickInterval: 0.5,
         color: '#0C2D48',
+        opposite: false,
         plotBands: [
           {
             from: 0,
@@ -132,6 +145,13 @@ export class QcSensorChartService {
           name: 'Rainfall',
           color: '#0C2D48',
           data: [],
+          lineWidth: 1.5,
+          marker: {
+            enabled: false,
+          },
+          hover: {
+            lineWidth: 5,
+          },
         },
       ],
     };
@@ -170,15 +190,15 @@ export class QcSensorChartService {
           {
             from: 0,
             to: 0.5,
-            color: '',
+            color: '#F2C94C',
             label: {
               text: 'Low',
             },
           },
           {
-            from: 0.6,
+            from: 0.51,
             to: 1.5,
-            color: '#6AF2F0',
+            color: '#F2994A',
             label: {
               text: 'Moderate',
               style: {
@@ -187,32 +207,11 @@ export class QcSensorChartService {
             },
           },
           {
-            from: 1.6,
+            from: 1.51,
             to: 15,
-            color: '#004369',
+            color: '#EB5757',
             label: {
               text: 'High',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            color: '#0067B3',
-            label: {
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-
-          {
-            from: 30,
-            to: 500,
-            color: '#0067B3',
-            label: {
               style: {
                 color: '#0C2D48',
               },

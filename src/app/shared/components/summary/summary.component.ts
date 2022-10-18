@@ -135,13 +135,16 @@ export class SummaryComponent implements OnInit {
       this.total = totalSensor.length;
     } catch (error) {
       this.alertSummary = true;
+      setTimeout(() => {
+        this.summaryModal = false;
+      }, 1000);
     } finally {
       this.loading = false;
     }
   }
 
   closeModal() {
-    this.ngOnDestroy(); //stop popup modal
+    this.subscription.unsubscribe(); //stop popup modal
     this.alert = !this.alert;
     this.summaryModal = !this.summaryData;
   }
@@ -150,9 +153,5 @@ export class SummaryComponent implements OnInit {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }

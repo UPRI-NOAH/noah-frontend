@@ -473,6 +473,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 },
               },
               {
+                text: 'Download CSV',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+              },
+              {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
