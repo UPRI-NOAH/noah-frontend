@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
+import {
+  QCSENSORS,
+  QcSensorService,
+} from '@features/noah-playground/services/qc-sensor.service';
 import {
   QuezonCityCriticalFacilities,
   QuezonCityCriticalFacilitiesState,
@@ -15,7 +18,7 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./qc-sensors-group.component.scss'],
 })
 export class QcSensorsGroupComponent implements OnInit {
-  qcWeatherTypes: QuezonCitySensorType[] = ['distance_m', 'rain_accu'];
+  qcWeatherTypes: QuezonCitySensorType[] = QCSENSORS;
   qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
 
   expanded$: Observable<boolean>;
