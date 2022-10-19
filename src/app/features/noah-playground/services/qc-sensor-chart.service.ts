@@ -179,9 +179,13 @@ export class QcSensorChartService {
         type: 'datetime',
         labels: {
           format: '{value:%b:%e:%H:%M}',
+          align: 'left',
         },
       },
       yAxis: {
+        title: {
+          text: 'Meters (m)',
+        },
         alignTicks: false,
         tickInterval: 0.5,
         color: '#0C2D48',

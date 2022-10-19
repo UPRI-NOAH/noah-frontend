@@ -20,9 +20,6 @@ export class LandingPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.title.setTitle('NOAH - Nationwide Operational Assessment of Hazards');
-    this.qcSensorService.loadOnceDisclaimer$.subscribe((load) =>
-      console.log(load)
-    );
   }
 
   selectPlace(selectedPlace) {
