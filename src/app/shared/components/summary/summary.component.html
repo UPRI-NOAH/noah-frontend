@@ -55,6 +55,134 @@
     (click)="closeModal()"
   ></div>
   <!--content-->
+
+  <div class="max-w-3xl mx-auto px-8 sm:px-0">
+    <div class="sm:w-7/12 sm:mx-auto">
+      <div
+        role="tablist"
+        aria-label="tabs"
+        class="
+          relative
+          w-max
+          mx-auto
+          h-12
+          grid grid-cols-3
+          items-center
+          px-[3px]
+          rounded-full
+          bg-gray-900/20
+          overflow-hidden
+          shadow-2xl shadow-900/20
+          transition
+        "
+      >
+        <div
+          class="
+            absolute
+            indicator
+            h-11
+            my-auto
+            top-0
+            bottom-0
+            left-0
+            rounded-full
+            bg-white
+            shadow-md
+          "
+        ></div>
+        <button
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-1"
+          id="tab-1"
+          tabindex="0"
+          class="relative block h-10 px-6 tab rounded-full"
+        >
+          <span class="text-gray-800">First Tab</span>
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-2"
+          id="tab-2"
+          tabindex="-1"
+          class="relative block h-10 px-6 tab rounded-full"
+        >
+          <span class="text-gray-800">Second Tab</span>
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-3"
+          id="tab-3"
+          tabindex="-1"
+          class="relative block h-10 px-6 tab rounded-full"
+        >
+          <span class="text-gray-800">Third Tab</span>
+        </button>
+      </div>
+      <div class="mt-6 relative rounded-3xl bg-purple-50">
+        <div
+          role="tabpanel"
+          id="panel-1"
+          class="tab-panel p-6 transition duration-300"
+        >
+          <h2 class="text-xl font-semibold text-gray-800">First tab panel</h2>
+          <p class="mt-4 text-gray-600">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quas
+            dolores voluptate temporibus, atque ab eos, delectus at ad hic
+            voluptatem veritatis iure, nulla voluptates quod nobis doloremque
+            eaque! Perferendis, soluta.
+          </p>
+        </div>
+        <div
+          role="tabpanel"
+          id="panel-2"
+          class="
+            absolute
+            top-0
+            invisible
+            opacity-0
+            tab-panel
+            p-6
+            transition
+            duration-300
+          "
+        >
+          <h2 class="text-xl font-semibold text-gray-800">Second tab panel</h2>
+          <p class="mt-4 text-gray-600">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quas
+            dolores voluptate temporibus, atque ab eos, delectus at ad hic
+            voluptatem veritatis iure, nulla voluptates quod nobis doloremque
+            eaque! Perferendis, soluta.
+          </p>
+        </div>
+        <div
+          role="tabpanel"
+          id="panel-3"
+          class="
+            absolute
+            top-0
+            invisible
+            opacity-0
+            tab-panel
+            p-6
+            transition
+            duration-300
+          "
+        >
+          <h2 class="text-xl font-semibold text-gray-800">Third tab panel</h2>
+          <p class="mt-4 text-gray-600">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quas
+            dolores voluptate temporibus, atque ab eos, delectus at ad hic
+            voluptatem veritatis iure, nulla voluptates quod nobis doloremque
+            eaque! Perferendis, soluta.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="min-w-screen min-h-screen flex items-center z-40 justify-center">
     <div
       class="
@@ -68,49 +196,6 @@
         h-full
       "
     >
-      <!-- alert -->
-      <div
-        id="alert"
-        *ngIf="alertSummary"
-        [ngClass]="
-          ' absolute lg:w-10/12 transition duration-150 ease-in-out bg-yellow-200 shadow rounded-md md:flex justify-between items-center top-0  py-4 px-4 ' +
-          (alert
-            ? 'transform -translate-y-full'
-            : 'transform translate-y-0 mt-8')
-        "
-      >
-        <div class="sm:flex items-center">
-          <div class="flex items-end">
-            <div class="mr-2 mt-0.5 sm:mt-0 text-yellow-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="22"
-                height="22"
-                fill="currentColor"
-              >
-                <path
-                  class="heroicon-ui"
-                  d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 9a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0v4a1 1 0 0 1-1 1zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
-                />
-              </svg>
-            </div>
-            <p class="mr-2 text-base font-bold text-yellow-500">Warning</p>
-          </div>
-          <div
-            class="h-1 w-1 bg-yellow-500 rounded-full mr-2 hidden xl:block"
-          ></div>
-          <p class="text-base text-black font-bold">
-            Unable to fetch Quezon City Summary Data
-          </p>
-        </div>
-        <div class="flex justify-end mt-4 md:mt-0 md:pl-4 lg:pl-0">
-          <span (click)="closeModal()" class="text-sm cursor-pointer text-black"
-            >Dismiss</span
-          >
-        </div>
-      </div>
-      <!-- alert -->
       <div
         id="modal"
         class="
@@ -600,3 +685,91 @@
     </div>
   </div>
 </div>
+<!-- alert -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
+  *ngIf="alertSummary"
+>
+  <!--content-->
+  <div class="min-w-screen min-h-screen flex items-center z-40 justify-center">
+    <div
+      class="
+        flex
+        items-center
+        justify-center
+        fixed
+        left-0
+        bottom-0
+        w-full
+        h-full
+      "
+    >
+      <div
+        id="modal"
+        class="
+          container
+          mx-auto
+          flex
+          justify-center
+          items-center
+          px-4
+          md:px-10
+          py-12
+        "
+      >
+        <div
+          class="absolute top-0 flex items-center z-10 justify-center px-5 py-5"
+        >
+          <div
+            class="flex bg-yellow-200 rounded-lg p-4 mb-4 text-sm text-red-700"
+            role="alertModal"
+          >
+            <div class="sm:flex items-center">
+              <div class="flex items-end">
+                <div class="mr-2 mt-0.5 sm:mt-0 text-yellow-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    fill="currentColor"
+                  >
+                    <path
+                      class="heroicon-ui"
+                      d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 9a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0v4a1 1 0 0 1-1 1zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                    />
+                  </svg>
+                </div>
+                <p class="mr-2 text-base font-bold text-yellow-500">Warning</p>
+              </div>
+              <div
+                class="h-1 w-1 bg-yellow-500 rounded-full mr-2 hidden xl:block"
+              ></div>
+              <p class="text-base text-black font-bold">
+                Unable to fetch Quezon City Summary Data
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- alert -->

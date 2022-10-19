@@ -134,10 +134,12 @@ export class SummaryComponent implements OnInit {
       this.activeSensor = newArr.length;
       this.total = totalSensor.length;
     } catch (error) {
+      this.summaryModal = false;
+      this.loading = !this.loading;
       this.alertSummary = true;
       setTimeout(() => {
-        this.summaryModal = false;
-      }, 1000);
+        this.alertSummary = false;
+      }, 2000);
     } finally {
       this.loading = false;
     }
