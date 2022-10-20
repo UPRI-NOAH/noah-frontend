@@ -38,10 +38,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
-  // qcCriticalFacilities$(qcCriticalFacilities: QuezonCityCriticalFacilities): Observable<boolean> {
-  //   return this.store.state$.pipe(map((state) => state.qcCriticalfacilities.types[qcCriticalFacilities].qcshown));
-  // }
-
   constructor(
     private gaService: GoogleAnalyticsService,
     private http: HttpClient,
@@ -159,14 +155,6 @@ export class NoahPlaygroundService {
       map((state) => state.volcanoes.types[volcanoType])
     );
   }
-
-  // getQcCriticalFac$(
-  //   qcCriticalFacType: QcCritFacilitiesType
-  // ): Observable<QcCriticalFacilitiesTypeState> {
-  //   return this.store.state$.pipe(
-  //     map((state) => state.qcCriticalfacilities.types[qcCriticalFacType])
-  //   );
-  // }
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
@@ -377,19 +365,6 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
-  // toggleQcCritFac(property: 'shown') {
-  //   const qcCriticalfacilities: QcCriticalFacilitiesState = {
-  //     ...this.store.state.qcCriticalfacilities,
-  //   };
-
-  //   const currentValue = qcCriticalfacilities[property];
-  //   qcCriticalfacilities[property] = !currentValue;
-  //   this.store.patch(
-  //     { qcCriticalfacilities },
-  //     `Qc Critical Facilities ${property}, ${!currentValue}`
-  //   );
-  // }
-
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -506,18 +481,6 @@ export class NoahPlaygroundService {
       `update quezon city iot group state shown to ${!shown} ${!qcshown}`
     );
   }
-
-  // toggleQcCriticalFacility(): void {
-  //   const qcCriticalfacilities = {
-  //     ...this.store.state.qcCriticalfacilities,
-  //   };
-  //   const { shown } = qcCriticalfacilities;
-  //   qcCriticalfacilities.shown = !shown;
-  //   this.store.patch(
-  //     { qcCriticalfacilities },
-  //     `toggle Quezon City Critical Facility Visibility ${!shown}`
-  //   );
-  // }
 
   setQuezonCitySensorTypeShown(qcSensorType: QuezonCitySensorType): void {
     const qcSensors = {

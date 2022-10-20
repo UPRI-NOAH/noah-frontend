@@ -4,19 +4,10 @@ import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
 
-export type QcSensorType =
-  | 'humidity'
-  | 'pressure'
-  | 'temperature'
-  | 'distance_m';
-
-export const QCSENSORS: QuezonCitySensorType[] = [
-  'humidity',
-  'pressure',
-  'temperature',
-  'distance_m',
-];
+export const QCSENSORS: QuezonCitySensorType[] = ['rain', 'flood'];
 
 export type SummaryItem = {
   name: string;
@@ -33,13 +24,18 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'http://83b6-136-158-11-9.ngrok.io';
+  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
+  loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
+    shareReplay(1)
+  );
+
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
+
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QuezonCitySensorType) {
-    const param = type ? `?iot-type=${type}` : '';
+    const param = type ? `?iot_type=${type}` : '';
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
   }
 
@@ -51,14 +47,7 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
   }
 
-  // getQcSummaryData() {
-  //   const sensor_id = JSON.parse(localStorage.getItem('pk'));
-  //   return this.http.get(
-  //     `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${sensor_id}`
-  //   );
-  // }
-
-  getQcSensorData(pk: number) {
+  getQcSensorData(pk: number): Observable<any> {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
   }
 
@@ -69,10 +58,7 @@ export class QcSensorService {
     );
   }
 
-  getQcCalendar() {
-    const sensor_id = JSON.parse(localStorage.getItem('pk'));
-    return this.http.get(
-      `${this.QCBASE_URL}/api/iot-data2/?iot_sensor=${sensor_id}`
-    );
+  getLoadOnceDisclaimer() {
+    return localStorage.setItem('disclaimerStatus', 'true');
   }
 }

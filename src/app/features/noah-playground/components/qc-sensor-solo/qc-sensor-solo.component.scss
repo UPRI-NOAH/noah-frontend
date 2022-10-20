@@ -1,6 +1,6 @@
-.humidity {
-  --color: #a405b0;
-  background-color: #a405b0;
+.rain {
+  --color: #06b9e6;
+  background-color: #06b9e6;
   &,
   input {
     border-radius: 100% !important;
@@ -8,38 +8,7 @@
   }
 }
 
-.pressure {
-  --color: #718a01;
-  background-color: #718a01;
-  &,
-  input {
-    border-radius: 100% !important;
-    --border-color: #9ca3af;
-  }
-}
-
-.weather {
-  --color: #d85518;
-  background-color: #d85518;
-
-  &,
-  input {
-    border-radius: 100% !important;
-    --border-color: #9ca3af;
-  }
-}
-
-.temperature {
-  --color: #0dc642;
-  background-color: #0dc642;
-  &,
-  input {
-    border-radius: 100% !important;
-    --border-color: #9ca3af;
-  }
-}
-
-.distance_m {
+.flood {
   --color: #519259;
   background-color: #519259;
   &,

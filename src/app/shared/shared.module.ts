@@ -9,7 +9,6 @@ import { ChangeStyleButtonComponent } from './components/change-style-button/cha
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
-// import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SortPipe } from './pipes/sort.pipe';
 import { SearchfilterPipe } from './pipes/searchfilter.pipe';
 import { PaginationComponent } from './components/pagination/pagination.component';

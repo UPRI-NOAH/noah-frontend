@@ -58,7 +58,6 @@ import { SensorChartService } from '@features/noah-playground/services/sensor-ch
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
-  QcSensorType,
   QcSensorService,
   QCSENSORS,
   QCCRITFAC,
@@ -78,6 +77,7 @@ import {
   QC_DEFAULT_CENTER,
   QuezonCityCriticalFacilitiesState,
   QuezonCityCriticalFacilities,
+  QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -137,7 +137,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
   disclaimerModal: boolean;
-
+  alertError: boolean = false;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
@@ -304,6 +304,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
+              this.alertError = true;
               this.map.setPaintProperty(
                 qcSensorType,
                 'circle-opacity',
@@ -323,8 +324,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  showQcDataPoints(qcSensorType: QcSensorType) {
-    const graphDiv = document.getElementById('qcIot');
+  showQcDataPoints(qcSensorType: QuezonCitySensorType) {
+    const graphDiv = document.getElementById('graph-dom');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -340,6 +341,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
+          //zoom to qc
+          this.map.flyTo({
+            center: QC_DEFAULT_CENTER,
+            zoom: 12,
+            essential: true,
+          });
           this.map.on('mouseover', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
@@ -373,10 +380,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             _this.showQcChart(+pk, name, qcSensorType);
             _this._graphShown = true;
-            console.log('pk', pk);
             localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
             _this.showUpdatePk();
-            _this.updatePkCalendar();
           });
         } else {
           popUp.remove();
@@ -413,16 +418,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     } catch (error) {}
   }
-  async updatePkCalendar() {
-    try {
-      const response: any = await this.qcSensorService
-        .getQcCalendar()
-        .pipe(first())
-        .toPromise();
-      localStorage.setItem('dateCalendar', JSON.stringify(response.results));
-    } catch (error) {}
-  }
-  async showQcChart(pk: number, appID: string, qcSensorType: QcSensorType) {
+  async showQcChart(
+    pk: number,
+    appID: string,
+    qcSensorType: QuezonCitySensorType
+  ) {
     const options: any = {
       title: {
         text: `${appID}`,
@@ -430,26 +430,102 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       credits: {
         enabled: false,
       },
-      exporting: {
+      navigator: {
         enabled: true,
+      },
+      rangeSelector: {
+        enabled: true,
+        allButtonsEnabled: true,
+        selected: 0,
+        inputDateFormat: '%b %e, %Y %H:%M',
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1 Day',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1 Month',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
+      },
+      exporting: {
         fileName: 'Quezon IoT Data',
         buttons: {
           contextButton: {
             menuItems: [
-              'printChart',
-              'downloadCSV',
-              'downloadPNG',
-              'downloadJPEG',
-              'viewFullscreen',
+              {
+                text: 'Download PDF',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+              },
+              {
+                text: 'Download CSV',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+              },
+              {
+                text: 'Print Chart',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else {
+                    alert('Unable to Print Please Login First');
+                  }
+                },
+              },
+              {
+                text: 'Download JPEG',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  if (loggedIn == '1') {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else {
+                    alert('Unable to Download Please Login First');
+                  }
+                },
+                separator: false,
+              },
             ],
           },
         },
       },
+
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
-    const chart = Highcharts.stockChart('qcIot', options);
-    chart.showLoading();
+    const chart = Highcharts.stockChart('graph-dom', options);
 
+    chart.showLoading();
     const response: any = await this.qcSensorService
       .getQcIotSensorData()
       .pipe(first())

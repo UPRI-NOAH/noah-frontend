@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
+import {
+  QCSENSORS,
+  QcSensorService,
+} from '@features/noah-playground/services/qc-sensor.service';
 import {
   QuezonCityCriticalFacilities,
   QuezonCityCriticalFacilitiesState,
@@ -15,12 +18,7 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./qc-sensors-group.component.scss'],
 })
 export class QcSensorsGroupComponent implements OnInit {
-  qcSensorTypes: QuezonCitySensorType[] = [
-    'humidity',
-    'pressure',
-    'temperature',
-  ];
-  qcWeatherTypes: QuezonCitySensorType[] = ['distance_m'];
+  qcWeatherTypes: QuezonCitySensorType[] = QCSENSORS;
   qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
 
   expanded$: Observable<boolean>;
@@ -28,7 +26,7 @@ export class QcSensorsGroupComponent implements OnInit {
   qcshown$: Observable<boolean>;
   qcexpanded$: Observable<boolean>;
   qcShown: QuezonCityCriticalFacilitiesState;
-  disclaimerModal: boolean;
+  disclaimerModal = false;
 
   // get qcshown(): boolean {
   //   return this.qcShown.qcshown;
@@ -61,9 +59,16 @@ export class QcSensorsGroupComponent implements OnInit {
   }
 
   toggleShown(event: Event) {
+    this.showdata();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.disclaimerModal = true;
     this.pgService.toggleQuezonCityIOTGroupShown();
+    const discStatus = localStorage.getItem('disclaimerStatus');
+    if (discStatus == 'true') {
+      this.disclaimerModal = true;
+    }
+    if (discStatus == 'false') {
+      this.disclaimerModal = false;
+    }
   }
 }

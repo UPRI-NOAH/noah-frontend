@@ -3,7 +3,24 @@ import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
-import { first } from 'rxjs/operators';
+import {
+  Observable,
+  of,
+  pipe,
+  Subject,
+  Subscription,
+  interval,
+  concat,
+  timer,
+} from 'rxjs';
+import {
+  first,
+  tap,
+  startWith,
+  switchMap,
+  take,
+  finalize,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'noah-summary',
@@ -24,6 +41,10 @@ export class SummaryComponent implements OnInit {
 
   itemsPerPage: number = 10;
   allPages: number;
+  subscription!: Subscription;
+  everyFiveSeconds: Observable<number> = timer(60000); //refresh every 1 minute
+  alert: boolean = false;
+  alertSummary: boolean = false;
 
   constructor(private qcSensorService: QcSensorService) {}
   columns = [
@@ -103,28 +124,36 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
+      this.subscription = this.everyFiveSeconds.subscribe(() => {
+        this.viewSummary(); //auto refresh data every 1 minute
+      });
+      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       this.fetchedData = newArr;
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
-      this.fetchedData.sort((a, b) => (a.name > b.name ? 1 : -1));
-      console.log('1', this.onPageChange());
-      this.activeSensor = locationArr.length;
+      this.activeSensor = newArr.length;
       this.total = totalSensor.length;
     } catch (error) {
-      alert('Unable to Fetch Summary Data');
+      this.summaryModal = false;
+      this.loading = !this.loading;
+      this.alertSummary = true;
+      setTimeout(() => {
+        this.alertSummary = false;
+      }, 2000);
     } finally {
       this.loading = false;
     }
   }
 
   closeModal() {
-    this.summaryModal = false;
+    this.subscription.unsubscribe(); //stop popup modal
+    this.alert = !this.alert;
+    this.summaryModal = !this.summaryData;
   }
 
   onPageChange(page: number = 1): void {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
-    console.log(this.summaryData);
   }
 }
