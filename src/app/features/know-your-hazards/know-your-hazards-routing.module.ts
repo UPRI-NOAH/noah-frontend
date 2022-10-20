@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BibliographyComponent } from '@features/home/pages/bibliography/bibliography.component';
 import { BaseComponent } from './pages/base/base.component';
 import { FloodComponent } from './pages/flood/flood.component';
 import { KnowYourHazardsComponent } from './pages/know-your-hazards/know-your-hazards.component';
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: 'storm-surge',
         component: StormSurgeComponent,
+      },
+      {
+        path: 'bibliography',
+        component: BibliographyComponent,
       },
       {
         path: '',

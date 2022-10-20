@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
-import { Observable, of } from 'rxjs';
+import { observable, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 import {
   ExposureLevel,
@@ -111,15 +111,22 @@ export class HazardsService {
 
   private _getFloodExposure(feature: Feature): number {
     const { properties } = feature;
-    if (!properties) return 0;
+    if ('Var' in properties) {
+      return parseInt(properties.Var);
+    } else if ('NoData' in properties) {
+      return -1;
+    } else {
+      return 0;
+    }
+    // if (!properties) return 0;
 
-    if ('Var' in properties) return parseInt(properties.Var);
+    // if ('Var' in properties) return parseInt(properties.Var);
 
-    // There was no `Var` value read earlier
-    // This is exclusive for Flood Data only
-    if ('No_Data' in properties) return -1;
+    // // There was no `Var` value read earlier
+    // // This is exclusive for Flood Data only
+    // if ('No_Data' in properties) return -1;
 
-    return 0;
+    // return 0;
   }
 
   private _getLandslideExposure(feature: Feature): number {
