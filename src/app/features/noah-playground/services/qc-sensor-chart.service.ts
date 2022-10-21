@@ -262,6 +262,9 @@ export class QcSensorChartService {
           hover: {
             lineWidth: 5,
           },
+          tooltip: {
+            valueSuffix: '/m',
+          },
         },
       ],
     };
