@@ -37,6 +37,15 @@ export class SummaryComponent implements OnInit {
   pk: number;
   summaryData: SummaryItem[] = [];
   fetchedData: SummaryItem[] = [];
+
+  floodSummaryData: SummaryItem[] = [];
+  floodFetchedData: SummaryItem[] = [];
+  activeFloodSensor: number;
+
+  rainSummaryData: SummaryItem[] = [];
+  rainFetchedData: SummaryItem[] = [];
+  rainActiveSensor: number;
+
   searchValue: string;
 
   itemsPerPage: number = 10;
@@ -70,8 +79,8 @@ export class SummaryComponent implements OnInit {
     },
     {
       key: 'critical_level',
-      header: 'CRITICAL LEVEL',
-      mobileHeader: 'Critical Level',
+      header: 'LEVEL',
+      mobileHeader: 'Level',
     },
   ];
 
@@ -111,6 +120,7 @@ export class SummaryComponent implements OnInit {
             pk: a.properties.pk,
           };
         });
+
       const totalSensor = response.features.map((a) => {
         return;
       });
@@ -124,15 +134,49 @@ export class SummaryComponent implements OnInit {
           }
         }
       }
+
+      const rainSensor = [];
+      for (let i = 0; i < locationArr.length; i++) {
+        for (let j = 0; j < dataArr.length; j++) {
+          if (locationArr[i].pk == dataArr[j].iot_sensor) {
+            if (locationArr[i].iot_type == 'rain') {
+              rainSensor.push({ ...locationArr[i], ...dataArr[j] });
+              break;
+            }
+          }
+        }
+      }
+
+      const floodSensor = [];
+      for (let i = 0; i < locationArr.length; i++) {
+        for (let j = 0; j < dataArr.length; j++) {
+          if (locationArr[i].pk == dataArr[j].iot_sensor) {
+            if (locationArr[i].iot_type == 'flood') {
+              floodSensor.push({ ...locationArr[i], ...dataArr[j] });
+              break;
+            }
+          }
+        }
+      }
+
       this.subscription = this.everyFiveSeconds.subscribe(() => {
         this.viewSummary(); //auto refresh data every 1 minute
       });
       newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
+      floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
+      rainSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
+
       this.fetchedData = newArr;
+      this.floodFetchedData = floodSensor;
+      this.rainFetchedData = rainSensor;
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
+
+      //count numbers
       this.activeSensor = newArr.length;
       this.total = totalSensor.length;
+      this.rainActiveSensor = rainSensor.length;
+      this.activeFloodSensor = floodSensor.length;
     } catch (error) {
       this.summaryModal = false;
       this.loading = !this.loading;
@@ -155,5 +199,7 @@ export class SummaryComponent implements OnInit {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
+    this.floodSummaryData = this.floodFetchedData.slice(startItem, endItem);
+    this.rainSummaryData = this.rainFetchedData.slice(startItem, endItem);
   }
 }
