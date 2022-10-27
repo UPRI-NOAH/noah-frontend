@@ -1,26 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
-import {
-  Observable,
-  of,
-  pipe,
-  Subject,
-  Subscription,
-  interval,
-  concat,
-  timer,
-} from 'rxjs';
-import {
-  first,
-  tap,
-  startWith,
-  switchMap,
-  take,
-  finalize,
-} from 'rxjs/operators';
+import { Observable, Subscription, timer } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-summary',
@@ -86,7 +70,7 @@ export class SummaryComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  async viewSummary() {
+  async viewSummary(pk: number) {
     if (this.loading) {
       return;
     }
@@ -100,7 +84,7 @@ export class SummaryComponent implements OnInit {
         .toPromise();
 
       const res: any = await this.qcSensorService
-        .getQcSensorData(this.pk)
+        .getIotSummarySensorData(pk)
         .pipe(first())
         .toPromise();
       const dataArr = res.results.map((a) => {
@@ -160,7 +144,7 @@ export class SummaryComponent implements OnInit {
       }
 
       this.subscription = this.everyFiveSeconds.subscribe(() => {
-        this.viewSummary(); //auto refresh data every 1 minute
+        this.viewSummary(pk); //auto refresh data every 1 minute
       });
       newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));

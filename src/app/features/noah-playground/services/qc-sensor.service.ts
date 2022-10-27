@@ -7,7 +7,7 @@ import {
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { shareReplay, tap } from 'rxjs/operators';
 
-export const QCSENSORS: QuezonCitySensorType[] = ['rain', 'flood'];
+export const QCSENSORS: QuezonCitySensorType[] = ['flood', 'rain'];
 
 export type SummaryItem = {
   name: string;
@@ -24,8 +24,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
-  //private QCBASE_URL = 'https://dcaf-136-158-11-127.ngrok.io';
+  private QCBASE_URL = 'https://4137-136-158-11-6.ngrok.io';
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );
@@ -49,14 +48,11 @@ export class QcSensorService {
   }
 
   getQcSensorData(pk: number): Observable<any> {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
   }
 
-  getQcIotSensorData() {
-    const sensor_id = JSON.parse(localStorage.getItem('pk'));
-    return this.http.get(
-      `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${sensor_id}`
-    );
+  getIotSummarySensorData(pk: number): Observable<any> {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
   }
 
   getLoadOnceDisclaimer() {
