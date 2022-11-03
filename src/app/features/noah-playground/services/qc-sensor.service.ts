@@ -24,7 +24,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://4137-136-158-11-6.ngrok.io';
+  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );
