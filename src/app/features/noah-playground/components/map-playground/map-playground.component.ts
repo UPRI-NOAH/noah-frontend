@@ -380,8 +380,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             _this.showQcChart(+pk, name, qcSensorType);
             _this._graphShown = true;
-            localStorage.setItem('pk', JSON.stringify(pk)); //getting PK everytime click the dots
-            _this.showUpdatePk();
           });
         } else {
           popUp.remove();
@@ -405,19 +403,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       popUp.remove();
     });
   }
-  //update pk and chart
-  async showUpdatePk() {
-    try {
-      const response: any = await this.qcSensorService
-        .getQcIotSensorData()
-        .pipe(first())
-        .toPromise();
-      localStorage.setItem(
-        'calendarDateTime',
-        JSON.stringify(response.results)
-      );
-    } catch (error) {}
-  }
+
   async showQcChart(
     pk: number,
     appID: string,
@@ -436,7 +422,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       rangeSelector: {
         enabled: true,
         allButtonsEnabled: true,
-        selected: 0,
         inputDateFormat: '%b %e, %Y %H:%M',
         buttons: [
           {
@@ -454,6 +439,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             text: 'All',
           },
         ],
+        selected: 0,
         buttonTheme: {
           width: 60,
         },
@@ -527,7 +513,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
     chart.showLoading();
     const response: any = await this.qcSensorService
-      .getQcIotSensorData()
+      .getQcSensorData(pk)
       .pipe(first())
       .toPromise();
 
