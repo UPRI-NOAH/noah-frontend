@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { first } from 'rxjs/operators';
 import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
@@ -24,7 +25,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
+  private QCBASE_URL = 'https://bfac-136-158-11-6.ngrok.io';
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );
@@ -51,8 +52,19 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
   }
 
-  getIotSummarySensorData(pk: number): Observable<any> {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
+  getQcIotSensorData(pk: number): Observable<any> {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
+  }
+
+  getIotSummarySensorData() {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data-latest/`);
+  }
+
+  getIotSummarySensorDataTest(pk: number) {
+    const param = 1;
+    return this.http.get(
+      `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${param}`
+    );
   }
 
   getLoadOnceDisclaimer() {
