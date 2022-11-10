@@ -17,6 +17,10 @@ const routes: Routes = [
         path: 'qc-login',
         component: LoginComponent,
       },
+      {
+        path: 'qc-iot',
+        component: LoginComponent,
+      },
     ],
   },
   {

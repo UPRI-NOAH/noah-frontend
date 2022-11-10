@@ -29,6 +29,7 @@ export class DisclaimerComponent implements OnInit {
 
   closeModal(): boolean {
     const discStatus = localStorage.getItem('disclaimerStatus');
+    localStorage.removeItem('directURL'); // remove status for direct url iot
     this.disclaimer = false;
     if (discStatus == 'true') {
       this.disclaimer = false;

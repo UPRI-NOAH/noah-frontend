@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 export class NoahPlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
   searchTerm: string;
-  disclaimerModal: boolean;
+  disclaimerModal = false;
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
   isList;
@@ -33,6 +33,13 @@ export class NoahPlaygroundComponent implements OnInit {
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
     this.DisclaimerStatus$ = this.qcLoginService.isDisclaimerStatus;
+    const discStatus = localStorage.getItem('directURL'); // for iot disclaimer direct url
+    if (discStatus == 'true') {
+      this.disclaimerModal = true;
+    }
+    if (discStatus == 'false') {
+      this.disclaimerModal = false;
+    }
   }
 
   selectPlace(selectedPlace) {

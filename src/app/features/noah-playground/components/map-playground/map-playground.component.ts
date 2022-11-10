@@ -229,6 +229,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
   }
 
+  initQcCenterListeners() {
+    const centerQC = localStorage.getItem('directURL');
+    if (centerQC == 'true') {
+      this.map.flyTo({
+        center: QC_DEFAULT_CENTER,
+        zoom: 13,
+        essential: true,
+      });
+    }
+  }
+
   initQcCenterListener() {
     const centerQC = localStorage.getItem('loginStatus');
     if (centerQC == '1') {

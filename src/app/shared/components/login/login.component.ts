@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   ErrorMessage: string;
   Username: FormControl;
   Password: FormControl;
-  disclaimerModal: boolean;
+  disclaimerModal = false;
   destroy = new Subject<any>();
   alertError: boolean = false;
   loadingNoah: boolean = false;
@@ -82,6 +82,13 @@ export class LoginComponent implements OnInit {
     if (window.location.href.indexOf('qc-login') != -1) {
       this.isLoginModal = false;
       this.qcLoginModal = true;
+    }
+    if (window.location.href.indexOf('qc-iot') != -1) {
+      //direct QC IOT URL
+      this.router.navigateByUrl('/noah-playground');
+      localStorage.setItem('directURL', 'true');
+      this.pgService.toggleQuezonCityIOTGroupShown();
+      this.pgService.toggleQuezonCityIOTGroupExpanded();
     }
   }
 
