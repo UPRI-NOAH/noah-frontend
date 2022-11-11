@@ -305,7 +305,12 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    <div *ngIf="data.iot_type == 'rain'">
+                                      {{ data.latest_data }}mm
+                                    </div>
+                                    <div *ngIf="data.iot_type == 'flood'">
+                                      {{ data.latest_data }}m
+                                    </div>
                                   </td>
 
                                   <td
@@ -770,7 +775,7 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    {{ data.latest_data }}m
                                   </td>
 
                                   <td
@@ -1234,7 +1239,7 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    {{ data.latest_data }}mm
                                   </td>
 
                                   <td

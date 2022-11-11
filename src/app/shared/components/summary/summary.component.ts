@@ -34,6 +34,8 @@ export class SummaryComponent implements OnInit {
   searchValue: string;
 
   itemsPerPage: number = 10;
+  floodPerpage: number = 10;
+  rainPerPage: number = 10;
   allPages: number;
   subscription!: Subscription;
   everOneMinute: Observable<number> = timer(60000); //refresh every 1 minute
@@ -157,6 +159,10 @@ export class SummaryComponent implements OnInit {
       this.rainFetchedData = rainSensor;
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
+      this.allPages = Math.ceil(
+        this.floodFetchedData.length / this.floodPerpage
+      ); //Flood tab navigation per page 10
+      this.allPages = Math.ceil(this.rainFetchedData.length / this.rainPerPage); //Rain tab navigation per page 10
 
       //count numbers
       this.activeSensor = newArr.length;
@@ -185,7 +191,19 @@ export class SummaryComponent implements OnInit {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
-    this.floodSummaryData = this.floodFetchedData.slice(startItem, endItem);
-    this.rainSummaryData = this.rainFetchedData.slice(startItem, endItem);
+
+    const floodStartItem = (page - 1) * this.floodPerpage;
+    const floodEndItem = page * this.floodPerpage;
+    this.floodSummaryData = this.floodFetchedData.slice(
+      floodStartItem,
+      floodEndItem
+    );
+
+    const rainStartItem = (page - 1) * this.rainPerPage;
+    const rainEndItem = page * this.rainPerPage;
+    this.rainSummaryData = this.rainFetchedData.slice(
+      rainStartItem,
+      rainEndItem
+    );
   }
 }
