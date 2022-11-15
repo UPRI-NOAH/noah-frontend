@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, ɵCodegenComponentFactoryResolver } from '@angular/core';
 import { environment } from '@env/environment';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
@@ -124,7 +124,7 @@ export class HazardsService {
 
     // // There was no `Var` value read earlier
     // // This is exclusive for Flood Data only
-    // if ('No_Data' in properties) return -1;
+    // if ('NoData' in properties) return -1;
 
     // return 0;
   }
@@ -167,7 +167,11 @@ export class HazardsService {
     }
 
     const riskNumList = features.map((feature: Feature) => getRiskNum(feature));
-    return Math.max(...riskNumList);
+    if (Math.min(...riskNumList) < 0 && Math.max(...riskNumList) == 0) {
+      return -1;
+    } else {
+      return Math.max(...riskNumList);
+    }
   }
 
   private _formatRiskLevel(
