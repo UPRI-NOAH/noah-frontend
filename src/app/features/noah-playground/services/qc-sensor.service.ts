@@ -25,7 +25,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://1e56-136-158-11-6.ngrok.io';
+  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );
@@ -49,10 +49,6 @@ export class QcSensorService {
   }
 
   getQcSensorData(pk: number): Observable<any> {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
-  }
-
-  getQcIotSensorData(pk: number): Observable<any> {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
   }
 
