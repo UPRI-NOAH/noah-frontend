@@ -143,17 +143,26 @@
                 <nav class="tab-navigation">
                   <ul class="tab-navigation">
                     <li class="nav-item">
-                      <label class="nav-link" tabindex="1" for="select-all"
+                      <label
+                        class="nav-link md:text-primary text-xs"
+                        tabindex="1"
+                        for="select-all"
                         >All</label
                       >
                     </li>
                     <li class="nav-item">
-                      <label class="nav-link" tabindex="1" for="select-flood"
+                      <label
+                        class="nav-link md:text-primary text-xs"
+                        tabindex="1"
+                        for="select-flood"
                         >Flood Sensor</label
                       >
                     </li>
                     <li class="nav-item">
-                      <label class="nav-link" tabindex="1" for="select-rain"
+                      <label
+                        class="nav-link md:text-primary text-xs"
+                        tabindex="1"
+                        for="select-rain"
                         >Rainfall Sensor</label
                       >
                     </li>
@@ -305,7 +314,12 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    <div *ngIf="data.iot_type == 'rain'">
+                                      {{ data.latest_data }}mm
+                                    </div>
+                                    <div *ngIf="data.iot_type == 'flood'">
+                                      {{ data.latest_data }}m
+                                    </div>
                                   </td>
 
                                   <td
@@ -317,7 +331,7 @@
                                   >
                                     <div
                                       *ngIf="
-                                        data.latest_data <= '0' &&
+                                        data.latest_data <= '' &&
                                         data.latest_data <= '0.5'
                                       "
                                     >
@@ -391,10 +405,10 @@
                             class="
                               z-10
                               pl-2
-                              h-16
+                              h-12
                               w-36
                               flex flex-row
-                              py-2
+                              py-1
                               md:hidden
                             "
                           >
@@ -537,6 +551,13 @@
                                 >
                                   Sensor Type: {{ data.iot_type }}
                                 </p>
+
+                                <div *ngIf="data.iot_type == 'rain'">
+                                  Latest Data: {{ data.latest_data }}mm
+                                </div>
+                                <div *ngIf="data.iot_type == 'flood'">
+                                  Latest Data: {{ data.latest_data }}m
+                                </div>
                                 <p
                                   class="
                                     text-xs
@@ -545,9 +566,7 @@
                                     leading-3
                                     text-gray-400
                                   "
-                                >
-                                  Latest Data: {{ data.latest_data }}
-                                </p>
+                                ></p>
                                 <div
                                   class="flex items-center justify-left"
                                   *ngIf="
@@ -770,7 +789,7 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    {{ data.latest_data }}m
                                   </td>
 
                                   <td
@@ -856,10 +875,10 @@
                             class="
                               z-10
                               pl-2
-                              h-16
+                              h-12
                               w-36
                               flex flex-row
-                              py-2
+                              py-1
                               md:hidden
                             "
                           >
@@ -1011,7 +1030,7 @@
                                     text-gray-400
                                   "
                                 >
-                                  Latest Data: {{ data.latest_data }}
+                                  Latest Data: {{ data.latest_data }}m
                                 </p>
                                 <div
                                   class="flex items-center justify-left"
@@ -1234,7 +1253,7 @@
                                       justify-center
                                     "
                                   >
-                                    {{ data.latest_data }}
+                                    {{ data.latest_data }}mm
                                   </td>
 
                                   <td
@@ -1320,10 +1339,10 @@
                             class="
                               z-10
                               pl-2
-                              h-16
+                              h-12
                               w-36
                               flex flex-row
-                              py-2
+                              py-1
                               md:hidden
                             "
                           >
@@ -1475,7 +1494,7 @@
                                     text-gray-400
                                   "
                                 >
-                                  Latest Data: {{ data.latest_data }}
+                                  Latest Data: {{ data.latest_data }}mm
                                 </p>
                                 <div
                                   class="flex items-center justify-left"

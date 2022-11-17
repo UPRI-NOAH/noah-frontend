@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { first } from 'rxjs/operators';
 import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
@@ -51,8 +52,8 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
   }
 
-  getIotSummarySensorData(pk: number): Observable<any> {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?id=${pk}`);
+  getIotSummarySensorData() {
+    return this.http.get(`${this.QCBASE_URL}/api/iot-data-latest/`);
   }
 
   getLoadOnceDisclaimer() {

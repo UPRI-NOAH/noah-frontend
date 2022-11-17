@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   QcSensorService,
@@ -33,9 +34,11 @@ export class SummaryComponent implements OnInit {
   searchValue: string;
 
   itemsPerPage: number = 10;
+  floodPerpage: number = 10;
+  rainPerPage: number = 10;
   allPages: number;
   subscription!: Subscription;
-  everyFiveSeconds: Observable<number> = timer(60000); //refresh every 1 minute
+  everOneMinute: Observable<number> = timer(60000); //refresh every 1 minute
   alert: boolean = false;
   alertSummary: boolean = false;
 
@@ -78,22 +81,11 @@ export class SummaryComponent implements OnInit {
     try {
       this.summaryModal = true;
       this.loading = true;
+
       const response: any = await this.qcSensorService
         .getLocation()
         .pipe(first())
         .toPromise();
-
-      const res: any = await this.qcSensorService
-        .getIotSummarySensorData(pk)
-        .pipe(first())
-        .toPromise();
-      const dataArr = res.results.map((a) => {
-        return {
-          latest_date: a.received_at,
-          latest_data: a.distance_m,
-          iot_sensor: a.iot_sensor,
-        };
-      });
 
       const locationArr = response.features
         .filter((a) => a.properties.name !== null && a.properties.name !== '')
@@ -105,6 +97,18 @@ export class SummaryComponent implements OnInit {
           };
         });
 
+      const res: any = await this.qcSensorService
+        .getIotSummarySensorData()
+        .pipe(first())
+        .toPromise();
+
+      const dataArr = res.results.map((a) => {
+        return {
+          latest_date: a.received_at,
+          latest_data: a.distance_m == undefined ? a.acc : a.distance_m,
+          iot_sensor: a.iot_sensor,
+        };
+      });
       const totalSensor = response.features.map((a) => {
         return;
       });
@@ -143,7 +147,7 @@ export class SummaryComponent implements OnInit {
         }
       }
 
-      this.subscription = this.everyFiveSeconds.subscribe(() => {
+      this.subscription = this.everOneMinute.subscribe(() => {
         this.viewSummary(pk); //auto refresh data every 1 minute
       });
       newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
@@ -155,6 +159,10 @@ export class SummaryComponent implements OnInit {
       this.rainFetchedData = rainSensor;
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
+      this.allPages = Math.ceil(
+        this.floodFetchedData.length / this.floodPerpage
+      ); //Flood tab navigation per page 10
+      this.allPages = Math.ceil(this.rainFetchedData.length / this.rainPerPage); //Rain tab navigation per page 10
 
       //count numbers
       this.activeSensor = newArr.length;
@@ -183,7 +191,19 @@ export class SummaryComponent implements OnInit {
     const startItem = (page - 1) * this.itemsPerPage;
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
-    this.floodSummaryData = this.floodFetchedData.slice(startItem, endItem);
-    this.rainSummaryData = this.rainFetchedData.slice(startItem, endItem);
+
+    const floodStartItem = (page - 1) * this.floodPerpage;
+    const floodEndItem = page * this.floodPerpage;
+    this.floodSummaryData = this.floodFetchedData.slice(
+      floodStartItem,
+      floodEndItem
+    );
+
+    const rainStartItem = (page - 1) * this.rainPerPage;
+    const rainEndItem = page * this.rainPerPage;
+    this.rainSummaryData = this.rainFetchedData.slice(
+      rainStartItem,
+      rainEndItem
+    );
   }
 }
