@@ -16,6 +16,7 @@ export type SummaryItem = {
   latest_date: string;
   latest_data: string;
   critical_level: string;
+  status: string;
 };
 
 export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
@@ -25,7 +26,7 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   providedIn: 'root',
 })
 export class QcSensorService {
-  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
+  private QCBASE_URL = 'https://c4fc-136-158-11-6.ngrok.io';
   loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
     shareReplay(1)
   );

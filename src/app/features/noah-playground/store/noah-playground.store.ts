@@ -353,7 +353,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       rain: {
-        shown: false,
+        shown: true,
         fetched: false,
       },
       flood: {

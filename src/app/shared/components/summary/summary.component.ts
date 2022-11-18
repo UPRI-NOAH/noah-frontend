@@ -17,6 +17,7 @@ export class SummaryComponent implements OnInit {
   todayString: string = new Date().toDateString();
   sortedColumn: string;
   total: number;
+  inactive: number;
   activeSensor: number;
   loading = false;
   pk: number;
@@ -37,6 +38,8 @@ export class SummaryComponent implements OnInit {
   floodPerpage: number = 10;
   rainPerPage: number = 10;
   allPages: number;
+  floodAllPages: number;
+  rainAllPages: number;
   subscription!: Subscription;
   everOneMinute: Observable<number> = timer(60000); //refresh every 1 minute
   alert: boolean = false;
@@ -69,11 +72,16 @@ export class SummaryComponent implements OnInit {
       header: 'LEVEL',
       mobileHeader: 'Level',
     },
+    {
+      key: 'status',
+      header: 'STATUS',
+      mobileHeader: 'Status',
+    },
   ];
 
   ngOnInit(): void {}
 
-  async viewSummary(pk: number) {
+  async viewSummary() {
     if (this.loading) {
       return;
     }
@@ -107,11 +115,32 @@ export class SummaryComponent implements OnInit {
           latest_date: a.received_at,
           latest_data: a.distance_m == undefined ? a.acc : a.distance_m,
           iot_sensor: a.iot_sensor,
+          status: a.status,
         };
       });
       const totalSensor = response.features.map((a) => {
         return;
       });
+
+      const activeSensors = res.results.map((a) => {
+        return {
+          status: a.status,
+        };
+      });
+
+      const active = []; // compute total active sensor
+      for (let i = 0; i < activeSensors.length; i++) {
+        if (activeSensors[i].status == 'Active') {
+          active.push({ ...active[i] });
+        }
+      }
+
+      const inactive = []; // compute total inactive sensor
+      for (let i = 0; i < activeSensors.length; i++) {
+        if (activeSensors[i].status == 'Inactive') {
+          inactive.push({ ...active[i] });
+        }
+      }
 
       const newArr = [];
       for (let i = 0; i < locationArr.length; i++) {
@@ -135,6 +164,13 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const activeRain = [];
+      for (let i = 0; i < rainSensor.length; i++) {
+        if (rainSensor[i].status == 'Active') {
+          activeRain.push({ ...rainSensor[i] });
+        }
+      }
+
       const floodSensor = [];
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < dataArr.length; j++) {
@@ -147,10 +183,17 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const activeFlood = [];
+      for (let i = 0; i < floodSensor.length; i++) {
+        if (floodSensor[i].status == 'Active') {
+          activeFlood.push({ ...floodSensor[i] });
+        }
+      }
+
       this.subscription = this.everOneMinute.subscribe(() => {
-        this.viewSummary(pk); //auto refresh data every 1 minute
+        this.viewSummary(); //auto refresh data every 1 minute
       });
-      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
+      newArr.sort((a, b) => (a.status > b.status ? 1 : -1));
       floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       rainSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
 
@@ -159,16 +202,19 @@ export class SummaryComponent implements OnInit {
       this.rainFetchedData = rainSensor;
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
-      this.allPages = Math.ceil(
+      this.floodAllPages = Math.ceil(
         this.floodFetchedData.length / this.floodPerpage
-      ); //Flood tab navigation per page 10
-      this.allPages = Math.ceil(this.rainFetchedData.length / this.rainPerPage); //Rain tab navigation per page 10
+      );
+      this.rainAllPages = Math.ceil(
+        this.rainFetchedData.length / this.rainPerPage
+      );
 
       //count numbers
-      this.activeSensor = newArr.length;
+      this.activeSensor = active.length;
+      this.inactive = inactive.length;
       this.total = totalSensor.length;
-      this.rainActiveSensor = rainSensor.length;
-      this.activeFloodSensor = floodSensor.length;
+      this.rainActiveSensor = activeRain.length;
+      this.activeFloodSensor = activeFlood.length;
     } catch (error) {
       this.summaryModal = false;
       this.loading = !this.loading;
@@ -192,18 +238,12 @@ export class SummaryComponent implements OnInit {
     const endItem = page * this.itemsPerPage;
     this.summaryData = this.fetchedData.slice(startItem, endItem);
 
-    const floodStartItem = (page - 1) * this.floodPerpage;
-    const floodEndItem = page * this.floodPerpage;
-    this.floodSummaryData = this.floodFetchedData.slice(
-      floodStartItem,
-      floodEndItem
-    );
+    const fstartItem = (page - 1) * this.floodPerpage;
+    const fendItem = page * this.floodPerpage;
+    this.floodSummaryData = this.floodFetchedData.slice(fstartItem, fendItem);
 
-    const rainStartItem = (page - 1) * this.rainPerPage;
-    const rainEndItem = page * this.rainPerPage;
-    this.rainSummaryData = this.rainFetchedData.slice(
-      rainStartItem,
-      rainEndItem
-    );
+    const rstartItem = (page - 1) * this.rainPerPage;
+    const rendItem = page * this.rainPerPage;
+    this.rainSummaryData = this.rainFetchedData.slice(rstartItem, rendItem);
   }
 }
