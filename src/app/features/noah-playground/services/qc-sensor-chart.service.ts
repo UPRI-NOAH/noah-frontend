@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QuezonCitySensorType } from '../store/noah-playground.store';
+import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
 export type QCSensorChartOpts = {
   data: any;
   qcSensorType: QuezonCitySensorType;
@@ -38,6 +39,10 @@ export class QcSensorChartService {
     });
 
     const valueRainAxis = data.map((el) => {
+      return [new Date(el.received_at).getTime(), el.rain_accu];
+    });
+
+    const valueRainAxisAcc = data.map((el) => {
       return [new Date(el.received_at).getTime(), el.acc];
     });
 
@@ -56,7 +61,7 @@ export class QcSensorChartService {
         chart.series[0].setData(valueFloodaxis), true;
         break;
       case 'rain':
-        chart.series[0].setData(valueRainAxis), true;
+        chart.series[0].setData(valueRainAxisAcc), true;
         break;
     }
   }
@@ -68,6 +73,9 @@ export class QcSensorChartService {
         text: 'Rainfall',
       },
       yAxis: {
+        title: {
+          text: 'Millimeters (mm)',
+        },
         alignTicks: false,
         tickInterval: 0.5,
         color: '#0C2D48',
@@ -132,6 +140,21 @@ export class QcSensorChartService {
         ],
       },
       series: [
+        {
+          name: 'Rainfall',
+          color: '#0C2D48',
+          data: [],
+          lineWidth: 1.5,
+          marker: {
+            enabled: false,
+          },
+          hover: {
+            lineWidth: 5,
+          },
+          tooltip: {
+            valueSuffix: 'mm',
+          },
+        },
         {
           name: 'Rainfall',
           color: '#0C2D48',

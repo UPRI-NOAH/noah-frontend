@@ -116,13 +116,14 @@
                     >
                       <div
                         class="
-                          grid grid-cols-3
-                          md:grid-cols-3
-                          lg:grid-cols-3
+                          grid grid-cols-1
+                          md:grid-cols-1
+                          lg:grid-cols-1
                           px-4
                           xl:px-10
                           gap-y-8 gap-x-12
                           2xl:gap-x-28
+                          items-center
                         "
                       >
                         <div class="w-full">
@@ -133,9 +134,10 @@
                               leading-none
                               text-black
                               uppercase
+                              font-bold
                             "
                           >
-                            Total Sensor
+                            Total Sensors
                           </p>
                           <p
                             class="
@@ -153,6 +155,19 @@
                             {{ total }}
                           </p>
                         </div>
+                      </div>
+                      <div
+                        class="
+                          grid grid-cols-2
+                          md:grid-cols-2
+                          lg:grid-cols-2
+                          px-4
+                          xl:px-10
+                          gap-y-8 gap-x-12
+                          2xl:gap-x-28
+                          items-center
+                        "
+                      >
                         <div class="w-full">
                           <p
                             class="
@@ -161,9 +176,10 @@
                               leading-none
                               text-black
                               uppercase
+                              font-bold
                             "
                           >
-                            Total Active Sensor
+                            Total Active Sensors
                           </p>
                           <p
                             class="
@@ -189,9 +205,10 @@
                               leading-none
                               text-black
                               uppercase
+                              font-bold
                             "
                           >
-                            Total Inactive Sensor
+                            Total Inactive Sensors
                           </p>
                           <p
                             class="
@@ -210,84 +227,6 @@
                           </p>
                         </div>
                       </div>
-
-                      <!-- Card code block start -->
-                      <div
-                        class="
-                          grid
-                          sm:grid-cols-2
-                          md:grid-cols-2
-                          lg:grid-cols-2
-                          xl:grid-cols-2
-                          grid-cols-2
-                          gap-2
-                          mt-2
-                        "
-                      >
-                        <div class="bg-white dark:bg-gray-800 rounded p-2">
-                          <div
-                            class="
-                              flex
-                              items-center
-                              justify-between
-                              w-full
-                              sm:w-full
-                            "
-                          >
-                            <div class="flex items-center">
-                              <div class="ml-6">
-                                <h3
-                                  class="
-                                    mb-1
-                                    leading-5
-                                    text-gray-800
-                                    dark:text-gray-100
-                                    font-bold
-                                    text-sm
-                                  "
-                                >
-                                  Total Active Flood Sensor:
-                                  <span class="text-blue-700 text-sm">{{
-                                    activeFloodSensor
-                                  }}</span>
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="bg-white dark:bg-gray-800 rounded p-2">
-                          <div
-                            class="
-                              flex
-                              items-center
-                              justify-between
-                              w-full
-                              sm:w-full
-                            "
-                          >
-                            <div class="flex items-center">
-                              <div class="ml-6">
-                                <h3
-                                  class="
-                                    mb-1
-                                    leading-5
-                                    text-gray-800
-                                    dark:text-gray-100
-                                    font-bold
-                                    text-sm
-                                  "
-                                >
-                                  Total Active Rain Sensor:
-                                  <span class="text-blue-700 text-sm">{{
-                                    rainActiveSensor
-                                  }}</span>
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- Card code block end -->
                     </div>
                   </div>
                 </div>
@@ -313,7 +252,7 @@
                   <ul class="tab-navigation">
                     <li class="nav-item">
                       <label
-                        class="nav-link md:text-primary text-xs"
+                        class="nav-link md:text-primary text-s uppercase"
                         tabindex="1"
                         for="select-all"
                         >All</label
@@ -321,18 +260,22 @@
                     </li>
                     <li class="nav-item">
                       <label
-                        class="nav-link md:text-primary text-xs"
+                        class="nav-link md:text-primary text-s uppercase"
                         tabindex="1"
                         for="select-flood"
-                        >Flood Sensor</label
+                        >Flood Sensor<span class="text-black"
+                          >({{ activeFloodSensor }})</span
+                        ></label
                       >
                     </li>
                     <li class="nav-item">
                       <label
-                        class="nav-link md:text-primary text-xs"
+                        class="nav-link md:text-primary text-s uppercase"
                         tabindex="1"
                         for="select-rain"
-                        >Rainfall Sensor</label
+                        >Rainfall Sensor<span class="text-black"
+                          >({{ activeRainSensor }})</span
+                        ></label
                       >
                     </li>
                   </ul>
@@ -496,12 +439,12 @@
                                     <ng-container
                                       *ngIf="
                                         data.latest_data == null;
-                                        else show
+                                        else showLabel
                                       "
                                     >
                                       <div>N/A</div>
                                     </ng-container>
-                                    <ng-template #show>
+                                    <ng-template #showLabel>
                                       <div *ngIf="data.iot_type == 'rain'">
                                         {{ data.latest_data }}mm
                                       </div>
@@ -518,70 +461,77 @@
                                       whitespace-nowrap
                                     "
                                   >
-                                    <div *ngIf="data.latest_data == null">
-                                      N/A
-                                    </div>
-                                    <div
+                                    <ng-container
                                       *ngIf="
-                                        data.latest_data == '0' &&
-                                        data.latest_data <= '0.5'
+                                        data.latest_data == null;
+                                        else showLevel
                                       "
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-low
-                                          rounded-lg
-                                        "
-                                        >Low (0 - 0.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data >= '1.5'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-medium
-                                          rounded-lg
-                                        "
-                                        >Medium (0.6 - 1.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '1.6' &&
-                                        data.latest_data <= '2'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-high
-                                          rounded-lg
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showLevel>
+                                      <div
+                                        *ngIf="
+                                          data.latest_data == '0' ||
+                                          data.latest_data <= '0.5'
                                         "
                                       >
-                                        High (1.6m +)
-                                      </span>
-                                    </div>
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-low
+                                            rounded-lg
+                                          "
+                                          >Low (0 - 0.5m)</span
+                                        >
+                                        <div
+                                          *ngIf="
+                                            data.latest_data == '0.6' &&
+                                            data.latest_data <= '1.5'
+                                          "
+                                        >
+                                          <span
+                                            class="
+                                              p-1.5
+                                              text-xs
+                                              font-medium
+                                              uppercase
+                                              tracking-wider
+                                              text-black
+                                              bg-medium
+                                              rounded-lg
+                                            "
+                                            >Medium (0.6 - 1.5m)</span
+                                          >
+                                          <div
+                                            *ngIf="
+                                              data.latest_data <= '1.6' &&
+                                              data.latest_data <= '5'
+                                            "
+                                          >
+                                            <span
+                                              class="
+                                                p-1.5
+                                                text-xs
+                                                font-medium
+                                                uppercase
+                                                tracking-wider
+                                                text-black
+                                                bg-high
+                                                rounded-lg
+                                              "
+                                            >
+                                              High (1.6m +)
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-template>
                                   </td>
                                   <td
                                     class="
@@ -602,262 +552,142 @@
                             [allPagesNumber]="allPages"
                             (changePage)="onPageChange($event)"
                           ></noah-pagination>
+
                           <!-- MOBILE VIEW -->
-                          <!-- <div class="
-                              z-10
-                              pl-2
-                              h-12
-                              w-36
-                              flex flex-row
-                              py-1
-                              md:hidden
-                            ">
-                            <div class="p-2">
-                              <div class="dropdown inline-block relative">
-                                <button class="
-                                    bg-gray-200
-                                    text-gray-800
-                                    font-semibold
-                                    py-1
-                                    px-1
-                                    ml-2
-                                    rounded
-                                    inline-flex
-                                    items-center
-                                    hover:bg-gray-200
-                                    focus:outline-none
-                                    focus:ring-2
-                                    focus:ring-gray-600
-                                    focus:ring-opacity-50
-                                  ">
-                                  Sort By:
-                                </button>
-             
-
-
-
-                                <ul class="
-                                    dropdown-menu
-                                    z-50
-                                    rounded-lg
-                                    drop-shadow-xl
-                                    bg-white
-                                    left-20
-                                    top-0
-                                    absolute
-                                    hidden
-                                    text-sm text-gray-700
-                                    w-32
-                                    h-48
-                                    overflow-y-auto
-                                  ">
-                                  <li class="w-32" *ngFor="let col of columns">
-                                    <a class="
-                                        rounded-lg
-                                        block
-                                        px-4
-                                        py-2
-                                        text-sm
-                                        leading-5
-                                        text-gray-700
-                                        transition
-                                        duration-150
-                                        ease-in-out
-                                        hover:bg-gray-100
-                                        focus:outline-none focus:bg-gray-100
-                                      " (click)="sortedColumn = col.key" role="button">{{ col.mobileHeader }}</a>
-                                  </li>
-                                </ul>
-                 
-                              </div>
-                            </div>
-                          </div> -->
-
                           <div class="flex flex-row flex-wrap lg:hidden w-full">
-                            <!-- Code block for small badge starts -->
                             <div
                               class="
-                                h-6
-                                w-20
-                                mb-4
-                                md:mb-0
-                                rounded-lg
                                 flex
+                                w-full
                                 items-center
-                                justify-center
-                                mr-2
-                                dropdown
+                                justify-between
+                                border-b
+                                pb-3
                               "
                             >
-                              <div
-                                class="
-                                  flex
-                                  items-center
-                                  justify-around
-                                  h-full
-                                  w-full
-                                "
-                              >
-                                <div class="dropdown inline-block relative">
-                                  <button
+                              <div class="flex items-center space-x-3">
+                                <div
+                                  class="
+                                    h-6
+                                    w-20
+                                    md:mb-0
+                                    rounded-lg
+                                    flex
+                                    items-center
+                                    justify-center
+                                    dropdown
+                                  "
+                                >
+                                  <div
                                     class="
-                                      bg-gray-200
-                                      text-gray-800
-                                      font-semibold
-                                      py-1
-                                      px-1
-                                      ml-2
-                                      rounded
-                                      inline-flex
+                                      flex
                                       items-center
-                                      hover:bg-gray-200
-                                      focus:outline-none
-                                      focus:ring-2
-                                      focus:ring-gray-600
-                                      focus:ring-opacity-50
+                                      justify-around
+                                      h-full
+                                      w-full
                                     "
                                   >
-                                    Sort By:
-                                  </button>
-                                  <ul
-                                    class="
-                                      dropdown-menu
-                                      z-50
-                                      rounded-lg
-                                      drop-shadow-xl
-                                      bg-white
-                                      left-20
-                                      top-0
-                                      absolute
-                                      hidden
-                                      text-sm text-gray-700
-                                      w-32
-                                      h-48
-                                      overflow-y-auto
-                                    "
-                                  >
-                                    <li
-                                      class="w-32"
-                                      *ngFor="let col of columns"
-                                    >
-                                      <a
+                                    <div class="dropdown inline-block relative">
+                                      <button
                                         class="
-                                          rounded-lg
-                                          block
-                                          px-4
-                                          py-2
-                                          text-sm
-                                          leading-5
-                                          text-gray-700
-                                          transition
-                                          duration-150
-                                          ease-in-out
-                                          hover:bg-gray-100
-                                          focus:outline-none focus:bg-gray-100
+                                          bg-gray-200
+                                          text-gray-800
+                                          font-semibold
+                                          py-1
+                                          px-1
+                                          ml-2
+                                          rounded
+                                          inline-flex
+                                          items-center
+                                          hover:bg-gray-200
+                                          focus:outline-none
+                                          focus:ring-2
+                                          focus:ring-gray-600
+                                          focus:ring-opacity-50
                                         "
-                                        (click)="sortedColumn = col.key"
-                                        role="button"
-                                        >{{ col.mobileHeader }}</a
                                       >
-                                    </li>
-                                  </ul>
+                                        Sort By:
+                                      </button>
+                                      <ul
+                                        class="
+                                          dropdown-menu
+                                          z-50
+                                          rounded-lg
+                                          drop-shadow-xl
+                                          bg-white
+                                          left-20
+                                          top-0
+                                          absolute
+                                          hidden
+                                          text-sm text-gray-700
+                                          w-32
+                                          h-48
+                                          overflow-y-auto
+                                        "
+                                      >
+                                        <li
+                                          class="w-32"
+                                          *ngFor="let col of columns"
+                                        >
+                                          <a
+                                            class="
+                                              rounded-lg
+                                              block
+                                              px-4
+                                              py-2
+                                              text-sm
+                                              leading-5
+                                              text-gray-700
+                                              transition
+                                              duration-150
+                                              ease-in-out
+                                              hover:bg-gray-100
+                                              focus:outline-none
+                                              focus:bg-gray-100
+                                            "
+                                            (click)="sortedColumn = col.key"
+                                            role="button"
+                                            >{{ col.mobileHeader }}</a
+                                          >
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex items-center space-x-2">
+                                <div
+                                  class="
+                                    text-[12px]
+                                    sm:text-sm
+                                    text-low
+                                    font-bold
+                                  "
+                                >
+                                  Low(0 - 0.5m)
+                                </div>
+                                <div
+                                  class="
+                                    text-[12px]
+                                    sm:text-sm
+                                    text-medium
+                                    font-bold
+                                  "
+                                >
+                                  Medium(0.6 - 1.5m)
+                                </div>
+                                <div
+                                  class="
+                                    text-[12px]
+                                    sm:text-sm
+                                    text-high
+                                    font-bold
+                                  "
+                                >
+                                  High(1.6m+)
                                 </div>
                               </div>
                             </div>
-                            <!-- Code block ends -->
-
-                            <!-- Code block for large badge starts -->
-                            <div
-                              class="
-                                bg-indigo-200
-                                h-6
-                                w-16
-                                mb-4
-                                md:mb-0
-                                rounded-md
-                                flex
-                                items-center
-                                justify-end
-                                mr-1
-                              "
-                            >
-                              <div
-                                class="
-                                  flex
-                                  items-center
-                                  justify-around
-                                  h-full
-                                  w-full
-                                "
-                              >
-                                <span
-                                  class="text-[8px] text-indigo-700 font-normal"
-                                  >Low (0 - 0.5m)</span
-                                >
-                              </div>
-                            </div>
-                            <!-- Code block ends -->
-                            <!-- Code block for large badge starts -->
-                            <div
-                              class="
-                                bg-indigo-200
-                                h-6
-                                w-16
-                                mb-4
-                                md:mb-0
-                                rounded-md
-                                flex
-                                items-center
-                                justify-center
-                                mr-1
-                              "
-                            >
-                              <div
-                                class="
-                                  flex
-                                  items-center
-                                  justify-around
-                                  h-full
-                                  w-full
-                                "
-                              >
-                                <span
-                                  class="text-xs text-indigo-700 font-normal"
-                                  >Medium (0.6 - 1.5m)</span
-                                >
-                              </div>
-                            </div>
-                            <!-- Code block ends -->
-                            <!-- Code block for large badge starts -->
-                            <div
-                              class="
-                                bg-indigo-200
-                                h-6
-                                w-16
-                                mb-4
-                                md:mb-0
-                                rounded-md
-                                flex
-                                items-center
-                                justify-center
-                              "
-                            >
-                              <div
-                                class="
-                                  flex
-                                  items-center
-                                  justify-around
-                                  h-full
-                                  w-full
-                                "
-                              >
-                                <span
-                                  class="text-xs text-indigo-700 font-normal"
-                                  >High (1.6m +)</span
-                                >
-                              </div>
-                            </div>
-                            <!-- Code block ends -->
                           </div>
 
                           <div
@@ -876,7 +706,7 @@
                           >
                             <div
                               class="
-                                md:w-96
+                                md:w-full
                                 rounded-md
                                 drop-shadow-2xl
                                 py-4
@@ -929,6 +759,18 @@
                                   "
                                 >
                                   Sensor Type: {{ data.iot_type }}
+                                </p>
+                                <p
+                                  class="
+                                    text-sm
+                                    leading-none
+                                    pt-2
+                                    text-gray-600
+                                    first
+                                    capitalize
+                                  "
+                                >
+                                  Status: {{ data.status }}
                                 </p>
 
                                 <div
@@ -1133,70 +975,77 @@
                                       whitespace-nowrap
                                     "
                                   >
-                                    <div *ngIf="data.latest_data == null">
-                                      N/A
-                                    </div>
-                                    <div
+                                    <ng-container
                                       *ngIf="
-                                        data.latest_data == '0' &&
-                                        data.latest_data <= '0.5'
+                                        data.latest_data == null;
+                                        else showLevel
                                       "
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-low
-                                          rounded-lg
-                                        "
-                                        >Low (0 - 0.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data >= '1.5'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-medium
-                                          rounded-lg
-                                        "
-                                        >Medium (0.6 - 1.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '1.6' &&
-                                        data.latest_data <= '2'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-high
-                                          rounded-lg
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showLevel>
+                                      <div
+                                        *ngIf="
+                                          data.latest_data == '0.0' ||
+                                          data.latest_data <= '0.5'
                                         "
                                       >
-                                        High (1.6m +)
-                                      </span>
-                                    </div>
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-low
+                                            rounded-lg
+                                          "
+                                          >Low (0 - 0.5m)</span
+                                        >
+                                        <div
+                                          *ngIf="
+                                            data.latest_data >= '0.6' &&
+                                            data.latest_data >= '1.5'
+                                          "
+                                        >
+                                          <span
+                                            class="
+                                              p-1.5
+                                              text-xs
+                                              font-medium
+                                              uppercase
+                                              tracking-wider
+                                              text-black
+                                              bg-medium
+                                              rounded-lg
+                                            "
+                                            >Medium (0.6 - 1.5m)</span
+                                          >
+                                          <div
+                                            *ngIf="
+                                              data.latest_data >= '1.6' &&
+                                              data.latest_data <= '2'
+                                            "
+                                          >
+                                            <span
+                                              class="
+                                                p-1.5
+                                                text-xs
+                                                font-medium
+                                                uppercase
+                                                tracking-wider
+                                                text-black
+                                                bg-high
+                                                rounded-lg
+                                              "
+                                            >
+                                              High (1.6m +)
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-template>
                                   </td>
                                   <td
                                     class="
@@ -1217,7 +1066,7 @@
                             [allPagesNumber]="floodAllPages"
                             (changePage)="onPageChange($event)"
                           ></noah-pagination>
-                          <!-- MOBILE VIEW -->
+                          <!-- MOBILE VIEW TAB SELECTION -->
                           <div
                             class="
                               z-10
@@ -1382,7 +1231,7 @@
                                 <div
                                   class="flex items-center justify-left"
                                   *ngIf="
-                                    data.latest_data <= '0' ||
+                                    data.latest_data == '0' ||
                                     data.latest_data <= '0.5'
                                   "
                                 >
@@ -1451,7 +1300,6 @@
                               </div>
                             </div>
                           </div>
-
                           <!-- MOBILE VIEW -->
                         </div>
                       </ng-template>
@@ -1632,71 +1480,77 @@
                                       whitespace-nowrap
                                     "
                                   >
-                                    <div *ngIf="data.latest_data == null">
-                                      N/A
-                                    </div>
-
-                                    <div
+                                    <ng-container
                                       *ngIf="
-                                        data.latest_data == '0' &&
-                                        data.latest_data <= '0.5'
+                                        data.latest_data == null;
+                                        else showLevel
                                       "
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-low
-                                          rounded-lg
-                                        "
-                                        >Low (0 - 0.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data >= '1.5'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-medium
-                                          rounded-lg
-                                        "
-                                        >Medium (0.6 - 1.5m)</span
-                                      >
-                                    </div>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data >= '1.6' &&
-                                        data.latest_data <= '2'
-                                      "
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-high
-                                          rounded-lg
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showLevel>
+                                      <div
+                                        *ngIf="
+                                          data.latest_data == '0' ||
+                                          data.latest_data < '0.5'
                                         "
                                       >
-                                        High (1.6m +)
-                                      </span>
-                                    </div>
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-low
+                                            rounded-lg
+                                          "
+                                          >Low (0 - 0.5m)</span
+                                        >
+                                        <div
+                                          *ngIf="
+                                            data.latest_data >= '0.6' &&
+                                            data.latest_data >= '1.5'
+                                          "
+                                        >
+                                          <span
+                                            class="
+                                              p-1.5
+                                              text-xs
+                                              font-medium
+                                              uppercase
+                                              tracking-wider
+                                              text-black
+                                              bg-medium
+                                              rounded-lg
+                                            "
+                                            >Medium (0.6 - 1.5m)</span
+                                          >
+                                          <div
+                                            *ngIf="
+                                              data.latest_data >= '1.6' &&
+                                              data.latest_data <= '2'
+                                            "
+                                          >
+                                            <span
+                                              class="
+                                                p-1.5
+                                                text-xs
+                                                font-medium
+                                                uppercase
+                                                tracking-wider
+                                                text-black
+                                                bg-high
+                                                rounded-lg
+                                              "
+                                            >
+                                              High (1.6m +)
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-template>
                                   </td>
                                   <td
                                     class="
@@ -1717,7 +1571,7 @@
                             [allPagesNumber]="rainAllPages"
                             (changePage)="onPageChange($event)"
                           ></noah-pagination>
-                          <!-- MOBILE VIEW -->
+                          <!-- MOBILE VIEW RAIN TAB SELECTION -->
                           <div
                             class="
                               z-10
