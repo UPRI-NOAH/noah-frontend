@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QuezonCitySensorType } from '../store/noah-playground.store';
+import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
 export type QCSensorChartOpts = {
   data: any;
   qcSensorType: QuezonCitySensorType;
@@ -38,6 +39,10 @@ export class QcSensorChartService {
     });
 
     const valueRainAxis = data.map((el) => {
+      return [new Date(el.received_at).getTime(), el.rain_accu];
+    });
+
+    const valueRainAxisAcc = data.map((el) => {
       return [new Date(el.received_at).getTime(), el.acc];
     });
 
@@ -56,7 +61,7 @@ export class QcSensorChartService {
         chart.series[0].setData(valueFloodaxis), true;
         break;
       case 'rain':
-        chart.series[0].setData(valueRainAxis), true;
+        chart.series[0].setData(valueRainAxisAcc), true;
         break;
     }
   }
@@ -67,69 +72,75 @@ export class QcSensorChartService {
       subtitle: {
         text: 'Rainfall',
       },
+      legend: {
+        enabled: true,
+      },
       yAxis: {
+        title: {
+          text: 'ACC Value (mm)',
+        },
         alignTicks: false,
-        tickInterval: 0.5,
+        tickInterval: 0.1,
         color: '#0C2D48',
         opposite: false,
-        plotBands: [
-          {
-            from: 0,
-            to: 2.5,
-            color: '#4ac6ff',
-            label: {
-              text: 'Light',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 2.5,
-            to: 7.5,
-            color: '#0073ff',
-            label: {
-              text: 'Moderate',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 7.5,
-            to: 15,
-            color: '#0011ad',
-            label: {
-              text: 'Heavy',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            color: '#fcba03',
-            label: {
-              text: 'Intense',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
+        // plotBands: [
+        //   {
+        //     from: 0,
+        //     to: 2.5,
+        //     color: '#4ac6ff',
+        //     label: {
+        //       text: 'Light',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 2.5,
+        //     to: 7.5,
+        //     color: '#0073ff',
+        //     label: {
+        //       text: 'Moderate',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 7.5,
+        //     to: 15,
+        //     color: '#0011ad',
+        //     label: {
+        //       text: 'Heavy',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 15,
+        //     to: 30,
+        //     color: '#fcba03',
+        //     label: {
+        //       text: 'Intense',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
 
-          {
-            from: 30,
-            to: 500,
-            color: '#fc3d03',
-            label: {
-              text: 'Torrential',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-        ],
+        //   {
+        //     from: 30,
+        //     to: 500,
+        //     color: '#fc3d03',
+        //     label: {
+        //       text: 'Torrential',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        // ],
       },
       series: [
         {
@@ -158,6 +169,9 @@ export class QcSensorChartService {
       },
       subtitle: {
         text: 'Flood Height',
+      },
+      legend: {
+        enabled: true,
       },
       xAxis: {
         type: 'datetime',

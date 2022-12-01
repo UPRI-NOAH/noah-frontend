@@ -353,6 +353,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             ).coordinates.slice();
             const name = e.features[0].properties.name;
             const iotType = e.features[0].properties.iot_type;
+            const status = e.features[0].properties.status;
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
@@ -363,6 +364,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
             <div><b>Name:</b> ${name} </div>
             <div><b>IOT Type:</b> ${iotType}</div>
+            <div><b>Status:</b> ${status}</div>
           </div>`
               )
               .addTo(_this.map);

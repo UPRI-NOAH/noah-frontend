@@ -16,6 +16,7 @@ export type SummaryItem = {
   latest_date: string;
   latest_data: string;
   critical_level: string;
+  status: string;
 };
 
 export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
