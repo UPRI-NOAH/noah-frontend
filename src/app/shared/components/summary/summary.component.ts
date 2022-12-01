@@ -195,7 +195,7 @@ export class SummaryComponent implements OnInit {
       });
 
       //sorting data
-      newArr.sort((a, b) => (a.latest_date > b.latest_date ? 1 : -1));
+      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
       rainSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
 
