@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   QcSensorService,
@@ -81,6 +80,13 @@ export class SummaryComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  paginate(data: any[], pageNumber: number, itemsPerPage: number): any[] {
+    // Calculate the starting index of the items on the current page
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    // Return the paginated data
+    return data.slice(startIndex, startIndex + itemsPerPage);
+  }
+
   async viewSummary() {
     if (this.loading) {
       return;
@@ -152,6 +158,14 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const allDataWith = []; //disply all data without null value
+      for (let i = 0; i < newArr.length; i++) {
+        if (newArr[i].latest_date) {
+          allDataWith.push({ ...newArr[i] });
+        }
+      }
+
+      //RAIN SENSOR
       const rainSensor = []; //all rain sensor data
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < dataArr.length; j++) {
@@ -171,6 +185,21 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const rainData = []; //disply all data without null value
+      for (let i = 0; i < rainSensor.length; i++) {
+        if (rainSensor[i].latest_date) {
+          rainData.push({ ...rainSensor[i] });
+        }
+      }
+
+      const rainWithNull = []; //seperate null value
+      for (let i = 0; i < rainSensor.length; i++) {
+        if (rainSensor[i].latest_date == null) {
+          rainWithNull.push({ ...rainSensor[i] });
+        }
+      }
+
+      //FLOOD SENSOR
       const floodSensor = []; //all flood sensor data
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < dataArr.length; j++) {
@@ -183,6 +212,20 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const floodData = []; //disply all data without null value
+      for (let i = 0; i < floodSensor.length; i++) {
+        if (floodSensor[i].latest_date) {
+          floodData.push({ ...floodSensor[i] });
+        }
+      }
+
+      const floodWithNull = []; //seperate null value
+      for (let i = 0; i < floodSensor.length; i++) {
+        if (floodSensor[i].latest_date == null) {
+          floodWithNull.push({ ...floodSensor[i] });
+        }
+      }
+
       const activeFlood = []; //active flood sensor data
       for (let i = 0; i < floodSensor.length; i++) {
         if (floodSensor[i].status == 'Active') {
@@ -190,19 +233,29 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      //ALL DATA NULL VALUE
+      const sortDate = []; //seperate null value
+      for (let i = 0; i < newArr.length; i++) {
+        if (newArr[i].latest_date == null) {
+          sortDate.push({ ...newArr[i] });
+        }
+      }
+
       this.subscription = this.everOneMinute.subscribe(() => {
         this.viewSummary(); //auto refresh data every 1 minute
       });
 
-      //sorting data
-      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-      floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-      rainSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-
       //fetching data and display to table and item per page
-      this.fetchedData = newArr;
-      this.floodFetchedData = floodSensor;
-      this.rainFetchedData = rainSensor;
+      this.fetchedData = allDataWith.concat(sortDate);
+      this.fetchedData.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1)); //sorting data
+      this.floodFetchedData = floodData.concat(floodWithNull);
+      this.floodFetchedData.sort((a, b) =>
+        a.latest_date > b.latest_date ? -1 : 1
+      ); //sorting data
+      this.rainFetchedData = rainData.concat(rainWithNull);
+      this.rainFetchedData.sort((a, b) =>
+        a.latest_date > b.latest_date ? -1 : 1
+      ); //sorting data
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
       this.floodAllPages = Math.ceil(
@@ -233,7 +286,7 @@ export class SummaryComponent implements OnInit {
   closeModal() {
     this.subscription.unsubscribe(); //stop popup modal
     this.alert = !this.alert;
-    this.summaryModal = !this.summaryData;
+    this.summaryModal = !this.summaryModal;
   }
 
   onPageChange(page: number = 1): void {
