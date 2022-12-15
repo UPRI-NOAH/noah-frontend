@@ -141,7 +141,7 @@
                             md:mt-1
                           "
                         >
-                          {{ total }}
+                          {{ totalSensor }}
                         </p>
                       </div>
                     </div>
@@ -352,7 +352,7 @@
                                   *ngFor="let col of columns"
                                 >
                                   <div
-                                    (click)="sortedColumn = col.key"
+                                    (click)="onHeaderColumnClick(col.key)"
                                     class="cursor-pointer inline-flex"
                                   >
                                     {{ col.header }}
@@ -375,7 +375,7 @@
                                 class="hover:bg-gray-100 bg-white"
                                 *ngFor="
                                   let data of summaryData
-                                    | sort: sortedColumn
+                                    | sort: sortField:sortDirection
                                     | searchfilter: searchValue
                                 "
                               >
@@ -549,11 +549,11 @@
                           </table>
                         </div>
 
-                        <noah-pagination
+                        <!-- <noah-pagination
                           class="hidden lg:block"
                           [allPagesNumber]="allPages"
                           (changePage)="onPageChange($event)"
-                        ></noah-pagination>
+                        ></noah-pagination> -->
 
                         <!-- MOBILE VIEW -->
                         <div class="flex flex-row flex-wrap lg:hidden w-full">
@@ -646,7 +646,7 @@
                                             hover:bg-gray-100
                                             focus:outline-none focus:bg-gray-100
                                           "
-                                          (click)="sortedColumn = col.key"
+                                          (click)="onHeaderColumnClick(col.key)"
                                           role="button"
                                           >{{ col.mobileHeader }}</a
                                         >
@@ -717,7 +717,7 @@
                             "
                             *ngFor="
                               let data of summaryData
-                                | sort: sortedColumn
+                                | sort: sortField:sortDirection
                                 | searchfilter: searchValue
                             "
                           >
@@ -875,7 +875,7 @@
                                   *ngFor="let col of columns"
                                 >
                                   <div
-                                    (click)="sortedColumn = col.key"
+                                    (click)="onHeaderColumnClick(col.key)"
                                     class="cursor-pointer inline-flex"
                                   >
                                     {{ col.header }}
@@ -898,7 +898,7 @@
                                 class="hover:bg-gray-100 bg-white"
                                 *ngFor="
                                   let data of floodSummaryData
-                                    | sort: sortedColumn
+                                    | sort: sortField:sortDirection
                                     | searchfilter: searchValue
                                 "
                               >
@@ -1058,11 +1058,11 @@
                             </tbody>
                           </table>
                         </div>
-                        <noah-pagination
+                        <!-- <noah-pagination
                           class="hidden lg:block"
                           [allPagesNumber]="floodAllPages"
                           (changePage)="onPageChange($event)"
-                        ></noah-pagination>
+                        ></noah-pagination> -->
                         <!-- MOBILE VIEW TAB SELECTION -->
                         <div
                           class="
@@ -1130,7 +1130,7 @@
                                       hover:bg-gray-100
                                       focus:outline-none focus:bg-gray-100
                                     "
-                                    (click)="sortedColumn = col.key"
+                                    (click)="onHeaderColumnClick(col.key)"
                                     role="button"
                                     >{{ col.mobileHeader }}</a
                                   >
@@ -1166,7 +1166,7 @@
                             "
                             *ngFor="
                               let data of floodSummaryData
-                                | sort: sortedColumn
+                                | sort: sortField:sortDirection
                                 | searchfilter: searchValue
                             "
                           >
@@ -1376,7 +1376,7 @@
                                   *ngFor="let col of columns"
                                 >
                                   <div
-                                    (click)="sortedColumn = col.key"
+                                    (click)="onHeaderColumnClick(col.key)"
                                     class="cursor-pointer inline-flex"
                                   >
                                     {{ col.header }}
@@ -1399,7 +1399,7 @@
                                 class="hover:bg-gray-100 bg-white"
                                 *ngFor="
                                   let data of rainSummaryData
-                                    | sort: sortedColumn
+                                    | sort: sortField:sortDirection
                                     | searchfilter: searchValue
                                 "
                               >
@@ -1559,11 +1559,11 @@
                             </tbody>
                           </table>
                         </div>
-                        <noah-pagination
+                        <!-- <noah-pagination
                           class="hidden lg:block"
                           [allPagesNumber]="rainAllPages"
                           (changePage)="onPageChange($event)"
-                        ></noah-pagination>
+                        ></noah-pagination> -->
                         <!-- MOBILE VIEW RAIN TAB SELECTION -->
                         <div
                           class="
@@ -1631,7 +1631,7 @@
                                       hover:bg-gray-100
                                       focus:outline-none focus:bg-gray-100
                                     "
-                                    (click)="sortedColumn = col.key"
+                                    (click)="onHeaderColumnClick(col.key)"
                                     role="button"
                                     >{{ col.mobileHeader }}</a
                                   >
@@ -1667,7 +1667,7 @@
                             "
                             *ngFor="
                               let data of rainSummaryData
-                                | sort: sortedColumn
+                                | sort: sortField:sortDirection
                                 | searchfilter: searchValue
                             "
                           >

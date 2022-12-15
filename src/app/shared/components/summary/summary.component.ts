@@ -3,6 +3,7 @@ import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
+import { SortPipe } from '@shared/pipes/sort.pipe';
 import { Observable, Subscription, timer } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -15,7 +16,7 @@ export class SummaryComponent implements OnInit {
   summaryModal: boolean;
   todayString: string = new Date().toDateString();
   sortedColumn: string;
-  total: number;
+  totalSensor: number;
   inactive: number;
   activeSensor: number;
   loading = false;
@@ -33,7 +34,7 @@ export class SummaryComponent implements OnInit {
 
   searchValue: string;
 
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 15;
   floodPerpage: number = 10;
   rainPerPage: number = 10;
   allPages: number;
@@ -43,6 +44,9 @@ export class SummaryComponent implements OnInit {
   everOneMinute: Observable<number> = timer(60000); //refresh every 1 minute
   alert: boolean = false;
   alertSummary: boolean = false;
+
+  sortField = 'latest_date';
+  sortDirection = 'ascending';
 
   constructor(private qcSensorService: QcSensorService) {}
   columns = [
@@ -79,13 +83,6 @@ export class SummaryComponent implements OnInit {
   ];
 
   ngOnInit(): void {}
-
-  paginate(data: any[], pageNumber: number, itemsPerPage: number): any[] {
-    // Calculate the starting index of the items on the current page
-    const startIndex = (pageNumber - 1) * itemsPerPage;
-    // Return the paginated data
-    return data.slice(startIndex, startIndex + itemsPerPage);
-  }
 
   async viewSummary() {
     if (this.loading) {
@@ -268,7 +265,7 @@ export class SummaryComponent implements OnInit {
       //count numbers
       this.activeSensor = active.length;
       this.inactive = inactive.length;
-      this.total = totalSensor.length;
+      this.totalSensor = totalSensor.length;
       this.activeRainSensor = activeRain.length;
       this.activeFloodSensor = activeFlood.length;
     } catch (error) {
@@ -301,5 +298,15 @@ export class SummaryComponent implements OnInit {
     const rstartItem = (page - 1) * this.rainPerPage;
     const rendItem = page * this.rainPerPage;
     this.rainSummaryData = this.rainFetchedData.slice(rstartItem, rendItem);
+  }
+
+  onHeaderColumnClick(field: string) {
+    if (this.sortField === field) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'ascending';
+    }
   }
 }
