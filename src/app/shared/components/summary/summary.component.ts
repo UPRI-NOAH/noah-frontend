@@ -3,7 +3,6 @@ import {
   QcSensorService,
   SummaryItem,
 } from '@features/noah-playground/services/qc-sensor.service';
-import { SortPipe } from '@shared/pipes/sort.pipe';
 import { Observable, Subscription, timer } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -35,8 +34,8 @@ export class SummaryComponent implements OnInit {
   searchValue: string;
 
   itemsPerPage: number = 15;
-  floodPerpage: number = 10;
-  rainPerPage: number = 10;
+  floodPerpage: number = 15;
+  rainPerPage: number = 15;
   allPages: number;
   floodAllPages: number;
   rainAllPages: number;

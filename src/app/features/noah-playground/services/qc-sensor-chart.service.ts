@@ -72,72 +72,75 @@ export class QcSensorChartService {
       subtitle: {
         text: 'Rainfall',
       },
+      legend: {
+        enabled: true,
+      },
       yAxis: {
         title: {
-          text: 'Millimeters (mm)',
+          text: 'ACC Value (mm)',
         },
         alignTicks: false,
-        tickInterval: 0.5,
+        tickInterval: 0.1,
         color: '#0C2D48',
         opposite: false,
-        plotBands: [
-          {
-            from: 0,
-            to: 2.5,
-            color: '#4ac6ff',
-            label: {
-              text: 'Light',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 2.5,
-            to: 7.5,
-            color: '#0073ff',
-            label: {
-              text: 'Moderate',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 7.5,
-            to: 15,
-            color: '#0011ad',
-            label: {
-              text: 'Heavy',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-          {
-            from: 15,
-            to: 30,
-            color: '#fcba03',
-            label: {
-              text: 'Intense',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
+        // plotBands: [
+        //   {
+        //     from: 0,
+        //     to: 2.5,
+        //     color: '#4ac6ff',
+        //     label: {
+        //       text: 'Light',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 2.5,
+        //     to: 7.5,
+        //     color: '#0073ff',
+        //     label: {
+        //       text: 'Moderate',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 7.5,
+        //     to: 15,
+        //     color: '#0011ad',
+        //     label: {
+        //       text: 'Heavy',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        //   {
+        //     from: 15,
+        //     to: 30,
+        //     color: '#fcba03',
+        //     label: {
+        //       text: 'Intense',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
 
-          {
-            from: 30,
-            to: 500,
-            color: '#fc3d03',
-            label: {
-              text: 'Torrential',
-              style: {
-                color: '#0C2D48',
-              },
-            },
-          },
-        ],
+        //   {
+        //     from: 30,
+        //     to: 500,
+        //     color: '#fc3d03',
+        //     label: {
+        //       text: 'Torrential',
+        //       style: {
+        //         color: '#0C2D48',
+        //       },
+        //     },
+        //   },
+        // ],
       },
       series: [
         {
@@ -181,6 +184,9 @@ export class QcSensorChartService {
       },
       subtitle: {
         text: 'Flood Height',
+      },
+      legend: {
+        enabled: true,
       },
       xAxis: {
         type: 'datetime',
