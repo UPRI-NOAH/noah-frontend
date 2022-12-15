@@ -158,21 +158,6 @@ export class QcSensorChartService {
             valueSuffix: 'mm',
           },
         },
-        {
-          name: 'Rainfall',
-          color: '#0C2D48',
-          data: [],
-          lineWidth: 1.5,
-          marker: {
-            enabled: false,
-          },
-          hover: {
-            lineWidth: 5,
-          },
-          tooltip: {
-            valueSuffix: 'mm',
-          },
-        },
       ],
     };
   }
