@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QcLoginComponent } from './qc-login.component';
+import { AlertComponent } from './alert.component';
 
-describe('QcLoginComponent', () => {
-  let component: QcLoginComponent;
-  let fixture: ComponentFixture<QcLoginComponent>;
+describe('AlertComponent', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QcLoginComponent],
+      declarations: [AlertComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QcLoginComponent);
+    fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -138,6 +138,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   isMapboxAttrib;
   disclaimerModal: boolean;
   alertError: boolean = false;
+  showAlert: boolean;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
@@ -411,6 +412,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     appID: string,
     qcSensorType: QuezonCitySensorType
   ) {
+    const _this = this;
     const options: any = {
       title: {
         text: `${appID}`,
@@ -460,7 +462,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/pdf',
                     });
                   } else {
-                    alert('Unable to Download Please Login First');
+                    _this.showAlert = true;
+                    setTimeout(() => {
+                      _this.showAlert = false;
+                    }, 5000);
                   }
                 },
               },
@@ -473,7 +478,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/csv',
                     });
                   } else {
-                    alert('Unable to Download Please Login First');
+                    _this.showAlert = true;
+                    setTimeout(() => {
+                      _this.showAlert = false;
+                    }, 5000);
                   }
                 },
               },
@@ -486,7 +494,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'print',
                     });
                   } else {
-                    alert('Unable to Print Please Login First');
+                    _this.showAlert = true;
+                    setTimeout(() => {
+                      _this.showAlert = false;
+                    }, 5000);
                   }
                 },
               },
@@ -499,7 +510,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'image/jpeg',
                     });
                   } else {
-                    alert('Unable to Download Please Login First');
+                    _this.showAlert = true;
+                    setTimeout(() => {
+                      _this.showAlert = false;
+                    }, 5000);
                   }
                 },
                 separator: false,
