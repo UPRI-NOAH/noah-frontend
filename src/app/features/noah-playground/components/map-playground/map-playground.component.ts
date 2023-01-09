@@ -57,6 +57,7 @@ import {
   WEATHER_SATELLITE_ARR,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+import { time } from 'console';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -106,6 +107,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
+  private href: string;
 
   constructor(
     private mapService: MapService,
@@ -805,6 +807,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next();
     }
+  }
+
+  exportScreenshots() {
+    const downloadButton = document.getElementById('imgLink');
+    const img = this.map.getCanvas().toDataURL('image/png'); // generate image
+    downloadButton.setAttribute('href', img); // set button href to the img
+    this.href = img;
   }
 
   /**
