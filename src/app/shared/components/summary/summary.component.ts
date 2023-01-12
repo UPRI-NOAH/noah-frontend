@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   QcSensorService,
@@ -16,7 +15,7 @@ export class SummaryComponent implements OnInit {
   summaryModal: boolean;
   todayString: string = new Date().toDateString();
   sortedColumn: string;
-  total: number;
+  totalSensor: number;
   inactive: number;
   activeSensor: number;
   loading = false;
@@ -34,9 +33,9 @@ export class SummaryComponent implements OnInit {
 
   searchValue: string;
 
-  itemsPerPage: number = 10;
-  floodPerpage: number = 10;
-  rainPerPage: number = 10;
+  itemsPerPage: number = 15;
+  floodPerpage: number = 15;
+  rainPerPage: number = 15;
   allPages: number;
   floodAllPages: number;
   rainAllPages: number;
@@ -44,6 +43,9 @@ export class SummaryComponent implements OnInit {
   everOneMinute: Observable<number> = timer(60000); //refresh every 1 minute
   alert: boolean = false;
   alertSummary: boolean = false;
+
+  sortField = 'latest_date';
+  sortDirection = 'ascending';
 
   constructor(private qcSensorService: QcSensorService) {}
   columns = [
@@ -152,6 +154,14 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const allDataWith = []; //disply all data without null value
+      for (let i = 0; i < newArr.length; i++) {
+        if (newArr[i].latest_date) {
+          allDataWith.push({ ...newArr[i] });
+        }
+      }
+
+      //RAIN SENSOR
       const rainSensor = []; //all rain sensor data
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < dataArr.length; j++) {
@@ -171,6 +181,21 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const rainData = []; //disply all data without null value
+      for (let i = 0; i < rainSensor.length; i++) {
+        if (rainSensor[i].latest_date) {
+          rainData.push({ ...rainSensor[i] });
+        }
+      }
+
+      const rainWithNull = []; //seperate null value
+      for (let i = 0; i < rainSensor.length; i++) {
+        if (rainSensor[i].latest_date == null) {
+          rainWithNull.push({ ...rainSensor[i] });
+        }
+      }
+
+      //FLOOD SENSOR
       const floodSensor = []; //all flood sensor data
       for (let i = 0; i < locationArr.length; i++) {
         for (let j = 0; j < dataArr.length; j++) {
@@ -183,6 +208,20 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      const floodData = []; //disply all data without null value
+      for (let i = 0; i < floodSensor.length; i++) {
+        if (floodSensor[i].latest_date) {
+          floodData.push({ ...floodSensor[i] });
+        }
+      }
+
+      const floodWithNull = []; //seperate null value
+      for (let i = 0; i < floodSensor.length; i++) {
+        if (floodSensor[i].latest_date == null) {
+          floodWithNull.push({ ...floodSensor[i] });
+        }
+      }
+
       const activeFlood = []; //active flood sensor data
       for (let i = 0; i < floodSensor.length; i++) {
         if (floodSensor[i].status == 'Active') {
@@ -190,19 +229,29 @@ export class SummaryComponent implements OnInit {
         }
       }
 
+      //ALL DATA NULL VALUE
+      const sortDate = []; //seperate null value
+      for (let i = 0; i < newArr.length; i++) {
+        if (newArr[i].latest_date == null) {
+          sortDate.push({ ...newArr[i] });
+        }
+      }
+
       this.subscription = this.everOneMinute.subscribe(() => {
         this.viewSummary(); //auto refresh data every 1 minute
       });
 
-      //sorting data
-      newArr.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-      floodSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-      rainSensor.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1));
-
       //fetching data and display to table and item per page
-      this.fetchedData = newArr;
-      this.floodFetchedData = floodSensor;
-      this.rainFetchedData = rainSensor;
+      this.fetchedData = allDataWith.concat(sortDate);
+      this.fetchedData.sort((a, b) => (a.latest_date > b.latest_date ? -1 : 1)); //sorting data
+      this.floodFetchedData = floodData.concat(floodWithNull);
+      this.floodFetchedData.sort((a, b) =>
+        a.latest_date > b.latest_date ? -1 : 1
+      ); //sorting data
+      this.rainFetchedData = rainData.concat(rainWithNull);
+      this.rainFetchedData.sort((a, b) =>
+        a.latest_date > b.latest_date ? -1 : 1
+      ); //sorting data
       this.onPageChange();
       this.allPages = Math.ceil(this.fetchedData.length / this.itemsPerPage);
       this.floodAllPages = Math.ceil(
@@ -215,7 +264,7 @@ export class SummaryComponent implements OnInit {
       //count numbers
       this.activeSensor = active.length;
       this.inactive = inactive.length;
-      this.total = totalSensor.length;
+      this.totalSensor = totalSensor.length;
       this.activeRainSensor = activeRain.length;
       this.activeFloodSensor = activeFlood.length;
     } catch (error) {
@@ -233,7 +282,7 @@ export class SummaryComponent implements OnInit {
   closeModal() {
     this.subscription.unsubscribe(); //stop popup modal
     this.alert = !this.alert;
-    this.summaryModal = !this.summaryData;
+    this.summaryModal = !this.summaryModal;
   }
 
   onPageChange(page: number = 1): void {
@@ -248,5 +297,15 @@ export class SummaryComponent implements OnInit {
     const rstartItem = (page - 1) * this.rainPerPage;
     const rendItem = page * this.rainPerPage;
     this.rainSummaryData = this.rainFetchedData.slice(rstartItem, rendItem);
+  }
+
+  onHeaderColumnClick(field: string) {
+    if (this.sortField === field) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'ascending';
+    }
   }
 }
