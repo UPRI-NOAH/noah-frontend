@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     const userLogin = this.insertForm.value;
-    this.onLoadingNoah();
+    this.loadingNoah = true;
     this.qcLoginService
       .loginUser(userLogin.Username, userLogin.Password)
       .subscribe(
@@ -133,13 +133,6 @@ export class LoginComponent implements OnInit {
       this.isLoginModal = false;
       this.qcLoginModal = true;
     });
-  }
-
-  onLoadingNoah() {
-    this.loadingNoah = true;
-    setTimeout(() => {
-      this.loadingNoah = false;
-    }, 1000);
   }
 
   onLogout() {
