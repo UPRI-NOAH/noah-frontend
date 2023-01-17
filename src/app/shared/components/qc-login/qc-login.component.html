@@ -1,0 +1,379 @@
+<div class="px-6 justify-center items-center">
+  <div *ngIf="!(LoginStatus$ | async) as LoginStatus">
+    <button
+      type="button"
+      class="
+        text-xs
+        uppercase
+        font-bold
+        bg-primary
+        rounded-full
+        px-10
+        py-2
+        my-4
+        inline-flex
+        items-center
+        justify-center
+        text-white
+        focus:outline-none
+        mx-auto
+        lg:mx-0
+        tracking-widest
+        hover:bg-blue-800
+        focus:ring-opacity-50
+        border-primary border-2
+      "
+      (click)="popUpLogin()"
+      *ngIf="LoginStatus"
+      routerLink="/noah-qc-login"
+    >
+      LOGIN
+    </button>
+  </div>
+  <div
+    class="dropdown inline-block relative"
+    *ngIf="LoginStatus$ | async as LoginStatus"
+  >
+    <button
+      class="ml-2 text-base whitespace-nowrap font-bold"
+      *ngIf="UserName$ | async as UserName"
+    >
+      {{ UserName | uppercase }}
+    </button>
+    <ul
+      class="
+        z-50
+        dropdown-menu
+        rounded-lg
+        shadow-2xl
+        drop-shadow-xl
+        bg-white
+        right-0
+        top-6
+        absolute
+        hidden
+        text-sm text-gray-700
+      "
+    >
+      <li class="" *ngIf="LoginStatus.valueOf()">
+        <a
+          class="
+            rounded-lg
+            block
+            px-4
+            py-2
+            text-sm
+            leading-5
+            text-gray-700
+            transition
+            duration-150
+            ease-in-out
+            hover:bg-gray-100
+            focus:outline-none focus:bg-gray-100
+          "
+          role="button"
+          (click)="onLogout()"
+          *ngIf="LoginStatus"
+          >Logout</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- MODAL -->
+
+<!-- QC MODAL -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
+  id="modal"
+  *ngIf="qcLoginModal"
+>
+  <div
+    class="absolute bg-black opacity-80 inset-0 z-0"
+    (click)="closeModal()"
+  ></div>
+  <!--content-->
+  <div
+    class="
+      min-w-screen min-h-screen
+      flex
+      items-center
+      z-10
+      justify-center
+      px-5
+      py-5
+    "
+    *ngIf="!(LoginStatus$ | async) as LoginStatus"
+  >
+    <div
+      *ngIf="LoginStatus"
+      class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
+      style="max-width: 1000px"
+    >
+      <div class="sm:flex sm:1/2 w-full">
+        <div class="sm:w-1/2 w-full bg-primary py-10 px-10 hidden sm:block">
+          <img src="assets/icons/qc_logo.jpg" class="mt-10 lg:mt-0" />
+        </div>
+        <div class="sm:w-1/2 w-full py-10 px-5 md:px-10">
+          <div class="flex justify-center space-x-8 mb-4">
+            <img src="assets/icons/up.png" />
+            <img src="assets/icons/logo-noah.svg" class="z-50 w-20" />
+            <img
+              class="w-12 h-10 rounded-full mx-auto block md:hidden"
+              src="https://th.bing.com/th/id/R.0e46cbc8c39a4c607359ca736c2c6ec3?rik=j7NvGiGXEIqUYQ&riu=http%3a%2f%2f3.bp.blogspot.com%2f-Kyen0ow8-ZM%2fVL9G10YOXHI%2fAAAAAAAAE9c%2fbzXXi8foQFg%2fs355%2fQCSealnew.png&ehk=VLaZJ5SLWlVst6pIxmgIzOjx%2fQPDP8Kq%2fvAPxI5t6Fs%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1"
+              alt=""
+              width="384"
+              height="512"
+            />
+            <img src="assets/icons/upri.png" />
+          </div>
+
+          <div class="text-center mb-10">
+            <h1 class="font-bold text-3xl text-gray-900">
+              Login Your QC Account
+            </h1>
+            <p>Enter your information to login</p>
+          </div>
+
+          <form
+            [formGroup]="insertForm"
+            (ngSubmit)="onSubmit()"
+            (keydown.enter)="onSubmit()"
+          >
+            <div class="flex -mx-3">
+              <div class="w-full px-3 mb-5">
+                <label for="" class="text-s font-semibold px-1">Username</label>
+                <div class="flex">
+                  <div
+                    class="
+                      w-10
+                      z-10
+                      pl-1
+                      text-center
+                      pointer-events-none
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+                    <i class="mdi mdi-email-outline text-gray-400 text-lg"></i>
+                  </div>
+                  <input
+                    name="username"
+                    type="text"
+                    class="
+                      w-full
+                      -ml-10
+                      pl-10
+                      pr-3
+                      py-2
+                      rounded-lg
+                      border-2 border-gray-200
+                      outline-none
+                      focus:border-indigo-500
+                    "
+                    formControlName="Username"
+                    placeholder="Username"
+                  />
+                </div>
+                <div
+                  *ngIf="Username.touched && Username.errors"
+                  class="errorMessage"
+                >
+                  <span
+                    class="text-red-600"
+                    *ngIf="Username.hasError('required')"
+                    >Username is required.</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="flex -mx-3">
+              <div class="w-full px-3 mb-12">
+                <label for="" class="text-s font-semibold px-1">Password</label>
+                <div class="flex">
+                  <div
+                    class="
+                      w-10
+                      z-10
+                      pl-1
+                      text-center
+                      pointer-events-none
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+                    <i class="mdi mdi-lock-outline text-gray-400 text-lg"></i>
+                  </div>
+                  <input
+                    name="password"
+                    type="password"
+                    class="
+                      form-control
+                      w-full
+                      -ml-10
+                      pl-10
+                      pr-3
+                      py-2
+                      rounded-lg
+                      border-2 border-gray-200
+                      outline-none
+                      focus:border-indigo-500
+                    "
+                    formControlName="Password"
+                    placeholder="************"
+                  />
+                </div>
+                <div
+                  *ngIf="Password.touched && Password.errors"
+                  class="errorMessage"
+                >
+                  <span
+                    class="text-red-600"
+                    *ngIf="Password.hasError('required')"
+                    >Password is required.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="flex space-x-4 ...">
+            <div class="w-full px-3 mb-5">
+              <button
+                class="
+                  block
+                  w-full
+                  max-w-xs
+                  mx-auto
+                  bg-gray-200
+                  hover:bg-gray-300
+                  focus:bg-gray-300
+                  rounded-lg
+                  px-3
+                  py-3
+                  font-semibold
+                "
+                (click)="clearForm(insertForm)"
+              >
+                Cancel
+              </button>
+            </div>
+            <div class="w-full px-3 mb-5">
+              <button
+                class="
+                  block
+                  w-full
+                  max-w-xs
+                  mx-auto
+                  bg-primary
+                  hover:bg-blue-800
+                  focus:bg-blue-800
+                  text-white
+                  rounded-lg
+                  px-3
+                  py-3
+                  font-semibold
+                "
+                type="submit"
+                [disabled]="insertForm.invalid"
+                (click)="onSubmit()"
+              >
+                Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- alert login -->
+  <div class="absolute top-0 flex items-center z-10 justify-center px-5 py-5">
+    <div
+      class="flex bg-red-100 rounded-lg p-4 mb-4 text-sm text-red-700"
+      role="alertModal"
+      *ngIf="alertError"
+    >
+      <svg
+        class="w-5 h-5 inline mr-3"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      <div>
+        <span class="font-medium">Error!</span> Invalid Username or Password
+      </div>
+    </div>
+  </div>
+  <!-- alert login -->
+  <div
+    class="
+      w-full
+      h-full
+      flex
+      items-center
+      z-10
+      justify-center
+      absolute
+      px-5
+      py-5
+    "
+    *ngIf="loadingNoah"
+  >
+    <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+
+    <div
+      class="shadow-xl w-full z-10 lg:w-136 overflow-hidden"
+      style="max-width: 1000px"
+    >
+      <div class="md:flex w-full">
+        <div class="w-full py-10 px-5 md:px-10">
+          <div class="flex justify-center gap-x-4 mb-4">
+            <div class="flex items-center justify-center bottom-0">
+              <div
+                class="
+                  w-40
+                  h-40
+                  border-t-4 border-b-4 border-white
+                  rounded-full
+                  animate-spin
+                  absolute
+                "
+              ></div>
+              <img
+                src="assets/icons/logo-noah.svg"
+                class="w-24 h-24 animate-none"
+                fill="none"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- NOAH LOADING END -->
+</div>

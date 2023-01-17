@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
@@ -14,6 +14,7 @@ export class NoahPlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
   searchTerm: string;
   disclaimerModal: boolean;
+  @Input() qcLoginModal: boolean;
   isSidebarOpen: boolean = false;
   isMenu: boolean = true;
   isList;

@@ -13,6 +13,7 @@ import { SortPipe } from './pipes/sort.pipe';
 import { SearchfilterPipe } from './pipes/searchfilter.pipe';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { AlertComponent } from './components/alert/alert.component';
+import { QcLoginComponent } from './components/qc-login/qc-login.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -22,13 +23,14 @@ const components = [
   DisclaimerComponent,
   SummaryComponent,
   LoginComponent,
+  QcLoginComponent,
   PaginationComponent,
   AlertComponent,
 ];
 const directives = [];
 const pipes = [ReplacePipe, SortPipe, SearchfilterPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes, AlertComponent],
+  declarations: [...components, ...directives, ...pipes],
   imports: [...modules],
   exports: [...modules, ...components, ...directives, ...pipes],
 })
