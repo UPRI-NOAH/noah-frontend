@@ -129,8 +129,9 @@ export class LoginComponent implements OnInit {
 
   popUpLogin() {
     this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
-      this.router.navigate(['login']);
-      this.isLoginModal = true;
+      this.router.navigate(['qc-login']);
+      this.isLoginModal = false;
+      this.qcLoginModal = true;
     });
   }
 
