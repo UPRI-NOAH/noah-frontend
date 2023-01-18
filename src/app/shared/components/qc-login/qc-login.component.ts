@@ -130,7 +130,7 @@ export class QcLoginComponent implements OnInit {
 
   popUpLogin() {
     this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
-      this.router.navigateByUrl(`/noah-studio/noah-qc-login}`);
+      this.router.navigateByUrl(`/noah-playground/noah-qc-login}`);
       // this.router.navigate(['noah-qc-login']);
       // this.isLoginModal = false;
       this.qcLoginModal = true;
