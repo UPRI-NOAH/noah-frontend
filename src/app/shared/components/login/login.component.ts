@@ -129,14 +129,14 @@ export class LoginComponent implements OnInit {
 
   popUpLogin() {
     this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
-      this.router.navigate(['qc-login']);
-      this.isLoginModal = false;
-      this.qcLoginModal = true;
+      this.router.navigate(['login']);
+      this.isLoginModal = true;
+      this.qcLoginModal = false;
     });
   }
 
   onLogout() {
-    this.qcLoginService.logout();
+    this.qcLoginService.checkourLogout();
   }
 
   loginModal() {

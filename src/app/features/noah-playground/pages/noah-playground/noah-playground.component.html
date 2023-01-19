@@ -435,6 +435,8 @@
     *ngIf="DisclaimerStatus || disclaimerModal"
   ></noah-disclaimer>
 </div>
-<div *ngIf="!(LoginStatus$ | async) as LoginStatus">
+<!-- <div *ngIf="!(LoginStatus$ | async) as LoginStatus">
   <noah-qc-login *ngIf="LoginStatus || qcLoginModal"></noah-qc-login>
-</div>
+</div> -->
+<noah-alert *ngIf="showAlert"></noah-alert>
+<noah-qc-login *ngIf="modalAlert"></noah-qc-login>

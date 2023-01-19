@@ -1,43 +1,36 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-
-import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-
+import { Component, OnInit } from '@angular/core';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 @Component({
   selector: 'noah-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent implements OnInit {
-  @Input() qcLoginModal: boolean;
-  showAlert: boolean = true;
-  LoginStatus$: Observable<boolean>;
-  destroy = new Subject<any>();
-  @Output() open: EventEmitter<any> = new EventEmitter();
-  @Output() close: EventEmitter<any> = new EventEmitter();
-
-  constructor(
-    private qcLoginService: QcLoginService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  showAlert = false;
+  isOpen = false;
+  logoutAlert = false;
+  modalLogin: boolean = false;
+  constructor(private modalService: ModalServicesService) {}
 
   ngOnInit(): void {
-    this.LoginStatus$ = this.qcLoginService.isLoggesIn;
+    this.modalService.loginAlert$.subscribe((isOpen) => {
+      this.isOpen = isOpen;
+    });
+
+    this.modalService.logoutAlert$.subscribe((logoutAlert) => {
+      this.logoutAlert = logoutAlert;
+    });
+  }
+
+  close() {
+    this.modalService.closeModal();
   }
 
   onCloseClick() {
     this.showAlert = !this.showAlert;
-    if (this.showAlert) {
-      this.open.emit();
-    } else {
-      this.close.emit();
-    }
   }
 
-  loginToStudio() {
-    this.router.navigateByUrl(`/noah-qc-login}`);
+  modalBtn() {
+    this.modalLogin = !this.modalLogin;
   }
 }

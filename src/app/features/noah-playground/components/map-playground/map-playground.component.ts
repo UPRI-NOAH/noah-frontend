@@ -5,6 +5,7 @@ import {
   ViewEncapsulation,
   ViewChild,
   ElementRef,
+  EventEmitter,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -89,6 +90,7 @@ import {
   SENSOR_COLORS,
 } from '@shared/mocks/noah-colors';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -137,12 +139,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
   disclaimerModal: boolean;
-  alertError: boolean = false;
-  showAlert: boolean;
+  showAlert: boolean = false;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   LoginStatus$: Observable<boolean>;
+  showAlert$ = new Subject<boolean>();
   @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
     private mapService: MapService,
@@ -151,7 +153,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
-    private qcLoginService: QcLoginService
+    private modalService: ModalServicesService
   ) {}
 
   ngOnInit(): void {
@@ -305,7 +307,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              this.alertError = true;
               this.map.setPaintProperty(
                 qcSensorType,
                 'circle-opacity',
@@ -462,10 +463,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/pdf',
                     });
                   } else {
-                    _this.showAlert = true;
-                    setTimeout(() => {
-                      _this.showAlert = false;
-                    }, 5000);
+                    _this.modalService.openModal();
                   }
                 },
               },
@@ -478,10 +476,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/csv',
                     });
                   } else {
-                    _this.showAlert = true;
-                    setTimeout(() => {
-                      _this.showAlert = false;
-                    }, 5000);
+                    _this.modalService.openModal();
                   }
                 },
               },
@@ -494,10 +489,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'print',
                     });
                   } else {
-                    _this.showAlert = true;
-                    setTimeout(() => {
-                      _this.showAlert = false;
-                    }, 5000);
+                    _this.modalService.openModal();
                   }
                 },
               },
@@ -510,10 +502,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'image/jpeg',
                     });
                   } else {
-                    _this.showAlert = true;
-                    setTimeout(() => {
-                      _this.showAlert = false;
-                    }, 5000);
+                    _this.modalService.openModal();
                   }
                 },
                 separator: false,
@@ -526,7 +515,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
     const chart = Highcharts.stockChart('graph-dom', options);
-
+    this.showAlert = true;
     chart.showLoading();
     const response: any = await this.qcSensorService
       .getQcSensorData(pk)

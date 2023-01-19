@@ -4,6 +4,7 @@ import { Injectable, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ModalServicesService } from './modal-services.service';
 import { NoahPlaygroundService } from './noah-playground.service';
 import { QcSensorService } from './qc-sensor.service';
 
@@ -30,7 +31,8 @@ export class QcLoginService {
     private router: Router,
     private _location: Location,
     private pgService: NoahPlaygroundService,
-    private qcSensorService: QcSensorService
+    private qcSensorService: QcSensorService,
+    private modalService: ModalServicesService
   ) {}
 
   loginUser(username: string, password: string) {
@@ -58,8 +60,8 @@ export class QcLoginService {
   }
 
   logout() {
-    alert('Your Session expired');
     localStorage.removeItem('token');
+    localStorage.removeItem('loginStatus');
     localStorage.removeItem('username');
     localStorage.setItem('disclaimerStatus', 'false');
     localStorage.setItem('loginStatus', '0');
@@ -78,6 +80,15 @@ export class QcLoginService {
       return true;
     }
     return false;
+  }
+
+  checkourLogout() {
+    const result = confirm('Are you sure to Logout?');
+    if (result == false) {
+      event.preventDefault();
+    } else {
+      this.logout();
+    }
   }
 
   checkDisclaimerStatus(): boolean {
