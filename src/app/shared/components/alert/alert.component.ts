@@ -8,7 +8,6 @@ import { ModalServicesService } from '@features/noah-playground/services/modal-s
 export class AlertComponent implements OnInit {
   showAlert = false;
   isOpen = false;
-  logoutAlert = false;
   modalLogin: boolean = false;
   constructor(private modalService: ModalServicesService) {}
 
@@ -16,21 +15,9 @@ export class AlertComponent implements OnInit {
     this.modalService.loginAlert$.subscribe((isOpen) => {
       this.isOpen = isOpen;
     });
-
-    this.modalService.logoutAlert$.subscribe((logoutAlert) => {
-      this.logoutAlert = logoutAlert;
-    });
   }
 
   close() {
     this.modalService.closeModal();
-  }
-
-  onCloseClick() {
-    this.showAlert = !this.showAlert;
-  }
-
-  modalBtn() {
-    this.modalLogin = !this.modalLogin;
   }
 }

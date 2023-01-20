@@ -2,9 +2,8 @@ import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ModalServicesService } from './modal-services.service';
 import { NoahPlaygroundService } from './noah-playground.service';
 import { QcSensorService } from './qc-sensor.service';
 
@@ -31,8 +30,7 @@ export class QcLoginService {
     private router: Router,
     private _location: Location,
     private pgService: NoahPlaygroundService,
-    private qcSensorService: QcSensorService,
-    private modalService: ModalServicesService
+    private qcSensorService: QcSensorService
   ) {}
 
   loginUser(username: string, password: string) {

@@ -8,9 +8,6 @@ export class ModalServicesService {
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
-  private logoutAlert = new Subject<boolean>();
-  logoutAlert$ = this.logoutAlert.asObservable();
-
   constructor() {}
 
   openModal() {
@@ -19,13 +16,5 @@ export class ModalServicesService {
 
   closeModal() {
     this.loginAlert.next(false);
-  }
-
-  openLogoutAlert() {
-    this.logoutAlert.next(true);
-  }
-
-  closeLogoutAlert() {
-    this.logoutAlert.next(false);
   }
 }

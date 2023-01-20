@@ -6,11 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
-import { takeUntil } from 'rxjs/operators';
 import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 
 @Component({
