@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NoahPlaygroundService } from './noah-playground.service';
 import { QcSensorService } from './qc-sensor.service';
@@ -14,6 +14,7 @@ export class QcLoginService {
   private QCBASE_URL = 'https://noah-api.up.edu.ph';
   loginModal: boolean;
   isLoginModal: boolean = false;
+  @Input() qcLoginModal: boolean;
   showAdminResult: boolean;
 
   private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
@@ -57,8 +58,8 @@ export class QcLoginService {
   }
 
   logout() {
-    alert('Your Session expired');
     localStorage.removeItem('token');
+    localStorage.removeItem('loginStatus');
     localStorage.removeItem('username');
     localStorage.setItem('disclaimerStatus', 'false');
     localStorage.setItem('loginStatus', '0');

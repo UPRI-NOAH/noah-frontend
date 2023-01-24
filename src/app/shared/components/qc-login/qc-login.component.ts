@@ -6,23 +6,22 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
-import { takeUntil } from 'rxjs/operators';
 import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+
 @Component({
-  selector: 'noah-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  selector: 'noah-qc-login',
+  templateUrl: './qc-login.component.html',
+  styleUrls: ['./qc-login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class QcLoginComponent implements OnInit {
   @Input() loginTerm: string;
   @Output() loginSuccess: EventEmitter<any> = new EventEmitter();
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
   insertForm: FormGroup;
-  isLoginModal: boolean;
+  isOpen$ = new Subject<boolean>();
   qcLoginModal: boolean;
   currentRole: any;
   returnUrl: string;
@@ -34,13 +33,13 @@ export class LoginComponent implements OnInit {
   destroy = new Subject<any>();
   alertError: boolean = false;
   loadingNoah: boolean = false;
-  logoutAlert: boolean = false;
+  isOpen: boolean = false;
+
   constructor(
     private qcLoginService: QcLoginService,
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private pgService: NoahPlaygroundService,
     private _location: Location,
     private modalService: ModalServicesService
   ) {}
@@ -76,16 +75,16 @@ export class LoginComponent implements OnInit {
     //Pop up login directly in url
     const loggedIn = localStorage.getItem('loginStatus');
     if (loggedIn == '1') {
-      this.router.navigate([this.returnUrl]);
+      this.router.navigateByUrl(this.returnUrl);
     }
-    if (window.location.href.indexOf('login') != -1) {
-      this.isLoginModal = true;
-    }
+  }
+  openModal() {
+    this.isOpen$.next(true);
+    this.modalService.closeModal();
+  }
 
-    if (window.location.href.indexOf('qc-login') != -1) {
-      this.isLoginModal = false;
-      this.qcLoginModal = true;
-    }
+  closeModals() {
+    this.isOpen$.next(false);
   }
 
   onSubmit() {
@@ -99,8 +98,9 @@ export class LoginComponent implements OnInit {
           this.invalidLogin = false;
           console.log(this.returnUrl);
           this.router.navigateByUrl(this.returnUrl);
-          this.isLoginModal = false;
-          this.pgService.toggleQuezonCityIOTGroupShown();
+          this.qcLoginModal = false;
+          this.loadingNoah = false;
+          this.closeModals();
           this.router.navigateByUrl('/noah-playground');
           setTimeout(() => {
             //SESSION EXPIRATION
@@ -130,36 +130,8 @@ export class LoginComponent implements OnInit {
       );
   }
 
-  logoutModal() {
-    this.modalService.openLogoutModal();
-  }
-
-  popUpLogin() {
-    this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
-      this.router.navigate(['login']);
-      this.isLoginModal = true;
-      this.qcLoginModal = false;
-    });
-  }
-
-  loginModal() {
-    this.qcLoginService.showLoginModal();
-  }
-
-  clearForm(form: FormGroup) {
-    this.isLoginModal = false;
-    this.qcLoginModal = false;
-    form.reset();
-    this.router.navigate([''], {
-      relativeTo: this.route,
-    });
-  }
-  closeModal() {
-    this.isLoginModal = false;
-    this.qcLoginModal = false;
-    this.router.navigate([''], {
-      relativeTo: this.route,
-    });
+  onLogout() {
+    this.qcLoginService.logout();
   }
 
   ngOnDestroy() {

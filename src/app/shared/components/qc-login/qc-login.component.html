@@ -1,0 +1,271 @@
+<div
+  class="w-full h-full flex items-center z-30 justify-center absolute px-5 py-5"
+  *ngIf="loadingNoah"
+>
+  <div class="absolute bg-black opacity-80 inset-0 z-10"></div>
+
+  <div
+    class="shadow-xl w-full z-10 lg:w-136 overflow-hidden"
+    style="max-width: 1000px"
+  >
+    <div class="md:flex w-full">
+      <div class="w-full py-10 px-5 md:px-10">
+        <div class="flex justify-center gap-x-4 mb-4">
+          <div class="flex items-center justify-center bottom-0">
+            <div
+              class="
+                w-40
+                h-40
+                border-t-4 border-b-4 border-white
+                rounded-full
+                animate-spin
+                absolute
+              "
+            ></div>
+            <img
+              src="assets/icons/logo-noah.svg"
+              class="w-24 h-24 animate-none"
+              fill="none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- NOAH LOADING END -->
+<div
+  class="z-20 fixed w-full flex justify-center inset-0"
+  *ngIf="isOpen$ | async"
+>
+  <div
+    (click)="closeModals()"
+    class="w-full h-full bg-gray-900 opacity-80 z-0 absolute inset-0"
+  ></div>
+  <div class="mx-auto container">
+    <div
+      class="
+        min-w-screen
+        h-screen
+        animated
+        fadeIn
+        faster
+        fixed
+        left-0
+        top-0
+        flex
+        justify-center
+        items-center
+        inset-0
+        z-50
+        outline-none
+        focus:outline-none
+        bg-no-repeat bg-center bg-cover
+      "
+    >
+      <!--content-->
+      <div
+        class="
+          min-w-screen min-h-screen
+          flex
+          items-center
+          z-10
+          justify-center
+          px-5
+          py-5
+        "
+        *ngIf="!(LoginStatus$ | async) as LoginStatus"
+      >
+        <div
+          *ngIf="LoginStatus"
+          class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
+          style="max-width: 1000px"
+        >
+          <div class="sm:flex sm:1/2 w-full">
+            <div class="sm:w-1/2 w-full bg-primary py-10 px-10 hidden sm:block">
+              <img src="assets/icons/qc_logo.jpg" class="mt-10 lg:mt-0" />
+            </div>
+            <div class="sm:w-1/2 w-full py-10 px-5 md:px-10">
+              <div class="flex justify-center space-x-8 mb-4">
+                <img src="assets/icons/up.png" />
+                <img src="assets/icons/logo-noah.svg" class="z-50 w-20" />
+                <img
+                  class="w-12 h-10 rounded-full mx-auto block md:hidden"
+                  src="https://th.bing.com/th/id/R.0e46cbc8c39a4c607359ca736c2c6ec3?rik=j7NvGiGXEIqUYQ&riu=http%3a%2f%2f3.bp.blogspot.com%2f-Kyen0ow8-ZM%2fVL9G10YOXHI%2fAAAAAAAAE9c%2fbzXXi8foQFg%2fs355%2fQCSealnew.png&ehk=VLaZJ5SLWlVst6pIxmgIzOjx%2fQPDP8Kq%2fvAPxI5t6Fs%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1"
+                  alt=""
+                  width="384"
+                  height="512"
+                />
+                <img src="assets/icons/upri.png" />
+              </div>
+
+              <div class="text-center mb-10">
+                <h1 class="font-bold text-3xl text-gray-900">
+                  Login Your QC Account
+                </h1>
+                <p>Enter your information to login</p>
+              </div>
+
+              <form
+                [formGroup]="insertForm"
+                (ngSubmit)="onSubmit()"
+                (keydown.enter)="onSubmit()"
+              >
+                <div class="flex -mx-3">
+                  <div class="w-full px-3 mb-5">
+                    <label for="" class="text-s font-semibold px-1"
+                      >Username</label
+                    >
+                    <div class="flex">
+                      <div
+                        class="
+                          w-10
+                          z-10
+                          pl-1
+                          text-center
+                          pointer-events-none
+                          flex
+                          items-center
+                          justify-center
+                        "
+                      >
+                        <i
+                          class="mdi mdi-email-outline text-gray-400 text-lg"
+                        ></i>
+                      </div>
+                      <input
+                        name="username"
+                        type="text"
+                        class="
+                          w-full
+                          -ml-10
+                          pl-10
+                          pr-3
+                          py-2
+                          rounded-lg
+                          border-2 border-gray-200
+                          outline-none
+                          focus:border-indigo-500
+                        "
+                        formControlName="Username"
+                        placeholder="Username"
+                      />
+                    </div>
+                    <div
+                      *ngIf="Username.touched && Username.errors"
+                      class="errorMessage"
+                    >
+                      <span
+                        class="text-red-600"
+                        *ngIf="Username.hasError('required')"
+                        >Username is required.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="flex -mx-3">
+                  <div class="w-full px-3 mb-12">
+                    <label for="" class="text-s font-semibold px-1"
+                      >Password</label
+                    >
+                    <div class="flex">
+                      <div
+                        class="
+                          w-10
+                          z-10
+                          pl-1
+                          text-center
+                          pointer-events-none
+                          flex
+                          items-center
+                          justify-center
+                        "
+                      >
+                        <i
+                          class="mdi mdi-lock-outline text-gray-400 text-lg"
+                        ></i>
+                      </div>
+                      <input
+                        name="password"
+                        type="password"
+                        class="
+                          form-control
+                          w-full
+                          -ml-10
+                          pl-10
+                          pr-3
+                          py-2
+                          rounded-lg
+                          border-2 border-gray-200
+                          outline-none
+                          focus:border-indigo-500
+                        "
+                        formControlName="Password"
+                        placeholder="************"
+                      />
+                    </div>
+                    <div
+                      *ngIf="Password.touched && Password.errors"
+                      class="errorMessage"
+                    >
+                      <span
+                        class="text-red-600"
+                        *ngIf="Password.hasError('required')"
+                        >Password is required.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="flex space-x-4 ...">
+                <div class="w-full px-3 mb-5">
+                  <button
+                    class="
+                      block
+                      w-full
+                      max-w-xs
+                      mx-auto
+                      bg-gray-200
+                      hover:bg-gray-300
+                      focus:bg-gray-300
+                      rounded-lg
+                      px-3
+                      py-3
+                      font-semibold
+                    "
+                    (click)="closeModals()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div class="w-full px-3 mb-5">
+                  <button
+                    class="
+                      block
+                      w-full
+                      max-w-xs
+                      mx-auto
+                      bg-primary
+                      hover:bg-blue-800
+                      focus:bg-blue-800
+                      text-white
+                      rounded-lg
+                      px-3
+                      py-3
+                      font-semibold
+                    "
+                    type="submit"
+                    [disabled]="insertForm.invalid"
+                    (click)="onSubmit()"
+                  >
+                    Login
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

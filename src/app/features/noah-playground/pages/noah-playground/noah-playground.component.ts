@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
@@ -14,17 +15,22 @@ export class NoahPlaygroundComponent implements OnInit {
   currentLocationPg$: Observable<string>;
   searchTerm: string;
   disclaimerModal: boolean;
+  @Input() qcLoginModal: boolean;
   isSidebarOpen: boolean = false;
+  isLogoutAlert: boolean = false;
   isMenu: boolean = true;
   isList;
   hazardTypes = HAZARDS;
   LoginStatus$: Observable<boolean>;
   UserName$: Observable<string>;
+  showAlert: boolean;
+  modalAlert: boolean;
   DisclaimerStatus$: Observable<boolean>;
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
-    private qcLoginService: QcLoginService
+    private qcLoginService: QcLoginService,
+    private modalService: ModalServicesService
   ) {}
 
   ngOnInit(): void {
@@ -33,6 +39,15 @@ export class NoahPlaygroundComponent implements OnInit {
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
     this.DisclaimerStatus$ = this.qcLoginService.isDisclaimerStatus;
+
+    const disableAlert = localStorage.getItem('loginStatus');
+    if (disableAlert == '1') {
+      this.showAlert = false;
+      this.modalAlert = false;
+    } else {
+      this.showAlert = true;
+      this.modalAlert = true;
+    }
   }
 
   selectPlace(selectedPlace) {
@@ -41,8 +56,15 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.setCenter({ lat, lng });
   }
 
-  onLogout() {
-    this.disclaimerModal = false;
+  processLogout() {
     this.qcLoginService.logout();
+  }
+
+  openLogoutModal() {
+    this.isLogoutAlert = true;
+  }
+
+  closeModal() {
+    this.isLogoutAlert = false;
   }
 }
