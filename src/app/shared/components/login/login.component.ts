@@ -11,6 +11,7 @@ import { QcLoginService } from '@features/noah-playground/services/qc-login.serv
 import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 @Component({
   selector: 'noah-login',
   templateUrl: './login.component.html',
@@ -33,13 +34,15 @@ export class LoginComponent implements OnInit {
   destroy = new Subject<any>();
   alertError: boolean = false;
   loadingNoah: boolean = false;
+  logoutAlert: boolean = false;
   constructor(
     private qcLoginService: QcLoginService,
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private pgService: NoahPlaygroundService,
-    private _location: Location
+    private _location: Location,
+    private modalService: ModalServicesService
   ) {}
 
   LoginStatus$: Observable<boolean>;
@@ -127,16 +130,16 @@ export class LoginComponent implements OnInit {
       );
   }
 
+  logoutModal() {
+    this.modalService.openLogoutModal();
+  }
+
   popUpLogin() {
     this.route.params.pipe(takeUntil(this.destroy)).subscribe((params) => {
       this.router.navigate(['login']);
       this.isLoginModal = true;
       this.qcLoginModal = false;
     });
-  }
-
-  onLogout() {
-    this.qcLoginService.checkourLogout();
   }
 
   loginModal() {

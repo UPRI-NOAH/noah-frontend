@@ -17,6 +17,7 @@ export class NoahPlaygroundComponent implements OnInit {
   disclaimerModal: boolean;
   @Input() qcLoginModal: boolean;
   isSidebarOpen: boolean = false;
+  isLogoutAlert: boolean = false;
   isMenu: boolean = true;
   isList;
   hazardTypes = HAZARDS;
@@ -55,8 +56,15 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.setCenter({ lat, lng });
   }
 
-  onLogout() {
-    this.disclaimerModal = false;
-    this.qcLoginService.checkourLogout();
+  processLogout() {
+    this.qcLoginService.logout();
+  }
+
+  openLogoutModal() {
+    this.isLogoutAlert = true;
+  }
+
+  closeModal() {
+    this.isLogoutAlert = false;
   }
 }

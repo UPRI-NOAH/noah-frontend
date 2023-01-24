@@ -80,15 +80,6 @@ export class QcLoginService {
     return false;
   }
 
-  checkourLogout() {
-    const result = confirm('Are you sure to Logout?');
-    if (result == false) {
-      event.preventDefault();
-    } else {
-      this.logout();
-    }
-  }
-
   checkDisclaimerStatus(): boolean {
     const disclaimerCookie = localStorage.getItem('disclaimerStatus');
     if (disclaimerCookie == '1') {

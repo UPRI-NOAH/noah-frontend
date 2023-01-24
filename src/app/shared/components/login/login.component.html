@@ -72,7 +72,7 @@
             focus:outline-none focus:bg-gray-100
           "
           role="button"
-          (click)="onLogout()"
+          (click)="logoutModal()"
           *ngIf="LoginStatus"
           >Logout</a
         >
@@ -291,6 +291,7 @@
       </div>
     </div>
   </div>
+
   <!-- alert login -->
   <div class="absolute top-0 flex items-center z-10 justify-center px-5 py-5">
     <div
@@ -316,6 +317,7 @@
     </div>
   </div>
   <!-- alert login -->
+
   <div
     class="
       w-full
@@ -361,8 +363,10 @@
       </div>
     </div>
   </div>
+
   <!-- NOAH LOADING END -->
 </div>
+
 <!-- QC MODAL -->
 <div
   class="
@@ -657,3 +661,4 @@
   </div>
   <!-- NOAH LOADING END -->
 </div>
+<noah-alert></noah-alert>
