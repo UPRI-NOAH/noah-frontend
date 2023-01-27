@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { first } from 'rxjs/operators';
 import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { shareReplay, concatMap, map } from 'rxjs/operators';
 
 export const QCSENSORS: QuezonCitySensorType[] = ['flood', 'rain'];
 
@@ -49,8 +48,24 @@ export class QcSensorService {
     return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
   }
 
-  getQcSensorData(pk: number): Observable<any> {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}`);
+  getQcSensorData(
+    pk: number,
+    pagesToLoad: number = 1,
+    page: number = 1,
+    allData = []
+  ): Observable<any> {
+    return this.http
+      .get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}&page=${page}`)
+      .pipe(
+        concatMap((data) => {
+          allData = allData.concat(data['results']);
+          if (data['next'] && pagesToLoad > 1) {
+            return this.getQcSensorData(pk, pagesToLoad - 1, page + 1, allData);
+          } else {
+            return of(allData);
+          }
+        })
+      );
   }
 
   getIotSummarySensorData() {

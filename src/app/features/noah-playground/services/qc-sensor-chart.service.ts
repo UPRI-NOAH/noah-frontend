@@ -3,6 +3,7 @@ import { QuezonCitySensorType } from '../store/noah-playground.store';
 import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
 export type QCSensorChartOpts = {
   data: any;
+  pk: number;
   qcSensorType: QuezonCitySensorType;
 };
 
@@ -10,8 +11,7 @@ export type QCSensorChartOpts = {
   providedIn: 'root',
 })
 export class QcSensorChartService {
-  pk: number;
-  constructor() {}
+  constructor(private qcSensorService: QcSensorService) {}
   getQcChartOpts(qcSensorType: QuezonCitySensorType) {
     switch (qcSensorType) {
       case 'flood':
@@ -22,48 +22,52 @@ export class QcSensorChartService {
   }
 
   qcShowChart(chart: Highcharts.Chart, payload: QCSensorChartOpts) {
-    const { data, qcSensorType } = payload;
+    const { pk, qcSensorType } = payload;
 
-    if (!data || !data?.length) {
-      chart.showLoading('No Data Available');
-    }
+    this.qcSensorService.getQcSensorData(pk, Infinity).subscribe((data) => {
+      if (!data || !data.length) {
+        chart.showLoading('No Data Available');
+        return;
+      }
 
-    const sortedData = data.sort((a: any, b: any) => {
-      return (
-        new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
-      );
+      const sortedData = data.sort((a: any, b: any) => {
+        return (
+          new Date(a.received_at).getTime() - new Date(b.received_at).getTime()
+        );
+      });
+
+      const valueFloodaxis = data.map((el) => {
+        return [new Date(el.received_at).getTime(), el.distance_m];
+      });
+
+      //reserved for rain accu data
+      // const valueRainAxis = data.map((el) => {
+      //   return [new Date(el.received_at).getTime(), el.rain_accu];
+      // });
+
+      const valueRainAxisAcc = data.map((el) => {
+        return [new Date(el.received_at).getTime(), el.acc];
+      });
+
+      // set X axis
+      chart.xAxis[0].update({
+        categories: sortedData,
+        type: 'datetime',
+        labels: {
+          format: '{value:%b:%e:%H:%M}',
+        },
+      });
+
+      // set Y axis
+      switch (qcSensorType) {
+        case 'flood':
+          chart.series[0].setData(valueFloodaxis), true;
+          break;
+        case 'rain':
+          chart.series[0].setData(valueRainAxisAcc), true;
+          break;
+      }
     });
-
-    const valueFloodaxis = data.map((el) => {
-      return [new Date(el.received_at).getTime(), el.distance_m];
-    });
-
-    const valueRainAxis = data.map((el) => {
-      return [new Date(el.received_at).getTime(), el.rain_accu];
-    });
-
-    const valueRainAxisAcc = data.map((el) => {
-      return [new Date(el.received_at).getTime(), el.acc];
-    });
-
-    // set X axis
-    chart.xAxis[0].update({
-      categories: sortedData,
-      type: 'datetime',
-      labels: {
-        format: '{value:%b:%e:%H:%M}',
-      },
-    });
-
-    // set Y axis
-    switch (qcSensorType) {
-      case 'flood':
-        chart.series[0].setData(valueFloodaxis), true;
-        break;
-      case 'rain':
-        chart.series[0].setData(valueRainAxisAcc), true;
-        break;
-    }
   }
 
   private _getRaintps(): any {
@@ -180,31 +184,6 @@ export class QcSensorChartService {
           align: 'left',
         },
       },
-      rangeSelector: {
-        enabled: true,
-        allButtonsEnabled: true,
-        selected: 0,
-        inputDateFormat: '%b %e, %Y %H:%M',
-        buttons: [
-          {
-            type: 'day',
-            count: 1,
-            text: '1 Day',
-          },
-          {
-            type: 'month',
-            count: 1,
-            text: '1 Month',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        buttonTheme: {
-          width: 60,
-        },
-      },
       yAxis: {
         title: {
           text: 'Meters (m)',
@@ -252,7 +231,7 @@ export class QcSensorChartService {
 
       series: [
         {
-          name: 'Flood Height',
+          name: 'Flood Height (m)',
           color: '#0C2D48',
           data: [],
           lineWidth: 1.5,
