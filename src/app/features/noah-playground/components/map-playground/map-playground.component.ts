@@ -426,7 +426,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       rangeSelector: {
         enabled: true,
-        allButtonsEnabled: true,
         inputDateFormat: '%b %e, %Y %H:%M',
         buttons: [
           {
@@ -444,7 +443,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             text: 'All',
           },
         ],
-        selected: 0,
         buttonTheme: {
           width: 60,
         },
@@ -527,8 +525,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const qcSensorChartOpts = {
       data: response.results,
       qcSensorType,
+      pk,
     };
+
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
+    setTimeout(function () {
+      chart.rangeSelector.clickButton(0);
+    }, 3500);
   }
 
   initQCCritFac() {
