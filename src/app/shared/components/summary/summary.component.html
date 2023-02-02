@@ -47,14 +47,16 @@
           transform
           overflow-hidden
           rounded-lg
-          bg-white
+          bg-blue-50
+          px-4
+          py-4
           text-left
           shadow-xl
           transition-all
           sm:my-8 sm:w-full sm:max-w-screen-lg
         "
       >
-        <div class="bg-white px-4 pt-5">
+        <div class="bg-blue-50 px-4 pt-5">
           <div
             class="
               absolute
@@ -92,7 +94,9 @@
                   As of {{ todayString | date: 'fullDate' }}
                 </p>
                 <div class="w-full flex items-center justify-center">
-                  <div class="py-2 sm:py-4 md:py-2 bg-white shadow rounded-lg">
+                  <div
+                    class="py-2 sm:py-4 md:py-2 bg-blue-50 shadow rounded-lg"
+                  >
                     <div
                       class="
                         grid grid-cols-1
@@ -212,6 +216,7 @@
             </div>
           </div>
         </div>
+
         <div class="p-2">
           <div class="md:flex w-full">
             <div class="w-full">
@@ -221,18 +226,74 @@
                 placeholder="Search Location"
                 autocomplete="off"
                 class="
-                  rounded-full
+                  rounded-2xl
                   w-full
                   py-2
                   px-2
-                  border-2 border-gray-200
+                  bg-blue-50
+                  border-4 border-blue-200
+                  drop-shadow-sm
                   text-gray-700
                   leading-tight
                   focus:outline-none
                 "
               />
-
-              <nav class="tab-navigation">
+              <div class="pt-2">
+                <ul
+                  class="
+                    flex flex-wrap
+                    text-sm
+                    font-medium
+                    text-center text-primary
+                    uppercase
+                    dark:border-gray-700 dark:text-gray-400
+                  "
+                >
+                  <li class="mr-2">
+                    <label
+                      for="select-all"
+                      aria-current="page"
+                      class="
+                        inline-block
+                        p-4
+                        text-blue-600
+                        bg-blue-100
+                        rounded-t-lg
+                        active
+                        dark:bg-gray-800 dark:text-blue-500
+                      "
+                      >All</label
+                    >
+                  </li>
+                  <li class="mr-2">
+                    <label
+                      for="select-flood"
+                      class="
+                        inline-block
+                        p-4
+                        rounded-t-lg
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800 dark:hover:text-gray-300
+                      "
+                      >Flood Sensor ({{ activeFloodSensor }})</label
+                    >
+                  </li>
+                  <li class="mr-2">
+                    <label
+                      for="select-rain"
+                      class="
+                        inline-block
+                        p-4
+                        rounded-t-lg
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800 dark:hover:text-gray-300
+                      "
+                      >Rainfall Sensor ({{ activeRainSensor }})</label
+                    >
+                  </li>
+                </ul>
+              </div>
+              <!-- <nav class="tab-navigation bg-blue-50">                
                 <ul class="tab-navigation">
                   <li class="nav-item">
                     <label
@@ -281,7 +342,7 @@
                     >
                   </li>
                 </ul>
-              </nav>
+              </nav> -->
 
               <section>
                 <!-- TAB SECTION FOR ALL -->
@@ -334,20 +395,18 @@
                       </div>
                     </ng-container>
                     <ng-template #dataSummaryall>
-                      <div class="mt-2">
+                      <div class="mt-0">
                         <div
                           class="
                             overflow-auto
-                            rounded-lg
+                            rounded-b-lg
                             shadow
                             hidden
                             lg:block
                           "
                         >
-                          <table class="w-full">
-                            <thead
-                              class="bg-gray-50 border-b-2 border-gray-200"
-                            >
+                          <table class="w-full rounded-tr-lg">
+                            <thead class="bg-blue-100">
                               <tr>
                                 <th
                                   class="
@@ -380,7 +439,11 @@
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                               <tr
-                                class="hover:bg-gray-100 bg-white"
+                                class="
+                                  hover:bg-gray-100
+                                  bg-white
+                                  even:bg-gray-50
+                                "
                                 *ngFor="
                                   let data of summaryData
                                     | sort: sortField:sortDirection
@@ -566,14 +629,7 @@
                         <!-- MOBILE VIEW -->
                         <div class="flex flex-row flex-wrap lg:hidden w-full">
                           <div
-                            class="
-                              flex
-                              w-full
-                              items-center
-                              justify-between
-                              border-b
-                              pb-3
-                            "
+                            class="flex w-full items-center justify-between p-3"
                           >
                             <div class="flex items-center space-x-3">
                               <div
@@ -603,9 +659,8 @@
                                         bg-gray-200
                                         text-gray-800
                                         font-semibold
-                                        py-1
-                                        px-1
-                                        ml-2
+                                        p-2
+                                        m-2
                                         rounded
                                         inline-flex
                                         items-center
@@ -733,7 +788,7 @@
                           >
                             <h1
                               class="
-                                text-lg
+                                text-base
                                 font-bold
                                 text-gray-800
                                 leading-5
@@ -934,7 +989,7 @@
                       </div>
                     </ng-container>
                     <ng-template #dataSummaryFlood>
-                      <div class="mt-2">
+                      <div class="mt-0">
                         <div
                           class="
                             overflow-auto
@@ -944,14 +999,12 @@
                             lg:block
                           "
                         >
-                          <table class="w-full b-4">
-                            <thead
-                              class="bg-gray-50 border-b-2 border-gray-200"
-                            >
+                          <table class="w-full rounded-tr-lg">
+                            <thead class="bg-blue-100">
                               <tr>
                                 <th
                                   class="
-                                    p-3
+                                    p-2
                                     text-sm
                                     font-semibold
                                     tracking-wide
@@ -1319,7 +1372,7 @@
                           >
                             <h1
                               class="
-                                text-lg
+                                text-base
                                 font-bold
                                 text-gray-800
                                 leading-5
@@ -1488,7 +1541,7 @@
                       </div>
                     </ng-container>
                     <ng-template #dataSummaryRain>
-                      <div class="mt-2">
+                      <div class="mt-0">
                         <div
                           class="
                             overflow-auto
@@ -1498,14 +1551,12 @@
                             lg:block
                           "
                         >
-                          <table class="w-full b-4">
-                            <thead
-                              class="bg-gray-50 border-b-2 border-gray-200"
-                            >
+                          <table class="w-full rounded-tr-lg">
+                            <thead class="bg-blue-100">
                               <tr>
                                 <th
                                   class="
-                                    p-3
+                                    p-2
                                     text-sm
                                     font-semibold
                                     tracking-wide
@@ -1872,7 +1923,7 @@
                           >
                             <h1
                               class="
-                                text-lg
+                                text-base
                                 font-bold
                                 text-gray-800
                                 leading-5
