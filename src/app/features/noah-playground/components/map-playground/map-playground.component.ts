@@ -62,6 +62,7 @@ import {
   QcSensorService,
   QCSENSORS,
   QCCRITFAC,
+  QCBoundary,
 } from '@features/noah-playground/services/qc-sensor.service';
 
 import {
@@ -79,6 +80,7 @@ import {
   QuezonCityCriticalFacilitiesState,
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
+  QuezonCityMunicipalBoundary,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -176,6 +178,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initSensors();
         this.initQuezonCitySensors();
         this.initQCCritFac();
+        this.initQCMunicipalBoundary();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
@@ -814,7 +817,68 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         })
         .catch(() =>
           console.error(
-            `Unable to fetch data from DOST for sensors of type "${qcCriticalFacilities}"`
+            `Unable to fetch qc critical facilities data "${qcCriticalFacilities}"`
+          )
+        );
+    });
+  }
+
+  initQCMunicipalBoundary() {
+    QCBoundary.forEach((qcMunicipalBoundary: QuezonCityMunicipalBoundary) => {
+      this.qcSensorService
+        .getQcMunicipalBoundary()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'qc_muni_boundary',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': 'pink', // white fill
+              'fill-opacity': 0.01,
+            },
+          });
+          this.map.addLayer({
+            id: 'qc_muni_boudline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#000', // black line
+              'line-width': 3,
+              'line-opacity': 0.75,
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcMunicipalBoundaryShown$,
+            this.pgService.getQcMunicipalBoundaryShown$(qcMunicipalBoundary),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                'qc_muni_boundary',
+                'fill-color',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'qc_muni_boudline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc municipal boundary "${qcMunicipalBoundary}"`
           )
         );
     });

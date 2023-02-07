@@ -12,7 +12,7 @@ export const QC_MUNIBOUNDARY_NAME: Record<QuezonCityMunicipalBoundary, string> =
   templateUrl: './qc-boundary.component.html',
   styleUrls: ['./qc-boundary.component.scss'],
 })
-export class QcBoundaryComponent implements OnInit {
+export class QcBoundaryComponent implements OnInit, OnDestroy {
   @Input() qcMunicipalBoundary: QuezonCityMunicipalBoundary;
 
   shown$: Observable<boolean>;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   QuezonCityCriticalFacilities,
+  QuezonCityMunicipalBoundary,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -21,6 +22,10 @@ export type SummaryItem = {
 export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
   'qc-critical-facilities',
 ];
+
+export const QCBoundary: QuezonCityMunicipalBoundary[] = [
+  'qc-municipal-boundary',
+];
 @Injectable({
   providedIn: 'root',
 })
@@ -32,6 +37,8 @@ export class QcSensorService {
 
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
+  private QC_MUNIBoundary_URL =
+    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson';
 
   constructor(private http: HttpClient) {}
 
@@ -42,6 +49,10 @@ export class QcSensorService {
 
   getQcCriticalFacilities() {
     return this.http.get(`${this.QC_CRITFAC_URL}`);
+  }
+
+  getQcMunicipalBoundary() {
+    return this.http.get(`${this.QC_MUNIBoundary_URL}`);
   }
 
   getLocation() {
