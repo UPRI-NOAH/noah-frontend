@@ -238,13 +238,17 @@
                   focus:outline-none
                 "
               />
-              <div class="pt-2">
+              <nav class="tab-navigation">
                 <ul
                   class="
+                    tab-navigation
                     flex flex-wrap
-                    text-sm
-                    font-medium
-                    text-center text-primary
+                    text-base
+                    sm:text-xs
+                    md:text-sm
+                    lg:text-base
+                    font-semibold
+                    text-center text-blue-400
                     uppercase
                     dark:border-gray-700 dark:text-gray-400
                   "
@@ -252,15 +256,18 @@
                   <li class="mr-2">
                     <label
                       for="select-all"
-                      aria-current="page"
+                      tabindex="1"
                       class="
                         inline-block
                         p-4
-                        text-blue-600
+                        active
                         bg-blue-100
                         rounded-t-lg
-                        active
-                        dark:bg-gray-800 dark:text-blue-500
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800
+                        dark:hover:text-gray-300
+                        dark:bg-gray-800
+                        dark:text-gray-500
                       "
                       >All</label
                     >
@@ -268,10 +275,12 @@
                   <li class="mr-2">
                     <label
                       for="select-flood"
+                      tabindex="1"
                       class="
                         inline-block
                         p-4
                         rounded-t-lg
+                        bg-blue-100
                         hover:text-gray-600 hover:bg-blue-100
                         dark:hover:bg-gray-800 dark:hover:text-gray-300
                       "
@@ -281,10 +290,12 @@
                   <li class="mr-2">
                     <label
                       for="select-rain"
+                      tabindex="1"
                       class="
                         inline-block
                         p-4
                         rounded-t-lg
+                        bg-blue-100
                         hover:text-gray-600 hover:bg-blue-100
                         dark:hover:bg-gray-800 dark:hover:text-gray-300
                       "
@@ -292,7 +303,7 @@
                     >
                   </li>
                 </ul>
-              </div>
+              </nav>
               <!-- <nav class="tab-navigation bg-blue-50">                
                 <ul class="tab-navigation">
                   <li class="nav-item">
@@ -399,14 +410,14 @@
                         <div
                           class="
                             overflow-auto
-                            rounded-b-lg
+                            rounded-tr-lg rounded-b-lg
                             shadow
                             hidden
                             lg:block
                           "
                         >
-                          <table class="w-full rounded-tr-lg">
-                            <thead class="bg-blue-100">
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
                               <tr>
                                 <th
                                   class="
@@ -659,7 +670,7 @@
                                         bg-gray-200
                                         text-gray-800
                                         font-semibold
-                                        p-2
+                                        p-1
                                         m-2
                                         rounded
                                         inline-flex
@@ -993,14 +1004,14 @@
                         <div
                           class="
                             overflow-auto
-                            rounded-lg
+                            rounded-tr-lg rounded-b-lg
                             shadow
                             hidden
                             lg:block
                           "
                         >
-                          <table class="w-full rounded-tr-lg">
-                            <thead class="bg-blue-100">
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
                               <tr>
                                 <th
                                   class="
@@ -1242,9 +1253,8 @@
                                         bg-gray-200
                                         text-gray-800
                                         font-semibold
-                                        py-1
-                                        px-1
-                                        ml-2
+                                        p-1
+                                        m-2
                                         rounded
                                         inline-flex
                                         items-center
@@ -1545,14 +1555,14 @@
                         <div
                           class="
                             overflow-auto
-                            rounded-lg
+                            rounded-tr-lg rounded-b-lg
                             shadow
                             hidden
                             lg:block
                           "
                         >
-                          <table class="w-full rounded-tr-lg">
-                            <thead class="bg-blue-100">
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
                               <tr>
                                 <th
                                   class="
@@ -1793,9 +1803,8 @@
                                         bg-gray-200
                                         text-gray-800
                                         font-semibold
-                                        py-1
-                                        px-1
-                                        ml-2
+                                        p-1
+                                        m-2
                                         rounded
                                         inline-flex
                                         items-center
