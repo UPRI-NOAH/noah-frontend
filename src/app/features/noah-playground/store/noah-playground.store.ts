@@ -200,7 +200,7 @@ type NoahPlaygroundState = {
   sensors: SensorsState;
   qcSensors: QuezonCitySensorsState;
   qcCriticalfacilities: QuezonCityCriticalFacilitiesState;
-  qcMunicipalBoundary: QuezonCityMunicipalBoundaryState;
+  qcMunicipalboundary: QuezonCityMunicipalBoundaryState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -388,7 +388,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
-  qcMunicipalBoundary: {
+  qcMunicipalboundary: {
     qcbshown: false,
     qcbexpanded: false,
     types: {

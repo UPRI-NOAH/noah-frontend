@@ -20,6 +20,8 @@ import {
   QuezonCitySensorType,
   QuezonCityCriticalFacilitiesState,
   QuezonCityCriticalFacilities,
+  QuezonCityMunicipalBoundaryState,
+  QuezonCityMunicipalBoundary,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -95,6 +97,18 @@ export class NoahPlaygroundService {
     );
   }
 
+  get qcMunicipalBoundaryShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.qcbshown)
+    );
+  }
+
+  get qcMunicipalBoundaryExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.qcbexpanded)
+    );
+  }
+
   get weatherSatellitesShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.weatherSatellite.shown));
   }
@@ -167,6 +181,11 @@ export class NoahPlaygroundService {
   getQcCriticalFacilities(): QuezonCityCriticalFacilitiesState {
     return this.store.state.qcCriticalfacilities;
   }
+
+  getQcMunicipalBoundary(): QuezonCityMunicipalBoundaryState {
+    return this.store.state.qcMunicipalboundary;
+  }
+
   getHazard(
     hazardType: HazardType
   ): FloodState | StormSurgeState | LandslideState {
@@ -255,6 +274,14 @@ export class NoahPlaygroundService {
     );
   }
 
+  getQcMunicipalBoundaryShown$(
+    qcMunicipalBoundary: QuezonCityMunicipalBoundary
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.types[qcMunicipalBoundary].shown)
+    );
+  }
+
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
@@ -277,9 +304,9 @@ export class NoahPlaygroundService {
     );
   }
 
-  setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
-    this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
-  }
+  // setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
+  //   this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
+  // }
 
   setHazardExpansion(
     hazardType: HazardType,
@@ -447,19 +474,23 @@ export class NoahPlaygroundService {
     const qcSensors = {
       ...this.store.state.qcSensors,
     };
-
     const qcCriticalfacilities = {
       ...this.store.state.qcCriticalfacilities,
+    };
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
     };
 
     const { expanded } = qcSensors;
     const { qcexpanded } = qcCriticalfacilities;
+    const { qcbexpanded } = qcMunicipalboundary;
     qcSensors.expanded = !expanded;
     qcCriticalfacilities.qcexpanded = !qcexpanded;
+    qcMunicipalboundary.qcbexpanded = !qcbexpanded;
 
     this.store.patch(
-      { qcSensors, qcCriticalfacilities },
-      `update quezon city iot group state expanded to ${!expanded} ${!qcexpanded}`
+      { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
+      `update quezon city iot group state expanded to ${!expanded} ${!qcexpanded} ${!qcbexpanded}`
     );
   }
 
@@ -470,15 +501,20 @@ export class NoahPlaygroundService {
     const qcCriticalfacilities = {
       ...this.store.state.qcCriticalfacilities,
     };
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
+    };
 
     const { shown } = qcSensors;
     const { qcshown } = qcCriticalfacilities;
+    const { qcbshown } = qcMunicipalboundary;
     qcSensors.shown = !shown;
     qcCriticalfacilities.qcshown = !qcshown;
+    qcMunicipalboundary.qcbshown = !qcbshown;
 
     this.store.patch(
-      { qcSensors, qcCriticalfacilities },
-      `update quezon city iot group state shown to ${!shown} ${!qcshown}`
+      { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
+      `update quezon city iot group state shown to ${!shown} ${!qcshown} ${!qcbshown}`
     );
   }
 
@@ -505,6 +541,19 @@ export class NoahPlaygroundService {
     this.store.patch(
       { qcCriticalfacilities },
       `change quezon city critical facilities ${type}'visibility to ${!shown}`
+    );
+  }
+
+  setQuezonCityMuniBoundaryTypeShown(type: QuezonCityMunicipalBoundary): void {
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
+    };
+
+    const { shown } = qcMunicipalboundary.types[type];
+    qcMunicipalboundary.types[type].shown = !shown;
+    this.store.patch(
+      { qcMunicipalboundary },
+      `change quezon city municipal boundary ${type}'visibility to ${!shown}`
     );
   }
 
