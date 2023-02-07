@@ -1,1 +1,15 @@
-<p>qc-boundary works!</p>
+<div class="relative pb-2">
+  <div class="pt-4 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ qcMuniBoudaryName }}">
+      <input
+        [checked]="shown$ | async"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ qcMuniBoudaryName }}"
+      />
+    </div>
+    <label class="ml-3" for="input-{{ qcMuniBoudaryName }}">
+      {{ qcMuniBoudaryName }}
+    </label>
+  </div>
+</div>
