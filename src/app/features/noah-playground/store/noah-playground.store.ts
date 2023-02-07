@@ -109,6 +109,19 @@ export type VolcanoState = {
   opacity: number;
 };
 
+export type TyphoonTrackGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<TyphoonTrackType, TyphoonTrackState>;
+};
+
+export type TyphoonTrackType = 'typhoon-track' | 'PAR';
+
+export type TyphoonTrackState = {
+  shown: boolean;
+  opacity: number;
+};
+
 export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
@@ -147,6 +160,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  typhoonTrack: TyphoonTrackGroupState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -283,6 +297,20 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
       'himawari-GSMAP': {
         opacity: 80,
+      },
+    },
+  },
+  typhoonTrack: {
+    shown: false,
+    expanded: false,
+    types: {
+      'typhoon-track': {
+        shown: false,
+        opacity: 100,
+      },
+      PAR: {
+        shown: true,
+        opacity: 100,
       },
     },
   },

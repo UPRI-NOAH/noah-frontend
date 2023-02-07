@@ -28,6 +28,7 @@
     "highcharts": "^9.3.0",
     "highcharts-angular": "^2.10.0",
     "mapbox-gl": "^2.5.1",
+    "mapbox-gl-circle": "^1.6.5",
     "ngx-google-analytics": "^11.2.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.1",

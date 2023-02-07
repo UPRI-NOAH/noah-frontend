@@ -17,6 +17,9 @@ import {
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
+  TyphoonTrackType,
+  TyphoonTrackState,
+  TyphoonTrackGroupState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -64,6 +67,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
   }
 
+  get typhoonTrackGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.typhoonTrack.shown));
+  }
+
+  get typhoonTrackGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.typhoonTrack.expanded));
+  }
+
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
@@ -102,10 +113,27 @@ export class NoahPlaygroundService {
     );
   }
 
+  // get typhoonTrack$(): Observable<TyphoonTrackState> {
+  //   return this.store.state$.pipe(map((state) => state.typhoonTrack));
+  // }
+
+  // getTyphoonTrack(): TyphoonTrackState {
+  //   return this.store.state.typhoonTrack;
+  // }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
+  getTyphoonData(): Promise<{ url: string; sourceLayer: string[] }[]> {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/typhoon.geojson'
       )
       .pipe(first())
       .toPromise();
@@ -130,6 +158,14 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
+  getTyphoonTrack$(
+    typhoonTrackType: TyphoonTrackType
+  ): Observable<TyphoonTrackState> {
+    return this.store.state$.pipe(
+      map((state) => state.typhoonTrack.types[typhoonTrackType])
     );
   }
 
@@ -299,6 +335,10 @@ export class NoahPlaygroundService {
     );
   }
 
+  // setTyphoonTrack(typhoonTrack: TyphoonTrackState) {
+  //   this.store.patch({ typhoonTrack }, 'updated typhoon track state');
+  // }
+
   toggleVolcanoGroupProperty(property: 'expanded' | 'shown') {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -332,6 +372,45 @@ export class NoahPlaygroundService {
       `Volcano - update ${type}'s shown to ${value}`
     );
   }
+
+  //typhoonTrack
+  toggleTyphoonTrackGroupProperty(property: 'expanded' | 'shown') {
+    const typhoonTrack: TyphoonTrackGroupState = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    const currentValue = typhoonTrack[property];
+    typhoonTrack[property] = !currentValue;
+    this.store.patch(
+      { typhoonTrack },
+      `Typhoon Track ${property}, ${!currentValue}`
+    );
+  }
+
+  setTyphoonTrackSoloOpacity(value: number, type: TyphoonTrackType) {
+    const typhoonTrack: TyphoonTrackGroupState = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    typhoonTrack.types[type].opacity = value;
+    this.store.patch(
+      { typhoonTrack },
+      `Typhoon Track - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setTyphoonTrackSoloShown(value: boolean, type: TyphoonTrackType) {
+    const typhoonTrack: TyphoonTrackGroupState = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    typhoonTrack.types[type].shown = value;
+    this.store.patch(
+      { typhoonTrack },
+      `Typhoon Track - update ${type}'s shown to ${value}`
+    );
+  }
+  //end typhoonTrack
 
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
