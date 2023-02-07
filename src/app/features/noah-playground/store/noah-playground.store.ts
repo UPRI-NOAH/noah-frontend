@@ -24,6 +24,8 @@ export type QuezonCitySensorType = 'rain' | 'flood';
 
 export type QuezonCityCriticalFacilities = 'qc-critical-facilities';
 
+export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -164,6 +166,20 @@ export type QuezonCityCriticalFacilitiesState = {
   types: QuezonCityCriticalFacilitiesTypesState;
 };
 
+export type QuezonCityMunicipalBoundaryTypeState = {
+  shown: boolean;
+};
+
+export type QuezonCityMunicipalBoundaryTypesState = {
+  'qc-municipal-boundary': QuezonCityMunicipalBoundaryTypeState;
+};
+
+export type QuezonCityMunicipalBoundaryState = {
+  qcbshown: boolean;
+  qcbexpanded: boolean;
+  types: QuezonCityMunicipalBoundaryTypesState;
+};
+
 export type QuezonCitySensorsState = {
   shown: boolean;
   expanded: boolean;
@@ -184,6 +200,7 @@ type NoahPlaygroundState = {
   sensors: SensorsState;
   qcSensors: QuezonCitySensorsState;
   qcCriticalfacilities: QuezonCityCriticalFacilitiesState;
+  qcMunicipalBoundary: QuezonCityMunicipalBoundaryState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -367,6 +384,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     qcexpanded: false,
     types: {
       'qc-critical-facilities': {
+        shown: true,
+      },
+    },
+  },
+  qcMunicipalBoundary: {
+    qcbshown: false,
+    qcbexpanded: false,
+    types: {
+      'qc-municipal-boundary': {
         shown: true,
       },
     },
