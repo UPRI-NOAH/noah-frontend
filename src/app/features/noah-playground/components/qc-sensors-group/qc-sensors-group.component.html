@@ -70,17 +70,22 @@
   <div [ngClass]="(expanded$ && qcexpanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
     <div class="pl-5">
-      <p class="text-s italic mt-2">Flood Sensors</p>
+      <p class="text-s italic mt-2">IoT Sensors</p>
     </div>
     <noah-qc-sensor-solo
       *ngFor="let qcSensorType of qcWeatherTypes"
       [qcSensorType]="qcSensorType"
     >
     </noah-qc-sensor-solo>
-    <noah-qc-critical-facilities
+    <!-- <noah-qc-critical-facilities
       *ngFor="let qcCriticalFacilities of qcCritFac"
       [qcCriticalFacilities]="qcCriticalFacilities"
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
+    >
+    </noah-qc-critical-facilities> -->
+    <noah-qc-critical-facilities
+      *ngFor="let qcCriticalFacilities of qcCritFac"
+      [qcCriticalFacilities]="qcCriticalFacilities"
     >
     </noah-qc-critical-facilities>
     <noah-summary

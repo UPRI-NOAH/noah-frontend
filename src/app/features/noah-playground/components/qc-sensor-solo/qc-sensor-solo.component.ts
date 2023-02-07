@@ -5,8 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
-  flood: 'Flood Height',
-  rain: 'Rainfall',
+  flood: 'Flood',
+  rain: 'Rain Gauge',
 };
 
 @Component({
