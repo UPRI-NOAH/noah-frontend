@@ -322,10 +322,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-allow-overlap': true,
               'text-optional': true,
               'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-              'text-size': 9,
-              'text-offset': [0, 1.25],
+              'text-size': 13,
+              'text-offset': [0, 1],
               'text-anchor': 'top',
-              'text-letter-spacing': 0.08,
+              'text-letter-spacing': 0.05,
+              visibility: 'none',
+            },
+            paint: {
+              'text-color': [
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                '#06b9e6',
+                '#519259',
+              ],
             },
             minzoom: minZoom,
           });
@@ -341,18 +350,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 'circle-opacity',
                 +(groupShown && soloShown)
               );
-              this.map.setLayoutProperty(
-                qcTextID,
-                'visibility',
-                groupShown && soloShown ? 'visible' : 'none'
-              );
-              this.map.on('zoomend', () => {
+              if (groupShown && soloShown) {
                 if (this.map.getZoom() < minZoom) {
-                  this.map.setLayoutProperty(qcTextID, 'visibility', 'none');
-                } else {
                   this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
                 }
-              });
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+              } else {
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'none');
+              }
             });
 
           this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
