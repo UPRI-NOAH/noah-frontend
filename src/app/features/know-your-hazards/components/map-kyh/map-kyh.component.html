@@ -5,3 +5,103 @@
   [selectedStyle]="mapStyle"
   (selectedStyleChange)="switchMapStyle($event)"
 ></noah-change-style-button>
+
+<button
+  class="
+    opacity-80
+    bg-white
+    text-gray-800
+    font-semibold
+    py-1
+    px-1
+    ml-2
+    flex
+    items-end
+    absolute
+    justify-end
+    bottom-8
+    right-0
+    rounded
+    hover:bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50
+    mr-2
+    text-xs
+  "
+  (click)="openLegend()"
+  *ngIf="btnLegend"
+>
+  Hazard Level
+</button>
+
+<div class="" *ngIf="kyhLegend">
+  <div class="w-full flex items-end absolute justify-end bottom-8 pr-2">
+    <div
+      class="
+        xl:w-64
+        lg:w-1/4
+        md:w-2/5
+        flex flex-col
+        items-center
+        py-2
+        md:py-4
+        bg-gradient-to-r
+        p-2
+        from-white
+        to-white
+        rounded-md
+        opacity-75
+      "
+    >
+      <div
+        class="
+          cursor-pointer
+          absolute
+          top-0
+          right-0
+          mr-3
+          dark:text-gray-100
+          hover:dark:text-gray-100
+          text-gray-600
+          transition
+          duration-150
+          ease-in-out
+        "
+        (click)="openLegend()"
+      >
+        <span class="text-3xl">-</span>
+      </div>
+
+      <div class="w-full flex items-center justify-center">
+        <div class="flex flex-col items-center">
+          <p
+            class="
+              text-xs
+              sm:text-xs
+              md:text-base
+              font-semibold
+              text-center text-black
+            "
+          >
+            Hazard Level
+          </p>
+        </div>
+      </div>
+      <div class="mt-2 space-x-4 flex p-1">
+        <div class="flex items-center">
+          <div class="xl:w-6 xl:h-6 h-2 w-2 bg-low"></div>
+          <span class="text-low text-xs italic font-normal pl-1">Low</span>
+        </div>
+        <div class="flex items-center">
+          <div class="xl:w-6 xl:h-6 h-2 w-2 bg-medium"></div>
+          <span class="text-medium text-xs italic font-normal pl-1"
+            >Medium</span
+          >
+        </div>
+        <div class="flex items-center">
+          <div class="xl:w-6 xl:h-6 h-2 w-2 bg-high"></div>
+          <span class="text-high text-xs italic font-normal pl-1">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

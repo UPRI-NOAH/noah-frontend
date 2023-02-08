@@ -285,6 +285,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          const qcTextID = `${qcSensorType}-text`;
+          const minZoom = 12;
           // add layer to map
           this.map.addLayer({
             id: qcSensorType,
@@ -299,7 +301,34 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'circle-opacity': 0,
             },
           });
-
+          this.map.addLayer({
+            id: qcTextID,
+            type: 'symbol',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            layout: {
+              'text-field': [
+                'concat',
+                ['get', 'latest_data'],
+                [
+                  'case',
+                  ['!=', ['get', 'latest_data'], null],
+                  '',
+                  ['concat', ['get', 'latest_data'], 'Unavailable'],
+                ],
+              ],
+              'text-allow-overlap': true,
+              'text-optional': true,
+              'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+              'text-size': 9,
+              'text-offset': [0, 1.25],
+              'text-anchor': 'top',
+              'text-letter-spacing': 0.08,
+            },
+            minzoom: minZoom,
+          });
           // add show/hide listeners
           combineLatest([
             this.pgService.qcSensorsGroupShown$,
@@ -312,6 +341,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 'circle-opacity',
                 +(groupShown && soloShown)
               );
+              this.map.setLayoutProperty(
+                qcTextID,
+                'visibility',
+                groupShown && soloShown ? 'visible' : 'none'
+              );
+              this.map.on('zoomend', () => {
+                if (this.map.getZoom() < minZoom) {
+                  this.map.setLayoutProperty(qcTextID, 'visibility', 'none');
+                } else {
+                  this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+                }
+              });
             });
 
           this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
