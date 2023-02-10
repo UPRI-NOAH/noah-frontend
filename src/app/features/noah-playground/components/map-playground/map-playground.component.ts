@@ -310,14 +310,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             layout: {
               'text-field': [
-                'concat',
-                ['get', 'latest_data'],
-                [
-                  'case',
-                  ['!=', ['get', 'latest_data'], null],
-                  '',
-                  ['concat', ['get', 'latest_data'], 'Unavailable'],
-                ],
+                // 'concat',
+                // ['get', 'latest_data'],
+                // [
+                //   'case',
+                //   ['!=', ['get', 'latest_data'], null],
+                //   '',
+                //   ['concat', ['get', 'latest_data'], 'Unavailable'],
+                // ],
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                ['concat', ['get', 'latest_data'], 'mm'],
+                ['concat', ['get', 'latest_data'], 'm'],
               ],
               'text-allow-overlap': true,
               'text-optional': true,
