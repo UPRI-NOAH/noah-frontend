@@ -25,7 +25,8 @@
     hover:bg-gray-200
     focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50
     mr-2
-    text-base
+    sm:text-base
+    text-xs
   "
   (click)="openLegend()"
   *ngIf="btnLegend"
@@ -35,22 +36,23 @@
 
 <div class="absolute bottom-8 mr-2 items-end right-0" *ngIf="kyhLegend">
   <div class="flex items-center justify-center">
-    <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-75">
+    <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
       <div
         class="
           cursor-pointer
           absolute
-          top-0
-          -right-0.5
+          -top-3.5
+          -right-3
           mt-2
           mr-2
-          dark:text-gray-100
-          hover:
           dark:text-gray-100
           text-black
           transition
           duration-150
           ease-in-out
+          rounded-xl
+          bg-gray-200
+          hover:bg-gray-400
         "
         (click)="openLegend()"
       >
@@ -58,7 +60,7 @@
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="20"
-          class="icon icon-tabler icon-tabler-x"
+          class="icon icon-tabler icon-tabler-x pt-0.5"
           viewBox="0 0 700 700"
           stroke-width="2.5"
           stroke="currentColor"
@@ -68,7 +70,7 @@
           <path d="M490 294H210a14 14 0 0 1 0-28h280a14 14 0 0 1 0 28z" />
         </svg>
       </div>
-      <h1 class="text-sm font-bold leading-3 mt-3 text-gray-800">
+      <h1 class="text-sm font-bold leading-3 mt-2 text-gray-800">
         Hazard Level
       </h1>
       <div class="">
