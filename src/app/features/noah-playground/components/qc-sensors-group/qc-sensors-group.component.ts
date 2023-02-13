@@ -4,6 +4,8 @@ import { QCSENSORS } from '@features/noah-playground/services/qc-sensor.service'
 import {
   QuezonCityCriticalFacilities,
   QuezonCityCriticalFacilitiesState,
+  QuezonCityMunicipalBoundary,
+  QuezonCityMunicipalBoundaryState,
   QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
@@ -15,12 +17,16 @@ import { Observable } from 'rxjs';
 export class QcSensorsGroupComponent implements OnInit {
   qcWeatherTypes: QuezonCitySensorType[] = QCSENSORS;
   qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
+  qcMuniBoundary: QuezonCityMunicipalBoundary[] = ['qc-municipal-boundary'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
   qcshown$: Observable<boolean>;
   qcexpanded$: Observable<boolean>;
   qcShown: QuezonCityCriticalFacilitiesState;
+  qcbshown$: Observable<boolean>;
+  qcbexpanded$: Observable<boolean>;
+  qcbShown: QuezonCityMunicipalBoundaryState;
   disclaimerModal = false;
 
   constructor(private pgService: NoahPlaygroundService) {}
@@ -30,6 +36,8 @@ export class QcSensorsGroupComponent implements OnInit {
     this.shown$ = this.pgService.qcSensorsGroupShown$;
     this.qcshown$ = this.pgService.qcCriticalFacilitiesShown$;
     this.qcexpanded$ = this.pgService.qcCriticalFacilitiesExpanded$;
+    this.qcbshown$ = this.pgService.qcMunicipalBoundaryShown$;
+    this.qcbexpanded$ = this.pgService.qcMunicipalBoundaryExpanded$;
   }
 
   toggleExpansion() {

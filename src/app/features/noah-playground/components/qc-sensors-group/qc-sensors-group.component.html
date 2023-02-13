@@ -83,6 +83,11 @@
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
     >
     </noah-qc-critical-facilities> -->
+    <noah-qc-boundary
+      *ngFor="let qcMunicipalBoundary of qcMuniBoundary"
+      [qcMunicipalBoundary]="qcMunicipalBoundary"
+    >
+    </noah-qc-boundary>
     <noah-qc-critical-facilities
       *ngFor="let qcCriticalFacilities of qcCritFac"
       [qcCriticalFacilities]="qcCriticalFacilities"

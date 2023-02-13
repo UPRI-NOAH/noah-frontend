@@ -25,6 +25,7 @@ import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.com
 import { QcSensorsGroupComponent } from './components/qc-sensors-group/qc-sensors-group.component';
 import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-solo.component';
 import { QcCriticalFacilitiesComponent } from './components/qc-critical-facilities/qc-critical-facilities.component';
+import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { QcCriticalFacilitiesComponent } from './components/qc-critical-faciliti
     QcSensorsGroupComponent,
     QcSensorSoloComponent,
     QcCriticalFacilitiesComponent,
+    QcBoundaryComponent,
   ],
   imports: [
     CommonModule,

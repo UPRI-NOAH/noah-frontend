@@ -32,6 +32,8 @@ nav {
   .tab-navigation > .active > label {
     --tw-text-opacity: 1;
     color: rgba(29, 78, 216, var(--tw-text-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgba(191, 219, 254, var(--tw-bg-opacity));
   }
 
   label {
