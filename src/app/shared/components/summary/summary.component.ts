@@ -120,13 +120,14 @@ export class SummaryComponent implements OnInit {
           status: a.status,
         };
       });
+
       const totalSensor = response.features.map((a) => {
         return;
       });
 
-      const activeSensors = res.results.map((a) => {
+      const activeSensors = response.features.map((a) => {
         return {
-          status: a.status,
+          status: a.properties.status,
         };
       });
 
