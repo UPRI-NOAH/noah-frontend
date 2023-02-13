@@ -363,18 +363,24 @@
                             shadow
                             hidden
                             lg:block
+                            overflow-y-auto
                           "
+                          style="height: 405px"
                         >
                           <table class="w-full">
                             <thead class="bg-blue-200">
-                              <tr>
+                              <tr class="text-left">
                                 <th
                                   class="
+                                    top-0
+                                    border-b border-gray-200
+                                    bg-blue-200
                                     p-2
-                                    text-sm
-                                    font-semibold
+                                    text-xs
                                     tracking-wide
                                     text-left
+                                    font-extrabold
+                                    sticky
                                   "
                                   *ngFor="let col of columns"
                                 >
@@ -385,7 +391,7 @@
                                     {{ col.header }}
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
-                                      class="mr-1 h-5 w-5 text-left"
+                                      class="mr-1 h-4 w-4 text-left"
                                       viewBox="0 0 20 20"
                                       fill="currentColor"
                                     >

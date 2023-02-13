@@ -288,6 +288,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          const qcTextID = `${qcSensorType}-text`;
+          const minZoom = 12;
           // add layer to map
           this.map.addLayer({
             id: qcSensorType,
@@ -302,7 +304,47 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'circle-opacity': 0,
             },
           });
-
+          this.map.addLayer({
+            id: qcTextID,
+            type: 'symbol',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            layout: {
+              'text-field': [
+                // 'concat',
+                // ['get', 'latest_data'],
+                // [
+                //   'case',
+                //   ['!=', ['get', 'latest_data'], null],
+                //   '',
+                //   ['concat', ['get', 'latest_data'], 'Unavailable'],
+                // ],
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                ['concat', ['get', 'latest_data'], 'mm'],
+                ['concat', ['get', 'latest_data'], 'm'],
+              ],
+              'text-allow-overlap': true,
+              'text-optional': true,
+              'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+              'text-size': 13,
+              'text-offset': [0, 1],
+              'text-anchor': 'top',
+              'text-letter-spacing': 0.05,
+              visibility: 'none',
+            },
+            paint: {
+              'text-color': [
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                '#06b9e6',
+                '#519259',
+              ],
+            },
+            minzoom: minZoom,
+          });
           // add show/hide listeners
           combineLatest([
             this.pgService.qcSensorsGroupShown$,
@@ -315,6 +357,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 'circle-opacity',
                 +(groupShown && soloShown)
               );
+              if (groupShown && soloShown) {
+                if (this.map.getZoom() < minZoom) {
+                  this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+                }
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+              } else {
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'none');
+              }
             });
 
           this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);

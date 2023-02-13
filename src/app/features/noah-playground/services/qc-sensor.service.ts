@@ -43,8 +43,10 @@ export class QcSensorService {
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QuezonCitySensorType) {
-    const param = type ? `?iot_type=${type}` : '';
-    return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/${param}`);
+    const param = type ? `iot_type=${type}` : '';
+    return this.http.get(
+      `${this.QCBASE_URL}/api/iot-sensors/?municity=quezon_city&${param}`
+    );
   }
 
   getQcCriticalFacilities() {
@@ -56,7 +58,9 @@ export class QcSensorService {
   }
 
   getLocation() {
-    return this.http.get(`${this.QCBASE_URL}/api/iot-sensors/?format=json`);
+    return this.http.get(
+      `${this.QCBASE_URL}/api/iot-sensors/?format=json&municity=quezon_city`
+    );
   }
 
   getQcSensorData(
