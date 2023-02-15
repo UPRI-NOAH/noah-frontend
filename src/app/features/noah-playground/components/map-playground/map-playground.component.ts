@@ -582,9 +582,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
 
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
-    setTimeout(function () {
-      chart.rangeSelector.clickButton(0);
-    }, 3500);
   }
 
   initQCCritFac() {
