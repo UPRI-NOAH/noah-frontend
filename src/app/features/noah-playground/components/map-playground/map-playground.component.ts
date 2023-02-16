@@ -418,7 +418,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setHTML(
                 `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
             <div><b>Name:</b> ${name} </div>
-            <div><b>IOT Type:</b> ${iotType}</div>
+            <div><b>IoT Sensor Type:</b> ${iotType}</div>
             <div><b>Status:</b> ${status}</div>
           </div>`
               )

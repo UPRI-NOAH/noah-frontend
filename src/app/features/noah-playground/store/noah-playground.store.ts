@@ -14,8 +14,8 @@ export const PH_DEFAULT_CENTER = {
 };
 
 export const QC_DEFAULT_CENTER = {
-  lat: 14.65146,
-  lng: 121.04925,
+  lat: 14.676,
+  lng: 121.0437,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
