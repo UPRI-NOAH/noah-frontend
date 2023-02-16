@@ -14,8 +14,8 @@ export const PH_DEFAULT_CENTER = {
 };
 
 export const QC_DEFAULT_CENTER = {
-  lat: 14.65146,
-  lng: 121.04925,
+  lat: 14.676,
+  lng: 121.0437,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
@@ -43,13 +43,7 @@ export type LandslideHazards =
   | 'debris-flow'
   | 'unstable-slopes-maps';
 
-export type ContourMapType =
-  | '1hr'
-  | '3hr'
-  | '6hr'
-  | '12hr'
-  | '24hr'
-  | '24hr-lapse';
+export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
