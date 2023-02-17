@@ -313,14 +313,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             layout: {
               'text-field': [
-                // 'concat',
-                // ['get', 'latest_data'],
-                // [
-                //   'case',
-                //   ['!=', ['get', 'latest_data'], null],
-                //   '',
-                //   ['concat', ['get', 'latest_data'], 'Unavailable'],
-                // ],
                 'case',
                 ['==', ['get', 'iot_type'], 'rain'],
                 ['concat', ['get', 'latest_data'], 'mm'],
@@ -381,7 +373,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   showQcDataPoints(qcSensorType: QuezonCitySensorType) {
     const graphDiv = document.getElementById('graph-dom');
+    let chartPopUpOpen = false;
+
     const popUp = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const chartPopUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
       maxWidth: 'auto',
@@ -402,7 +402,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             zoom: 12,
             essential: true,
           });
-          this.map.on('mouseover', qcSensorType, (e) => {
+          this.map.on('mouseenter', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
@@ -412,18 +412,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
-            _this.map.getCanvas().style.cursor = 'pointer';
-            popUp
-              .setLngLat(coordinates)
-              .setHTML(
-                `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
+            popUp.setLngLat(coordinates).setHTML(
+              `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
             <div><b>Name:</b> ${name} </div>
             <div><b>IoT Sensor Type:</b> ${iotType}</div>
             <div><b>Status:</b> ${status}</div>
           </div>`
-              )
-              .addTo(_this.map);
+            );
+            if (!chartPopUpOpen) {
+              popUp.addTo(_this.map);
+            }
+            _this.map.getCanvas().style.cursor = 'pointer';
           });
+
           this.map.on('click', qcSensorType, function (e) {
             graphDiv.hidden = false;
             _this.map.flyTo({
@@ -434,22 +435,34 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const name = e.features[0].properties.name;
             const pk = e.features[0].properties.pk;
 
-            popUp.setDOMContent(graphDiv).setMaxWidth('900px');
+            //popUp.setDOMContent(graphDiv).setMaxWidth('900px');
+            chartPopUp
+              .setLngLat((e.features[0].geometry as any).coordinates.slice())
+              .setDOMContent(graphDiv);
+            chartPopUp.addTo(_this.map);
             _this.showQcChart(+pk, name, qcSensorType);
-            _this._graphShown = true;
-          });
-        } else {
-          popUp.remove();
-          this.map.on('mouseenter', qcSensorType, (e) => {
-            _this._graphShown = false;
-            _this.map.getCanvas().style.cursor = '';
+            chartPopUpOpen = false;
             popUp.remove();
           });
-          _this.map.on('click', qcSensorType, function (e) {
-            _this.map.easeTo({
-              center: (e.features[0].geometry as any).coordinates.slice(),
+        } else {
+          this.map.on('mouseenter', qcSensorType, (e) => {
+            _this.map.getCanvas().style.cursor = 'pointer';
+          });
+          this.map.on('mouseleave', qcSensorType, (e) => {
+            _this.map.getCanvas().style.cursor = '';
+          });
+          this.map.on('click', qcSensorType, (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            chartPopUp.remove();
+            chartPopUpOpen = false;
+
+            _this.map.flyTo({
+              center: coordinates,
+              zoom: 13,
+              essential: true,
             });
-            _this._graphShown = true;
           });
         }
       });
