@@ -402,7 +402,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             zoom: 12,
             essential: true,
           });
-          this.map.on('mouseenter', qcSensorType, (e) => {
+          this.map.on('mouseover', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
@@ -435,7 +435,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const name = e.features[0].properties.name;
             const pk = e.features[0].properties.pk;
 
-            //popUp.setDOMContent(graphDiv).setMaxWidth('900px');
             chartPopUp
               .setLngLat((e.features[0].geometry as any).coordinates.slice())
               .setDOMContent(graphDiv);
@@ -445,11 +444,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             popUp.remove();
           });
         } else {
+          popUp.remove();
+          chartPopUp.remove();
           this.map.on('mouseenter', qcSensorType, (e) => {
-            _this.map.getCanvas().style.cursor = 'pointer';
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+            chartPopUpOpen = false;
           });
           this.map.on('mouseleave', qcSensorType, (e) => {
+            _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+            chartPopUpOpen = false;
           });
           this.map.on('click', qcSensorType, (e) => {
             const coordinates = (
