@@ -402,7 +402,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             zoom: 12,
             essential: true,
           });
-          this.map.on('mouseover', qcSensorType, (e) => {
+          this.map.on('mouseenter', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
