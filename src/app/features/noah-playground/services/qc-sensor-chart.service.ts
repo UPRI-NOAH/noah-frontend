@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QuezonCitySensorType } from '../store/noah-playground.store';
 import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
+import * as Highcharts from 'highcharts';
 export type QCSensorChartOpts = {
   data: any;
   pk: number;
@@ -51,7 +52,6 @@ export class QcSensorChartService {
 
       // set X axis
       chart.xAxis[0].update({
-        categories: sortedData,
         type: 'datetime',
         labels: {
           format: '{value:%b:%e:%H:%M}',
@@ -61,10 +61,10 @@ export class QcSensorChartService {
       // set Y axis
       switch (qcSensorType) {
         case 'flood':
-          chart.series[0].setData(valueFloodaxis), true;
+          chart.series[0].setData(valueFloodaxis, true);
           break;
         case 'rain':
-          chart.series[0].setData(valueRainAxisAcc), true;
+          chart.series[0].setData(valueRainAxisAcc, true);
           break;
       }
     });
@@ -174,9 +174,6 @@ export class QcSensorChartService {
       subtitle: {
         text: 'Flood Height',
       },
-      legend: {
-        enabled: true,
-      },
       xAxis: {
         type: 'datetime',
         labels: {
@@ -189,7 +186,6 @@ export class QcSensorChartService {
           text: 'Meters (m)',
         },
         alignTicks: false,
-        tickInterval: 0.5,
         color: '#0C2D48',
         opposite: false,
         plotBands: [
@@ -228,7 +224,6 @@ export class QcSensorChartService {
           },
         ],
       },
-
       series: [
         {
           name: 'Flood Height (m)',
@@ -242,7 +237,9 @@ export class QcSensorChartService {
             lineWidth: 5,
           },
           tooltip: {
+            shared: false,
             valueSuffix: 'm',
+            xDateFormat: '',
           },
         },
       ],
