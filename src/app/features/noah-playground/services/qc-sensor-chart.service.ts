@@ -148,7 +148,7 @@ export class QcSensorChartService {
       },
       series: [
         {
-          name: 'Rainfall',
+          name: 'Rainfall (mm)',
           color: '#0C2D48',
           data: [],
           lineWidth: 1.5,
@@ -160,6 +160,8 @@ export class QcSensorChartService {
           },
           tooltip: {
             valueSuffix: 'mm',
+            shared: false,
+            xDateFormat: '',
           },
         },
       ],
