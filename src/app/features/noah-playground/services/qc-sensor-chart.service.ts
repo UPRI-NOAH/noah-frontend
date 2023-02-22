@@ -176,6 +176,9 @@ export class QcSensorChartService {
       subtitle: {
         text: 'Flood Height',
       },
+      legend: {
+        enabled: true,
+      },
       xAxis: {
         type: 'datetime',
         labels: {
