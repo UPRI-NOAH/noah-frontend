@@ -588,12 +588,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const chart = Highcharts.stockChart('graph-dom', options);
     this.showAlert = true;
     chart.showLoading();
-    const response: any = await this.qcSensorService
-      .getQcSensorData(pk)
-      .pipe(first())
-      .toPromise();
-
-    chart.hideLoading();
+    let response: any;
+    try {
+      response = await this.qcSensorService
+        .getQcSensorData(pk)
+        .pipe(first())
+        .toPromise();
+      // Code to render chart using response data
+    } catch (error) {
+      console.error(error);
+    } finally {
+      if (chart) {
+        chart.hideLoading();
+      } else {
+        chart.showLoading();
+      }
+    }
 
     const qcSensorChartOpts = {
       data: response.results,

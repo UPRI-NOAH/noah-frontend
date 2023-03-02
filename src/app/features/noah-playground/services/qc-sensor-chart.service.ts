@@ -72,7 +72,9 @@ export class QcSensorChartService {
 
   private _getRaintps(): any {
     return {
-      chart: { type: 'spline' },
+      chart: {
+        type: 'spline',
+      },
       subtitle: {
         text: 'Rainfall',
       },
@@ -152,6 +154,13 @@ export class QcSensorChartService {
           color: '#0C2D48',
           data: [],
           lineWidth: 1.5,
+          dataGrouping: {
+            enabled: true,
+            units: [['day', [1]]],
+          },
+          boost: {
+            useGPUTranslations: true,
+          },
           marker: {
             enabled: false,
           },
@@ -162,6 +171,8 @@ export class QcSensorChartService {
             valueSuffix: 'mm',
             shared: false,
             xDateFormat: '',
+            valueDecimal: 2,
+            pointFormat: 'Rainfall: {point.y:.2f}mm',
           },
         },
       ],
@@ -175,9 +186,6 @@ export class QcSensorChartService {
       },
       subtitle: {
         text: 'Flood Height',
-      },
-      legend: {
-        enabled: true,
       },
       xAxis: {
         type: 'datetime',
@@ -245,6 +253,8 @@ export class QcSensorChartService {
             shared: false,
             valueSuffix: 'm',
             xDateFormat: '',
+            valueDecimal: 2,
+            pointFormat: 'Flood Height: {point.y:.2f}m',
           },
         },
       ],
