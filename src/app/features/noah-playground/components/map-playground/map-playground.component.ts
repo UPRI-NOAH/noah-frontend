@@ -409,6 +409,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const name = e.features[0].properties.name;
             const iotType = e.features[0].properties.iot_type;
             const status = e.features[0].properties.status;
+            const batPercent = e.features[0].properties.battery_percent;
+            const formattedBatPercent =
+              batPercent && batPercent !== 'null'
+                ? `${batPercent}%`
+                : 'Not Available';
+
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
@@ -417,6 +423,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             <div><b>Name:</b> ${name} </div>
             <div><b>IoT Sensor Type:</b> ${iotType}</div>
             <div><b>Status:</b> ${status}</div>
+            <div><b>Battery Level:</b> ${formattedBatPercent}</div>
           </div>`
             );
             if (!chartPopUpOpen) {
