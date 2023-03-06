@@ -135,6 +135,8 @@ export class HazardsService {
 
     if ('LH' in properties) return parseInt(properties.LH);
 
+    if ('ALLUVIAL' in properties) return parseInt(properties.ALLUVIAL);
+
     return 0;
   }
 
