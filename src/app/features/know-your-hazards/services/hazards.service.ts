@@ -131,13 +131,24 @@ export class HazardsService {
 
   private _getLandslideExposure(feature: Feature): number {
     const { properties } = feature;
-    if (!properties) return 0;
 
-    if ('LH' in properties) return parseInt(properties.LH);
+    if ('LH' in properties) {
+      console.log('LH' + parseInt(properties.LH));
+      return parseInt(properties.LH);
+    } else if (parseInt(properties.ALLUVIAL) === 3) {
+      return 3;
+    } else {
+      return 0;
+    }
+    // if (!properties) return 0;
 
-    if ('ALLUVIAL' in properties) return parseInt(properties.ALLUVIAL);
+    // if ('LH' in properties) return parseInt(properties.LH);
 
-    return 0;
+    // if ('ALLUVIAL' in properties) return parseInt(properties.ALLUVIAL);
+
+    // if (('LH' in properties) || ('ALLUVIAL' in properties)) return parseInt(properties.LH);
+
+    // return 0;
   }
 
   private _getStormSurgeExposure(feature: Feature): number {
