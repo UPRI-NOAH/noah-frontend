@@ -119,13 +119,10 @@ export class HazardsService {
       return 0;
     }
     // if (!properties) return 0;
-
     // if ('Var' in properties) return parseInt(properties.Var);
-
     // // There was no `Var` value read earlier
     // // This is exclusive for Flood Data only
     // if ('NoData' in properties) return -1;
-
     // return 0;
   }
 
@@ -141,13 +138,9 @@ export class HazardsService {
       return 0;
     }
     // if (!properties) return 0;
-
     // if ('LH' in properties) return parseInt(properties.LH);
-
     // if ('ALLUVIAL' in properties) return parseInt(properties.ALLUVIAL);
-
-    // if (('LH' in properties) || ('ALLUVIAL' in properties)) return parseInt(properties.LH);
-
+    // if (('LH' in properties) &&LUVIAL' in properties)) return parseInt(properties.LH);
     // return 0;
   }
 
