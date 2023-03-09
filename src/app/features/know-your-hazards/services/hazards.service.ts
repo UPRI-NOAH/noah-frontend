@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, ɵCodegenComponentFactoryResolver } from '@angular/core';
 import { environment } from '@env/environment';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';
-import { Observable, of } from 'rxjs';
+import { observable, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
 import {
   ExposureLevel,
@@ -76,7 +76,7 @@ export class HazardsService {
   ): Observable<FeatureCollection | null> {
     const baseURL = `https://api.mapbox.com/v4/${payload.tilesetName}/tilequery/${payload.coords.lng},${payload.coords.lat}.json`;
     const params = new HttpParams()
-      .set('radius', payload.radius ? String(payload.radius) : '50')
+      .set('radius', payload.radius ? String(payload.radius) : '0')
       .set('limit', payload.limit ? String(payload.limit) : '20')
       .set('access_token', environment.mapbox.accessToken);
 
@@ -111,15 +111,22 @@ export class HazardsService {
 
   private _getFloodExposure(feature: Feature): number {
     const { properties } = feature;
-    if (!properties) return 0;
+    if ('Var' in properties) {
+      return parseInt(properties.Var);
+    } else if ('NoData' in properties) {
+      return -1;
+    } else {
+      return 0;
+    }
+    // if (!properties) return 0;
 
-    if ('Var' in properties) return parseInt(properties.Var);
+    // if ('Var' in properties) return parseInt(properties.Var);
 
-    // There was no `Var` value read earlier
-    // This is exclusive for Flood Data only
-    if ('No_Data' in properties) return -1;
+    // // There was no `Var` value read earlier
+    // // This is exclusive for Flood Data only
+    // if ('NoData' in properties) return -1;
 
-    return 0;
+    // return 0;
   }
 
   private _getLandslideExposure(feature: Feature): number {
@@ -160,7 +167,11 @@ export class HazardsService {
     }
 
     const riskNumList = features.map((feature: Feature) => getRiskNum(feature));
-    return Math.max(...riskNumList);
+    if (Math.min(...riskNumList) < 0 && Math.max(...riskNumList) == 0) {
+      return -1;
+    } else {
+      return Math.max(...riskNumList);
+    }
   }
 
   private _formatRiskLevel(
@@ -191,7 +202,7 @@ export class HazardsService {
         return 'high';
 
       default:
-        return 'low';
+        return 'little to none';
     }
   }
 }
