@@ -29,7 +29,7 @@ export class SearchComponent implements OnInit {
 
   isDropdownOpen = false;
   loading = false;
-
+  address: string;
   focusedRowIdx: number = 0;
 
   @ViewChildren('locationOptions') locationOptions: QueryList<ElementRef>;
@@ -61,6 +61,10 @@ export class SearchComponent implements OnInit {
       .subscribe((value: any) => {
         this.places$.next(value.features);
       });
+    this.mapService.address$.subscribe((address) => {
+      this.address = address; // Update address in real-time
+      this.searchTermCtrl.setValue(address);
+    });
   }
 
   // TO DO: add type for place
