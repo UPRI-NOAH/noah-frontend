@@ -47,7 +47,15 @@
   },
   {
     "url": "mapbox://upri-noah.ph_lh_lh2_tls",
-    "sourceLayer": ["ph_lh_af", "ph_lh_df"]
+    "sourceLayer": [
+      "ph_lh_af",
+      "ph_lh_df",
+      "albay_lh_df",
+      "aurora_lh_df",
+      "leyte_lh_df",
+      "kusiong_lh_df",
+      "southcotabato_lh_df"
+    ]
   },
   {
     "url": "mapbox://upri-noah.ph_lh_lh3_tls",
