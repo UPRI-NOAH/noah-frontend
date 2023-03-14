@@ -242,7 +242,7 @@ export class MapKyhComponent implements OnInit {
   }
 
   async initMarkers() {
-    this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+    this.centerMarker = new mapboxgl.Marker({ color: '#333', draggable: true })
       .setLngLat(this.kyhService.currentCoords)
       .addTo(this.map);
 
@@ -251,6 +251,27 @@ export class MapKyhComponent implements OnInit {
       .subscribe((currentCoords) => {
         this.centerMarker.setLngLat(currentCoords);
       });
+
+    //start draggable marker
+    this.centerMarker.on('dragend', async () => {
+      const lngLat = this.centerMarker.getLngLat();
+      await this.mapService.dragReverseGeocode(lngLat.lat, lngLat.lng);
+      // Fly to the new center with a smooth animation
+      this.map.flyTo({
+        center: lngLat,
+        zoom: 17,
+        speed: 1.2,
+        curve: 1,
+        easing: (t) => t,
+        essential: true,
+      });
+      const dragAddress = await this.mapService.dragReverseGeocode(
+        lngLat.lat,
+        lngLat.lng
+      );
+      this.kyhService.setCenter(lngLat);
+      this.kyhService.setCurrentLocation(dragAddress);
+    });
 
     function addImages(map, images) {
       const addImage = (map, id, url) => {
