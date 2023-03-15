@@ -182,7 +182,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'landslide-hazard': {
         opacity: 85,
         color: 'noah-green',
-        shown: false,
+        shown: true,
       },
       // 'alluvial-fan-hazard': {
       //   opacity: 100,
