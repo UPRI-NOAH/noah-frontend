@@ -29,8 +29,6 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
-  kyhLegend: boolean = true;
-  btnLegend: boolean = false;
 
   private _unsub = new Subject();
   private _changeStyle = new Subject();
@@ -241,11 +239,6 @@ export class MapKyhComponent implements OnInit {
       center: this.kyhService.currentCoords,
       attributionControl: false,
     });
-  }
-
-  openLegend() {
-    this.btnLegend = !this.btnLegend;
-    this.kyhLegend = !this.kyhLegend;
   }
 
   async initMarkers() {
