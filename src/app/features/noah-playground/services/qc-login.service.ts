@@ -16,6 +16,8 @@ export class QcLoginService {
   isLoginModal: boolean = false;
   @Input() qcLoginModal: boolean;
   showAdminResult: boolean;
+  adminStatus = '';
+  adminName = '';
 
   private loginStatus = new BehaviorSubject<boolean>(this.checkLoginStatus());
   private disclaimerStatus = new BehaviorSubject<boolean>(
@@ -44,9 +46,19 @@ export class QcLoginService {
           if (response && response.auth_token) {
             this.loginStatus.next(true);
             this.disclaimerStatus.next(true);
-            localStorage.setItem('loginStatus', '1');
+
+            if (username == 'laguna_admin') {
+              this.adminStatus = '2';
+              this.adminName = 'Laguna Admin';
+            } else {
+              this.adminStatus = '1';
+              this.adminName = 'Qc Admin';
+            }
+
+            localStorage.setItem('loginStatus', this.adminStatus);
             localStorage.setItem('token', response.auth_token);
-            localStorage.setItem('username', 'Qc Admin');
+
+            localStorage.setItem('username', this.adminName);
             this.qcSensorService.loadOnceDisclaimer$.subscribe((load) =>
               console.log(load)
             );
@@ -75,6 +87,12 @@ export class QcLoginService {
     const loginCookie = localStorage.getItem('loginStatus');
     if (loginCookie == '1') {
       this.pgService.toggleQuezonCityIOTGroupShown();
+      this.pgService.toggleQuezonCityIOTGroupExpanded();
+      return true;
+    }
+    if (loginCookie == '2') {
+      this.pgService.toggleQuezonCityIOTGroupShown();
+      this.pgService.toggleQuezonCityIOTGroupExpanded();
       return true;
     }
     return false;

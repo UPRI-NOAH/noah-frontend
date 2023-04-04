@@ -22,6 +22,8 @@ import {
   QuezonCityCriticalFacilities,
   QuezonCityMunicipalBoundaryState,
   QuezonCityMunicipalBoundary,
+  BarangayBoundary,
+  BarangayBoundaryState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -58,6 +60,12 @@ export class NoahPlaygroundService {
   get criticalFacilitiesShown$(): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.criticalFacilities.shown)
+    );
+  }
+
+  get iotMunicipalitiesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.iotMunicipalities.shown)
     );
   }
 
@@ -103,10 +111,30 @@ export class NoahPlaygroundService {
     );
   }
 
+  get barangayBoundaryShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.brgyShown)
+    );
+  }
+
   get qcMunicipalBoundaryExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcMunicipalboundary.qcbexpanded)
     );
+  }
+
+  get barangayExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.brgyExpanded)
+    );
+  }
+
+  get lagunaShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lagunaCenter.shown));
+  }
+
+  get qcShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcZoomCenter.shown));
   }
 
   get weatherSatellitesShown$(): Observable<boolean> {
@@ -184,6 +212,10 @@ export class NoahPlaygroundService {
 
   getQcMunicipalBoundary(): QuezonCityMunicipalBoundaryState {
     return this.store.state.qcMunicipalboundary;
+  }
+
+  getBarangayBoundary(): BarangayBoundaryState {
+    return this.store.state.barangayBoundary;
   }
 
   getHazard(
@@ -279,6 +311,14 @@ export class NoahPlaygroundService {
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcMunicipalboundary.types[qcMunicipalBoundary].shown)
+    );
+  }
+
+  getBarangayBoundaryShown$(
+    barangayBoundary: BarangayBoundary
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.types[barangayBoundary].shown)
     );
   }
 
@@ -480,17 +520,24 @@ export class NoahPlaygroundService {
     const qcMunicipalboundary = {
       ...this.store.state.qcMunicipalboundary,
     };
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
 
     const { expanded } = qcSensors;
     const { qcexpanded } = qcCriticalfacilities;
     const { qcbexpanded } = qcMunicipalboundary;
+    const { brgyExpanded } = barangayBoundary;
+
     qcSensors.expanded = !expanded;
     qcCriticalfacilities.qcexpanded = !qcexpanded;
     qcMunicipalboundary.qcbexpanded = !qcbexpanded;
+    barangayBoundary.brgyExpanded = !brgyExpanded;
 
     this.store.patch(
       { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
-      `update quezon city iot group state expanded to ${!expanded} ${!qcexpanded} ${!qcbexpanded}`
+      `update quezon city iot group state expanded to 
+      ${!expanded} ${!qcexpanded} ${!qcbexpanded} ${!brgyExpanded}`
     );
   }
 
@@ -504,17 +551,29 @@ export class NoahPlaygroundService {
     const qcMunicipalboundary = {
       ...this.store.state.qcMunicipalboundary,
     };
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
 
     const { shown } = qcSensors;
     const { qcshown } = qcCriticalfacilities;
     const { qcbshown } = qcMunicipalboundary;
-    qcSensors.shown = !shown;
-    qcCriticalfacilities.qcshown = !qcshown;
-    qcMunicipalboundary.qcbshown = !qcbshown;
+    const { brgyShown } = barangayBoundary;
+
+    qcSensors.shown = !qcSensors.shown;
+    qcCriticalfacilities.qcshown = !qcCriticalfacilities.qcshown;
+    qcMunicipalboundary.qcbshown = !qcMunicipalboundary.qcbshown;
+    barangayBoundary.brgyShown = !barangayBoundary.brgyShown;
 
     this.store.patch(
-      { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
-      `update quezon city iot group state shown to ${!shown} ${!qcshown} ${!qcbshown}`
+      {
+        qcSensors,
+        qcCriticalfacilities,
+        qcMunicipalboundary,
+        barangayBoundary,
+      },
+      `update quezon city iot group state shown to 
+      ${shown}, ${qcshown}, ${qcbshown}, Barangay boundary ${brgyShown}`
     );
   }
 
@@ -554,6 +613,19 @@ export class NoahPlaygroundService {
     this.store.patch(
       { qcMunicipalboundary },
       `change quezon city municipal boundary ${type}'visibility to ${!shown}`
+    );
+  }
+
+  setBarangayBoundaryShown(type: BarangayBoundary): void {
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
+
+    const { shown } = barangayBoundary.types[type];
+    barangayBoundary.types[type].shown = !shown;
+    this.store.patch(
+      { barangayBoundary },
+      `change barangay boundary ${type}'visibility to ${!shown}`
     );
   }
 
@@ -604,6 +676,22 @@ export class NoahPlaygroundService {
     );
   }
 
+  toggleZoomForLaguna(): void {
+    const lagunaCenter = {
+      ...this.store.state.lagunaCenter,
+    };
+
+    const { shown } = lagunaCenter;
+    lagunaCenter.shown = !lagunaCenter.shown;
+
+    this.store.patch(
+      {
+        lagunaCenter,
+      },
+      `Update laguna IoT group state shown to ${shown}`
+    );
+  }
+
   toggleWeatherSatelliteGroupVisibility(): void {
     const weatherSatellite = {
       ...this.store.state.weatherSatellite,
@@ -613,6 +701,20 @@ export class NoahPlaygroundService {
     this.store.patch(
       { weatherSatellite },
       `toggle weather satellite visibility`
+    );
+  }
+
+  toggleIotMunicipalitiesVisibility(): void {
+    const iotMunicipalities = {
+      ...this.store.state.iotMunicipalities,
+    };
+    const { shown } = iotMunicipalities;
+    iotMunicipalities.shown = !shown;
+
+    iotMunicipalities.shown = !iotMunicipalities.shown;
+    this.store.patch(
+      { iotMunicipalities },
+      `toggle iot municipality visibility ${!shown}`
     );
   }
 

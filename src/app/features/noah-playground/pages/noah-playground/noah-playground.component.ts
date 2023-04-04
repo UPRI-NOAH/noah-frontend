@@ -26,6 +26,8 @@ export class NoahPlaygroundComponent implements OnInit {
   showAlert: boolean;
   modalAlert: boolean;
   DisclaimerStatus$: Observable<boolean>;
+  qcAdmin: boolean;
+  lagunaAdmin: boolean;
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -47,6 +49,19 @@ export class NoahPlaygroundComponent implements OnInit {
     } else {
       this.showAlert = true;
       this.modalAlert = true;
+    }
+    const admin = localStorage.getItem('loginStatus');
+    if (admin == '0') {
+      this.qcAdmin = false;
+      this.lagunaAdmin = false;
+    }
+    if (admin == '1') {
+      this.qcAdmin = true;
+      this.lagunaAdmin = false;
+    }
+    if (admin == '2') {
+      this.lagunaAdmin = true;
+      this.qcAdmin = false;
     }
   }
 

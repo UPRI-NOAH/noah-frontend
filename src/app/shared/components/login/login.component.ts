@@ -101,6 +101,7 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl(this.returnUrl);
           this.isLoginModal = false;
           this.pgService.toggleQuezonCityIOTGroupShown();
+          this.pgService.toggleQuezonCityIOTGroupExpanded();
           this.router.navigateByUrl('/noah-playground');
           setTimeout(() => {
             //SESSION EXPIRATION
