@@ -30,6 +30,9 @@ export class MapKyhComponent implements OnInit {
   centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
 
+  kyhLegend: boolean = true;
+  btnLegend: boolean = false;
+
   private _unsub = new Subject();
   private _changeStyle = new Subject();
 
@@ -347,6 +350,11 @@ export class MapKyhComponent implements OnInit {
           },
         });
       });
+  }
+
+  openLegend() {
+    this.btnLegend = !this.btnLegend;
+    this.kyhLegend = !this.kyhLegend;
   }
 
   showCurrentHazardLayer(currentHazard: HazardType) {
