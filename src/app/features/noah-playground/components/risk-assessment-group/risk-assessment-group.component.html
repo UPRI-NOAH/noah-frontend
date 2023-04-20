@@ -73,17 +73,42 @@
       class="capitalize"
       *ngFor="let riskAssessmentType of riskAssessmentRain"
       [riskAssessmentType]="riskAssessmentType"
+      (click)="toggleRain($event)"
     ></noah-risk-assessment-solo>
 
-    <div class="flex justify-around">
+    <div class="flex justify-around h-64">
       <img src="assets/legends/rainfall-forecast-1.png" />
     </div>
 
-    <noah-risk-assessment-solo
-      class="capitalize"
-      *ngFor="let riskAssessmentType of riskAssessmentExp"
-      [riskAssessmentType]="riskAssessmentType"
-    ></noah-risk-assessment-solo>
+    <div class="py-2 pl-10 flex items-center">
+      <div class="inline-flex items-center checkbox">
+        <input
+          [checked]="exposureShown$ | async"
+          (click)="toggleExposure($event)"
+          [(ngModel)]="isCheckedExp"
+          type="checkbox"
+          class="h-5 w-5 text-blue-600"
+        />
+      </div>
+      <label class="ml-3"> Exposure </label>
+    </div>
+
+    <div class="f-f-r py-2 pl-20" *ngFor="let exposureType of exposureTypes">
+      <div class="flex items-center">
+        <div class="inline-flex items-center radio">
+          <input
+            type="radio"
+            class="radio h-5 w-5 text-blue-600 disabled:cursor-not-allowed"
+            [checked]="(selectedExposureType$ | async) === exposureType"
+            [disabled]="!isCheckedExp"
+            (click)="selectExposure(exposureType)"
+          />
+        </div>
+        <div class="flex flex-col ml-3">
+          <label class="text-lg f-f-r capitalize">{{ exposureType }}</label>
+        </div>
+      </div>
+    </div>
 
     <div class="px-6 flex justify-around items-center">
       <button
@@ -106,10 +131,15 @@
           hover:bg-blue-700
           focus:ring-opacity-50
           border-2
+          disabled:cursor-not-allowed disabled:opacity-30
         "
+        [disabled]="!isRadioEnabled"
+        (click)="openModalRisk()"
       >
         Calculate Risk
       </button>
     </div>
+
+    <noah-risk-assessment-modal></noah-risk-assessment-modal>
   </div>
 </div>

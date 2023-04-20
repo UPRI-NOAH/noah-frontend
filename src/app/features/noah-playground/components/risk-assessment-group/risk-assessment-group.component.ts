@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
-  RISK_ASSESSMENT,
+  ExposureType,
   RiskAssessmentType,
 } from '@features/noah-playground/services/risk-assessment-services.service';
-import { Observable } from 'rxjs';
+import { RiskModalService } from '@features/noah-playground/services/risk-modal.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'noah-risk-assessment-group',
@@ -13,18 +14,27 @@ import { Observable } from 'rxjs';
 })
 export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentRain: RiskAssessmentType[] = ['rain'];
-  riskAssessmentExp: RiskAssessmentType[] = ['exposure'];
-  riskAssessmentBuildings: RiskAssessmentType[] = ['buildings'];
-  riskAssessmentPopulation: RiskAssessmentType[] = ['population'];
+  exposureTypes: ExposureType[] = ['population', 'buildings'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
+  exposureShown$: Observable<boolean>;
+  selectedExposureType$: Observable<ExposureType>;
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  checkedRain = false;
+  checkedExp = false;
+  isRadioEnabled = false;
+  isCheckedExp = false;
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private riskModalService: RiskModalService
+  ) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.riskAssessmentExpanded$;
     this.shown$ = this.pgService.riskAssessmentShown$;
+    this.exposureShown$ = this.pgService.exposureShown$;
+    this.selectedExposureType$ = this.pgService.selectedExposureType$;
   }
 
   toggleExpansion() {
@@ -36,5 +46,28 @@ export class RiskAssessmentGroupComponent implements OnInit {
     event.stopImmediatePropagation();
 
     this.pgService.toggleRiskAssessmentGroupShown();
+  }
+
+  selectExposure(type: ExposureType) {
+    this.pgService.selectExposureType(type);
+  }
+
+  toggleRain(events: Event) {
+    this.checkedRain = (events.target as HTMLInputElement).checked;
+    this.updateRadioEnabled();
+  }
+
+  toggleExposure(events: Event) {
+    //this.pgService.toggleRiskAssessmentVisibility()
+    this.checkedExp = (events.target as HTMLInputElement).checked;
+    this.updateRadioEnabled();
+  }
+
+  updateRadioEnabled() {
+    this.isRadioEnabled = this.checkedRain && this.checkedExp;
+  }
+
+  openModalRisk() {
+    this.riskModalService.openRiskModal();
   }
 }
