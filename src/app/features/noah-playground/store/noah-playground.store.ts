@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
+import {
+  ExposureType,
+  RiskAssessmentType,
+} from '../services/risk-assessment-services.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -33,6 +37,10 @@ export type LandslideHazards =
   | 'unstable-slopes-maps';
 
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
+
+export type ExposureTypes = 'buildings' | 'population';
+
+export type RiskAssessment = 'rain';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
@@ -130,6 +138,31 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
+export type RiskAssessmentTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type RiskAssessmentTypesState = {
+  rain: RiskAssessmentTypeState;
+};
+
+export type RiskAssessmentState = {
+  shown: boolean;
+  expanded: boolean;
+  types: RiskAssessmentTypesState;
+};
+
+export type ExposureTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type ExposureState = {
+  shown: boolean;
+  types: Record<ExposureType, ExposureTypeState>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -141,6 +174,11 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  riskAssessment: RiskAssessmentState;
+  exposure: {
+    shown: boolean;
+    selectedType: ExposureTypes;
+  };
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -303,6 +341,20 @@ const createInitialValue = (): NoahPlaygroundState => ({
         fetched: false,
       },
     },
+  },
+  riskAssessment: {
+    shown: false,
+    expanded: false,
+    types: {
+      rain: {
+        shown: false,
+        fetched: false,
+      },
+    },
+  },
+  exposure: {
+    shown: false,
+    selectedType: 'population',
   },
   contourMaps: {
     shown: false,
