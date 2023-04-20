@@ -1,4 +1,20 @@
-<div class="pl-6 relative pb-2">
+<div class="pl-6 relative">
+  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ riskAssessmentType }}">
+      <input
+        [checked]="shown$ | async"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ riskAssessmentType }}"
+      />
+    </div>
+    <label class="ml-3" for="input-{{ riskAssessmentType }}">
+      {{ riskAssessmentType }}
+    </label>
+  </div>
+</div>
+
+<!-- <div class="pl-6 relative pb-2">
   <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
     <div class="inline-flex items-center checkbox {{ riskAssessmentType }}">
       <input
@@ -25,4 +41,4 @@
   >
     (Unable to fetch data)
   </div>
-</div>
+</div> -->
