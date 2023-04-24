@@ -59,11 +59,6 @@ import {
   RiskAssessment,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
-import {
-  EXPOSURE_NAMES,
-  RISK_ASSESSMENT,
-  RiskAssessmentServicesService,
-} from '@features/noah-playground/services/risk-assessment-services.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -118,8 +113,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
-    private sensorService: SensorService,
-    private riskService: RiskAssessmentServicesService
+    private sensorService: SensorService
   ) {}
 
   ngOnInit(): void {
@@ -720,18 +714,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.on('load', () => {
       this.map.addSource('population', {
         type: 'vector',
-        url: 'mapbox://upri-noah.82vvuem9', // Replace with your own data source URL
+        url: 'mapbox://upri-noah.ph_pop_den_tls', // Replace with your own data source URL upri-noah.ph_pop_den_tls
       });
       this.map.addLayer({
         id: 'population-layer',
-        type: 'line',
+        type: 'fill',
         source: 'population',
-        'source-layer': 'PH060400000_FB_Pop-0g5pzh', // Replace with your own source layer name
+        'source-layer': 'PH060000000_POP_den', // Replace with your own source layer name
         paint: {
-          'line-color': '#000', // black line
-          'line-width': 3,
-          'line-opacity': 0.75,
+          'fill-color': '#008040', // fill dark green
+          'fill-opacity': 0.75,
         },
+
         layout: {
           visibility: layerVisible ? 'visible' : 'none',
         },

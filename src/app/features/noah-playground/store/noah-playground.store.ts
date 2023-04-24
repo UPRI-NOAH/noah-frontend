@@ -5,7 +5,7 @@ import { SensorType } from '../services/sensor.service';
 import {
   ExposureType,
   RiskAssessmentType,
-} from '../services/risk-assessment-services.service';
+} from '../services/risk-assessment.service';
 
 /**
  * Official geographic center of the Philippines.

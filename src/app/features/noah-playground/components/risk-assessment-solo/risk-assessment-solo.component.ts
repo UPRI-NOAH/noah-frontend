@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { ExposureType } from '@features/noah-playground/services/risk-assessment-services.service';
+import { ExposureType } from '@features/noah-playground/services/risk-assessment.service';
 import { RiskAssessment } from '@features/noah-playground/store/noah-playground.store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

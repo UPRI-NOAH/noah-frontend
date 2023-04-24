@@ -3,7 +3,7 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import {
   ExposureType,
   RiskAssessmentType,
-} from '@features/noah-playground/services/risk-assessment-services.service';
+} from '@features/noah-playground/services/risk-assessment.service';
 import { RiskModalService } from '@features/noah-playground/services/risk-modal.service';
 import { Observable, of } from 'rxjs';
 

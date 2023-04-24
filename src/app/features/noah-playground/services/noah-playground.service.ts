@@ -27,10 +27,7 @@ import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
-import {
-  ExposureType,
-  RiskAssessmentType,
-} from './risk-assessment-services.service';
+import { ExposureType, RiskAssessmentType } from './risk-assessment.service';
 
 @Injectable({
   providedIn: 'root',
