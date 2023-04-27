@@ -53,12 +53,16 @@ export class RiskAssessmentGroupComponent implements OnInit {
   }
 
   toggleRain(events: Event) {
+    events.stopPropagation();
+    events.stopImmediatePropagation();
     this.checkedRain = (events.target as HTMLInputElement).checked;
     this.updateRadioEnabled();
   }
 
   toggleExposure(events: Event) {
-    //this.pgService.toggleRiskAssessmentVisibility()
+    events.stopPropagation();
+    events.stopImmediatePropagation();
+    this.pgService.toggleExposureTypeVisibility();
     this.checkedExp = (events.target as HTMLInputElement).checked;
     this.updateRadioEnabled();
   }

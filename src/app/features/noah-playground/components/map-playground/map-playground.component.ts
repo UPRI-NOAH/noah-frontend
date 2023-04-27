@@ -709,8 +709,56 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initExpPopulation() {
-    let layerVisible = true;
+    // let layerVisible = true;
 
+    // this.map.on('load', () => {
+    //   this.map.addSource('population', {
+    //     type: 'vector',
+    //     url: 'mapbox://upri-noah.ph_pop_den_tls', // Replace with your own data source URL upri-noah.ph_pop_den_tls
+    //   });
+    //   this.map.addLayer({
+    //     id: 'population-layer',
+    //     type: 'fill',
+    //     source: 'population',
+    //     'source-layer': 'PH060000000_POP_den', // Replace with your own source layer name
+    //     paint: {
+    //       'fill-color': '#008040', // fill dark green
+    //       'fill-opacity': 0.75,
+
+    //     },
+
+    //     layout: {
+    //       visibility: layerVisible ? 'visible' : 'none',
+    //     },
+    //   });
+    // });
+
+    // const allShown$ = this.pgService.riskAssessmentShown$.pipe(shareReplay(1));
+
+    // combineLatest([allShown$])
+    //   .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+    //   .subscribe(([allShown$]) => {
+    //     if (
+    //       this.map.getLayer('population-layer') &&
+    //       allShown$ &&
+    //       !layerVisible
+    //     ) {
+    //       this.map.setLayoutProperty(
+    //         'population-layer',
+    //         'visibility',
+    //         'visible'
+    //       );
+    //       layerVisible = true;
+    //     } else if (
+    //       this.map.getLayer('population-layer') &&
+    //       !allShown$ &&
+    //       layerVisible
+    //     ) {
+    //       this.map.setLayoutProperty('population-layer', 'visibility', 'none');
+    //       layerVisible = false;
+    //     }
+    //   });
+    let layerVisible = true;
     this.map.on('load', () => {
       this.map.addSource('population', {
         type: 'vector',
@@ -725,37 +773,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'fill-color': '#008040', // fill dark green
           'fill-opacity': 0.75,
         },
-
         layout: {
           visibility: layerVisible ? 'visible' : 'none',
         },
       });
     });
 
-    const allShown$ = this.pgService.riskAssessmentShown$.pipe(shareReplay(1));
-
-    combineLatest([allShown$])
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([allShown$]) => {
-        if (
-          this.map.getLayer('population-layer') &&
-          allShown$ &&
-          !layerVisible
-        ) {
-          this.map.setLayoutProperty(
-            'population-layer',
-            'visibility',
-            'visible'
-          );
-          layerVisible = true;
-        } else if (
-          this.map.getLayer('population-layer') &&
-          !allShown$ &&
-          layerVisible
-        ) {
-          this.map.setLayoutProperty('population-layer', 'visibility', 'none');
-          layerVisible = false;
-        }
+    combineLatest([
+      this.pgService.exposureShown$,
+      this.pgService.riskAssessmentShown$,
+    ])
+      .pipe(
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
+        map(([groupShown]) => {
+          console.log('1');
+          return +groupShown;
+        })
+      )
+      .subscribe((opacity: number) => {
+        this.map.setPaintProperty('population-layer', 'fill-opacity', opacity);
       });
   }
 
