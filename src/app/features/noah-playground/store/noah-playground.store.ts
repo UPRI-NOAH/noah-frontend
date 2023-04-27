@@ -263,17 +263,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
     levels: {
       'flood-return-period-5': {
         opacity: 85,
-        color: 'noah-red',
+        color: 'noah-blue',
         shown: false,
       },
       'flood-return-period-25': {
         opacity: 85,
-        color: 'noah-red',
+        color: 'noah-blue',
         shown: false,
       },
       'flood-return-period-100': {
         opacity: 85,
-        color: 'noah-red',
+        color: 'noah-blue',
         shown: true,
       },
     },
@@ -284,8 +284,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
     levels: {
       'landslide-hazard': {
         opacity: 85,
-        color: 'noah-red',
-        shown: false,
+        color: 'noah-green',
+        shown: true,
       },
       // 'alluvial-fan-hazard': {
       //   opacity: 100,
@@ -294,12 +294,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
       // },
       'debris-flow': {
         opacity: 85,
-        color: 'noah-red',
+        color: 'noah-violet',
         shown: false,
       },
       'unstable-slopes-maps': {
         opacity: 85,
-        color: 'noah-red',
+        color: 'noah-green',
         shown: false,
       },
     },
