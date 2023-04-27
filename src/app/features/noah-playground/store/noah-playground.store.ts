@@ -111,6 +111,19 @@ export type VolcanoState = {
   opacity: number;
 };
 
+export type RiskGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<RiskGroupType, RiskState>;
+};
+
+export type RiskGroupType = 'rain' | 'population' | 'building';
+
+export type RiskState = {
+  shown: boolean;
+  opacity: number;
+};
+
 export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
@@ -154,12 +167,13 @@ export type RiskAssessmentState = {
 };
 
 export type ExposureTypeState = {
-  fetched: boolean;
+  expanded: boolean;
   shown: boolean;
 };
 
 export type ExposureState = {
   shown: boolean;
+  expanded: boolean;
   types: Record<ExposureType, ExposureTypeState>;
 };
 
@@ -175,10 +189,12 @@ type NoahPlaygroundState = {
   currentLocation: string;
   sensors: SensorsState;
   riskAssessment: RiskAssessmentState;
+  riskState: RiskGroupState;
   exposure: {
     shown: boolean;
     selectedType: ExposureTypes;
   };
+  exposureType: ExposureState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -283,6 +299,25 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+
+  riskState: {
+    shown: false,
+    expanded: false,
+    types: {
+      rain: {
+        shown: false,
+        opacity: 100,
+      },
+      population: {
+        shown: false,
+        opacity: 100,
+      },
+      building: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
   criticalFacilities: {
     shown: false,
     expanded: false,
@@ -360,6 +395,20 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     selectedType: '1hr',
+  },
+  exposureType: {
+    shown: false,
+    expanded: false,
+    types: {
+      population: {
+        shown: false,
+        expanded: false,
+      },
+      buildings: {
+        shown: false,
+        expanded: false,
+      },
+    },
   },
 });
 

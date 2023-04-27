@@ -18,6 +18,12 @@ import {
   VolcanoType,
   VolcanoState,
   RiskAssessment,
+  ExposureTypes,
+  ExposureState,
+  ExposureTypeState,
+  RiskGroupState,
+  RiskGroupType,
+  RiskState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -80,6 +86,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
   }
 
+  get riskGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskState.shown));
+  }
+
+  get riskGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskState.expanded));
+  }
+
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
@@ -90,6 +104,10 @@ export class NoahPlaygroundService {
 
   get weatherSatellitesShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.weatherSatellite.shown));
+  }
+
+  get exposureTypeShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.exposure.shown));
   }
 
   get weatherSatellitesExpanded$(): Observable<boolean> {
@@ -118,7 +136,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  get selectedExposureType$(): Observable<ExposureType> {
+  get selectedExposureType$(): Observable<ExposureTypes> {
     return this.store.state$.pipe(map((state) => state.exposure.selectedType));
   }
 
@@ -126,15 +144,6 @@ export class NoahPlaygroundService {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
-      )
-      .pipe(first())
-      .toPromise();
-  }
-
-  getRiskData(): Promise<{ url: string; sourceLayer: string[] }[]> {
-    return this.http
-      .get<{ url: string; sourceLayer: string[] }[]>(
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/exposure/population/PH060400000_FB_Pop.json'
       )
       .pipe(first())
       .toPromise();
@@ -159,6 +168,18 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
+  getRisk$(riskType: RiskGroupType): Observable<RiskState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskState.types[riskType])
+    );
+  }
+
+  getExposure$(exposureType: ExposureTypes): Observable<ExposureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.exposureType.types[exposureType])
     );
   }
 
@@ -366,6 +387,16 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
+  toggleExposureGroupProperty(property: 'expanded' | 'shown') {
+    const riskState: RiskGroupState = {
+      ...this.store.state.riskState,
+    };
+
+    const currentValue = riskState[property];
+    riskState[property] = !currentValue;
+    this.store.patch({ riskState }, `Exposure ${property}, ${!currentValue}`);
+  }
+
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -387,6 +418,31 @@ export class NoahPlaygroundService {
     this.store.patch(
       { volcanoes },
       `Volcano - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setRiskSoloShown(value: boolean, type: RiskGroupType) {
+    const riskState: RiskGroupState = {
+      ...this.store.state.riskState,
+    };
+
+    riskState.types[type].shown = value;
+    this.store.patch(
+      { riskState },
+      `riskState - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setExposureShown(value: boolean, type: ExposureTypes) {
+    const exposureType: ExposureState = {
+      ...this.store.state.exposureType,
+    };
+    exposureType.types[type].shown = value;
+    this.store.patch(
+      {
+        exposureType,
+      },
+      `Exposure - update ${type}'s shown to ${value}`
     );
   }
 
@@ -418,8 +474,15 @@ export class NoahPlaygroundService {
       ...this.store.state.riskAssessment,
     };
 
+    const exposure = {
+      ...this.store.state.exposure,
+    };
+
     const { shown } = riskAssessment;
     riskAssessment.shown = !shown;
+
+    exposure.shown = !exposure.shown;
+    riskAssessment.shown = !riskAssessment.shown;
 
     this.store.patch(
       { riskAssessment },
@@ -582,13 +645,13 @@ export class NoahPlaygroundService {
     this.store.patch({ contourMaps }, `select contour map type: ${type}`);
   }
 
-  selectExposureType(type: ExposureType): void {
+  selectExposureType(exposureType: ExposureTypes): void {
     const exposure = {
       ...this.store.state.exposure,
     };
 
-    exposure.selectedType = type;
-    this.store.patch({ exposure }, `select exposure type: ${type}`);
+    exposure.selectedType = exposureType;
+    this.store.patch({ exposure }, `select exposure type: ${exposureType}`);
   }
 
   toggleContourMapGroupVisibility(): void {
