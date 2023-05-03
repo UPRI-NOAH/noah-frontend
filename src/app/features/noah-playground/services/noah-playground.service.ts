@@ -19,8 +19,6 @@ import {
   VolcanoState,
   RiskAssessment,
   ExposureTypes,
-  ExposureState,
-  ExposureTypeState,
   RiskGroupState,
   RiskGroupType,
   RiskState,
@@ -67,18 +65,8 @@ export class NoahPlaygroundService {
     );
   }
 
-  get riskAssessmentShown$(): Observable<boolean> {
-    return this.store.state$.pipe(map((state) => state.riskAssessment.shown));
-  }
-
   get exposureShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.exposure.shown));
-  }
-
-  get riskAssessmentExpanded$(): Observable<boolean> {
-    return this.store.state$.pipe(
-      map((state) => state.riskAssessment.expanded)
-    );
   }
 
   get volcanoGroupShown$(): Observable<boolean> {
@@ -198,12 +186,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  getExposure$(exposureType: ExposureTypes): Observable<boolean> {
-    return this.store.state$.pipe(
-      map((state) => state.exposureType.types[exposureType].shown)
-    );
-  }
-
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
   }
@@ -262,25 +244,9 @@ export class NoahPlaygroundService {
     );
   }
 
-  getRiskAssessmentTypeShown$(
-    riskAssessmentType: RiskAssessment
-  ): Observable<boolean> {
-    return this.store.state$.pipe(
-      map((state) => state.riskAssessment.types[riskAssessmentType].shown)
-    );
-  }
-
   getExposureTypeShown$(exposureType: ExposureType): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.exposure.selectedType[exposureType].shown)
-    );
-  }
-
-  getRiskAssessmentTypesFetched$(
-    riskAssessmentType: RiskAssessmentType
-  ): Observable<boolean> {
-    return this.store.state$.pipe(
-      map((state) => state.riskAssessment.types[riskAssessmentType].fetched)
     );
   }
 
@@ -448,19 +414,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  setExposureShown(value: boolean, type: ExposureTypes) {
-    const exposureType: ExposureState = {
-      ...this.store.state.exposureType,
-    };
-    exposureType.types[type].shown = value;
-    this.store.patch(
-      {
-        exposureType,
-      },
-      `Exposure - update ${type}'s shown to ${value}`
-    );
-  }
-
   setCenter(center: { lat: number; lng: number }) {
     this.store.patch({ center });
   }
@@ -468,41 +421,6 @@ export class NoahPlaygroundService {
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
     this.gaService.event('change_location', 'noah_studio');
-  }
-
-  toggleRiskAssessmentExpanded(): void {
-    const riskAssessment = {
-      ...this.store.state.riskAssessment,
-    };
-
-    const { expanded } = riskAssessment;
-    riskAssessment.expanded = !expanded;
-
-    this.store.patch(
-      { riskAssessment },
-      `update risk assessment group state expanded to ${!expanded}`
-    );
-  }
-
-  toggleRiskAssessmentGroupShown(): void {
-    const riskAssessment = {
-      ...this.store.state.riskAssessment,
-    };
-
-    const exposureType = {
-      ...this.store.state.exposureType,
-    };
-
-    const { shown } = riskAssessment;
-    riskAssessment.shown = !shown;
-
-    exposureType.shown = !exposureType.shown;
-    riskAssessment.shown = !riskAssessment.shown;
-
-    this.store.patch(
-      { riskAssessment },
-      `update risk assessment group state shown to ${!shown}`
-    );
   }
 
   toggleSensorsGroupExpanded(): void {
@@ -530,19 +448,6 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `update sensor group state shown to ${!shown}`
-    );
-  }
-
-  setRiskAssessmentTypeShown(type: RiskAssessment): void {
-    const riskAssessment = {
-      ...this.store.state.riskAssessment,
-    };
-
-    const { shown } = riskAssessment.types[type];
-    riskAssessment.types[type].shown = !shown;
-    this.store.patch(
-      { riskAssessment },
-      `change risk assessment ${type} 'visibility to ${!shown}`
     );
   }
 
@@ -691,20 +596,6 @@ export class NoahPlaygroundService {
 
     contourMaps.shown = !contourMaps.shown;
     this.store.patch({ contourMaps }, `toggle visibility`);
-  }
-
-  toggleRiskAssessmentVisibility(): void {
-    const exposure = {
-      ...this.store.state.exposure,
-    };
-
-    const riskAssessment = {
-      ...this.store.state.riskAssessment,
-    };
-
-    exposure.shown = !exposure.shown;
-    riskAssessment.shown = !riskAssessment.shown;
-    this.store.patch({ exposure, riskAssessment }, `toggle visibility`);
   }
 
   toggleContourMapGroupExpansion(): void {

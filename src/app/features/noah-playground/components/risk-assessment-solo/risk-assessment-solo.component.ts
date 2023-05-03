@@ -40,9 +40,9 @@ export class RiskAssessmentSoloComponent implements OnInit {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.shown$ = this.pgService.getRiskAssessmentTypeShown$(
-      this.riskAssessmentType
-    );
+    // this.shown$ = this.pgService.getRiskAssessmentTypeShown$(
+    //   this.riskAssessmentType
+    // );
 
     this.exposureShown$ = this.pgService.getExposureTypeShown$(
       this.exposureType
@@ -61,7 +61,7 @@ export class RiskAssessmentSoloComponent implements OnInit {
   }
 
   toggleShown() {
-    this.pgService.setRiskAssessmentTypeShown(this.riskAssessmentType);
+    //this.pgService.setRiskAssessmentTypeShown(this.riskAssessmentType);
     // if (this.fetchFailed) return;
   }
 }
