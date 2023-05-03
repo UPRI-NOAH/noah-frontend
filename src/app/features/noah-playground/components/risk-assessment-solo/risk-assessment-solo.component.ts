@@ -47,12 +47,12 @@ export class RiskAssessmentSoloComponent implements OnInit {
     this.exposureShown$ = this.pgService.getExposureTypeShown$(
       this.exposureType
     );
-    this.pgService
-      .getExposureTypesFetched$(this.exposureType)
-      .pipe(takeUntil(this._unsub))
-      .subscribe((fetched) => {
-        this.fetchFailed = !fetched;
-      });
+    // this.pgService
+    //   .getExposureTypesFetched$(this.exposureType)
+    //   .pipe(takeUntil(this._unsub))
+    //   .subscribe((fetched) => {
+    //     this.fetchFailed = !fetched;
+    //   });
   }
 
   ngOnDestroy(): void {
