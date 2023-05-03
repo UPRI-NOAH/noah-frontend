@@ -24,7 +24,7 @@ import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
 import { RiskAssessmentSoloComponent } from './components/risk-assessment-solo/risk-assessment-solo.component';
 import { RiskAssessmentGroupComponent } from './components/risk-assessment-group/risk-assessment-group.component';
-
+import { RiskExposureComponent } from './components/risk-exposure/risk-exposure.component';
 @NgModule({
   declarations: [
     NoahPlaygroundComponent,
@@ -45,6 +45,7 @@ import { RiskAssessmentGroupComponent } from './components/risk-assessment-group
     VolcanoSoloComponent,
     RiskAssessmentSoloComponent,
     RiskAssessmentGroupComponent,
+    RiskExposureComponent,
   ],
   imports: [
     CommonModule,

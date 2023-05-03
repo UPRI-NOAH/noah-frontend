@@ -24,6 +24,9 @@ import {
   RiskGroupState,
   RiskGroupType,
   RiskState,
+  RiskExposureType,
+  RiskExposureTypeState,
+  RiskExposureState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -142,6 +145,20 @@ export class NoahPlaygroundService {
 
   get selectedExposureType$(): Observable<ExposureTypes> {
     return this.store.state$.pipe(map((state) => state.exposure.selectedType));
+  }
+
+  get riskExposureShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskExposure.shown));
+  }
+
+  get riskExposureExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskExposure.expanded));
+  }
+
+  get selectedRiskExposure$(): Observable<RiskExposureType> {
+    return this.store.state$.pipe(
+      map((state) => state.riskExposure.selectedType)
+    );
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -264,12 +281,6 @@ export class NoahPlaygroundService {
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.riskAssessment.types[riskAssessmentType].fetched)
-    );
-  }
-
-  getExposureTypesFetched$(exposureType: ExposureType): Observable<boolean> {
-    return this.store.state$.pipe(
-      map((state) => state.exposure.selectedType[exposureType].fetched)
     );
   }
 
@@ -564,6 +575,12 @@ export class NoahPlaygroundService {
     );
   }
 
+  getRisks$(type: RiskExposureType): Observable<RiskExposureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskExposure.types[type])
+    );
+  }
+
   getWeatherSatelliteOpacity(weatherType: WeatherSatelliteType): number {
     return this.store.state.weatherSatellite.types[weatherType].opacity;
   }
@@ -697,5 +714,61 @@ export class NoahPlaygroundService {
 
     contourMaps.expanded = !contourMaps.expanded;
     this.store.patch({ contourMaps }, `toggle expansion`);
+  }
+
+  getRiskExposures(): RiskExposureState {
+    return this.store.state.riskExposure;
+  }
+
+  getRiskExposure(type: RiskExposureType): RiskExposureTypeState {
+    return this.store.state.riskExposure.types[type];
+  }
+
+  getRiskExposure$(type: RiskExposureType): Observable<RiskExposureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskExposure.types[type])
+    );
+  }
+
+  getRiskExposureOpacity(exposureType: RiskExposureType): number {
+    return this.store.state.riskExposure.types[exposureType].opacity;
+  }
+
+  toggleRiskExposureGroupVisibility(): void {
+    const riskExposure = {
+      ...this.store.state.riskExposure,
+    };
+
+    riskExposure.shown = !riskExposure.shown;
+    this.store.patch({ riskExposure }, `toggle exposure visibility`);
+  }
+
+  toggleRiskExposureGroupExpanded(): void {
+    const riskExposure = {
+      ...this.store.state.riskExposure,
+    };
+
+    riskExposure.expanded = !riskExposure.expanded;
+    this.store.patch({ riskExposure }, `toggle risk exposure expansion`);
+  }
+
+  selectRiskExposure(exposureTypes: RiskExposureType): void {
+    const riskExposure = {
+      ...this.store.state.riskExposure,
+    };
+
+    riskExposure.selectedType = exposureTypes;
+    this.store.patch(
+      { riskExposure },
+      `Select Risk Exposure type: ${exposureTypes}`
+    );
+  }
+
+  toggleAllRiskExposureVisibility(): void {
+    const riskExposure = {
+      ...this.store.state.riskExposure,
+    };
+    riskExposure.shown = !riskExposure.shown;
+    this.store.patch({ riskExposure }, `Hide All Risk Exposure`);
   }
 }
