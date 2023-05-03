@@ -1,0 +1,30 @@
+<div class="py-2 pl-10 flex items-center">
+  <div class="inline-flex items-center checkbox">
+    <input
+      [checked]="exposureShown$ | async"
+      (click)="toggleExposure($event)"
+      [(ngModel)]="isCheckedExp"
+      type="checkbox"
+      class="h-5 w-5 text-blue-600"
+    />
+  </div>
+  <label class="ml-3"> Exposure </label>
+</div>
+
+<div class="f-f-r py-2 pl-20" *ngFor="let exposureType of names">
+  <div class="flex items-center">
+    <div class="inline-flex items-center radio">
+      <input
+        type="radio"
+        class="radio h-5 w-5 text-blue-600 disabled:cursor-not-allowed"
+        id="selected-exposure-{{ exposureType }}"
+        [checked]="(selectedRiskExposure$ | async) === exposureType"
+        [disabled]="!isCheckedExp"
+        (click)="selectExposure(exposureType)"
+      />
+    </div>
+    <div class="flex flex-col ml-3">
+      <label class="text-lg f-f-r capitalize">{{ exposureType }}</label>
+    </div>
+  </div>
+</div>
