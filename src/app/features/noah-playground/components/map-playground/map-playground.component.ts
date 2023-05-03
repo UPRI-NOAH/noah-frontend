@@ -711,67 +711,129 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initExpPopulation() {
-    const exposureDataType = {
-      population: 'upri-noah.ph_pop_den_tls',
-      building: 'upri-noah.ph_bldg_osm_tls',
+    const exposureData = {
+      population: {
+        url: 'mapbox://upri-noah.ph_pop_den_tls',
+        type: 'vector',
+      },
+      building: {
+        url: 'mapbox://upri-noah.ph_bldg_osm_tls',
+        type: 'vector',
+      },
     };
 
-    const allShown$ = this.pgService.riskGroupShown$.pipe(
-      distinctUntilChanged()
-    );
+    const getExposure = (exposureDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (exposureDetails.type) {
+        case 'vector':
+          return {
+            type: 'vector',
+            url: exposureDetails.url,
+          };
+        default:
+          throw new Error('ERROR');
+      }
+    };
 
-    this.map.on('load', () => {
-      // Add population data source and layer
-      this.map.addSource('population', {
-        type: 'vector',
-        url: `mapbox://${exposureDataType.population}`,
-      });
+    Object.keys(exposureData).forEach((expType: RiskGroupType) => {
+      const expDetails = exposureData[expType];
+      const sourceLayer =
+        expType === 'population'
+          ? 'PH060000000_POP_den'
+          : 'PH060000000_BLDG_osm';
+      const paintColor = expType === 'population' ? '#008040' : '#9900E6';
+
+      this.map.addSource(expType, getExposure(expDetails));
+
       this.map.addLayer({
-        id: 'population-layer',
+        id: expType,
         type: 'fill',
-        source: 'population',
-        'source-layer': 'PH060000000_POP_den',
+        source: expType,
+        'source-layer': sourceLayer,
         paint: {
           'fill-opacity': 0.7,
-          'fill-color': '#008040',
+          'fill-color': paintColor,
         },
       });
+      const allShown$ = this.pgService.riskExposureShown$.pipe(shareReplay(1));
+      const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
+        shareReplay(1)
+      );
 
-      // Add building data source and layer
-      this.map.addSource('building', {
-        type: 'vector',
-        url: `mapbox://${exposureDataType.building}`,
-      });
-      this.map.addLayer({
-        id: 'building-layer',
-        type: 'fill',
-        source: 'building',
-        'source-layer': 'PH060000000_BLDG_osm',
-        paint: {
-          'fill-opacity': 0.7,
-          'fill-color': '#9900E6',
-        },
-      });
+      const expoOpacity$ = this.pgService.getRiskExposure$(expType).pipe(
+        map((exposure) => exposure.opacity),
+        distinctUntilChanged()
+      );
+      combineLatest([allShown$, selectedExpoType$, expoOpacity$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allshown, selectedExpoType, expoOpacity]) => {
+          let opacity = +(allshown && selectedExpoType === expType);
+          if (opacity) {
+            opacity = expoOpacity / 100;
+          }
+          this.map.setPaintProperty(expType, 'fill-opacity', opacity);
+        });
     });
 
-    const selectExposureType$ = this.pgService.selectedExposureType$.pipe(
-      shareReplay(1)
-    );
-    combineLatest([
-      this.pgService.exposureShown$,
-      this.pgService.riskAssessmentShown$,
-      selectExposureType$,
-    ])
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        map(([groupShown]) => {
-          return +groupShown;
-        })
-      )
-      .subscribe((opacity: number) => {
-        this.map.setPaintProperty('population-layer', 'fill-opacity', opacity);
-      });
+    // const exposureDataType = {
+    //   population: 'upri-noah.ph_pop_den_tls',
+    //   building: 'upri-noah.ph_bldg_osm_tls',
+    // };
+
+    // this.map.on('load', () => {
+    //   // Add population data source and layer
+    //   this.map.addSource('population', {
+    //     type: 'vector',
+    //     url: `mapbox://${exposureDataType.population}`,
+    //   });
+    //   this.map.addLayer({
+    //     id: 'population-layer',
+    //     type: 'fill',
+    //     source: 'population',
+    //     'source-layer': 'PH060000000_POP_den',
+    //     paint: {
+    //       'fill-opacity': 0.7,
+    //       'fill-color': '#008040',
+    //     },
+    //   });
+
+    //   // Add building data source and layer
+    //   this.map.addSource('building', {
+    //     type: 'vector',
+    //     url: `mapbox://${exposureDataType.building}`,
+    //   });
+    //   this.map.addLayer({
+    //     id: 'building-layer',
+    //     type: 'fill',
+    //     source: 'building',
+    //     'source-layer': 'PH060000000_BLDG_osm',
+    //     paint: {
+    //       'fill-opacity': 0.7,
+    //       'fill-color': '#9900E6',
+    //     },
+    //   });
+    // });
+
+    // const selectExposureType$ = this.pgService.selectedExposureType$.pipe(
+    //   shareReplay(1)
+    // );
+    // combineLatest([
+    //   this.pgService.exposureShown$,
+    //   this.pgService.riskAssessmentShown$,
+    //   selectExposureType$,
+    // ])
+    //   .pipe(
+    //     takeUntil(this._unsub),
+    //     takeUntil(this._changeStyle),
+    //     map(([groupShown]) => {
+    //       return +groupShown;
+    //     })
+    //   )
+    //   .subscribe((opacity: number) => {
+    //     this.map.setPaintProperty('population-layer', 'fill-opacity', opacity);
+    //   });
   }
 
   showContourMaps() {
