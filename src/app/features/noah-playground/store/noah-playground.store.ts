@@ -114,10 +114,11 @@ export type VolcanoState = {
 export type RiskGroupState = {
   shown: boolean;
   expanded: boolean;
+  selectedType: RiskGroupType;
   types: Record<RiskGroupType, RiskState>;
 };
 
-export type RiskGroupType = 'rain' | 'population' | 'building';
+export type RiskGroupType = 'population' | 'building';
 
 export type RiskState = {
   shown: boolean;
@@ -167,7 +168,6 @@ export type RiskAssessmentState = {
 };
 
 export type ExposureTypeState = {
-  expanded: boolean;
   shown: boolean;
 };
 
@@ -303,11 +303,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
   riskState: {
     shown: false,
     expanded: false,
+    selectedType: 'population',
     types: {
-      rain: {
-        shown: false,
-        opacity: 100,
-      },
       population: {
         shown: false,
         opacity: 100,
@@ -402,11 +399,9 @@ const createInitialValue = (): NoahPlaygroundState => ({
     types: {
       population: {
         shown: false,
-        expanded: false,
       },
       buildings: {
         shown: false,
-        expanded: false,
       },
     },
   },

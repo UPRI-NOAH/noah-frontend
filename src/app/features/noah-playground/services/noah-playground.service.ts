@@ -122,6 +122,10 @@ export class NoahPlaygroundService {
     );
   }
 
+  get selectRisk$(): Observable<RiskGroupType> {
+    return this.store.state$.pipe(map((state) => state.riskState.selectedType));
+  }
+
   get contourMapGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.contourMaps.expanded));
   }
@@ -177,9 +181,9 @@ export class NoahPlaygroundService {
     );
   }
 
-  getExposure$(exposureType: ExposureTypes): Observable<ExposureTypeState> {
+  getExposure$(exposureType: ExposureTypes): Observable<boolean> {
     return this.store.state$.pipe(
-      map((state) => state.exposureType.types[exposureType])
+      map((state) => state.exposureType.types[exposureType].shown)
     );
   }
 
@@ -474,14 +478,14 @@ export class NoahPlaygroundService {
       ...this.store.state.riskAssessment,
     };
 
-    const exposure = {
-      ...this.store.state.exposure,
+    const exposureType = {
+      ...this.store.state.exposureType,
     };
 
     const { shown } = riskAssessment;
     riskAssessment.shown = !shown;
 
-    exposure.shown = !exposure.shown;
+    exposureType.shown = !exposureType.shown;
     riskAssessment.shown = !riskAssessment.shown;
 
     this.store.patch(
@@ -589,6 +593,15 @@ export class NoahPlaygroundService {
       { weatherSatellite },
       `Select Weather Satellite type: ${weatherType}`
     );
+  }
+
+  selectRiskType(exposureType: RiskGroupType): void {
+    const riskState = {
+      ...this.store.state.riskState,
+    };
+
+    riskState.selectedType = exposureType;
+    this.store.patch({ riskState }, `Select Exposure Type: ${exposureType}`);
   }
 
   toggleWeatherSatelliteGroupVisibility(): void {
