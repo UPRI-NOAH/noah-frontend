@@ -5,6 +5,7 @@ import mapboxgl, {
   GeolocateControl,
   Map,
   Marker,
+  VectorSource,
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -57,6 +58,7 @@ import {
   WEATHER_SATELLITE_ARR,
   ExposureTypes,
   RiskAssessment,
+  RiskGroupType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
@@ -709,85 +711,61 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initExpPopulation() {
-    // let layerVisible = true;
+    const exposureDataType = {
+      population: 'upri-noah.ph_pop_den_tls',
+      building: 'upri-noah.ph_bldg_osm_tls',
+    };
 
-    // this.map.on('load', () => {
-    //   this.map.addSource('population', {
-    //     type: 'vector',
-    //     url: 'mapbox://upri-noah.ph_pop_den_tls', // Replace with your own data source URL upri-noah.ph_pop_den_tls
-    //   });
-    //   this.map.addLayer({
-    //     id: 'population-layer',
-    //     type: 'fill',
-    //     source: 'population',
-    //     'source-layer': 'PH060000000_POP_den', // Replace with your own source layer name
-    //     paint: {
-    //       'fill-color': '#008040', // fill dark green
-    //       'fill-opacity': 0.75,
+    const allShown$ = this.pgService.riskGroupShown$.pipe(
+      distinctUntilChanged()
+    );
 
-    //     },
-
-    //     layout: {
-    //       visibility: layerVisible ? 'visible' : 'none',
-    //     },
-    //   });
-    // });
-
-    // const allShown$ = this.pgService.riskAssessmentShown$.pipe(shareReplay(1));
-
-    // combineLatest([allShown$])
-    //   .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-    //   .subscribe(([allShown$]) => {
-    //     if (
-    //       this.map.getLayer('population-layer') &&
-    //       allShown$ &&
-    //       !layerVisible
-    //     ) {
-    //       this.map.setLayoutProperty(
-    //         'population-layer',
-    //         'visibility',
-    //         'visible'
-    //       );
-    //       layerVisible = true;
-    //     } else if (
-    //       this.map.getLayer('population-layer') &&
-    //       !allShown$ &&
-    //       layerVisible
-    //     ) {
-    //       this.map.setLayoutProperty('population-layer', 'visibility', 'none');
-    //       layerVisible = false;
-    //     }
-    //   });
-    let layerVisible = true;
     this.map.on('load', () => {
+      // Add population data source and layer
       this.map.addSource('population', {
         type: 'vector',
-        url: 'mapbox://upri-noah.ph_pop_den_tls', // Replace with your own data source URL upri-noah.ph_pop_den_tls
+        url: `mapbox://${exposureDataType.population}`,
       });
       this.map.addLayer({
         id: 'population-layer',
         type: 'fill',
         source: 'population',
-        'source-layer': 'PH060000000_POP_den', // Replace with your own source layer name
+        'source-layer': 'PH060000000_POP_den',
         paint: {
-          'fill-color': '#008040', // fill dark green
-          'fill-opacity': 0.75,
+          'fill-opacity': 0.7,
+          'fill-color': '#008040',
         },
-        layout: {
-          visibility: layerVisible ? 'visible' : 'none',
+      });
+
+      // Add building data source and layer
+      this.map.addSource('building', {
+        type: 'vector',
+        url: `mapbox://${exposureDataType.building}`,
+      });
+      this.map.addLayer({
+        id: 'building-layer',
+        type: 'fill',
+        source: 'building',
+        'source-layer': 'PH060000000_BLDG_osm',
+        paint: {
+          'fill-opacity': 0.7,
+          'fill-color': '#9900E6',
         },
       });
     });
 
+    const selectExposureType$ = this.pgService.selectedExposureType$.pipe(
+      shareReplay(1)
+    );
     combineLatest([
       this.pgService.exposureShown$,
       this.pgService.riskAssessmentShown$,
+      selectExposureType$,
     ])
       .pipe(
         takeUntil(this._unsub),
         takeUntil(this._changeStyle),
         map(([groupShown]) => {
-          console.log('1');
           return +groupShown;
         })
       )
