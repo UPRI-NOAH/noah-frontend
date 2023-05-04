@@ -5,7 +5,6 @@ import mapboxgl, {
   GeolocateControl,
   Map,
   Marker,
-  VectorSource,
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -56,9 +55,7 @@ import {
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
-  ExposureTypes,
-  RiskAssessment,
-  RiskGroupType,
+  RiskExposureType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
@@ -737,7 +734,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     };
 
-    Object.keys(exposureData).forEach((expType: RiskGroupType) => {
+    Object.keys(exposureData).forEach((expType: RiskExposureType) => {
       const expDetails = exposureData[expType];
       const sourceLayer =
         expType === 'population'

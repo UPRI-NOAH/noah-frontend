@@ -2,10 +2,6 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
-import {
-  ExposureType,
-  RiskAssessmentType,
-} from '../services/risk-assessment.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -131,20 +127,6 @@ export type VolcanoState = {
   opacity: number;
 };
 
-export type RiskGroupState = {
-  shown: boolean;
-  expanded: boolean;
-  selectedType: RiskGroupType;
-  types: Record<RiskGroupType, RiskState>;
-};
-
-export type RiskGroupType = 'population' | 'building';
-
-export type RiskState = {
-  shown: boolean;
-  opacity: number;
-};
-
 export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
@@ -184,7 +166,6 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
-  riskState: RiskGroupState;
   exposure: {
     shown: boolean;
     selectedType: ExposureTypes;
@@ -288,22 +269,6 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 100,
       },
       inactive: {
-        shown: false,
-        opacity: 100,
-      },
-    },
-  },
-
-  riskState: {
-    shown: false,
-    expanded: false,
-    selectedType: 'population',
-    types: {
-      population: {
-        shown: false,
-        opacity: 100,
-      },
-      building: {
         shown: false,
         opacity: 100,
       },

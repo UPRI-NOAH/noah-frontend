@@ -6,7 +6,6 @@ import {
 } from '@features/noah-playground/services/risk-assessment.service';
 import { RiskModalService } from '@features/noah-playground/services/risk-modal.service';
 import {
-  RiskGroupType,
   ExposureTypes,
   RiskExposureType,
   RISK_NAME,
@@ -39,8 +38,6 @@ export class RiskAssessmentGroupComponent implements OnInit {
   selectedExposureType$: Observable<ExposureType>;
 
   exposurePopulationShown$: Observable<boolean>;
-
-  selectedRisk$: Observable<RiskGroupType>;
 
   checkedRain = false;
   checkedExp = false;

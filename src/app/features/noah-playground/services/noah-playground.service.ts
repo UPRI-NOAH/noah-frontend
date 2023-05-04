@@ -17,11 +17,7 @@ import {
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
-  RiskAssessment,
   ExposureTypes,
-  RiskGroupState,
-  RiskGroupType,
-  RiskState,
   RiskExposureType,
   RiskExposureTypeState,
   RiskExposureState,
@@ -77,14 +73,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
   }
 
-  get riskGroupShown$(): Observable<boolean> {
-    return this.store.state$.pipe(map((state) => state.riskState.shown));
-  }
-
-  get riskGroupExpanded$(): Observable<boolean> {
-    return this.store.state$.pipe(map((state) => state.riskState.expanded));
-  }
-
   get sensorsGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.shown));
   }
@@ -111,10 +99,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.weatherSatellite.selectedType)
     );
-  }
-
-  get selectRisk$(): Observable<RiskGroupType> {
-    return this.store.state$.pipe(map((state) => state.riskState.selectedType));
   }
 
   get contourMapGroupExpanded$(): Observable<boolean> {
@@ -177,12 +161,6 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
-    );
-  }
-
-  getRisk$(riskType: RiskGroupType): Observable<RiskState> {
-    return this.store.state$.pipe(
-      map((state) => state.riskState.types[riskType])
     );
   }
 
@@ -368,16 +346,6 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
-  toggleExposureGroupProperty(property: 'expanded' | 'shown') {
-    const riskState: RiskGroupState = {
-      ...this.store.state.riskState,
-    };
-
-    const currentValue = riskState[property];
-    riskState[property] = !currentValue;
-    this.store.patch({ riskState }, `Exposure ${property}, ${!currentValue}`);
-  }
-
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -399,18 +367,6 @@ export class NoahPlaygroundService {
     this.store.patch(
       { volcanoes },
       `Volcano - update ${type}'s shown to ${value}`
-    );
-  }
-
-  setRiskSoloShown(value: boolean, type: RiskGroupType) {
-    const riskState: RiskGroupState = {
-      ...this.store.state.riskState,
-    };
-
-    riskState.types[type].shown = value;
-    this.store.patch(
-      { riskState },
-      `riskState - update ${type}'s shown to ${value}`
     );
   }
 
@@ -515,15 +471,6 @@ export class NoahPlaygroundService {
       { weatherSatellite },
       `Select Weather Satellite type: ${weatherType}`
     );
-  }
-
-  selectRiskType(exposureType: RiskGroupType): void {
-    const riskState = {
-      ...this.store.state.riskState,
-    };
-
-    riskState.selectedType = exposureType;
-    this.store.patch({ riskState }, `Select Exposure Type: ${exposureType}`);
   }
 
   toggleWeatherSatelliteGroupVisibility(): void {
