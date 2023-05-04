@@ -1,5 +1,5 @@
 <div class="pl-6 relative pb-2">
-  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+  <div class="pl-4 flex items-center" (click)="toggleShown()">
     <div class="inline-flex items-center checkbox {{ qcSensorType }}">
       <input
         [checked]="(shown$ | async) && !fetchFailed"
