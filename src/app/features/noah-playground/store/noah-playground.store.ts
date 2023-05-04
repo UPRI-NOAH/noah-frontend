@@ -76,12 +76,24 @@ export type RiskExposureState = {
 };
 
 export type RiskExposureTypeState = {
+  shown: boolean;
   opacity: number;
 };
 
 export type RiskExposureTypesState = {
   population: RiskExposureTypeState;
   building: RiskExposureTypeState;
+};
+
+export type RiskGroupTypesState = {
+  //Rain
+  exposure: RiskExposureTypeState;
+};
+
+export type RiskGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: RiskGroupTypesState;
 };
 
 export type ExaggerationState = {
@@ -163,6 +175,7 @@ type NoahPlaygroundState = {
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   riskExposure: RiskExposureState;
+  riskAssessment: RiskGroupState;
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -339,9 +352,21 @@ const createInitialValue = (): NoahPlaygroundState => ({
     selectedType: 'population',
     types: {
       population: {
+        shown: false,
         opacity: 100,
       },
       building: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
+  riskAssessment: {
+    shown: false,
+    expanded: false,
+    types: {
+      exposure: {
+        shown: false,
         opacity: 100,
       },
     },

@@ -80,37 +80,22 @@
       <img src="assets/legends/rainfall-forecast-1.png" />
     </div>
 
-    <!-- <div class="py-2 pl-10 flex items-center">
+    <div class="py-2 pl-10 flex items-center">
       <div class="inline-flex items-center checkbox">
         <input
           [checked]="exposureShown$ | async"
           (click)="toggleExposure($event)"
-          [(ngModel)]="isCheckedExp"
+          [(ngModel)]="checkedExp"
           type="checkbox"
           class="h-5 w-5 text-blue-600"
         />
       </div>
       <label class="ml-3"> Exposure </label>
     </div>
-
-    <div class="f-f-r py-2 pl-20" *ngFor="let exposureType of names">
-      <div class="flex items-center">
-        <div class="inline-flex items-center radio">
-          <input
-            type="radio"
-            class="radio h-5 w-5 text-blue-600 disabled:cursor-not-allowed"
-            id="selected-exposure-{{ exposureType }}"
-            [checked]="(selectedRiskExposure$ | async) === exposureType"
-            [disabled]="!isCheckedExp"
-            (click)="selectExposure(exposureType)"
-          />
-        </div>
-        <div class="flex flex-col ml-3">
-          <label class="text-lg f-f-r capitalize">{{ exposureType }}</label>
-        </div>
-      </div>
-    </div> -->
-    <noah-risk-exposure [(ngModel)]="isCheckedExp"></noah-risk-exposure>
+    <noah-risk-exposure
+      [class.opacity-30]="!(exposureShown$ | async)"
+      [class.cursor-not-allowed]="!(exposureShown$ | async)"
+    ></noah-risk-exposure>
 
     <div class="px-6 flex justify-around items-center">
       <button
@@ -135,7 +120,7 @@
           border-2
           disabled:cursor-not-allowed disabled:opacity-30
         "
-        [disabled]="!isRadioEnabled"
+        [disabled]="!isButtonEnabled"
         (click)="openModalRisk()"
       >
         Calculate Risk

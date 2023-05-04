@@ -18,7 +18,7 @@ export class RiskExposureComponent implements OnInit {
 
   selectedRiskExposure$: Observable<RiskExposureType>;
   exposureShown$: Observable<boolean>;
-  isCheckedExp = false;
+  expChecked = false;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
@@ -32,10 +32,7 @@ export class RiskExposureComponent implements OnInit {
     this.pgService.selectRiskExposure(exposureTypes);
   }
 
-  toggleExposure(events: Event) {
-    events.stopPropagation();
-    events.stopImmediatePropagation();
-
+  toggleExposure() {
     this.pgService.toggleRiskExposureGroupVisibility();
   }
 }

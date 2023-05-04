@@ -21,6 +21,7 @@ import {
   RiskExposureType,
   RiskExposureTypeState,
   RiskExposureState,
+  RiskGroupState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -115,10 +116,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  get selectedExposureType$(): Observable<ExposureTypes> {
-    return this.store.state$.pipe(map((state) => state.exposure.selectedType));
-  }
-
   get riskExposureShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.riskExposure.shown));
   }
@@ -131,6 +128,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.riskExposure.selectedType)
     );
+  }
+
+  get riskAssessmentGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskAssessment.shown));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -603,10 +604,20 @@ export class NoahPlaygroundService {
   }
 
   toggleAllRiskExposureVisibility(): void {
-    const riskExposure = {
-      ...this.store.state.riskExposure,
+    const riskAssessment = {
+      ...this.store.state.riskAssessment,
     };
-    riskExposure.shown = !riskExposure.shown;
-    this.store.patch({ riskExposure }, `Hide All Risk Exposure`);
+    riskAssessment.shown = !riskAssessment.shown;
+    this.store.patch({ riskAssessment }, `Hide All Risk Exposure`);
+  }
+
+  toggleExposureGroupShown(): void {
+    const riskAssessment: RiskGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    const { shown } = riskAssessment;
+    riskAssessment.shown = !shown;
+    this.store.patch({ riskAssessment }, `Update Risk ${!shown}`);
   }
 }
