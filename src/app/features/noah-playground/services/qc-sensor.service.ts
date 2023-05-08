@@ -52,7 +52,7 @@ export class QcSensorService {
   getQcSensors(type: QuezonCitySensorType) {
     const param = type ? `iot_type=${type}` : '';
     return this.http.get(
-      `${this.QCBASE_URL}/api/iot-sensors/?municity=quezon_city&${param}`
+      `${this.QCBASE_URL}/api/iot-sensors/?municity[]=laguna&municity[]=quezon_city&${param}`
     );
   }
 
