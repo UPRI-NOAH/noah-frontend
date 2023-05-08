@@ -520,6 +520,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const options: any = {
       title: {
         text: `${appID}`,
+        style: {
+          fontSize: '20px', // set the font size to 16 pixels
+        },
       },
       credits: {
         enabled: false,
