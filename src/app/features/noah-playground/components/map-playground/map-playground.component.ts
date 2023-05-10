@@ -159,6 +159,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
   private subscriptions: Subscription[] = [];
+  municity = [];
 
   @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
@@ -433,6 +434,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const iotType = e.features[0].properties.iot_type;
             const status = e.features[0].properties.status;
             const batPercent = e.features[0].properties.battery_percent;
+            const municity = e.features[0].properties.municity;
+            this.municity = municity;
             const formattedBatPercent =
               batPercent && batPercent !== 'null'
                 ? `${batPercent}%`
@@ -516,10 +519,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     appID: string,
     qcSensorType: QuezonCitySensorType
   ) {
+    localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
     const options: any = {
       title: {
         text: `${appID}`,
+        style: {
+          fontSize: '20px', // set the font size to 16 pixels
+        },
       },
       credits: {
         enabled: false,
@@ -559,7 +566,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else {
+                    _this.modalService.openModal();
+                  }
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
                     this.exportChart({
                       type: 'application/pdf',
                     });
@@ -572,7 +593,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
@@ -585,7 +617,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.print({
                       type: 'print',
                     });
@@ -598,7 +641,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
