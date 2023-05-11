@@ -1,0 +1,44 @@
+<div class="pl-6 relative">
+  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ riskAssessmentType }}">
+      <input
+        [checked]="shown$ | async"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ riskAssessmentType }}"
+      />
+    </div>
+    <label class="ml-3" for="input-{{ riskAssessmentType }}">
+      {{ riskAssessmentType }}
+    </label>
+  </div>
+</div>
+
+<!-- <div class="pl-6 relative pb-2">
+  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ riskAssessmentType }}">
+      <input
+        [checked]="(shown$ | async) && !fetchFailed"
+        [disabled]="fetchFailed"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ riskAssessmentType }}"
+      />
+    </div>
+    <label
+      [class.line-through]="fetchFailed"
+      [class.text-gray-400]="fetchFailed"
+      class="ml-3"
+      for="input-{{ riskAssessmentType }}"
+    >
+      {{ riskAssessmentType }}
+    </label>
+  </div>
+
+  <div
+    class="absolute left-0 bottom-0 text-xs italic pl-16 ml-2 text-gray-400"
+    *ngIf="fetchFailed"
+  >
+    (Unable to fetch data)
+  </div>
+</div> -->

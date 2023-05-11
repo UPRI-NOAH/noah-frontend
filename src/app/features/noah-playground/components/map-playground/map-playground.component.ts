@@ -55,8 +55,15 @@ import {
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
+  ExposureTypes,
+  RiskAssessment,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+import {
+  EXPOSURE_NAMES,
+  RISK_ASSESSMENT,
+  RiskAssessmentServicesService,
+} from '@features/noah-playground/services/risk-assessment-services.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -111,7 +118,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private riskService: RiskAssessmentServicesService
   ) {}
 
   ngOnInit(): void {
@@ -136,6 +144,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initExpPopulation();
       });
   }
 
@@ -703,6 +712,57 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
       }
     );
+  }
+
+  initExpPopulation() {
+    let layerVisible = true;
+
+    this.map.on('load', () => {
+      this.map.addSource('population', {
+        type: 'vector',
+        url: 'mapbox://upri-noah.82vvuem9', // Replace with your own data source URL
+      });
+      this.map.addLayer({
+        id: 'population-layer',
+        type: 'line',
+        source: 'population',
+        'source-layer': 'PH060400000_FB_Pop-0g5pzh', // Replace with your own source layer name
+        paint: {
+          'line-color': '#000', // black line
+          'line-width': 3,
+          'line-opacity': 0.75,
+        },
+        layout: {
+          visibility: layerVisible ? 'visible' : 'none',
+        },
+      });
+    });
+
+    const allShown$ = this.pgService.riskAssessmentShown$.pipe(shareReplay(1));
+
+    combineLatest([allShown$])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([allShown$]) => {
+        if (
+          this.map.getLayer('population-layer') &&
+          allShown$ &&
+          !layerVisible
+        ) {
+          this.map.setLayoutProperty(
+            'population-layer',
+            'visibility',
+            'visible'
+          );
+          layerVisible = true;
+        } else if (
+          this.map.getLayer('population-layer') &&
+          !allShown$ &&
+          layerVisible
+        ) {
+          this.map.setLayoutProperty('population-layer', 'visibility', 'none');
+          layerVisible = false;
+        }
+      });
   }
 
   showContourMaps() {
