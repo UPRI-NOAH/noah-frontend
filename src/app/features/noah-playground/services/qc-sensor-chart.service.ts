@@ -168,11 +168,14 @@ export class QcSensorChartService {
             lineWidth: 5,
           },
           tooltip: {
+            headerFormat:
+              '<span style="font-size: 15px">{point.key}</span><br/>',
             valueSuffix: 'mm',
             shared: false,
             xDateFormat: '',
             valueDecimal: 2,
-            pointFormat: 'Rainfall: {point.y:.2f}mm',
+            pointFormat:
+              '<span style="font-size: 16px">Rainfall: {point.y:.2f}mm</span>',
           },
         },
       ],
@@ -250,11 +253,14 @@ export class QcSensorChartService {
             lineWidth: 5,
           },
           tooltip: {
+            headerFormat:
+              '<span style="font-size: 15px">{point.key}</span><br/>',
             shared: false,
             valueSuffix: 'm',
             xDateFormat: '',
             valueDecimal: 2,
-            pointFormat: 'Flood Height: {point.y:.2f}m',
+            pointFormat:
+              '<span style="font-size: 16px">Flood Height: {point.y:.2f}m</span>',
           },
         },
       ],
