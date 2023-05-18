@@ -1,6 +1,6 @@
 import { CircleLayer, LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
 
-export type MapStyle = 'terrain' | 'satellite' | 'streets';
+export type MapStyle = 'terrain' | 'satellite';
 
 export const CRITICAL_FACILITIES_ARR = [
   'police-station',

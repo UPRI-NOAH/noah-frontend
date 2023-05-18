@@ -59,7 +59,9 @@ import {
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
-type MapStyle = 'terrain' | 'satellite' | 'streets';
+type MapStyle = 'terrain' | 'satellite';
+
+type StreetStyle = 'terrain' | 'satellite' | 'streets';
 
 type LayerSettingsParam = {
   layerID: string;
@@ -102,6 +104,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
+  streetStyle: StreetStyle = 'terrain';
   isMapboxAttrib;
 
   private _graphShown = false;
@@ -772,19 +775,29 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           if (groupShown && allshown) {
             if (selectedExpoType === 'population') {
               opacity = expoOpacity / 100;
-              this.switchMapStyle('terrain');
+              this.switchStreetMap('terrain');
             } else if (selectedExpoType === 'building') {
-              this.switchMapStyle('streets');
+              this.switchStreetMap('streets');
               opacity = 0;
             }
           } else {
             allshown = false;
             opacity = 0;
-            this.switchMapStyle('terrain');
+            this.switchStreetMap('terrain');
           }
           this.map.setPaintProperty(expType, 'fill-opacity', opacity);
         });
     });
+  }
+
+  switchStreetMap(style: StreetStyle) {
+    if (this.streetStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.streetStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
+    }
   }
 
   showContourMaps() {
