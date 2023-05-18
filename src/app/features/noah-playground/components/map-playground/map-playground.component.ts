@@ -59,7 +59,7 @@ import {
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
-type MapStyle = 'terrain' | 'satellite';
+type MapStyle = 'terrain' | 'satellite' | 'streets';
 
 type LayerSettingsParam = {
   layerID: string;
@@ -713,10 +713,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         url: 'mapbox://upri-noah.ph_pop_den_tls',
         type: 'vector',
       },
-      building: {
-        url: 'mapbox://upri-noah.ph_bldg_osm_tls',
-        type: 'vector',
-      },
     };
 
     const getExposure = (exposureDetails: {
@@ -735,26 +731,28 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
 
     Object.keys(exposureData).forEach((expType: RiskExposureType) => {
-      const expDetails = exposureData[expType];
-      const sourceLayer =
-        expType === 'population'
-          ? 'PH060000000_POP_den'
-          : 'PH060000000_BLDG_osm';
-      const paintColor = expType === 'population' ? '#008040' : '#9900E6';
+      const streetMaps = environment.mapbox.styles.streets;
+      if (expType === 'population') {
+        const expDetails = exposureData[expType];
+        const sourceLayer = 'PH060000000_POP_den';
 
-      this.map.addSource(expType, getExposure(expDetails));
+        const paintColor = '#008040';
 
-      this.map.addLayer({
-        id: expType,
-        type: 'fill',
-        source: expType,
-        'source-layer': sourceLayer,
-        paint: {
-          'fill-opacity': 0.7,
-          'fill-color': paintColor,
-        },
-      });
+        this.map.addSource(expType, getExposure(expDetails));
 
+        this.map.addLayer({
+          id: expType,
+          type: 'fill',
+          source: expType,
+          'source-layer': sourceLayer,
+          paint: {
+            'fill-opacity': 0.7,
+            'fill-color': paintColor,
+          },
+        });
+      } else if (expType === 'building') {
+        this.map.setStyle(streetMaps);
+      }
       const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
         shareReplay(1)
       );
@@ -771,12 +769,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
         .subscribe(([groupShown, allshown, selectedExpoType, expoOpacity]) => {
           let opacity = 0;
-          if (groupShown) {
-            opacity =
-              allshown && selectedExpoType === expType ? expoOpacity / 100 : 0;
+          if (groupShown && allshown) {
+            if (selectedExpoType === 'population') {
+              opacity = expoOpacity / 100;
+              this.switchMapStyle('terrain');
+            } else if (selectedExpoType === 'building') {
+              this.switchMapStyle('streets');
+              opacity = 0;
+            }
           } else {
             allshown = false;
             opacity = 0;
+            this.switchMapStyle('terrain');
           }
           this.map.setPaintProperty(expType, 'fill-opacity', opacity);
         });
