@@ -734,28 +734,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
 
     Object.keys(exposureData).forEach((expType: RiskExposureType) => {
-      const streetMaps = environment.mapbox.styles.streets;
-      if (expType === 'population') {
-        const expDetails = exposureData[expType];
-        const sourceLayer = 'PH060000000_POP_den';
+      const expDetails = exposureData[expType];
+      this.map.addSource(expType, getExposure(expDetails));
+      this.map.addLayer({
+        id: expType,
+        type: 'fill',
+        source: expType,
+        'source-layer': 'PH060000000_POP_den',
+        paint: {
+          'fill-opacity': 0.7,
+          'fill-color': '#008040',
+        },
+      });
 
-        const paintColor = '#008040';
-
-        this.map.addSource(expType, getExposure(expDetails));
-
-        this.map.addLayer({
-          id: expType,
-          type: 'fill',
-          source: expType,
-          'source-layer': sourceLayer,
-          paint: {
-            'fill-opacity': 0.7,
-            'fill-color': paintColor,
-          },
-        });
-      } else if (expType === 'building') {
-        this.map.setStyle(streetMaps);
-      }
       const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
         shareReplay(1)
       );
