@@ -34,7 +34,15 @@ export type LandslideHazards =
 
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
+export type ExposureTypes = 'buildings' | 'population';
+
+export type RiskAssessment = 'rain';
+
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
+
+export const RISK_NAME = ['population', 'building'] as const;
+
+export type RiskExposureType = typeof RISK_NAME[number];
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
@@ -58,6 +66,34 @@ export type LandslideState = HazardState & {
 
 export type StormSurgeState = HazardState & {
   levels: Record<StormSurgeAdvisory, HazardLevelState>;
+};
+
+export type RiskExposureState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: RiskExposureType;
+  types: RiskExposureTypesState;
+};
+
+export type RiskExposureTypeState = {
+  shown: boolean;
+  opacity: number;
+};
+
+export type RiskExposureTypesState = {
+  population: RiskExposureTypeState;
+  building: RiskExposureTypeState;
+};
+
+export type RiskGroupTypesState = {
+  //Rain
+  exposure: RiskExposureTypeState;
+};
+
+export type RiskGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: RiskGroupTypesState;
 };
 
 export type ExaggerationState = {
@@ -138,9 +174,15 @@ type NoahPlaygroundState = {
   volcanoes: VolcanoGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
+  riskExposure: RiskExposureState;
+  riskAssessment: RiskGroupState;
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  exposure: {
+    shown: boolean;
+    selectedType: ExposureTypes;
+  };
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -303,6 +345,35 @@ const createInitialValue = (): NoahPlaygroundState => ({
         fetched: false,
       },
     },
+  },
+  riskExposure: {
+    shown: false,
+    expanded: false,
+    selectedType: 'population',
+    types: {
+      population: {
+        shown: false,
+        opacity: 100,
+      },
+      building: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
+  riskAssessment: {
+    shown: false,
+    expanded: false,
+    types: {
+      exposure: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
+  exposure: {
+    shown: false,
+    selectedType: 'population',
   },
   contourMaps: {
     shown: false,

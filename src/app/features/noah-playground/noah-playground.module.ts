@@ -22,7 +22,9 @@ import { ContourMapsComponent } from './components/contour-maps/contour-maps.com
 import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
 import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.component';
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
-
+import { RiskAssessmentSoloComponent } from './components/risk-assessment-solo/risk-assessment-solo.component';
+import { RiskAssessmentGroupComponent } from './components/risk-assessment-group/risk-assessment-group.component';
+import { RiskExposureComponent } from './components/risk-exposure/risk-exposure.component';
 @NgModule({
   declarations: [
     NoahPlaygroundComponent,
@@ -41,6 +43,9 @@ import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.com
     WeatherSatellitePlaygroundComponent,
     VolcanoGroupComponent,
     VolcanoSoloComponent,
+    RiskAssessmentSoloComponent,
+    RiskAssessmentGroupComponent,
+    RiskExposureComponent,
   ],
   imports: [
     CommonModule,

@@ -55,10 +55,13 @@ import {
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
+  RiskExposureType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 
 type MapStyle = 'terrain' | 'satellite';
+
+type StreetStyle = 'terrain' | 'satellite' | 'streets';
 
 type LayerSettingsParam = {
   layerID: string;
@@ -101,6 +104,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
+  streetStyle: StreetStyle = 'terrain';
   isMapboxAttrib;
 
   private _graphShown = false;
@@ -136,6 +140,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initExpPopulation();
       });
   }
 
@@ -703,6 +708,87 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
       }
     );
+  }
+
+  initExpPopulation() {
+    const exposureData = {
+      population: {
+        url: 'mapbox://upri-noah.ph_pop_den_tls',
+        type: 'vector',
+      },
+    };
+
+    const getExposure = (exposureDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (exposureDetails.type) {
+        case 'vector':
+          return {
+            type: 'vector',
+            url: exposureDetails.url,
+          };
+        default:
+          throw new Error('ERROR');
+      }
+    };
+
+    Object.keys(exposureData).forEach((expType: RiskExposureType) => {
+      const expDetails = exposureData[expType];
+      this.map.addSource(expType, getExposure(expDetails));
+      this.map.addLayer({
+        id: expType,
+        type: 'fill',
+        source: expType,
+        'source-layer': 'PH060000000_POP_den',
+        paint: {
+          'fill-opacity': 0.7,
+          'fill-color': '#008040',
+        },
+      });
+
+      const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+        shareReplay(1)
+      );
+      const allShown$ = this.pgService.riskExposureShown$.pipe(shareReplay(1));
+      const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
+        shareReplay(1)
+      );
+
+      const expoOpacity$ = this.pgService.getRiskExposure$(expType).pipe(
+        map((exposure) => exposure.opacity),
+        distinctUntilChanged()
+      );
+      combineLatest([groupShown$, allShown$, selectedExpoType$, expoOpacity$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([groupShown, allshown, selectedExpoType, expoOpacity]) => {
+          let opacity = 0;
+          if (groupShown && allshown) {
+            if (selectedExpoType === 'population') {
+              opacity = expoOpacity / 100;
+              this.switchStreetMap('terrain');
+            } else if (selectedExpoType === 'building') {
+              this.switchStreetMap('streets');
+              opacity = 0;
+            }
+          } else {
+            allshown = false;
+            opacity = 0;
+            this.switchStreetMap('terrain');
+          }
+          this.map.setPaintProperty(expType, 'fill-opacity', opacity);
+        });
+    });
+  }
+
+  switchStreetMap(style: StreetStyle) {
+    if (this.streetStyle === style) return;
+
+    if (style in environment.mapbox.styles) {
+      this.streetStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
+    }
   }
 
   showContourMaps() {
