@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { ExposureType } from '@features/noah-playground/services/risk-assessment-services.service';
+import { ExposureType } from '@features/noah-playground/services/risk-assessment.service';
 import { RiskAssessment } from '@features/noah-playground/store/noah-playground.store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -40,19 +40,19 @@ export class RiskAssessmentSoloComponent implements OnInit {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.shown$ = this.pgService.getRiskAssessmentTypeShown$(
-      this.riskAssessmentType
-    );
+    // this.shown$ = this.pgService.getRiskAssessmentTypeShown$(
+    //   this.riskAssessmentType
+    // );
 
     this.exposureShown$ = this.pgService.getExposureTypeShown$(
       this.exposureType
     );
-    this.pgService
-      .getExposureTypesFetched$(this.exposureType)
-      .pipe(takeUntil(this._unsub))
-      .subscribe((fetched) => {
-        this.fetchFailed = !fetched;
-      });
+    // this.pgService
+    //   .getExposureTypesFetched$(this.exposureType)
+    //   .pipe(takeUntil(this._unsub))
+    //   .subscribe((fetched) => {
+    //     this.fetchFailed = !fetched;
+    //   });
   }
 
   ngOnDestroy(): void {
@@ -61,7 +61,7 @@ export class RiskAssessmentSoloComponent implements OnInit {
   }
 
   toggleShown() {
-    this.pgService.setRiskAssessmentTypeShown(this.riskAssessmentType);
+    //this.pgService.setRiskAssessmentTypeShown(this.riskAssessmentType);
     // if (this.fetchFailed) return;
   }
 }

@@ -55,17 +55,13 @@ import {
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
-  ExposureTypes,
-  RiskAssessment,
+  RiskExposureType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
-import {
-  EXPOSURE_NAMES,
-  RISK_ASSESSMENT,
-  RiskAssessmentServicesService,
-} from '@features/noah-playground/services/risk-assessment-services.service';
 
 type MapStyle = 'terrain' | 'satellite';
+
+type StreetStyle = 'terrain' | 'satellite' | 'streets';
 
 type LayerSettingsParam = {
   layerID: string;
@@ -108,6 +104,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
+  streetStyle: StreetStyle = 'terrain';
   isMapboxAttrib;
 
   private _graphShown = false;
@@ -118,8 +115,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
-    private sensorService: SensorService,
-    private riskService: RiskAssessmentServicesService
+    private sensorService: SensorService
   ) {}
 
   ngOnInit(): void {
@@ -715,54 +711,84 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initExpPopulation() {
-    let layerVisible = true;
-
-    this.map.on('load', () => {
-      this.map.addSource('population', {
+    const exposureData = {
+      population: {
+        url: 'mapbox://upri-noah.ph_pop_den_tls',
         type: 'vector',
-        url: 'mapbox://upri-noah.82vvuem9', // Replace with your own data source URL
-      });
+      },
+    };
+
+    const getExposure = (exposureDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (exposureDetails.type) {
+        case 'vector':
+          return {
+            type: 'vector',
+            url: exposureDetails.url,
+          };
+        default:
+          throw new Error('ERROR');
+      }
+    };
+
+    Object.keys(exposureData).forEach((expType: RiskExposureType) => {
+      const expDetails = exposureData[expType];
+      this.map.addSource(expType, getExposure(expDetails));
       this.map.addLayer({
-        id: 'population-layer',
-        type: 'line',
-        source: 'population',
-        'source-layer': 'PH060400000_FB_Pop-0g5pzh', // Replace with your own source layer name
+        id: expType,
+        type: 'fill',
+        source: expType,
+        'source-layer': 'PH060000000_POP_den',
         paint: {
-          'line-color': '#000', // black line
-          'line-width': 3,
-          'line-opacity': 0.75,
-        },
-        layout: {
-          visibility: layerVisible ? 'visible' : 'none',
+          'fill-opacity': 0.7,
+          'fill-color': '#008040',
         },
       });
+
+      const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+        shareReplay(1)
+      );
+      const allShown$ = this.pgService.riskExposureShown$.pipe(shareReplay(1));
+      const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
+        shareReplay(1)
+      );
+
+      const expoOpacity$ = this.pgService.getRiskExposure$(expType).pipe(
+        map((exposure) => exposure.opacity),
+        distinctUntilChanged()
+      );
+      combineLatest([groupShown$, allShown$, selectedExpoType$, expoOpacity$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([groupShown, allshown, selectedExpoType, expoOpacity]) => {
+          let opacity = 0;
+          if (groupShown && allshown) {
+            if (selectedExpoType === 'population') {
+              opacity = expoOpacity / 100;
+              this.switchStreetMap('terrain');
+            } else if (selectedExpoType === 'building') {
+              this.switchStreetMap('streets');
+              opacity = 0;
+            }
+          } else {
+            allshown = false;
+            opacity = 0;
+            this.switchStreetMap('terrain');
+          }
+          this.map.setPaintProperty(expType, 'fill-opacity', opacity);
+        });
     });
+  }
 
-    const allShown$ = this.pgService.riskAssessmentShown$.pipe(shareReplay(1));
+  switchStreetMap(style: StreetStyle) {
+    if (this.streetStyle === style) return;
 
-    combineLatest([allShown$])
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([allShown$]) => {
-        if (
-          this.map.getLayer('population-layer') &&
-          allShown$ &&
-          !layerVisible
-        ) {
-          this.map.setLayoutProperty(
-            'population-layer',
-            'visibility',
-            'visible'
-          );
-          layerVisible = true;
-        } else if (
-          this.map.getLayer('population-layer') &&
-          !allShown$ &&
-          layerVisible
-        ) {
-          this.map.setLayoutProperty('population-layer', 'visibility', 'none');
-          layerVisible = false;
-        }
-      });
+    if (style in environment.mapbox.styles) {
+      this.streetStyle = style;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this._changeStyle.next();
+    }
   }
 
   showContourMaps() {
