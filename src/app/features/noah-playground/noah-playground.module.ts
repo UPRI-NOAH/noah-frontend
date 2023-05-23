@@ -22,6 +22,7 @@ import { ContourMapsComponent } from './components/contour-maps/contour-maps.com
 import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
 import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.component';
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
+import { EarthquakeComponent } from './components/earthquake/earthquake.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.com
     WeatherSatellitePlaygroundComponent,
     VolcanoGroupComponent,
     VolcanoSoloComponent,
+    EarthquakeComponent,
   ],
   imports: [
     CommonModule,

@@ -56,6 +56,14 @@ export class NoahPlaygroundService {
     );
   }
 
+  get earthquakeShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.shown));
+  }
+
+  get earthquakeExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.expanded));
+  }
+
   get volcanoGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.volcanoes.shown));
   }
@@ -353,6 +361,33 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `update sensor group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleEarthquakeGroupExpanded(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+    const { expanded } = earthquake;
+    earthquake.expanded = !expanded;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake state expanded to ${!expanded}`
+    );
+  }
+
+  toggleEarthquakeGroupShown(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { shown } = earthquake;
+    earthquake.shown = !shown;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake state shown to ${!shown}`
     );
   }
 

@@ -66,6 +66,11 @@ export type ExaggerationState = {
   level: number;
 };
 
+export type EarthquakeState = {
+  shown: boolean;
+  expanded: boolean;
+};
+
 export type HazardLevelState = {
   opacity: number;
   color: NoahColor;
@@ -141,6 +146,7 @@ type NoahPlaygroundState = {
   center: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  earthquake: EarthquakeState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
@@ -153,6 +159,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: true,
     expanded: false,
     level: 1.8,
+  },
+  earthquake: {
+    shown: false,
+    expanded: false,
   },
   flood: {
     shown: true,
