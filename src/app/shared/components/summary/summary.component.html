@@ -509,64 +509,76 @@
                                   </ng-container>
                                   <ng-template #showLevel>
                                     <ng-container
-                                      *ngIf="
-                                        data.latest_data >= '0' &&
-                                        data.latest_data < '0.6'
-                                      "
+                                      *ngIf="data.iot_type == 'rain'"
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-low
-                                          rounded-lg
-                                        "
-                                        >Low (0 - 0.5m)</span
+                                      <span class="pl-10 text-lg font-bold"
+                                        >-</span
                                       >
                                     </ng-container>
 
                                     <ng-container
-                                      *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data <= '1.5'
-                                      "
+                                      *ngIf="data.iot_type == 'flood'"
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-medium
-                                          rounded-lg
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0' &&
+                                          data.latest_data < '0.6'
                                         "
-                                        >Medium (0.6 - 1.5m)</span
                                       >
-                                    </ng-container>
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-low
+                                            rounded-lg
+                                          "
+                                          >Low (0 - 0.5m)</span
+                                        >
+                                      </ng-container>
 
-                                    <ng-container
-                                      *ngIf="data.latest_data > '1.6'"
-                                    >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-high
-                                          rounded-lg
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0.6' &&
+                                          data.latest_data <= '1.5'
                                         "
                                       >
-                                        High (1.6m +)
-                                      </span>
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-medium
+                                            rounded-lg
+                                          "
+                                          >Medium (0.6 - 1.5m)</span
+                                        >
+                                      </ng-container>
+
+                                      <ng-container
+                                        *ngIf="data.latest_data > '1.6'"
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-high
+                                            rounded-lg
+                                          "
+                                        >
+                                          High ( < 1.5m )
+                                        </span>
+                                      </ng-container>
                                     </ng-container>
                                   </ng-template>
                                 </td>
@@ -621,7 +633,7 @@
                                   <div class="dropdown inline-block relative">
                                     <button
                                       class="
-                                        mt-1
+                                        mt-1.5
                                         bg-gray-200
                                         text-gray-800
                                         font-semibold
@@ -862,32 +874,7 @@
                                     </div>
                                   </div>
                                   <div *ngIf="data.iot_type == 'rain'">
-                                    <div
-                                      class="text-low"
-                                      *ngIf="
-                                        data.latest_data == '0' ||
-                                        data.latest_data <= '0.5'
-                                      "
-                                    >
-                                      Latest Data: {{ data.latest_data }}mm
-                                    </div>
-                                    <div
-                                      class="text-medium"
-                                      *ngIf="
-                                        data.latest_data == '0.6' &&
-                                        data.latest_data <= '1.5'
-                                      "
-                                    >
-                                      Latest Data: {{ data.latest_data }}mm
-                                    </div>
-
-                                    <div
-                                      class="text-high"
-                                      *ngIf="
-                                        data.latest_data == '1.6' &&
-                                        data.latest_data <= '5'
-                                      "
-                                    >
+                                    <div>
                                       Latest Data: {{ data.latest_data }}mm
                                     </div>
                                   </div>
@@ -1629,67 +1616,13 @@
                                     <div>N/A</div>
                                   </ng-container>
                                   <ng-template #showLevel>
-                                    <div
-                                      *ngIf="
-                                        data.latest_data == '0' ||
-                                        data.latest_data < '0.5'
-                                      "
+                                    <ng-container
+                                      *ngIf="data.iot_type == 'rain'"
                                     >
-                                      <span
-                                        class="
-                                          p-1.5
-                                          text-xs
-                                          font-medium
-                                          uppercase
-                                          tracking-wider
-                                          text-black
-                                          bg-low
-                                          rounded-lg
-                                        "
-                                        >Low (0 - 0.5m)</span
+                                      <span class="pl-8 text-lg font-bold"
+                                        >-</span
                                       >
-                                      <div
-                                        *ngIf="
-                                          data.latest_data == '0.6' &&
-                                          data.latest_data <= '1.5'
-                                        "
-                                      >
-                                        <span
-                                          class="
-                                            p-1.5
-                                            text-xs
-                                            font-medium
-                                            uppercase
-                                            tracking-wider
-                                            text-black
-                                            bg-medium
-                                            rounded-lg
-                                          "
-                                          >Medium (0.6 - 1.5m)</span
-                                        >
-                                        <div
-                                          *ngIf="
-                                            data.latest_data <= '1.6' &&
-                                            data.latest_data <= '5'
-                                          "
-                                        >
-                                          <span
-                                            class="
-                                              p-1.5
-                                              text-xs
-                                              font-medium
-                                              uppercase
-                                              tracking-wider
-                                              text-black
-                                              bg-high
-                                              rounded-lg
-                                            "
-                                          >
-                                            High (1.6m +)
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
+                                    </ng-container>
                                   </ng-template>
                                 </td>
                                 <td
@@ -1961,32 +1894,7 @@
                                 </ng-container>
                                 <ng-template #showLabel>
                                   <div *ngIf="data.iot_type == 'rain'">
-                                    <div
-                                      class="text-low"
-                                      *ngIf="
-                                        data.latest_data == '0' ||
-                                        data.latest_data <= '0.5'
-                                      "
-                                    >
-                                      Latest Data: {{ data.latest_data }}mm
-                                    </div>
-                                    <div
-                                      class="text-medium"
-                                      *ngIf="
-                                        data.latest_data == '0.6' &&
-                                        data.latest_data <= '1.5'
-                                      "
-                                    >
-                                      Latest Data: {{ data.latest_data }}mm
-                                    </div>
-
-                                    <div
-                                      class="text-high"
-                                      *ngIf="
-                                        data.latest_data == '1.6' &&
-                                        data.latest_data <= '5'
-                                      "
-                                    >
+                                    <div>
                                       Latest Data: {{ data.latest_data }}mm
                                     </div>
                                   </div>
