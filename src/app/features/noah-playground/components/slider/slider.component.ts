@@ -6,7 +6,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -24,14 +24,14 @@ export class SliderComponent implements OnInit, OnDestroy {
   @Input() initialValue: number = 75;
   @Output() valueChange = new EventEmitter();
 
-  sliderCtrl: FormControl;
+  sliderCtrl: UntypedFormControl;
 
   private _unsub = new Subject();
 
   constructor() {}
 
   ngOnInit(): void {
-    this.sliderCtrl = new FormControl(this.initialValue);
+    this.sliderCtrl = new UntypedFormControl(this.initialValue);
     this.sliderCtrl.valueChanges
       .pipe(takeUntil(this._unsub))
       .subscribe((v) => this.valueChange.emit(v));
