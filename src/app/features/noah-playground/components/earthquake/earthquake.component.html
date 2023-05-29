@@ -69,5 +69,13 @@
 
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
+    <div class="pl-9">
+      <div class="flex items-center mb-1">
+        <label class="inline-flex items-center">
+          <img src="assets/map-sprites/earthquake-icon.png" />
+        </label>
+        <div class="flex flex-col ml-3">Earthquake Sensors</div>
+      </div>
+    </div>
   </div>
 </div>
