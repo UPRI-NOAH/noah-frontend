@@ -2,12 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import mapboxgl from 'mapbox-gl';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
   constructor(private httpClient: HttpClient) {}
+  private addressSubject = new Subject<string>();
+  address$: Observable<string> = this.addressSubject.asObservable();
 
   init() {
     mapboxgl.accessToken = environment.mapbox.accessToken;
@@ -48,6 +51,23 @@ export class MapService {
     } catch (error) {
       console.error(error);
       throw Error('Unable to perform reverse geocoding');
+    }
+  }
+
+  /**
+   * Returns the string address given the geographic coordinates this is applicable for drag marker
+   */
+  async dragReverseGeocode(lat: number, lng: number) {
+    try {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${environment.mapbox.accessToken}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const address = data.features[0].place_name;
+      this.addressSubject.next(address);
+      return address;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Unable to perform drag reverse geocoding');
     }
   }
 }
