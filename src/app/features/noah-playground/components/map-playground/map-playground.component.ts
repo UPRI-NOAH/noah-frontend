@@ -136,6 +136,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initEarthquake();
       });
   }
 
@@ -220,6 +221,96 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  initEarthquake() {
+    const earthquakeData =
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/earthquake/shake-ph.geojson';
+    fetch(earthquakeData)
+      .then((response) => response.json())
+      .then((data) => {
+        this.map.on('load', () => {
+          this.map.addSource('earthquake', {
+            type: 'geojson',
+            data: data,
+          });
+          this.map.loadImage(
+            'assets/map-sprites/earthquake-icon.png',
+            (error, image) => {
+              if (error) throw error;
+              this.map.addImage('earthquake-icon', image);
+              this.map.addLayer({
+                id: 'earthquake',
+                type: 'symbol',
+                source: 'earthquake',
+                layout: {
+                  'icon-image': 'earthquake-icon',
+                  'icon-size': 0.7,
+                },
+              });
+
+              combineLatest([this.pgService.earthquakeShown$])
+                .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+                .subscribe(([groupShown]) => {
+                  if (groupShown) {
+                    this.map.setLayoutProperty(
+                      'earthquake',
+                      'visibility',
+                      'visible'
+                    );
+                  } else {
+                    this.map.setLayoutProperty(
+                      'earthquake',
+                      'visibility',
+                      'none'
+                    );
+                  }
+                });
+            }
+          );
+        });
+      });
+    const earthquakeDiv = document.getElementById('earthquake-dom');
+    const earthquakePopup = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+    });
+
+    this.map.on('mouseenter', 'earthquake', (e) => {
+      const coordinates = (e.features[0].geometry as any).coordinates.slice();
+      const name = e.features[0].properties.name;
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+      this.map.getCanvas().style.cursor = 'pointer';
+
+      earthquakePopup
+        .setLngLat(coordinates)
+        .setHTML(
+          ` <div style="color: #333333;">
+          <div><strong>#${name}</strong></div>
+        </div>`
+        )
+        .addTo(this.map);
+    });
+
+    this.map.on('click', 'earthquake', (e) => {
+      earthquakeDiv.hidden = false;
+      this.map.flyTo({
+        center: (e.features[0].geometry as any).coordinates.slice(),
+        zoom: 13,
+        essential: true,
+      });
+      const name = e.features[0].properties.name;
+      const src = e.features[0].properties.src;
+      earthquakeDiv.innerHTML = `
+      <div><strong>Name:${name} </strong></div>
+      <iframe src="${src}" style="width:100%; height:100%;"></iframe>
+      `;
+      earthquakePopup.setDOMContent(earthquakeDiv).setMaxWidth('900px');
+    });
+    earthquakePopup.remove();
   }
 
   initSensors() {
