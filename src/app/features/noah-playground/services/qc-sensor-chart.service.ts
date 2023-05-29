@@ -47,7 +47,7 @@ export class QcSensorChartService {
       // });
 
       const valueRainAxisAcc = data.map((el) => {
-        return [new Date(el.received_at).getTime(), el.acc];
+        return [new Date(el.received_at).getTime(), el.rain_accu_1hour];
       });
 
       // set X axis
@@ -76,18 +76,20 @@ export class QcSensorChartService {
         type: 'spline',
       },
       subtitle: {
-        text: 'Rainfall',
+        text: 'Rain Gauge',
       },
       legend: {
         enabled: true,
       },
       yAxis: {
         title: {
-          text: 'ACC Value (mm)',
+          text: '1 Hour Rain Accumulated Value (mm)',
+          fontSize: '2em',
         },
         alignTicks: false,
         tickInterval: 0.1,
-        color: '#0C2D48',
+        color: '#298bdb',
+        fontSize: '3em',
         opposite: false,
         // plotBands: [
         //   {
@@ -151,7 +153,7 @@ export class QcSensorChartService {
       series: [
         {
           name: 'Rainfall (mm)',
-          color: '#0C2D48',
+          color: '#298bdb',
           data: [],
           lineWidth: 1.5,
           dataGrouping: {
