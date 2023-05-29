@@ -83,13 +83,11 @@ export class QcSensorChartService {
       },
       yAxis: {
         title: {
-          text: '1 Hour Rain Accumulated Value (mm)',
-          fontSize: '2em',
+          text: '1 Hour Rain Accumulated Data (mm)',
         },
         alignTicks: false,
         tickInterval: 0.1,
         color: '#298bdb',
-        fontSize: '3em',
         opposite: false,
         // plotBands: [
         //   {
