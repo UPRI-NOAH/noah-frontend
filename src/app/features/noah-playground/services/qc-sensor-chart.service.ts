@@ -188,7 +188,10 @@ export class QcSensorChartService {
         type: 'spline',
       },
       subtitle: {
-        text: 'Flood Height',
+        text: 'Flood Sensor',
+      },
+      legend: {
+        enabled: true,
       },
       xAxis: {
         type: 'datetime',
@@ -199,7 +202,7 @@ export class QcSensorChartService {
       },
       yAxis: {
         title: {
-          text: 'Meters (m)',
+          text: 'Flood Height in Meters (m)',
         },
         alignTicks: false,
         color: '#0C2D48',
