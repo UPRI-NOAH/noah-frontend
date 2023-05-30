@@ -212,7 +212,7 @@ export class QcSensorChartService {
           text: 'Flood Height in Meters (m)',
         },
         alignTicks: false,
-        color: '#298bdb',
+        color: '#0a59f7',
         opposite: false,
         plotBands: [
           {
@@ -220,7 +220,7 @@ export class QcSensorChartService {
             to: 0.5,
             color: '#F2C94C',
             label: {
-              text: 'Low',
+              text: 'Low (0 - 0.5m)',
               style: {
                 color: '#0C2D48',
               },
@@ -231,7 +231,7 @@ export class QcSensorChartService {
             to: 1.5,
             color: '#F2994A',
             label: {
-              text: 'Moderate',
+              text: 'Moderate (0.5m - 1.5m)',
               style: {
                 color: '#0C2D48',
               },
@@ -242,7 +242,7 @@ export class QcSensorChartService {
             to: 15,
             color: '#EB5757',
             label: {
-              text: 'High',
+              text: 'High (1.5m - 15m)',
               style: {
                 color: '#0C2D48',
               },
@@ -253,7 +253,7 @@ export class QcSensorChartService {
       series: [
         {
           name: 'Flood Height (m)',
-          color: '#298bdb',
+          color: '#0a59f7',
           data: [],
           lineWidth: 1.5,
           marker: {
