@@ -33,7 +33,7 @@ export class SummaryComponent implements OnInit {
 
   searchValue: string;
 
-  itemsPerPage: number = 15;
+  itemsPerPage: number = 20;
   floodPerpage: number = 15;
   rainPerPage: number = 15;
   allPages: number;
@@ -115,22 +115,22 @@ export class SummaryComponent implements OnInit {
       const dataArr = res.results.map((a) => {
         return {
           latest_date: a.received_at,
-          latest_data:
-            a.distance_m == undefined ? a.rain_accu_1hour : a.distance_m,
+          latest_data: a.distance_m == undefined ? a.acc : a.distance_m,
           iot_sensor: a.iot_sensor,
           status: a.status,
         };
       });
 
-      const totalSensor = response.features.map((a) => {
-        return;
-      });
-
-      const activeSensors = response.features.map((a) => {
-        return {
-          status: a.properties.status,
-        };
-      });
+      const activeSensors = response.features
+        .map((a) => {
+          if (a.properties.name !== null) {
+            return {
+              status: a.properties.status,
+            };
+          }
+          return null; // Return null for sensors with null names
+        })
+        .filter((sensor) => sensor !== null);
 
       const active = []; // compute total active sensor
       for (let i = 0; i < activeSensors.length; i++) {
@@ -266,7 +266,7 @@ export class SummaryComponent implements OnInit {
       //count numbers
       this.activeSensor = active.length;
       this.inactive = inactive.length;
-      this.totalSensor = totalSensor.length;
+      this.totalSensor = locationArr.length;
       this.activeRainSensor = activeRain.length;
       this.activeFloodSensor = activeFlood.length;
     } catch (error) {
