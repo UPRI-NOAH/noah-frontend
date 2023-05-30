@@ -19,7 +19,7 @@
         <input
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
-          [checked]="shown$ && qcshown$ | async"
+          [checked]="shown$ | async"
           (click)="toggleShown($event)"
         />
       </label>
@@ -40,7 +40,7 @@
         "
       >
         <svg
-          [class.hidden]="expanded$ && qcexpanded$ | async"
+          [class.hidden]="expanded$ | async"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1000 1000"
           width="18"
@@ -51,7 +51,7 @@
           />
         </svg>
         <svg
-          [class.hidden]="!(expanded$ && qcexpanded$ | async)"
+          [class.hidden]="!(expanded$ | async)"
           xmlns="http://www.w3.org/2000/svg"
           width="12"
           height="12"
@@ -67,35 +67,58 @@
     </div>
   </div>
 
-  <div [ngClass]="(expanded$ && qcexpanded$ | async) ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-2" />
-    <div class="pl-5">
-      <p class="text-s italic mt-2">IoT Sensors</p>
-    </div>
-    <noah-qc-sensor-solo
-      *ngFor="let qcSensorType of qcWeatherTypes"
-      [qcSensorType]="qcSensorType"
-    >
-    </noah-qc-sensor-solo>
-    <!-- <noah-qc-critical-facilities
+
+    <div>
+      <div class="pl-5 pb-2">
+        <p class="text-lg font-semibold mt-2">IoT Sensors</p>
+        <div>
+          <p class="text-xs italic ml-4">
+            Disclaimer: Calibration and validation of sensor datasets are still
+            in progress
+          </p>
+        </div>
+      </div>
+      <noah-qc-sensor-solo
+        *ngFor="let qcSensorType of qcWeatherTypes"
+        [qcSensorType]="qcSensorType"
+      >
+      </noah-qc-sensor-solo>
+      <!-- <noah-qc-critical-facilities
       *ngFor="let qcCriticalFacilities of qcCritFac"
       [qcCriticalFacilities]="qcCriticalFacilities"
       [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
     >
     </noah-qc-critical-facilities> -->
-    <noah-qc-boundary
-      *ngFor="let qcMunicipalBoundary of qcMuniBoundary"
-      [qcMunicipalBoundary]="qcMunicipalBoundary"
-    >
-    </noah-qc-boundary>
-    <noah-qc-critical-facilities
-      *ngFor="let qcCriticalFacilities of qcCritFac"
-      [qcCriticalFacilities]="qcCriticalFacilities"
-    >
-    </noah-qc-critical-facilities>
-    <noah-summary
-      [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
-    ></noah-summary>
+      <div class="pl-5">
+        <p class="text-lg font-semibold mt-2">Administrative Boundaries</p>
+        <div>
+          <p class="text-xs italic ml-4">
+            Disclaimer: Administrative boundaries are not authoritative
+          </p>
+        </div>
+      </div>
+      <noah-qc-boundary
+        *ngFor="let qcMunicipalBoundary of qcMuniBoundary"
+        [qcMunicipalBoundary]="qcMunicipalBoundary"
+      >
+      </noah-qc-boundary>
+
+      <noah-brgy-boundary
+        *ngFor="let brgyBoundary of barangayBoundary"
+        [barangayBoundary]="brgyBoundary"
+      ></noah-brgy-boundary>
+
+      <noah-qc-critical-facilities
+        *ngFor="let qcCriticalFacilities of qcCritFac"
+        [qcCriticalFacilities]="qcCriticalFacilities"
+      >
+      </noah-qc-critical-facilities>
+      <noah-summary
+        [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
+      ></noah-summary>
+    </div>
   </div>
 </div>
 <noah-disclaimer *ngIf="disclaimerModal"></noah-disclaimer>

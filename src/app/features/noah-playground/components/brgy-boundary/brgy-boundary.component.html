@@ -1,22 +1,29 @@
-<div class="relative pl-6">
+<div class="relative pb-2 pl-6">
   <div class="pt-2 pl-4 flex items-center" (click)="toggleShown()">
-    <div class="inline-flex items-center checkbox {{ qcMuniBoudaryName }}">
+    <div class="inline-flex items-center checkbox {{ barangayName }}">
       <input
         [checked]="shown$ | async"
         type="checkbox"
         class="h-5 w-5 text-blue-600 mr-3"
-        name="input-{{ qcMuniBoudaryName }}"
+        name="input-{{ barangayName }}"
       />
     </div>
     <div class="items-center justify-between w-12">
       <div class="w-12 items-start rounded bg-transparent">
         <div
-          class="w-12 h-5 dark:bg-gray-800 border-4 rounded border-black"
+          class="
+            w-12
+            h-5
+            dark:bg-gray-800
+            border-2 border-dotted
+            rounded
+            border-black
+          "
         ></div>
       </div>
     </div>
-    <label class="ml-3" for="input-{{ qcMuniBoudaryName }}">
-      {{ qcMuniBoudaryName }}
+    <label class="ml-3" for="input-{{ barangayName }}">
+      {{ barangayName }}
     </label>
   </div>
 </div>

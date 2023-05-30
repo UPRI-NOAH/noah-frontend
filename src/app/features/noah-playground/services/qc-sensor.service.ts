@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
+  BarangayBoundary,
   QuezonCityCriticalFacilities,
   QuezonCityMunicipalBoundary,
   QuezonCitySensorType,
@@ -26,6 +27,8 @@ export const QCCRITFAC: QuezonCityCriticalFacilities[] = [
 export const QCBoundary: QuezonCityMunicipalBoundary[] = [
   'qc-municipal-boundary',
 ];
+
+export const BARANGAYBOUNDARY: BarangayBoundary[] = ['brgy-boundary'];
 @Injectable({
   providedIn: 'root',
 })
@@ -38,14 +41,18 @@ export class QcSensorService {
   private QC_CRITFAC_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
   private QC_MUNIBoundary_URL =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson';
+    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Muni_Bounds.geojson';
+  private MUNI_BRGYBOUNDARY_URL =
+    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Brgys.geojson';
+
+  // old link for qc 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson'
 
   constructor(private http: HttpClient) {}
 
   getQcSensors(type: QuezonCitySensorType) {
     const param = type ? `iot_type=${type}` : '';
     return this.http.get(
-      `${this.QCBASE_URL}/api/iot-sensors/?municity=quezon_city&${param}`
+      `${this.QCBASE_URL}/api/iot-sensors/?municity[]=laguna&municity[]=quezon_city&${param}`
     );
   }
 
@@ -57,9 +64,13 @@ export class QcSensorService {
     return this.http.get(`${this.QC_MUNIBoundary_URL}`);
   }
 
+  getBarangayBoundary() {
+    return this.http.get(`${this.MUNI_BRGYBOUNDARY_URL}`);
+  }
+
   getLocation() {
     return this.http.get(
-      `${this.QCBASE_URL}/api/iot-sensors/?format=json&municity=quezon_city`
+      `${this.QCBASE_URL}/api/iot-sensors/?municity[]=laguna&municity[]=quezon_city`
     );
   }
 

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QCSENSORS } from '@features/noah-playground/services/qc-sensor.service';
 import {
+  BarangayBoundary,
+  BarangayBoundaryState,
   QuezonCityCriticalFacilities,
   QuezonCityCriticalFacilitiesState,
   QuezonCityMunicipalBoundary,
@@ -18,6 +20,7 @@ export class QcSensorsGroupComponent implements OnInit {
   qcWeatherTypes: QuezonCitySensorType[] = QCSENSORS;
   qcCritFac: QuezonCityCriticalFacilities[] = ['qc-critical-facilities'];
   qcMuniBoundary: QuezonCityMunicipalBoundary[] = ['qc-municipal-boundary'];
+  barangayBoundary: BarangayBoundary[] = ['brgy-boundary'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
@@ -26,7 +29,10 @@ export class QcSensorsGroupComponent implements OnInit {
   qcShown: QuezonCityCriticalFacilitiesState;
   qcbshown$: Observable<boolean>;
   qcbexpanded$: Observable<boolean>;
+  brgyShown$: Observable<boolean>;
+  brgyExpanded$: Observable<boolean>;
   qcbShown: QuezonCityMunicipalBoundaryState;
+  brgyShown: BarangayBoundaryState;
   disclaimerModal = false;
 
   constructor(private pgService: NoahPlaygroundService) {}
@@ -38,6 +44,8 @@ export class QcSensorsGroupComponent implements OnInit {
     this.qcexpanded$ = this.pgService.qcCriticalFacilitiesExpanded$;
     this.qcbshown$ = this.pgService.qcMunicipalBoundaryShown$;
     this.qcbexpanded$ = this.pgService.qcMunicipalBoundaryExpanded$;
+    this.brgyShown$ = this.pgService.barangayBoundaryShown$;
+    this.brgyExpanded$ = this.pgService.barangayExpanded$;
   }
 
   toggleExpansion() {
@@ -48,6 +56,7 @@ export class QcSensorsGroupComponent implements OnInit {
     event.stopPropagation();
     event.stopImmediatePropagation();
     this.pgService.toggleQuezonCityIOTGroupShown();
+
     const discStatus = localStorage.getItem('disclaimerStatus');
     if (discStatus == 'true') {
       this.disclaimerModal = true;

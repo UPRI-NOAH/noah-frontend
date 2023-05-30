@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 
 export const QC_MUNIBOUNDARY_NAME: Record<QuezonCityMunicipalBoundary, string> =
   {
-    'qc-municipal-boundary': 'Quezon City Boundary',
+    'qc-municipal-boundary': 'Municipal Boundary',
   };
 @Component({
   selector: 'noah-qc-boundary',

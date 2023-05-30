@@ -26,6 +26,8 @@ import { QcSensorsGroupComponent } from './components/qc-sensors-group/qc-sensor
 import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-solo.component';
 import { QcCriticalFacilitiesComponent } from './components/qc-critical-facilities/qc-critical-facilities.component';
 import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.component';
+import { LagunaSensorSoloComponent } from './components/laguna-sensor-solo/laguna-sensor-solo.component';
+import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.compon
     QcSensorSoloComponent,
     QcCriticalFacilitiesComponent,
     QcBoundaryComponent,
+    LagunaSensorSoloComponent,
+    BrgyBoundaryComponent,
   ],
   imports: [
     CommonModule,

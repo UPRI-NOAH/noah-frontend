@@ -226,8 +226,18 @@
         alt=""
         width="384"
         height="512"
-        *ngIf="LoginStatus$ | async as LoginStatus"
+        *ngIf="qcAdmin"
       />
+
+      <img
+        class="w-10 h-10 rounded-full mx-auto"
+        src="https://upload.wikimedia.org/wikipedia/en/3/32/Santa_Cruz_Laguna.png"
+        alt=""
+        width="384"
+        height="512"
+        *ngIf="lagunaAdmin"
+      />
+
       <div class="dropdown inline-block relative">
         <button
           class="ml-2 text-base whitespace-nowrap font-bold"

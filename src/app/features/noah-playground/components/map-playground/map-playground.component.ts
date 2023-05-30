@@ -16,7 +16,15 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, from, fromEvent, Observable, of, Subject } from 'rxjs';
+import {
+  combineLatest,
+  from,
+  fromEvent,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -63,6 +71,7 @@ import {
   QCSENSORS,
   QCCRITFAC,
   QCBoundary,
+  BARANGAYBOUNDARY,
 } from '@features/noah-playground/services/qc-sensor.service';
 
 import {
@@ -81,6 +90,8 @@ import {
   QuezonCityCriticalFacilities,
   QuezonCitySensorType,
   QuezonCityMunicipalBoundary,
+  BarangayBoundary,
+  LAGUNA_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -147,6 +158,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _changeStyle = new Subject();
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
+  private subscriptions: Subscription[] = [];
+  municity = [];
+
   @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
     private mapService: MapService,
@@ -183,6 +197,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
         this.initQcCenterListener();
+        this.initLagunaCenterListener();
+        this.initBarangayBoundary();
       });
   }
 
@@ -240,8 +256,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     if (centerQC == '1') {
       this.map.flyTo({
         center: QC_DEFAULT_CENTER,
-        zoom: 13,
+        zoom: 12,
         essential: true,
+        duration: 1000,
+      });
+    }
+  }
+
+  initLagunaCenterListener() {
+    const centerLagunna = localStorage.getItem('loginStatus');
+    if (centerLagunna == '2') {
+      this.map.flyTo({
+        center: LAGUNA_DEFAULT_CENTER,
+        zoom: 12.74,
+        essential: true,
+        duration: 1000,
       });
     }
   }
@@ -338,6 +367,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             minzoom: minZoom,
           });
           // add show/hide listeners
+
           combineLatest([
             this.pgService.qcSensorsGroupShown$,
             this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
@@ -396,12 +426,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
-          //zoom to qc
-          this.map.flyTo({
-            center: QC_DEFAULT_CENTER,
-            zoom: 12,
-            essential: true,
-          });
           this.map.on('mouseenter', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
@@ -410,6 +434,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const iotType = e.features[0].properties.iot_type;
             const status = e.features[0].properties.status;
             const batPercent = e.features[0].properties.battery_percent;
+            const municity = e.features[0].properties.municity;
+            this.municity = municity;
             const formattedBatPercent =
               batPercent && batPercent !== 'null'
                 ? `${batPercent}%`
@@ -493,10 +519,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     appID: string,
     qcSensorType: QuezonCitySensorType
   ) {
+    localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
     const options: any = {
       title: {
         text: `${appID}`,
+        style: {
+          fontSize: '23px', // set the font size to 16 pixels
+        },
       },
       credits: {
         enabled: false,
@@ -536,7 +566,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else {
+                    _this.modalService.openModal();
+                  }
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
                     this.exportChart({
                       type: 'application/pdf',
                     });
@@ -549,7 +593,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
@@ -562,7 +617,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.print({
                       type: 'print',
                     });
@@ -575,7 +641,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  if (loggedIn == '1') {
+                  const selectMunicity = _this.municity;
+                  if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() == 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() == 'quezon_city'
+                  ) {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
@@ -923,7 +1000,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               data,
             },
             paint: {
-              'fill-color': 'pink', // white fill
+              'fill-color': '#000000', // white fill
               'fill-opacity': 0.01,
             },
           });
@@ -948,10 +1025,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
+              const fillColor =
+                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
               this.map.setPaintProperty(
                 'qc_muni_boundary',
                 'fill-color',
-                +(groupShown && soloShown)
+                fillColor
               );
               this.map.setPaintProperty(
                 'qc_muni_boudline',
@@ -963,6 +1042,70 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .catch(() =>
           console.error(
             `Unable to fetch qc municipal boundary "${qcMunicipalBoundary}"`
+          )
+        );
+    });
+  }
+
+  initBarangayBoundary() {
+    BARANGAYBOUNDARY.forEach((barangayBoundary: BarangayBoundary) => {
+      this.qcSensorService
+        .getBarangayBoundary()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'brgy-boundary',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#000000', // white fill
+              'fill-opacity': 0.01,
+            },
+          });
+          this.map.addLayer({
+            id: 'brgy_boundline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#000', // black line
+              'line-width': 3,
+              'line-opacity': 0.75,
+              'line-dasharray': [1, 2],
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.barangayBoundaryShown$,
+            this.pgService.getBarangayBoundaryShown$(barangayBoundary),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              const fillColor =
+                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
+              this.map.setPaintProperty(
+                'brgy-boundary',
+                'fill-color',
+                fillColor
+              );
+              this.map.setPaintProperty(
+                'brgy_boundline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc municipal boundary "${barangayBoundary}"`
           )
         );
     });
