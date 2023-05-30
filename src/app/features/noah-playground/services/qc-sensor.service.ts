@@ -70,7 +70,7 @@ export class QcSensorService {
 
   getLocation() {
     return this.http.get(
-      `${this.QCBASE_URL}/api/iot-sensors/?format=json&municity=quezon_city`
+      `${this.QCBASE_URL}/api/iot-sensors/?municity[]=laguna&municity[]=quezon_city`
     );
   }
 
