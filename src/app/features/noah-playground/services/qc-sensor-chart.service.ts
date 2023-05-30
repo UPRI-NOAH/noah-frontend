@@ -54,7 +54,7 @@ export class QcSensorChartService {
       chart.xAxis[0].update({
         type: 'datetime',
         labels: {
-          format: '{value:%b:%e:%H:%M}',
+          format: '{value:%b %e %H:%M}',
         },
       });
 
@@ -81,6 +81,13 @@ export class QcSensorChartService {
       legend: {
         enabled: true,
       },
+      // xAxis: {
+      //   type: 'datetime',
+      //   labels: {
+      //     format: '{value:%b:%e:%H:%M}',
+      //     align: 'left',
+      //   },
+      // },
       yAxis: {
         title: {
           text: '1 Hour Rain Accumulated Data (mm)',
@@ -154,10 +161,10 @@ export class QcSensorChartService {
           color: '#298bdb',
           data: [],
           lineWidth: 1.5,
-          dataGrouping: {
-            enabled: true,
-            units: [['day', [1]]],
-          },
+          // dataGrouping: {
+          //   enabled: true,
+          //   units: [['day', [1]]],
+          // },
           boost: {
             useGPUTranslations: true,
           },
@@ -169,13 +176,13 @@ export class QcSensorChartService {
           },
           tooltip: {
             headerFormat:
-              '<span style="font-size: 15px">{point.key}</span><br/>',
+              '<span style="font-size: 14px">{point.key}</span><br/>',
             valueSuffix: 'mm',
             shared: false,
             xDateFormat: '',
             valueDecimal: 2,
             pointFormat:
-              '<span style="font-size: 16px">Rainfall: {point.y:.2f}mm</span>',
+              '<span style="font-size: 14px">Rainfall: {point.y:.2f}mm</span>',
           },
         },
       ],
@@ -205,7 +212,7 @@ export class QcSensorChartService {
           text: 'Flood Height in Meters (m)',
         },
         alignTicks: false,
-        color: '#0C2D48',
+        color: '#298bdb',
         opposite: false,
         plotBands: [
           {
@@ -246,7 +253,7 @@ export class QcSensorChartService {
       series: [
         {
           name: 'Flood Height (m)',
-          color: '#0C2D48',
+          color: '#298bdb',
           data: [],
           lineWidth: 1.5,
           marker: {
@@ -257,13 +264,13 @@ export class QcSensorChartService {
           },
           tooltip: {
             headerFormat:
-              '<span style="font-size: 15px">{point.key}</span><br/>',
+              '<span style="font-size: 14px">{point.key}</span><br/>',
             shared: false,
             valueSuffix: 'm',
             xDateFormat: '',
             valueDecimal: 2,
             pointFormat:
-              '<span style="font-size: 16px">Flood Height: {point.y:.2f}m</span>',
+              '<span style="font-size: 14px">Flood Height: {point.y:.2f}m</span>',
           },
         },
       ],
