@@ -521,6 +521,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {
     localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
+    const __this = this;
     const options: any = {
       title: {
         text: `${appID}`,
@@ -574,10 +575,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
@@ -601,10 +599,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
@@ -628,10 +623,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.print({
                       type: 'print',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
@@ -655,10 +647,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
