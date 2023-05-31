@@ -582,8 +582,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -606,8 +609,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -630,8 +636,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.print({
                       type: 'print',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -654,8 +663,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
                 separator: false,
