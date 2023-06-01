@@ -521,6 +521,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {
     localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
+    const __this = this;
     const options: any = {
       title: {
         text: `${appID}`,
@@ -574,18 +575,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.exportChart({
                       type: 'application/pdf',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -601,18 +602,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -628,18 +629,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.print({
                       type: 'print',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.print({
                       type: 'print',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
               },
@@ -655,18 +656,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
-                  } else {
-                    _this.modalService.openModal();
-                  }
-                  if (
+                  } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
-                  } else {
+                  } else if (loggedIn) {
                     _this.modalService.openModal();
+                  } else {
+                    // Redirect to the login page or handle the login process here
+                    // something error here
                   }
                 },
                 separator: false,
