@@ -242,7 +242,7 @@ export class QcSensorChartService {
             to: 15,
             color: '#EB5757',
             label: {
-              text: 'High (1.5m - 15m)',
+              text: 'High (> 1.5m)',
               style: {
                 color: '#0C2D48',
               },
