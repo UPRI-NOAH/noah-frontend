@@ -8,7 +8,7 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MapService } from '@core/services/map.service';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
@@ -24,7 +24,7 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
 export class SearchComponent implements OnInit {
   @Input() searchTerm: string;
   @Output() selectPlace: EventEmitter<any> = new EventEmitter();
-  searchTermCtrl: FormControl;
+  searchTermCtrl: UntypedFormControl;
   places$: BehaviorSubject<any[]>;
 
   isDropdownOpen = false;
@@ -41,7 +41,7 @@ export class SearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchTermCtrl = new FormControl(this.searchTerm);
+    this.searchTermCtrl = new UntypedFormControl(this.searchTerm);
     this.places$ = new BehaviorSubject([]);
 
     this.searchTermCtrl.valueChanges

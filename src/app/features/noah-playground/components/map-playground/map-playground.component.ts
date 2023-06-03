@@ -7,7 +7,6 @@ import mapboxgl, {
   Marker,
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { combineLatest, fromEvent, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
@@ -31,8 +30,6 @@ import {
   getSymbolLayer,
 } from '@shared/mocks/critical-facilities';
 
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
   SENSORS,
   SensorService,
@@ -41,8 +38,6 @@ import {
 import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
 import * as Highcharts from 'highcharts';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
-
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
   ContourMapType,
