@@ -6,7 +6,6 @@ import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
