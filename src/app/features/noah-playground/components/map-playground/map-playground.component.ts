@@ -159,6 +159,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
   private subscriptions: Subscription[] = [];
+  isWarningAlert: boolean = true;
   municity = [];
 
   @ViewChild('selectQc') selectQc: ElementRef;
@@ -521,7 +522,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {
     localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
-    const __this = this;
+
     const options: any = {
       title: {
         text: `${appID}`,
@@ -568,25 +569,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.exportChart({
-                      type: 'application/pdf',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
-                    loggedIn == '2' &&
+                    loggedIn === '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.exportChart({
                       type: 'application/pdf',
                     });
+                  } else if (
+                    loggedIn === '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -595,25 +597,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toLocaleString() === 'laguna'
                   ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (
-                    loggedIn == '2' &&
-                    selectMunicity.toString() === 'laguna'
+                    loggedIn == '1' &&
+                    selectMunicity.toLocaleString() === 'quezon_city'
                   ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -622,13 +625,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.print({
-                      type: 'print',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
@@ -636,11 +634,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.print({
                       type: 'print',
                     });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -649,13 +653,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.exportChart({
-                      type: 'image/jpeg',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
@@ -663,11 +662,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
                 separator: false,
