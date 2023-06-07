@@ -134,6 +134,27 @@ export class QcSensorChartService {
         opposite: false,
       },
       rangeSelector: {
+        enabled: true,
+        inputDateFormat: '%b %e, %Y',
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1 Day',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1 Month',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
         inputEnabled: true,
         selected: 2, // Set initial range to the last 24 hours
       },
@@ -228,6 +249,31 @@ export class QcSensorChartService {
             },
           },
         ],
+      },
+      rangeSelector: {
+        enabled: true,
+        inputDateFormat: '%b %e, %Y',
+        buttons: [
+          {
+            type: 'day',
+            count: 1,
+            text: '1 Day',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1 Month',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
+        inputEnabled: true,
+        selected: 2, // Set initial range to the last 24 hours
       },
       series: [
         {

@@ -461,6 +461,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
           this.map.on('click', qcSensorType, function (e) {
             graphDiv.hidden = false;
+            chartPopUpOpen = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
               zoom: 13,
@@ -474,7 +475,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setDOMContent(graphDiv);
             chartPopUp.addTo(_this.map);
             _this.showQcChart(+pk, name, qcSensorType);
-            chartPopUpOpen = false;
             popUp.remove();
           });
         } else {
@@ -491,19 +491,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
             chartPopUpOpen = false;
-          });
-          this.map.on('click', qcSensorType, (e) => {
-            const coordinates = (
-              e.features[0].geometry as any
-            ).coordinates.slice();
-            chartPopUp.remove();
-            chartPopUpOpen = false;
-
-            _this.map.flyTo({
-              center: coordinates,
-              zoom: 13,
-              essential: true,
-            });
           });
         }
       });
