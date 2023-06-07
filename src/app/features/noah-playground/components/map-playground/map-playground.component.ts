@@ -536,29 +536,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       navigator: {
         enabled: true,
       },
-      rangeSelector: {
-        enabled: true,
-        inputDateFormat: '%b %e, %Y %H:%M',
-        buttons: [
-          {
-            type: 'day',
-            count: 1,
-            text: '1 Day',
-          },
-          {
-            type: 'month',
-            count: 1,
-            text: '1 Month',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        buttonTheme: {
-          width: 60,
-        },
-      },
       exporting: {
         fileName: 'Quezon IoT Data',
         buttons: {
@@ -685,31 +662,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
     const chart = Highcharts.stockChart('graph-dom', options);
-    this.showAlert = true;
     chart.showLoading();
-    let response: any;
+    let qcSensorChartOpts; // Declare the variable outside the try block
     try {
-      response = await this.qcSensorService
-        .getQcSensorData(pk)
-        .pipe(first())
-        .toPromise();
-      // Code to render chart using response data
+      const data = await this.qcSensorService.getQcSensorData(pk);
+      qcSensorChartOpts = {
+        data: data,
+        qcSensorType,
+      };
+      // Handle the response and chart options here
     } catch (error) {
-      console.error(error);
-    } finally {
-      if (chart) {
-        chart.hideLoading();
-      } else {
-        chart.showLoading();
-      }
+      // Handle any errors
     }
-
-    const qcSensorChartOpts = {
-      data: response.results,
-      qcSensorType,
-      pk,
-    };
-
+    chart.hideLoading();
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
 

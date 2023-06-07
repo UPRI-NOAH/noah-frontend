@@ -6,8 +6,8 @@ import {
   QuezonCityMunicipalBoundary,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
-import { forkJoin, Observable, of } from 'rxjs';
-import { shareReplay, concatMap, map } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 export const QCSENSORS: QuezonCitySensorType[] = ['flood', 'rain'];
 
@@ -29,6 +29,11 @@ export const QCBoundary: QuezonCityMunicipalBoundary[] = [
 ];
 
 export const BARANGAYBOUNDARY: BarangayBoundary[] = ['brgy-boundary'];
+
+interface ResponseData {
+  results: any[]; // Replace 'any' with the appropriate type of the 'results' property
+  next: string | null; // Adjust the type if needed
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -38,13 +43,8 @@ export class QcSensorService {
     shareReplay(1)
   );
 
-  private QC_CRITFAC_URL =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/critical_facilities/bldgs-qc-faci.geojson';
-  private QC_MUNIBoundary_URL =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Muni_Bounds.geojson';
-  private MUNI_BRGYBOUNDARY_URL =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Brgys.geojson';
-
+  private UPRI_S3_BASE_URL =
+    'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
   // old link for qc 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson'
 
   constructor(private http: HttpClient) {}
@@ -57,15 +57,19 @@ export class QcSensorService {
   }
 
   getQcCriticalFacilities() {
-    return this.http.get(`${this.QC_CRITFAC_URL}`);
+    return this.http.get(
+      `${this.UPRI_S3_BASE_URL}/critical_facilities/bldgs-qc-faci.geojson`
+    );
   }
 
   getQcMunicipalBoundary() {
-    return this.http.get(`${this.QC_MUNIBoundary_URL}`);
+    return this.http.get(
+      `${this.UPRI_S3_BASE_URL}/boundary/IoT_Muni_Bounds.geojson`
+    );
   }
 
   getBarangayBoundary() {
-    return this.http.get(`${this.MUNI_BRGYBOUNDARY_URL}`);
+    return this.http.get(`${this.UPRI_S3_BASE_URL}/boundary/IoT_Brgys.geojson`);
   }
 
   getLocation() {
@@ -74,24 +78,32 @@ export class QcSensorService {
     );
   }
 
-  getQcSensorData(
-    pk: number,
-    pagesToLoad: number = 1,
-    page: number = 1,
-    allData = []
-  ): Observable<any> {
-    return this.http
-      .get(`${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}&page=${page}`)
-      .pipe(
-        concatMap((data) => {
-          allData = allData.concat(data['results']);
-          if (data['next'] && pagesToLoad > 1) {
-            return this.getQcSensorData(pk, pagesToLoad - 1, page + 1, allData);
-          } else {
-            return of(allData);
-          }
-        })
-      );
+  getQcSensorData(pk: number) {
+    const pageSize = 1000; // Adjust the page size as per your API's configuration
+    const allData = [];
+
+    const loadPage = async (page: number) => {
+      const url = `${this.QCBASE_URL}/api/iot-data/?iot_sensor=${pk}&page=${page}&page_size=${pageSize}`;
+      const response = await this.http.get(url).toPromise();
+
+      const responseData = response as ResponseData; // Cast the response to ResponseData
+
+      if (responseData && responseData.results) {
+        const data = responseData.results;
+        allData.push(...data);
+
+        if (responseData.next) {
+          const nextPage = page + 1;
+          return loadPage(nextPage);
+        }
+      } else {
+        throw new Error('Invalid response format');
+      }
+
+      return allData;
+    };
+
+    return loadPage(1);
   }
 
   getIotSummarySensorData() {
