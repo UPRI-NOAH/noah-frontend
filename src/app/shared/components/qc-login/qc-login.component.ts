@@ -34,6 +34,8 @@ export class QcLoginComponent implements OnInit {
   alertError: boolean = false;
   loadingNoah: boolean = false;
   isOpen: boolean = false;
+  qcLoginPopup = false;
+  lagunaLoginPopup = false;
 
   constructor(
     private qcLoginService: QcLoginService,
@@ -77,14 +79,23 @@ export class QcLoginComponent implements OnInit {
     if (loggedIn == '1') {
       this.router.navigateByUrl(this.returnUrl);
     }
+    this.modalService.qcLogin$.subscribe((qcLoginPopup) => {
+      this.qcLoginPopup = qcLoginPopup;
+    });
+
+    this.modalService.lagunaLogin$.subscribe((lagunaLoginPopup) => {
+      this.lagunaLoginPopup = lagunaLoginPopup;
+    });
   }
+
   openModal() {
     this.isOpen$.next(true);
     this.modalService.closeModal();
   }
 
   closeModals() {
-    this.isOpen$.next(false);
+    this.modalService.qcLoginClose();
+    this.modalService.lagunaLoginClose();
   }
 
   onSubmit() {

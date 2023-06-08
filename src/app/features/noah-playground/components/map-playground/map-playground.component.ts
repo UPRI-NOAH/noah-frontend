@@ -159,6 +159,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
   private subscriptions: Subscription[] = [];
+  isWarningAlert: boolean = true;
   municity = [];
 
   @ViewChild('selectQc') selectQc: ElementRef;
@@ -460,6 +461,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
           this.map.on('click', qcSensorType, function (e) {
             graphDiv.hidden = false;
+            chartPopUpOpen = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
               zoom: 13,
@@ -473,7 +475,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setDOMContent(graphDiv);
             chartPopUp.addTo(_this.map);
             _this.showQcChart(+pk, name, qcSensorType);
-            chartPopUpOpen = false;
             popUp.remove();
           });
         } else {
@@ -490,19 +491,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
             chartPopUpOpen = false;
-          });
-          this.map.on('click', qcSensorType, (e) => {
-            const coordinates = (
-              e.features[0].geometry as any
-            ).coordinates.slice();
-            chartPopUp.remove();
-            chartPopUpOpen = false;
-
-            _this.map.flyTo({
-              center: coordinates,
-              zoom: 13,
-              essential: true,
-            });
           });
         }
       });
@@ -521,7 +509,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {
     localStorage.setItem('municity', JSON.stringify(this.municity));
     const _this = this;
-    const __this = this;
+
     const options: any = {
       title: {
         text: `${appID}`,
@@ -535,29 +523,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       navigator: {
         enabled: true,
       },
-      rangeSelector: {
-        enabled: true,
-        inputDateFormat: '%b %e, %Y %H:%M',
-        buttons: [
-          {
-            type: 'day',
-            count: 1,
-            text: '1 Day',
-          },
-          {
-            type: 'month',
-            count: 1,
-            text: '1 Month',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        buttonTheme: {
-          width: 60,
-        },
-      },
       exporting: {
         fileName: 'Quezon IoT Data',
         buttons: {
@@ -568,25 +533,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.exportChart({
-                      type: 'application/pdf',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
-                    loggedIn == '2' &&
+                    loggedIn === '2' &&
                     selectMunicity.toString() === 'laguna'
                   ) {
                     this.exportChart({
                       type: 'application/pdf',
                     });
+                  } else if (
+                    loggedIn === '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -595,25 +561,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toLocaleString() === 'laguna'
                   ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (
-                    loggedIn == '2' &&
-                    selectMunicity.toString() === 'laguna'
+                    loggedIn == '1' &&
+                    selectMunicity.toLocaleString() === 'quezon_city'
                   ) {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -622,13 +589,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.print({
-                      type: 'print',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
@@ -636,11 +598,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.print({
                       type: 'print',
                     });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
               },
@@ -649,13 +617,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
                   const selectMunicity = _this.municity;
-                  if (
-                    loggedIn == '1' &&
-                    selectMunicity.toString() === 'quezon_city'
-                  ) {
-                    this.exportChart({
-                      type: 'image/jpeg',
-                    });
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
                   } else if (
                     loggedIn == '2' &&
                     selectMunicity.toString() === 'laguna'
@@ -663,11 +626,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'image/jpeg',
                     });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
                   } else if (loggedIn) {
-                    _this.modalService.openModal();
+                    _this.modalService.warningPopup();
                   } else {
-                    // Redirect to the login page or handle the login process here
-                    // something error here
+                    _this.modalService.openLoginModal();
                   }
                 },
                 separator: false,
@@ -680,31 +649,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
     };
     const chart = Highcharts.stockChart('graph-dom', options);
-    this.showAlert = true;
     chart.showLoading();
-    let response: any;
+    let qcSensorChartOpts; // Declare the variable outside the try block
     try {
-      response = await this.qcSensorService
-        .getQcSensorData(pk)
-        .pipe(first())
-        .toPromise();
-      // Code to render chart using response data
+      const data = await this.qcSensorService.getQcSensorData(pk);
+      qcSensorChartOpts = {
+        data: data,
+        qcSensorType,
+      };
+      // Handle the response and chart options here
     } catch (error) {
-      console.error(error);
-    } finally {
-      if (chart) {
-        chart.hideLoading();
-      } else {
-        chart.showLoading();
-      }
+      // Handle any errors
     }
-
-    const qcSensorChartOpts = {
-      data: response.results,
-      qcSensorType,
-      pk,
-    };
-
+    chart.hideLoading();
     this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
 

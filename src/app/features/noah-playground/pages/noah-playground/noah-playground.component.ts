@@ -28,6 +28,7 @@ export class NoahPlaygroundComponent implements OnInit {
   DisclaimerStatus$: Observable<boolean>;
   qcAdmin: boolean;
   lagunaAdmin: boolean;
+  isWarningAlert = false;
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -41,6 +42,10 @@ export class NoahPlaygroundComponent implements OnInit {
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
     this.DisclaimerStatus$ = this.qcLoginService.isDisclaimerStatus;
+
+    this.modalService.accountWarning$.subscribe((isWarningAlert) => {
+      this.isWarningAlert = isWarningAlert;
+    });
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
@@ -81,5 +86,9 @@ export class NoahPlaygroundComponent implements OnInit {
 
   closeModal() {
     this.isLogoutAlert = false;
+  }
+
+  closeWarning() {
+    this.modalService.warningClose();
   }
 }

@@ -12,7 +12,6 @@ export class AlertComponent implements OnInit {
   isOpen = false;
   isLogoutAlert = false;
   modalLogin: boolean = false;
-  isOpenModal$ = new Subject<boolean>();
 
   constructor(
     private modalService: ModalServicesService,
@@ -29,13 +28,20 @@ export class AlertComponent implements OnInit {
     });
   }
 
+  openModal() {
+    const municityValue = JSON.parse(localStorage.getItem('municity'));
+    if (municityValue === 'quezon_city') {
+      this.modalService.qcLoginPopUp();
+      this.modalService.closeModal();
+    } else {
+      this.modalService.lagunaLoginPopup();
+      this.modalService.closeModal();
+    }
+  }
+
   close() {
     this.modalService.closeModal();
     this.modalService.closeLogoutModal();
-  }
-
-  closeLogoutModal() {
-    this.isOpenModal$.next(false);
   }
 
   processLogout() {

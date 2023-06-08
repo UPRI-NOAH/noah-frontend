@@ -115,8 +115,7 @@ export class SummaryComponent implements OnInit {
       const dataArr = res.results.map((a) => {
         return {
           latest_date: a.received_at,
-          latest_data:
-            a.distance_m == undefined ? a.rain_accu_1hour : a.distance_m,
+          latest_data: a.distance_m == undefined ? a.acc : a.distance_m,
           iot_sensor: a.iot_sensor,
           status: a.status,
         };
