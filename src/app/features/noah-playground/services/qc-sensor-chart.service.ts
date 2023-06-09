@@ -160,7 +160,7 @@ export class QcSensorChartService {
       },
       series: [
         {
-          name: 'Rainfall (mm)',
+          name: 'Rainfall (mm/hr)',
           color: '#298bdb',
           data: [],
           lineWidth: 1.5,
@@ -181,7 +181,7 @@ export class QcSensorChartService {
             xDateFormat: '',
             valueDecimal: 2,
             pointFormat:
-              '<span style="font-size: 14px">Rainfall: {point.y:.2f}mm</span>',
+              '<span style="font-size: 14px">Rainfall: {point.y:.2f}mm/hr</span>',
           },
         },
       ],
