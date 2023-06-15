@@ -330,7 +330,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
             paint: {
               'circle-color': IOT_SENSOR_COLORS[qcSensorType],
-              'circle-radius': 10,
+              'circle-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5.5,
+                10, // Minimum zoom level: circle radius of 5
+                12,
+                12, // Minimum zoom level: circle radius of 12
+                18,
+                20, // Maximum zoom level: circle radius of 20
+              ],
               'circle-opacity': 0,
             },
           });
@@ -351,7 +361,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-allow-overlap': true,
               'text-optional': true,
               'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-              'text-size': 13,
+              'text-size': 18,
               'text-offset': [0, 1],
               'text-anchor': 'top',
               'text-letter-spacing': 0.05,
