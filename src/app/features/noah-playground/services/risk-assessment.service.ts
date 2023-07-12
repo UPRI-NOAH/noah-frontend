@@ -15,10 +15,21 @@ export const EXPOSURE_NAMES: ExposureType[] = ['population', 'buildings'];
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
 
-  private EXPOSURE_POPULATION =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com/example/PH060400000_FB_Pop.geojson';
+  private EXPOSURE_BASE_URL =
+    'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
 
   getExposurePopulation() {
-    return this.http.get(`${this.EXPOSURE_POPULATION}`);
+    return this.http.get(
+      `${this.EXPOSURE_BASE_URL}/example/PH060400000_FB_Pop.geojson`
+    );
+  }
+
+  // https://upri-noah.s3.ap-southeast-1.amazonaws.com/test/PH060400000_100yr_Bgy.geojson
+  // https://upri-noah.s3.ap-southeast-1.amazonaws.com/test/PH061900000_100yr_Bgy.geojson
+
+  getBrgy100yr() {
+    return this.http.get(
+      `${this.EXPOSURE_BASE_URL}/test/2_Prov_100yr_Bgy.geojson`
+    );
   }
 }
