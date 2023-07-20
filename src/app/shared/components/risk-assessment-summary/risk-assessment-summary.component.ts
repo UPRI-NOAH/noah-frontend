@@ -12,6 +12,12 @@ export class RiskAssessmentSummaryComponent implements OnInit {
   constructor(private expService: RiskAssessmentService) {}
 
   generalTotalPopulation: string;
+  elderlySumTotal: string;
+  womenReproTotal: string;
+  youthSumTotal: string;
+  childrenSumTotal: string;
+  womenSumTotal: string;
+  menSumTotal: string;
 
   ngOnInit(): void {
     this.fetchDataChart();
@@ -28,7 +34,14 @@ export class RiskAssessmentSummaryComponent implements OnInit {
         this.renderAgeChart(genderArray);
 
         const totalPopulation = apiData.features;
+        const elderlySum = apiData.features;
         let totalPopu = 0;
+        let elderlyPopu = 0;
+        let womenReproPopu = 0;
+        let youthSumPopu = 0;
+        let childrenSumPopu = 0;
+        let womenSumPopu = 0;
+        let menSumPopu = 0;
 
         if (totalPopulation && totalPopulation.length > 0) {
           for (const feature of totalPopulation) {
@@ -44,6 +57,77 @@ export class RiskAssessmentSummaryComponent implements OnInit {
             parseFloat(roundedTotalPopu).toLocaleString();
           this.generalTotalPopulation = formattedTotalPopu;
           console.log('hello', this.generalTotalPopulation);
+        }
+        if (elderlySum && elderlySum.length > 0) {
+          for (const feature of elderlySum) {
+            const properties = feature?.properties;
+            const elderlysumTotal = properties.elderlysum_total;
+
+            if (elderlysumTotal) {
+              elderlyPopu += elderlysumTotal;
+            }
+          }
+          const roundedElderlyPopu = elderlyPopu.toFixed(0);
+          const formattedElderlyPopu =
+            parseFloat(roundedElderlyPopu).toLocaleString();
+          this.elderlySumTotal = formattedElderlyPopu;
+          console.log('hello', this.elderlySumTotal);
+        }
+        if (totalPopulation && totalPopulation.length > 0) {
+          for (const feature of totalPopulation) {
+            const properties = feature?.properties;
+            const womenreproTotal = properties.women_repr_total;
+
+            if (womenreproTotal) {
+              womenReproPopu += womenreproTotal;
+            }
+          }
+          const roundedTotalPopu = womenReproPopu.toFixed(0);
+          const formattedTotalPopu =
+            parseFloat(roundedTotalPopu).toLocaleString();
+          this.womenReproTotal = formattedTotalPopu;
+          console.log('hello', this.womenReproTotal);
+        }
+        if (totalPopulation && totalPopulation.length > 0) {
+          for (const feature of totalPopulation) {
+            const properties = feature?.properties;
+            const youthsumTotal = properties.youthsum_total;
+            const childrensumTotal = properties.childrensum_total;
+            const womensumTotal = properties.womensum_total;
+            const mensumTotal = properties.mensum_total;
+
+            if (youthsumTotal) {
+              youthSumPopu += youthsumTotal;
+            }
+            if (childrensumTotal) {
+              childrenSumPopu += childrensumTotal;
+            }
+            if (womensumTotal) {
+              womenSumPopu += womensumTotal;
+            }
+            if (mensumTotal) {
+              menSumPopu += mensumTotal;
+            }
+          }
+          const roundedTotalPopu = youthSumPopu.toFixed(0);
+          const roundedChildrenPopu = childrenSumPopu.toFixed(0);
+          const roundedWomenPopu = womenSumPopu.toFixed(0);
+          const roundedMenPopu = menSumPopu.toFixed(0);
+          const formattedTotalPopu =
+            parseFloat(roundedTotalPopu).toLocaleString();
+          const formattedChildrenPopu =
+            parseFloat(roundedChildrenPopu).toLocaleString();
+          const formattedWomenPopu =
+            parseFloat(roundedWomenPopu).toLocaleString();
+          const formattedMenPopu = parseFloat(roundedMenPopu).toLocaleString();
+          this.youthSumTotal = formattedTotalPopu;
+          this.childrenSumTotal = formattedChildrenPopu;
+          this.womenSumTotal = formattedWomenPopu;
+          this.menSumTotal = formattedMenPopu;
+          console.log('hello', this.youthSumTotal);
+          console.log('hello', this.childrenSumTotal);
+          console.log('hello', this.womenSumTotal);
+          console.log('hello', this.menSumTotal);
         }
       },
       (error) => {
@@ -145,14 +229,11 @@ export class RiskAssessmentSummaryComponent implements OnInit {
     const options: Highcharts.Options = {
       chart: {
         type: 'pie',
-        height: '400px',
+        height: 'auto',
         backgroundColor: 'rgba(0, 0, 0, 0)',
       },
       title: {
-        text: 'Population Affected by flood 100 year',
-        style: {
-          fontSize: '25px',
-        },
+        text: '',
       },
 
       //
@@ -170,7 +251,7 @@ export class RiskAssessmentSummaryComponent implements OnInit {
           cursor: 'pointer',
           dataLabels: {
             enabled: true,
-            format: '{point.name}: {point.y:,.0f}',
+            format: '{point.name}',
             style: {
               fontSize: '19px',
               textOutline: 'none',
@@ -215,6 +296,17 @@ export class RiskAssessmentSummaryComponent implements OnInit {
       {
         type: 'column',
         stacking: 'normal',
+        name: 'Women of reproductive (ages 15-49)',
+        color: '#63269f',
+        data: data.map((item) => ({
+          name: categoryMapping[item.var],
+          y: Math.round(item.womenReprTotal),
+          customData: item.womenReprTotal,
+        })),
+      },
+      {
+        type: 'column',
+        stacking: 'normal',
         name: 'Youth (ages 15-24)',
         color: '#faa74b',
         data: data.map((item) => ({
@@ -232,17 +324,6 @@ export class RiskAssessmentSummaryComponent implements OnInit {
           name: categoryMapping[item.var],
           y: Math.round(item.childrenTotal),
           customData: item.childrenTotal,
-        })),
-      },
-      {
-        type: 'column',
-        stacking: 'normal',
-        name: 'Women of reproductive (ages 15-49)',
-        color: '#63269f',
-        data: data.map((item) => ({
-          name: categoryMapping[item.var],
-          y: Math.round(item.womenReprTotal),
-          customData: item.womenReprTotal,
         })),
       },
     ];
@@ -376,6 +457,7 @@ export class RiskAssessmentSummaryComponent implements OnInit {
       colors: ['#fa2bb2', '#1ad3ff'],
       chart: {
         type: 'pie',
+        height: 'auto',
         backgroundColor: 'rgba(0, 0, 0, 0)',
       },
       accessibility: {
@@ -391,20 +473,25 @@ export class RiskAssessmentSummaryComponent implements OnInit {
       },
       plotOptions: {
         pie: {
-          allowPointSelect: true,
+          allowPointSelect: false,
           cursor: 'pointer',
           showInLegend: true,
-          dataLabels: {
-            style: {
-              fontSize: '15px',
-            },
-          },
+          // dataLabels: {
+          //   style: {
+          //     fontSize: '19px',
+          //   },
+          // },
         },
       },
+      // tooltip: {
+      //   headerFormat: '',
+      //   pointFormat:
+      //     '<span style="font-size: 19px;"><b>Affected {point.name}: {point.y:,.0f} <br/><br/>Total {point.name}: {point.x:,.0f}</b></span>',
+      // },
       tooltip: {
         headerFormat: '',
         pointFormat:
-          '<span style="font-size: 19px;"><b>Affected {point.name}: {point.y:,.0f} <br/><br/>Total {point.name}: {point.x:,.0f}</b></span>',
+          '<span style="font-size: 19px;text-align: middle;"><b>Affected {point.name}: {point.y:,.0f}</span>',
       },
       legend: {
         // align: 'right',

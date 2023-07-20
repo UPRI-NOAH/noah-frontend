@@ -1,38 +1,160 @@
 <div class="bg-white text-green-800 grid grid-cols-2 gap-2">
-  <div class="bg-white rounded p-5">
-    <div class="py-2 max-w-xl w-full flex flex-row">
+  <!-- <div class="bg-pink-50 rounded p-5">
+    <div
+      id="population-dom"
+      style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"
+      class="population"
+    ></div>
+  </div> -->
+  <!-- <div class="bg-white rounded p-5">
+    <div
+      id="age-dom"
+      style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"
+    ></div>
+  </div> -->
+  <!-- <div class="bg-white rounded p-5">
+    <div
+      id="gender-dom"
+      style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"
+    ></div>
+  </div> -->
+</div>
+
+<div class="w-full align-middle items-center">
+  <div class="grid grid-cols-3">
+    <div class="w-full flex flex-row"></div>
+    <div class="w-full flex flex-row p-4 pl-6">
       <div class="w-auto md:mt-0 items-center flex">
         <img
-          class="h-auto w-16"
-          src="assets/images/population.png"
-          alt="flood"
+          class="h-auto w-28"
+          src="assets/images/population1.png"
+          alt="population"
         />
       </div>
-      <div class="w-5/6 pl-3">
-        <div class="text-black font-bold text-3xl">
+      <div class="w-full pl-3">
+        <div class="text-black font-bold text-5xl">
           {{ generalTotalPopulation }}
         </div>
-        <small class="text-gray-500">Estimated Total Population</small>
+        <span class="text-gray-500 text-xl">Estimated Total Population</span>
+      </div>
+    </div>
+    <div class="w-full flex flex-row"></div>
+  </div>
+</div>
+<div class="grid grid-cols-2">
+  <div class="bg-pink-50 rounded-2xl drop-shadow-xl mr-3 mt-3 pr-5">
+    <div class="grid grid-cols-2 grid-rows-2 p-2">
+      <div class="w-full flex flex-row pr-2">
+        <div class="p-6 align-middle text-right w-full pr-3">
+          <div class="text-age-agre-elderly font-bold text-2xl">
+            {{ elderlySumTotal }}
+          </div>
+          <span class="text-age-agre-elderly">Total Elderly Population</span>
+        </div>
+        <div class="w-auto md:mt-0 items-center flex pr-3">
+          <img
+            class="h-auto w-28"
+            src="assets/images/elderly.png"
+            alt="flood"
+          />
+        </div>
+      </div>
+      <div class="w-full flex flex-row">
+        <div class="w-auto md:mt-0 items-center flex">
+          <img
+            class="h-auto w-24"
+            src="assets/images/women_repro.png"
+            alt="flood"
+          />
+        </div>
+        <div class="p-6 align-middle text-left w-full pl-3">
+          <div class="text-age-agre-repro font-bold text-2xl">
+            {{ womenReproTotal }}
+          </div>
+          <span class="text-age-agre-repro"
+            >Total Women of Reproductive Population</span
+          >
+        </div>
+      </div>
+      <div class="w-full flex flex-row pr-3">
+        <div class="p-6 align-middle text-right w-full pr-3">
+          <div class="text-age-agre-youth font-bold text-2xl">
+            {{ youthSumTotal }}
+          </div>
+          <span class="text-age-agre-youth">Total Youth Population</span>
+        </div>
+        <div class="w-auto md:mt-0 items-center flex">
+          <img class="h-auto w-28" src="assets/images/youth.png" alt="flood" />
+        </div>
+      </div>
+      <div class="w-full flex flex-row">
+        <div class="w-auto md:mt-0 items-center flex">
+          <img
+            class="h-auto w-28"
+            src="assets/images/children.png"
+            alt="flood"
+          />
+        </div>
+        <div class="p-6 align-middle text-left w-full pl-3">
+          <div class="text-age-agre-children font-bold text-2xl">
+            {{ childrenSumTotal }}
+          </div>
+          <span class="text-age-agre-children">Total Children Population</span>
+        </div>
       </div>
     </div>
   </div>
-  <div class="bg-white rounded p-5">
+
+  <div class="bg-pink-50 rounded-2xl drop-shadow-xl ml-3 mt-3 p-5">
+    <div class="grid grid-cols-2 pt-14">
+      <div class="w-full flex flex-row">
+        <div class="w-auto md:mt-0 items-center flex">
+          <img class="h-auto w-20" src="assets/images/men.png" alt="flood" />
+        </div>
+        <div class="p-6 align-middle w-full pl-3">
+          <div class="text-age-agre-men font-bold text-3xl">
+            {{ menSumTotal }}
+          </div>
+          <span class="text-age-agre-men">Total Male Population</span>
+        </div>
+      </div>
+      <div class="w-full flex flex-row">
+        <div class="w-auto md:mt-0 items-center flex">
+          <img class="h-auto w-20" src="assets/images/women.png" alt="flood" />
+        </div>
+        <div class="p-6 align-middle w-full pl-3">
+          <div class="text-age-agre-women font-bold text-3xl">
+            {{ womenSumTotal }}
+          </div>
+          <span class="text-age-agre-women">Total Female Population</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="grid grid-cols-1">
+  <div class="text-gray-900 text-center p-4 font-bold text-3xl">
+    Population Affected by Flood 100-year
+  </div>
+</div>
+<div class="grid grid-cols-3">
+  <div class="bg-pink-200 rounded-2xl p-5 drop-shadow-xl mr-3">
     <div
       id="population-dom"
       style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"
       class="population"
     ></div>
   </div>
-  <div class="bg-white rounded p-5">
+  <div class="bg-pink-50 rounded-2xl p-5 drop-shadow-xl">
     <div
       id="age-dom"
       style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"
     ></div>
   </div>
-  <div class="bg-white rounded p-5">
+  <div class="bg-pink-200 rounded-2xl drop-shadow-xl ml-3">
     <div
       id="gender-dom"
-      style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"
+      style="min-width: auto; height: 400px; max-width: auto; margin: 0 auto"
     ></div>
   </div>
 </div>
