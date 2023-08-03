@@ -250,7 +250,7 @@ export class RiskAssessmentSummaryComponent implements OnInit {
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
-            enabled: true,
+            enabled: false,
             format: '{point.name}',
             style: {
               fontSize: '19px',
@@ -353,11 +353,11 @@ export class RiskAssessmentSummaryComponent implements OnInit {
         title: {
           text: '',
         },
-        labels: {
-          style: {
-            fontSize: '17px',
-          },
-        },
+        // labels: {
+        //   style: {
+        //     fontSize: '17px',
+        //   },
+        // },
       },
       tooltip: {
         headerFormat: '',
@@ -368,11 +368,12 @@ export class RiskAssessmentSummaryComponent implements OnInit {
       plotOptions: {
         column: {
           stacking: 'normal',
-          dataLabels: {
-            style: {
-              fontSize: '15px',
-            },
-          },
+          // dataLabels: {
+          //   enabled: false,
+          //   style: {
+          //     fontSize: '15px',
+          //   },
+          // },
         },
       },
       legend: {
@@ -473,14 +474,15 @@ export class RiskAssessmentSummaryComponent implements OnInit {
       },
       plotOptions: {
         pie: {
-          allowPointSelect: false,
+          allowPointSelect: true,
           cursor: 'pointer',
           showInLegend: true,
-          // dataLabels: {
-          //   style: {
-          //     fontSize: '19px',
-          //   },
-          // },
+          dataLabels: {
+            enabled: false,
+            style: {
+              fontSize: '19px',
+            },
+          },
         },
       },
       // tooltip: {
