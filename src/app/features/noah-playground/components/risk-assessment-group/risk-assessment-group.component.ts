@@ -19,10 +19,13 @@ import { Observable, of } from 'rxjs';
 })
 export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentRain: RiskAssessmentType[] = ['rain'];
+  @Input() name: RiskExposureType;
 
   selectedRiskExposure$: Observable<RiskExposureType>;
-
+  opacityValue: number = 100;
   exposureShown$: Observable<boolean>;
+
+  affectedShown$: Observable<boolean>;
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
@@ -44,6 +47,12 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.expanded$ = this.pgService.riskExposureExpanded$;
     this.shown$ = this.pgService.riskAssessmentGroupShown$;
     this.exposureShown$ = this.pgService.riskExposureShown$;
+    this.affectedShown$ = this.pgService.affectedExposureShown$;
+    this.opacityValue = this.pgService.getRiskExposureOpacity(this.name);
+  }
+
+  changeOpacity(opacity: number) {
+    this.pgService.setRiskExposureOpacity(opacity, this.name);
   }
 
   toggleExpansion() {
@@ -80,5 +89,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
   openModalRisk() {
     this.riskModalService.openRiskModal();
+    this.riskModalService.closeBtnRa();
+    this.pgService.toggleAffectedExposureGroupVisibility();
   }
 }
