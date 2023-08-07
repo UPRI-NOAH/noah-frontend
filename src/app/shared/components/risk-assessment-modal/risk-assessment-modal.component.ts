@@ -20,6 +20,7 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   closeModal() {
     this.riskModalService.closeRiskModal();
+    this.riskModalService.openBtnRa();
   }
 
   viewSummary() {
