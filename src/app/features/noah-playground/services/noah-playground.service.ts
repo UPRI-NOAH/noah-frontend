@@ -22,6 +22,9 @@ import {
   RiskExposureTypeState,
   RiskExposureState,
   RiskGroupState,
+  AffectedExposureType,
+  AffectedExposureState,
+  AffectedExposureTypeState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -102,6 +105,16 @@ export class NoahPlaygroundService {
     );
   }
 
+  get affectedExposureShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.affectedExposure.shown));
+  }
+
+  get selectedAffectedExposure$(): Observable<AffectedExposureType> {
+    return this.store.state$.pipe(
+      map((state) => state.affectedExposure.selectedType)
+    );
+  }
+
   get contourMapGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.contourMaps.expanded));
   }
@@ -134,10 +147,65 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.riskAssessment.shown));
   }
 
+  getAffectedExposures(): AffectedExposureState {
+    return this.store.state.affectedExposure;
+  }
+
+  getAffectedExposure(type: AffectedExposureType): AffectedExposureTypeState {
+    return this.store.state.affectedExposure.types[type];
+  }
+
+  getAffectedExposure$(
+    type: AffectedExposureType
+  ): Observable<AffectedExposureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.affectedExposure.types[type])
+    );
+  }
+
+  getAffectedExposureOpacity(affectedType: AffectedExposureType): number {
+    return this.store.state.affectedExposure.types[affectedType].opacity;
+  }
+
+  selectAffectedExposureType(affectedExposureType: AffectedExposureType): void {
+    const affectedExposure = {
+      ...this.store.state.affectedExposure,
+    };
+
+    affectedExposure.selectedType = affectedExposureType;
+    this.store.patch(
+      { affectedExposure },
+      `Select Affected Exposure Type: ${affectedExposureType}`
+    );
+  }
+
+  toggleAffectedExposureGroupVisibility(): void {
+    const affectedExposure = {
+      ...this.store.state.affectedExposure,
+    };
+
+    affectedExposure.shown = !affectedExposure.shown;
+    this.store.patch(
+      { affectedExposure },
+      `toggle affected exposure visibility`
+    );
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
+  getAffectedPopulationData(): Promise<
+    { url: string; sourceLayer: string[] }[]
+  > {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/combined_fl_bgy.json'
       )
       .pipe(first())
       .toPromise();
@@ -619,5 +687,16 @@ export class NoahPlaygroundService {
     const { shown } = riskAssessment;
     riskAssessment.shown = !shown;
     this.store.patch({ riskAssessment }, `Update Risk ${!shown}`);
+  }
+
+  setRiskExposureOpacity(opacity: number, exposureType: RiskExposureType) {
+    const riskExposure: RiskExposureState = {
+      ...this.store.state.riskExposure,
+    };
+    riskExposure.types[exposureType].opacity = opacity;
+    this.store.patch(
+      { riskExposure },
+      `Risk Exposure - update ${exposureType}'s opacity to ${opacity}`
+    );
   }
 }

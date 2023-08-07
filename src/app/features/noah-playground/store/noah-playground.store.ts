@@ -40,11 +40,30 @@ export type RiskAssessment = 'rain';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
-export const RISK_NAME = ['population', 'building'] as const;
+export const RISK_NAME = ['population', 'buildings'] as const;
 
 export type RiskExposureType = typeof RISK_NAME[number];
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
+
+export const AFFECTED_EXPOSURE = ['buildings', 'population'] as const;
+
+export type AffectedExposureType = typeof AFFECTED_EXPOSURE[number];
+
+export type AffectedExposureState = {
+  shown: boolean;
+  selectedType: AffectedExposureType;
+  types: AffectedExposureTypesState;
+};
+
+export type AffectedExposureTypeState = {
+  opacity: number;
+};
+
+export type AffectedExposureTypesState = {
+  population: AffectedExposureTypeState;
+  building: AffectedExposureTypeState;
+};
 
 export type HazardLevel =
   | FloodReturnPeriod
@@ -174,6 +193,7 @@ type NoahPlaygroundState = {
   volcanoes: VolcanoGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
+  affectedExposure: AffectedExposureState;
   riskExposure: RiskExposureState;
   riskAssessment: RiskGroupState;
   center: { lng: number; lat: number };
@@ -322,6 +342,19 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+  affectedExposure: {
+    shown: false,
+    selectedType: 'population',
+    types: {
+      population: {
+        opacity: 100,
+      },
+      building: {
+        opacity: 100,
+      },
+    },
+  },
+
   center: null,
   currentLocation: '-----',
   sensors: {
