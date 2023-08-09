@@ -1,3 +1,54 @@
+## [3.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v2.0.0...v3.0.0) (2023-03-15)
+
+### Bug Fixes
+
+- **noah-studio:** change default color for hazard layers ([#323](https://github.com/UPRI-NOAH/noah-frontend/pull/323)) ([5a94d0d](https://github.com/UPRI-NOAH/noah-frontend/commit/5a94d0ddfc2a85001ac96f3211a3d546cd31392d))
+- **know-your-hazards:** add debris flow in assessment in know your hazard page ([#316](https://github.com/UPRI-NOAH/noah-frontend/pull/316)) ([2dcd220](https://github.com/UPRI-NOAH/noah-frontend/commit/2dcd220a15cecf8d52e89142c66466ea1df177cb))
+- **noah-studio:** remove 24hour lapse contour ([#307](https://github.com/UPRI-NOAH/noah-frontend/pull/307)) ([bfe434b](https://github.com/UPRI-NOAH/noah-frontend/commit/bfe434b9ff791177868a60ad480be3a8e131848c))
+
+### Features
+
+- **know-your-hazards:** add draggable marker location for new assessments ([#319](https://github.com/UPRI-NOAH/noah-frontend/pull/319)) ([bb9f93f](https://github.com/UPRI-NOAH/noah-frontend/commit/bb9f93f92f80dec75c566bd71d97f6e8a24733fd))
+- **know-your-hazards:** added tip for draggable and kyh legend ([#321](https://github.com/UPRI-NOAH/noah-frontend/pull/321)) ([3556243](https://github.com/UPRI-NOAH/noah-frontend/commit/35562437a01f4ef3cc0ad6ffe40f04d62678b3ed))
+
+## [2.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.2...v2.0.0) (2022-11-15)
+
+### Bug Fixes
+
+- **know-your-hazards:** KYH Assessment ([#291](https://github.com/UPRI-NOAH/noah-frontend/pull/291)) ([b7929f7](https://github.com/UPRI-NOAH/noah-frontend/commit/b7929f7b7022fad3b747beed5ff20a225e072d5f))
+- **know-your-hazards:** remove set value of radius for kyh assessments ([#283](https://github.com/UPRI-NOAH/noah-frontend/pull/283)) ([9aa80d0](https://github.com/UPRI-NOAH/noah-frontend/commit/9aa80d08e78c51844268fac0ce26f7f3b8218949))
+- **know-your-hazards:** set default risklevelNum into Little to None ([#282](https://github.com/UPRI-NOAH/noah-frontend/pull/282)) ([d555543](https://github.com/UPRI-NOAH/noah-frontend/commit/d555543b410779245315410f5cfca6729e73ef01))
+- **know-your-hazards:** remove alluvial fan and debris flow in kyh ([#279](https://github.com/UPRI-NOAH/noah-frontend/pull/279)) ([d7743f8](https://github.com/UPRI-NOAH/noah-frontend/commit/d7743f8147f520a5ee58ab4c61799b4bc604ef4f))
+- **know-your-hazards:** remove lh3 tileset ([#278](https://github.com/UPRI-NOAH/noah-frontend/pull/278)) ([a5ba261](https://github.com/UPRI-NOAH/noah-frontend/commit/a5ba261846355f6ef3d54461f219631223b6bd6b))
+- **studio:** change sensor's base url for testing ([#254](https://github.com/UPRI-NOAH/noah-frontend/pull/254)) ([fc9939b](https://github.com/UPRI-NOAH/noah-frontend/commit/fc9939bf38cff68b4b993d63e6f35b2130f8556f))
+- **studio:** revert base sensor url ([#252](https://github.com/UPRI-NOAH/noah-frontend/pull/252)) ([5b588aa](https://github.com/UPRI-NOAH/noah-frontend/commit/5b588aae1bdfe8a3514090253212d2482135ad52))
+- **studio:** revert sensor base url ([#251](https://github.com/UPRI-NOAH/noah-frontend/pull/251)) ([f6c8ed0](https://github.com/UPRI-NOAH/noah-frontend/commit/f6c8ed09f5cecb3ff8194eacee1ec1f5397bf5d3))
+- **studio:** change sensor base url ([#250](https://github.com/UPRI-NOAH/noah-frontend/pull/250)) ([2c5ae52](https://github.com/UPRI-NOAH/noah-frontend/commit/2c5ae520c26345013aa96fc863f9fe2f76e75d7d))
+- **studio:** enhance volcano feature ([#248](https://github.com/UPRI-NOAH/noah-frontend/pull/248)) ([ba577d3](https://github.com/UPRI-NOAH/noah-frontend/commit/ba577d324050b435aa46de9d469ddbd4ae3604e4))
+
+### Features
+
+- **studio:** display volcanoes ([#244](https://github.com/UPRI-NOAH/noah-frontend/pull/244)) ([004e15c](https://github.com/UPRI-NOAH/noah-frontend/commit/004e15cdea3a030cfe8093bf4266bd2d3c474b49))
+- **know-your-hazards:** added condition in kyh assessment ([#293](https://github.com/UPRI-NOAH/noah-frontend/pull/293)) ([cd05398](https://github.com/UPRI-NOAH/noah-frontend/commit/cd05398c0ad501aaa72f67d25382d30aa6b2d4bf))
+
+## [1.0.2](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.1...v1.0.2) (2021-12-03)
+
+### Bug Fixes
+
+- **studio:** sensors - visually display fetch data errors ([#218](https://github.com/UPRI-NOAH/noah-frontend/pull/218)) ([e271288](https://github.com/UPRI-NOAH/noah-frontend/commit/e27128813d42a08d6ba790cb21b45591f5c7fec7))
+- **know-your-hazards:** change text info in sidebar base component ([#229](https://github.com/UPRI-NOAH/noah-frontend/pull/229)) ([ae231ac](https://github.com/UPRI-NOAH/noah-frontend/commit/ae231ac78496c440f55b819f2adf5285fee29211))
+- **studio:** change unstable slopes low to high color mapping ([#228](https://github.com/UPRI-NOAH/noah-frontend/pull/228)) ([b9313df](https://github.com/UPRI-NOAH/noah-frontend/commit/b9313df24b463b8e86323e774da2864d84d32078))
+- **style:** update critical facilities text styles ([#227](https://github.com/UPRI-NOAH/noah-frontend/pull/227)) ([94798ff](https://github.com/UPRI-NOAH/noah-frontend/commit/94798ff905ee8779c57dd2ec9adad0c5416c68b4))
+- **studio:** update critical facilities source links ([#226](https://github.com/UPRI-NOAH/noah-frontend/pull/226)) ([fc66db7](https://github.com/UPRI-NOAH/noah-frontend/commit/fc66db76dad36b116e84c6b0848f3cdfdb96a096))
+- **studio:** change source url for himawari ([#224](https://github.com/UPRI-NOAH/noah-frontend/pull/224)) ([c1351aa](https://github.com/UPRI-NOAH/noah-frontend/commit/c1351aaf3dfbae2f20b8af3dce3a123675cbce3f))
+- missing critical facilities ([4450809](https://github.com/UPRI-NOAH/noah-frontend/commit/44508095cedc4df19fcaf37ec918348f50c5e370))
+
+### Features
+
+- **studio:** rain contour maps -- added 24-hour lapse option ([#222](https://github.com/UPRI-NOAH/noah-frontend/pull/222)) ([6430b09](https://github.com/UPRI-NOAH/noah-frontend/commit/6430b09820648b7997128434fe201185cf99e3ae))
+- **ci:** workflows for production deployment ([#235](https://github.com/UPRI-NOAH/noah-frontend/pull/235)) ([4a43386](https://github.com/UPRI-NOAH/noah-frontend/commit/4a43386a606dadf538625d6f3a23d88d35237999))
+- **studio:** add options with opacity for weather satellite component ([#217](https://github.com/UPRI-NOAH/noah-frontend/pull/217)) ([6bb8b09](https://github.com/UPRI-NOAH/noah-frontend/commit/6bb8b09f4e761f15ab2c6e57768a2614aecdb890))
+
 ## [1.0.1](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.0...v1.0.1) (2021-10-31)
 
 ### Bug Fixes
