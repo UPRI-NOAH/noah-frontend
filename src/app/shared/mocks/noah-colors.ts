@@ -1,4 +1,5 @@
 import { SensorType } from '@features/noah-playground/services/sensor.service';
+import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 
 export const NOAH_COLORS = {
   'noah-red': {
@@ -54,4 +55,9 @@ export const SENSOR_COLORS: Record<SensorType, string> = {
   wlms: '#F64747',
   aws: '#00B16A',
   wlmsarg: '#e9d460',
+};
+
+export const IOT_SENSOR_COLORS: Record<QuezonCitySensorType, string> = {
+  rain: '#06b9e6',
+  flood: '#519259',
 };

@@ -1,0 +1,28 @@
+<div class="pl-6 relative pb-2">
+  <div class="pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ qcSensorType }}">
+      <input
+        [checked]="(shown$ | async) && !fetchFailed"
+        [disabled]="fetchFailed"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ qcSensorType }}"
+      />
+    </div>
+    <label
+      [class.line-through]="fetchFailed"
+      [class.text-gray-400]="fetchFailed"
+      class="ml-3"
+      for="input-{{ qcSensorType }}"
+    >
+      {{ qcSensorName }}
+    </label>
+  </div>
+
+  <div
+    class="absolute left-0 bottom-0 text-xs italic pl-16 ml-2 text-gray-400"
+    *ngIf="fetchFailed"
+  >
+    (Unable to fetch data)
+  </div>
+</div>

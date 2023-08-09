@@ -1,0 +1,25 @@
+<div class="relative pb-2">
+  <div class="py-2 pl-4 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ qcCritFacName }}">
+      <input
+        [checked]="shown$ | async"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        name="input-{{ qcCritFacName }}"
+      />
+    </div>
+    <label class="ml-3 font-semibold" for="input-{{ qcCritFacName }}">
+      {{ qcCritFacName }}
+    </label>
+  </div>
+  <div class="inline-flex left-0 bottom-0 text-s font-bold pl-16 ml-2">
+    <ul class="list-outside list-disc">
+      <li
+        class="{{ cf_type }} capitalize"
+        *ngFor="let cf_type of displayNameQCLegend"
+      >
+        <span>{{ cf_type | replace: '_':' ' }}</span>
+      </li>
+    </ul>
+  </div>
+</div>
