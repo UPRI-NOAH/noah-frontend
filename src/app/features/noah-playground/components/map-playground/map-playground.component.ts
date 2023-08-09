@@ -444,6 +444,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const name = e.features[0].properties.name;
             const iotType = e.features[0].properties.iot_type;
             const status = e.features[0].properties.status;
+            const latestData = e.features[0].properties.latest_data;
             const batPercent = e.features[0].properties.battery_percent;
             const municity = e.features[0].properties.municity;
             this.municity = municity;
@@ -451,6 +452,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               batPercent && batPercent !== 'null'
                 ? `${batPercent}%`
                 : 'Not Available';
+            const iotTypeLatestData =
+              iotType && iotType == 'flood'
+                ? `${latestData}m`
+                : `${latestData}mm`;
 
             while (Math.abs(e.lnglat - coordinates[0]) > 180) {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
@@ -461,6 +466,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             <div><b>IoT Sensor Type:</b> ${iotType}</div>
             <div><b>Status:</b> ${status}</div>
             <div><b>Battery Level:</b> ${formattedBatPercent}</div>
+            <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
           </div>`
             );
             if (!chartPopUpOpen) {
