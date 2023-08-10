@@ -1,0 +1,105 @@
+<div class="flex items-center justify-end pt-5">
+  <div
+    role="button"
+    class="
+      px-4
+      py-2
+      mr-1
+      bg-indigo-50
+      outline-none
+      border border-indigo-100
+      rounded
+      text-indigo-500
+      font-medium
+      active:scale-95
+      hover:bg-indigo-400 hover:text-white
+      focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2
+      disabled:bg-gray-400/80 disabled:shadow-none disabled:cursor-not-allowed
+      transition-colors
+      duration-200
+    "
+    [ngClass]="currentPage === 1 && 'pagination__button--disabled'"
+    (click)="onFirstPage()"
+  >
+    First
+  </div>
+  <div
+    role="button"
+    class="
+      px-4
+      py-2
+      mr-2
+      bg-indigo-50
+      outline-none
+      border border-indigo-100
+      rounded
+      text-indigo-500
+      font-medium
+      active:scale-95
+      hover:bg-indigo-400 hover:text-white
+      focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2
+      disabled:bg-gray-400/80 disabled:shadow-none disabled:cursor-not-allowed
+      transition-colors
+      duration-200
+    "
+    [ngClass]="currentPage === 1 && 'pagination__button--disabled'"
+    (click)="onPreviousPage()"
+  >
+    Previous
+  </div>
+  <div class="pagination__page-active">
+    <input
+      class="pagination__current-page"
+      (input)="onSetPage($event)"
+      [value]="currentPage"
+    />
+    / <span class="ml-2">{{ allPagesNumber }}</span>
+  </div>
+  <div
+    role="button"
+    class="
+      px-4
+      py-2
+      mr-1
+      bg-indigo-50
+      outline-none
+      border border-indigo-100
+      rounded
+      text-indigo-500
+      font-medium
+      active:scale-95
+      hover:bg-indigo-400 hover:text-white
+      focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2
+      disabled:bg-gray-400/80 disabled:shadow-none disabled:cursor-not-allowed
+      transition-colors
+      duration-200
+    "
+    [ngClass]="currentPage === allPagesNumber && 'pagination__button--disabled'"
+    (click)="onNextPage()"
+  >
+    Next
+  </div>
+  <div
+    role="button"
+    class="
+      px-4
+      py-2
+      bg-indigo-50
+      outline-none
+      border border-indigo-100
+      rounded
+      text-indigo-500
+      font-medium
+      active:scale-95
+      hover:bg-indigo-400 hover:text-white
+      focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2
+      disabled:bg-gray-400/80 disabled:shadow-none disabled:cursor-not-allowed
+      transition-colors
+      duration-200
+    "
+    [ngClass]="currentPage === allPagesNumber && 'pagination__button--disabled'"
+    (click)="onLastPage()"
+  >
+    Last
+  </div>
+</div>

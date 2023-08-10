@@ -1,0 +1,2006 @@
+<div class="px-6 justify-center items-center">
+  <button
+    class="
+      text-xs
+      font-bold
+      bg-green-600
+      rounded-full
+      px-10
+      py-2
+      my-4
+      inline-flex
+      items-center
+      justify-center
+      text-white
+      focus:outline-none
+      mx-auto
+      lg:mx-0
+      tracking-widest
+      hover:bg-green-700
+      focus:ring-opacity-50
+      border-2
+    "
+    (click)="viewSummary()"
+  >
+    View Data Summary
+  </button>
+</div>
+
+<!-- MODAL -->
+<div
+  class="relative z-50"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+  *ngIf="summaryModal"
+>
+  <div
+    class="fixed inset-0 bg-black opacity-80 transition-opacity"
+    (click)="closeModal()"
+  ></div>
+
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full justify-center p-4 text-center items-center">
+      <div
+        class="
+          relative
+          transform
+          overflow-hidden
+          rounded-lg
+          bg-blue-50
+          px-4
+          py-4
+          text-left
+          shadow-xl
+          transition-all
+          sm:my-8 sm:w-full sm:max-w-screen-lg
+        "
+      >
+        <div class="bg-blue-50 px-4 pt-5">
+          <div
+            class="
+              absolute
+              top-0
+              right-0
+              cursor-pointer
+              flex flex-col
+              items-center
+              mt-4
+              mr-4
+              text-white text-sm
+              z-50
+            "
+          >
+            <svg
+              class="fill-current text-black"
+              (click)="closeModal()"
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+            >
+              <path
+                d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+              ></path>
+            </svg>
+          </div>
+          <div class="">
+            <div class="mt-3 text-center">
+              <div class="text-center mb-2">
+                <h1 class="font-bold text-m lg:text-2xl text-gray-900">
+                  Latest Data IoT Summary Dashboard
+                </h1>
+                <p class="italic lg:text-lg text-sm">
+                  As of {{ todayString | date: 'fullDate' }}
+                </p>
+                <div class="w-full flex items-center justify-center">
+                  <div
+                    class="py-2 sm:py-4 md:py-2 bg-blue-50 shadow rounded-lg"
+                  >
+                    <div
+                      class="
+                        grid grid-cols-1
+                        md:grid-cols-1
+                        lg:grid-cols-1
+                        px-4
+                        xl:px-10
+                        gap-y-8 gap-x-12
+                        2xl:gap-x-28
+                        items-center
+                      "
+                    >
+                      <div class="w-full">
+                        <p
+                          class="
+                            text-[8px]
+                            md:text-xs
+                            leading-none
+                            text-black
+                            uppercase
+                            font-bold
+                          "
+                        >
+                          Total Sensors
+                        </p>
+                        <p
+                          class="
+                            text-lg
+                            sm:text-xl
+                            md:text-2xl
+                            lg:text-3xl
+                            font-bold
+                            leading-3
+                            text-blue-700
+                            mt-1
+                            md:mt-1
+                          "
+                        >
+                          {{ totalSensor }}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="
+                        grid grid-cols-2
+                        md:grid-cols-2
+                        lg:grid-cols-2
+                        px-4
+                        xl:px-10
+                        gap-y-8 gap-x-12
+                        2xl:gap-x-28
+                        items-center
+                      "
+                    >
+                      <div class="w-full">
+                        <p
+                          class="
+                            text-[8px]
+                            md:text-xs
+                            leading-none
+                            text-black
+                            uppercase
+                            font-bold
+                          "
+                        >
+                          Total Active Sensors
+                        </p>
+                        <p
+                          class="
+                            text-lg
+                            sm:text-xl
+                            md:text-2xl
+                            lg:text-3xl
+                            font-bold
+                            leading-3
+                            text-blue-700
+                            mt-1
+                            md:mt-1
+                          "
+                        >
+                          {{ activeSensor }}
+                        </p>
+                      </div>
+                      <div class="w-full">
+                        <p
+                          class="
+                            text-[8px]
+                            md:text-xs
+                            leading-none
+                            text-black
+                            uppercase
+                            font-bold
+                          "
+                        >
+                          Total Inactive Sensors
+                        </p>
+                        <p
+                          class="
+                            text-lg
+                            sm:text-xl
+                            md:text-2xl
+                            lg:text-3xl
+                            font-bold
+                            leading-3
+                            text-blue-700
+                            mt-1
+                            md:mt-1
+                          "
+                        >
+                          {{ inactive }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2">
+          <div class="md:flex w-full">
+            <div class="w-full">
+              <input
+                [(ngModel)]="searchValue"
+                type="search"
+                placeholder="Search Location"
+                autocomplete="off"
+                class="
+                  rounded-2xl
+                  w-full
+                  py-2
+                  px-2
+                  bg-blue-50
+                  border-4 border-blue-200
+                  drop-shadow-sm
+                  text-gray-700
+                  leading-tight
+                  focus:outline-none
+                "
+              />
+              <nav class="tab-navigation">
+                <ul
+                  class="
+                    tab-navigation
+                    flex flex-wrap
+                    text-[9.5px]
+                    sm:text-xs
+                    md:text-sm
+                    lg:text-base
+                    font-semibold
+                    text-center text-blue-400
+                    uppercase
+                    dark:border-gray-700 dark:text-gray-400
+                  "
+                >
+                  <li class="mr-2">
+                    <label
+                      for="select-all"
+                      tabindex="1"
+                      class="
+                        inline-block
+                        p-2
+                        active
+                        bg-blue-100
+                        rounded-t-lg
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800
+                        dark:hover:text-gray-300
+                        dark:bg-gray-800
+                        dark:text-gray-500
+                      "
+                      >All</label
+                    >
+                  </li>
+                  <li class="mr-2">
+                    <label
+                      for="select-flood"
+                      tabindex="1"
+                      class="
+                        inline-block
+                        p-2
+                        rounded-t-lg
+                        bg-blue-100
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800 dark:hover:text-gray-300
+                      "
+                      >Flood Sensors ({{ activeFloodSensor }})</label
+                    >
+                  </li>
+                  <li class="mr-2">
+                    <label
+                      for="select-rain"
+                      tabindex="1"
+                      class="
+                        inline-block
+                        p-2
+                        rounded-t-lg
+                        bg-blue-100
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800 dark:hover:text-gray-300
+                      "
+                      >Rain Gauge Sensors ({{ activeRainSensor }})</label
+                    >
+                  </li>
+                </ul>
+              </nav>
+              <section>
+                <!-- TAB SECTION FOR ALL -->
+                <article class="tab-all">
+                  <input
+                    type="radio"
+                    name="tab-indicator"
+                    id="select-all"
+                    class="tab-indicator"
+                    checked="checked"
+                  />
+                  <div class="tab-content">
+                    <ng-container *ngIf="loading; else dataSummaryall">
+                      <div tabindex="0" class="justify-center">
+                        <div
+                          class="shadow-xl w-full z-10 overflow-hidden"
+                          style="max-width: 1000px"
+                        >
+                          <div class="md:flex w-full">
+                            <div class="w-full py-10 px-5 md:px-10">
+                              <div class="flex justify-center gap-x-4 mb-4">
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bottom-0
+                                  "
+                                >
+                                  <div
+                                    class="
+                                      w-14
+                                      h-14
+                                      border-t-4 border-b-4 border-black
+                                      rounded-full
+                                      animate-spin
+                                      absolute
+                                    "
+                                  ></div>
+                                  <img
+                                    src="assets/icons/logo-noah.svg"
+                                    class="w-10 h-10 animate-none"
+                                    fill="none"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-template #dataSummaryall>
+                      <div class="mt-0">
+                        <div
+                          class="
+                            overflow-auto
+                            rounded-tr-lg rounded-b-lg
+                            shadow
+                            hidden
+                            lg:block
+                            overflow-y-auto
+                          "
+                          style="height: 405px"
+                        >
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
+                              <tr class="text-left">
+                                <th
+                                  class="
+                                    top-0
+                                    border-b border-gray-200
+                                    bg-blue-200
+                                    p-2
+                                    text-xs
+                                    tracking-wide
+                                    text-left
+                                    font-extrabold
+                                    sticky
+                                  "
+                                  *ngFor="let col of columns"
+                                >
+                                  <div
+                                    (click)="onHeaderColumnClick(col.key)"
+                                    class="cursor-pointer inline-flex"
+                                  >
+                                    {{ col.header }}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      class="mr-1 h-4 w-4 text-left"
+                                      viewBox="0 0 20 20"
+                                      fill="currentColor"
+                                    >
+                                      <path
+                                        d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                      />
+                                    </svg>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                              <tr
+                                class="
+                                  hover:bg-gray-100
+                                  bg-white
+                                  even:bg-gray-50
+                                "
+                                *ngFor="
+                                  let data of summaryData
+                                    | sort: sortField:sortDirection
+                                    | searchfilter: searchValue
+                                "
+                              >
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  {{ data.name }}
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.iot_type }}
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_date == null;
+                                      else showDate
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showDate>
+                                    <div
+                                      *ngIf="
+                                        data.latest_date == data.latest_date
+                                      "
+                                    >
+                                      {{
+                                        data.latest_date
+                                          | date: 'medium':'+0000'
+                                      }}
+                                    </div>
+                                  </ng-template>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    text-center
+                                    justify-center
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showLabel
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showLabel>
+                                    <div *ngIf="data.iot_type == 'rain'">
+                                      {{ data.latest_data }}mm
+                                    </div>
+                                    <div *ngIf="data.iot_type == 'flood'">
+                                      {{ data.latest_data }}m
+                                    </div>
+                                  </ng-template>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showLevel
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showLevel>
+                                    <ng-container
+                                      *ngIf="data.iot_type == 'rain'"
+                                    >
+                                      <span class="pl-10 text-lg font-bold"
+                                        >-</span
+                                      >
+                                    </ng-container>
+
+                                    <ng-container
+                                      *ngIf="data.iot_type == 'flood'"
+                                    >
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0' &&
+                                          data.latest_data < '0.6'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-low
+                                            rounded-lg
+                                          "
+                                          >Low (0 - 0.5m)</span
+                                        >
+                                      </ng-container>
+
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0.6' &&
+                                          data.latest_data <= '1.5'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-medium
+                                            rounded-lg
+                                          "
+                                          >Medium (0.6 - 1.5m)</span
+                                        >
+                                      </ng-container>
+
+                                      <ng-container
+                                        *ngIf="data.latest_data > '1.6'"
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            uppercase
+                                            tracking-wider
+                                            text-black
+                                            bg-high
+                                            rounded-lg
+                                          "
+                                        >
+                                          High (> 1.5m)
+                                        </span>
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-template>
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.status }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <!-- <noah-pagination
+                          class="hidden lg:block"
+                          [allPagesNumber]="allPages"
+                          (changePage)="onPageChange($event)"
+                        ></noah-pagination> -->
+
+                        <!-- MOBILE VIEW -->
+                        <div class="flex flex-row flex-wrap lg:hidden w-full">
+                          <div
+                            class="flex w-full items-center justify-between p-3"
+                          >
+                            <div class="flex items-center space-x-3">
+                              <div
+                                class="
+                                  h-6
+                                  w-20
+                                  md:mb-0
+                                  rounded-lg
+                                  flex
+                                  items-center
+                                  justify-center
+                                  dropdown
+                                "
+                              >
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-around
+                                    h-full
+                                    w-full
+                                  "
+                                >
+                                  <div class="dropdown inline-block relative">
+                                    <button
+                                      class="
+                                        mt-1.5
+                                        bg-gray-200
+                                        text-gray-800
+                                        font-semibold
+                                        p-1
+                                        rounded
+                                        inline-flex
+                                        items-center
+                                        hover:bg-gray-200
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-gray-600
+                                        focus:ring-opacity-50
+                                        text-[12px]
+                                      "
+                                    >
+                                      Sort By:
+                                    </button>
+                                    <ul
+                                      class="
+                                        dropdown-menu
+                                        z-50
+                                        rounded-lg
+                                        drop-shadow-xl
+                                        bg-white
+                                        left-20
+                                        top-0
+                                        absolute
+                                        hidden
+                                        text-sm text-gray-700
+                                        w-32
+                                        h-48
+                                        overflow-y-auto
+                                      "
+                                    >
+                                      <li
+                                        class="w-32"
+                                        *ngFor="let col of columns"
+                                      >
+                                        <a
+                                          class="
+                                            rounded-lg
+                                            block
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            leading-5
+                                            text-gray-700
+                                            transition
+                                            duration-150
+                                            ease-in-out
+                                            hover:bg-gray-100
+                                            focus:outline-none focus:bg-gray-100
+                                          "
+                                          (click)="onHeaderColumnClick(col.key)"
+                                          role="button"
+                                          >{{ col.mobileHeader }}</a
+                                        >
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-low
+                                  font-bold
+                                "
+                              >
+                                Low(0 - 0.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-medium
+                                  font-bold
+                                "
+                              >
+                                Medium(0.6 - 1.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-high
+                                  font-bold
+                                "
+                              >
+                                High(1.6m+)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="
+                            items-center
+                            justify-center
+                            py-2
+                            px-3
+                            lg:hidden
+                            grid grid-cols-1
+                            sm:grid-cols-2
+                            h-96
+                            overflow-y-auto
+                            sm:grid-cols-
+                            gap-4
+                          "
+                        >
+                          <div
+                            class="
+                              md:w-full
+                              rounded-md
+                              drop-shadow-2xl
+                              py-4
+                              px-5
+                              w-full
+                              bg-white
+                            "
+                            *ngFor="
+                              let data of summaryData
+                                | sort: sortField:sortDirection
+                                | searchfilter: searchValue
+                            "
+                          >
+                            <h1
+                              class="
+                                text-base
+                                font-bold
+                                text-gray-800
+                                leading-5
+                                pt-2
+                              "
+                            >
+                              {{ data.name }}
+                            </h1>
+                            <div class="pt-2 relative">
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                  <span class="text-sm font-normal">
+                                    <ng-container
+                                      *ngIf="
+                                        data.latest_date == null;
+                                        else showDate
+                                      "
+                                    >
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showDate>
+                                      <div
+                                        *ngIf="
+                                          data.latest_date == data.latest_date
+                                        "
+                                      >
+                                        {{
+                                          data.latest_date
+                                            | date: 'medium':'+0000'
+                                        }}
+                                      </div>
+                                    </ng-template>
+                                  </span>
+                                </div>
+                              </div>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Sensor Type: {{ data.iot_type }}
+                              </p>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Status: {{ data.status }}
+                              </p>
+
+                              <div
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                <ng-container
+                                  *ngIf="
+                                    data.latest_data == null;
+                                    else showLabel
+                                  "
+                                >
+                                  <div>Latest Data: N/A</div>
+                                </ng-container>
+                                <ng-template #showLabel>
+                                  <div *ngIf="data.iot_type == 'flood'">
+                                    <div
+                                      class="text-low"
+                                      *ngIf="
+                                        data.latest_data >= '0' &&
+                                        data.latest_data < '0.5'
+                                      "
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+
+                                    <div
+                                      class="text-medium"
+                                      *ngIf="
+                                        data.latest_data >= '0.6' &&
+                                        data.latest_data <= '1.5'
+                                      "
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+
+                                    <div
+                                      class="text-high"
+                                      *ngIf="data.latest_data > '1.6'"
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+                                  </div>
+                                  <div *ngIf="data.iot_type == 'rain'">
+                                    <div>
+                                      Latest Data: {{ data.latest_data }}mm
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- MOBILE VIEW -->
+                      </div>
+                    </ng-template>
+                  </div>
+                </article>
+
+                <!-- TAB SECTION FOR FLOOD -->
+                <article class="tab-flood">
+                  <input
+                    type="radio"
+                    name="tab-indicator"
+                    id="select-flood"
+                    class="tab-indicator"
+                  />
+                  <div class="tab-content">
+                    <ng-container *ngIf="loading; else dataSummaryFlood">
+                      <div tabindex="0" class="justify-center">
+                        <div
+                          class="shadow-xl w-full z-10 overflow-hidden"
+                          style="max-width: 1000px"
+                        >
+                          <div class="md:flex w-full">
+                            <div class="w-full py-10 px-5 md:px-10">
+                              <div class="flex justify-center gap-x-4 mb-4">
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bottom-0
+                                  "
+                                >
+                                  <div
+                                    class="
+                                      w-14
+                                      h-14
+                                      border-t-4 border-b-4 border-black
+                                      rounded-full
+                                      animate-spin
+                                      absolute
+                                    "
+                                  ></div>
+                                  <img
+                                    src="assets/icons/logo-noah.svg"
+                                    class="w-10 h-10 animate-none"
+                                    fill="none"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-template #dataSummaryFlood>
+                      <div class="mt-0">
+                        <div
+                          class="
+                            overflow-auto
+                            rounded-tr-lg rounded-b-lg
+                            shadow
+                            hidden
+                            lg:block
+                          "
+                        >
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
+                              <tr>
+                                <th
+                                  class="
+                                    p-2
+                                    text-sm
+                                    font-semibold
+                                    tracking-wide
+                                    text-left
+                                  "
+                                  *ngFor="let col of columns"
+                                >
+                                  <div
+                                    (click)="onHeaderColumnClick(col.key)"
+                                    class="cursor-pointer inline-flex"
+                                  >
+                                    {{ col.header }}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      class="mr-1 h-5 w-5 text-left"
+                                      viewBox="0 0 20 20"
+                                      fill="currentColor"
+                                    >
+                                      <path
+                                        d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                      />
+                                    </svg>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                              <tr
+                                class="hover:bg-gray-100 bg-white"
+                                *ngFor="
+                                  let data of floodSummaryData
+                                    | sort: sortField:sortDirection
+                                    | searchfilter: searchValue
+                                "
+                              >
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  {{ data.name }}
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.iot_type }}
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <div *ngIf="data.latest_date == null">
+                                    N/A
+                                  </div>
+                                  <div
+                                    *ngIf="data.latest_date == data.latest_date"
+                                  >
+                                    {{
+                                      data.latest_date | date: 'medium':'+0000'
+                                    }}
+                                  </div>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    text-center
+                                    justify-center
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showFlood
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showFlood>
+                                    <div *ngIf="data.iot_type == 'flood'">
+                                      {{ data.latest_data }}m
+                                    </div>
+                                  </ng-template>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showLevel
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showLevel>
+                                    <ng-container
+                                      *ngIf="
+                                        data.latest_data >= '0' &&
+                                        data.latest_data < '0.6'
+                                      "
+                                    >
+                                      <span
+                                        class="
+                                          p-1.5
+                                          text-xs
+                                          font-medium
+                                          uppercase
+                                          tracking-wider
+                                          text-black
+                                          bg-low
+                                          rounded-lg
+                                        "
+                                        >Low (0 - 0.5m)</span
+                                      >
+                                    </ng-container>
+
+                                    <ng-container
+                                      *ngIf="
+                                        data.latest_data >= '0.6' &&
+                                        data.latest_data <= '1.5'
+                                      "
+                                    >
+                                      <span
+                                        class="
+                                          p-1.5
+                                          text-xs
+                                          font-medium
+                                          uppercase
+                                          tracking-wider
+                                          text-black
+                                          bg-medium
+                                          rounded-lg
+                                        "
+                                        >Medium (0.6 - 1.5m)</span
+                                      >
+                                    </ng-container>
+
+                                    <ng-container
+                                      *ngIf="data.latest_data > '1.6'"
+                                    >
+                                      <span
+                                        class="
+                                          p-1.5
+                                          text-xs
+                                          font-medium
+                                          uppercase
+                                          tracking-wider
+                                          text-black
+                                          bg-high
+                                          rounded-lg
+                                        "
+                                      >
+                                        High (1.6m +)
+                                      </span>
+                                    </ng-container>
+                                  </ng-template>
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.status }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- <noah-pagination
+                          class="hidden lg:block"
+                          [allPagesNumber]="floodAllPages"
+                          (changePage)="onPageChange($event)"
+                        ></noah-pagination> -->
+
+                        <!-- MOBILE VIEW FLOOD -->
+                        <div class="flex flex-row flex-wrap lg:hidden w-full">
+                          <div
+                            class="
+                              flex
+                              w-full
+                              items-center
+                              justify-between
+                              border-b
+                              pb-3
+                            "
+                          >
+                            <div class="flex items-center space-x-3">
+                              <div
+                                class="
+                                  h-6
+                                  w-20
+                                  md:mb-0
+                                  rounded-lg
+                                  flex
+                                  items-center
+                                  justify-center
+                                  dropdown
+                                "
+                              >
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-around
+                                    h-full
+                                    w-full
+                                  "
+                                >
+                                  <div class="dropdown inline-block relative">
+                                    <button
+                                      class="
+                                        bg-gray-200
+                                        text-gray-800
+                                        font-semibold
+                                        p-1
+                                        m-2
+                                        rounded
+                                        inline-flex
+                                        items-center
+                                        hover:bg-gray-200
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-gray-600
+                                        focus:ring-opacity-50
+                                        text-sm
+                                      "
+                                    >
+                                      Sort By:
+                                    </button>
+                                    <ul
+                                      class="
+                                        dropdown-menu
+                                        z-50
+                                        rounded-lg
+                                        drop-shadow-xl
+                                        bg-white
+                                        left-20
+                                        top-0
+                                        absolute
+                                        hidden
+                                        text-sm text-gray-700
+                                        w-32
+                                        h-48
+                                        overflow-y-auto
+                                      "
+                                    >
+                                      <li
+                                        class="w-32"
+                                        *ngFor="let col of columns"
+                                      >
+                                        <a
+                                          class="
+                                            rounded-lg
+                                            block
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            leading-5
+                                            text-gray-700
+                                            transition
+                                            duration-150
+                                            ease-in-out
+                                            hover:bg-gray-100
+                                            focus:outline-none focus:bg-gray-100
+                                          "
+                                          (click)="onHeaderColumnClick(col.key)"
+                                          role="button"
+                                          >{{ col.mobileHeader }}</a
+                                        >
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-low
+                                  font-bold
+                                "
+                              >
+                                Low(0 - 0.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-medium
+                                  font-bold
+                                "
+                              >
+                                Medium(0.6 - 1.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-high
+                                  font-bold
+                                "
+                              >
+                                High(1.6m+)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="
+                            items-center
+                            justify-center
+                            py-2
+                            px-3
+                            lg:hidden
+                            grid grid-cols-1
+                            sm:grid-cols-2
+                            h-96
+                            overflow-y-auto
+                            sm:grid-cols-
+                            gap-4
+                          "
+                        >
+                          <div
+                            class="
+                              md:w-full
+                              rounded-md
+                              drop-shadow-2xl
+                              py-4
+                              px-5
+                              w-full
+                              bg-white
+                            "
+                            *ngFor="
+                              let data of floodSummaryData
+                                | sort: sortField:sortDirection
+                                | searchfilter: searchValue
+                            "
+                          >
+                            <h1
+                              class="
+                                text-base
+                                font-bold
+                                text-gray-800
+                                leading-5
+                                pt-2
+                              "
+                            >
+                              {{ data.name }}
+                            </h1>
+                            <div class="pt-2 relative">
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                  <span class="text-sm font-normal">
+                                    <ng-container
+                                      *ngIf="
+                                        data.latest_date == null;
+                                        else showDate
+                                      "
+                                    >
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showDate>
+                                      <div
+                                        *ngIf="
+                                          data.latest_date == data.latest_date
+                                        "
+                                      >
+                                        {{
+                                          data.latest_date
+                                            | date: 'medium':'+0000'
+                                        }}
+                                      </div>
+                                    </ng-template>
+                                  </span>
+                                </div>
+                              </div>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Sensor Type: {{ data.iot_type }}
+                              </p>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Status: {{ data.status }}
+                              </p>
+
+                              <div
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                <ng-container
+                                  *ngIf="
+                                    data.latest_data == null;
+                                    else showLabel
+                                  "
+                                >
+                                  <div>Latest Data: N/A</div>
+                                </ng-container>
+                                <ng-template #showLabel>
+                                  <div *ngIf="data.iot_type == 'flood'">
+                                    <div
+                                      class="text-low"
+                                      *ngIf="
+                                        data.latest_data >= '0' &&
+                                        data.latest_data < '0.6'
+                                      "
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+                                    <div
+                                      class="text-medium"
+                                      *ngIf="
+                                        data.latest_data >= '0.6' &&
+                                        data.latest_data <= '1.5'
+                                      "
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+
+                                    <div
+                                      class="text-high"
+                                      *ngIf="data.latest_data > '1.5'"
+                                    >
+                                      Latest Data: {{ data.latest_data }}m
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END MOBILE VIEW FLOOD -->
+                      </div>
+                    </ng-template>
+                  </div>
+                </article>
+                <!-- TAB SECTION FOR RAIN -->
+                <article class="tab-rain">
+                  <input
+                    type="radio"
+                    name="tab-indicator"
+                    id="select-rain"
+                    class="tab-indicator"
+                  />
+                  <div class="tab-content">
+                    <ng-container *ngIf="loading; else dataSummaryRain">
+                      <div tabindex="0" class="justify-center">
+                        <div
+                          class="shadow-xl w-full z-10 overflow-hidden"
+                          style="max-width: 1000px"
+                        >
+                          <div class="md:flex w-full">
+                            <div class="w-full py-10 px-5 md:px-10">
+                              <div class="flex justify-center gap-x-4 mb-4">
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-center
+                                    bottom-0
+                                  "
+                                >
+                                  <div
+                                    class="
+                                      w-14
+                                      h-14
+                                      border-t-4 border-b-4 border-black
+                                      rounded-full
+                                      animate-spin
+                                      absolute
+                                    "
+                                  ></div>
+                                  <img
+                                    src="assets/icons/logo-noah.svg"
+                                    class="w-10 h-10 animate-none"
+                                    fill="none"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-template #dataSummaryRain>
+                      <div class="mt-0">
+                        <div
+                          class="
+                            overflow-auto
+                            rounded-tr-lg rounded-b-lg
+                            shadow
+                            hidden
+                            lg:block
+                          "
+                        >
+                          <table class="w-full">
+                            <thead class="bg-blue-200">
+                              <tr>
+                                <th
+                                  class="
+                                    p-2
+                                    text-sm
+                                    font-semibold
+                                    tracking-wide
+                                    text-left
+                                  "
+                                  *ngFor="let col of columns"
+                                >
+                                  <div
+                                    (click)="onHeaderColumnClick(col.key)"
+                                    class="cursor-pointer inline-flex"
+                                  >
+                                    {{ col.header }}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      class="mr-1 h-5 w-5 text-left"
+                                      viewBox="0 0 20 20"
+                                      fill="currentColor"
+                                    >
+                                      <path
+                                        d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                      />
+                                    </svg>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                              <tr
+                                class="hover:bg-gray-100 bg-white"
+                                *ngFor="
+                                  let data of rainSummaryData
+                                    | sort: sortField:sortDirection
+                                    | searchfilter: searchValue
+                                "
+                              >
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  {{ data.name }}
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.iot_type }}
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <div *ngIf="data.latest_date == null">
+                                    N/A
+                                  </div>
+                                  <div
+                                    *ngIf="data.latest_date == data.latest_date"
+                                  >
+                                    {{
+                                      data.latest_date | date: 'medium':'+0000'
+                                    }}
+                                  </div>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    text-center
+                                    justify-center
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showRain
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showRain>
+                                    <div *ngIf="data.iot_type == 'rain'">
+                                      {{ data.latest_data }}mm
+                                    </div>
+                                  </ng-template>
+                                </td>
+
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                  "
+                                >
+                                  <ng-container
+                                    *ngIf="
+                                      data.latest_data == null;
+                                      else showLevel
+                                    "
+                                  >
+                                    <div>N/A</div>
+                                  </ng-container>
+                                  <ng-template #showLevel>
+                                    <ng-container
+                                      *ngIf="data.iot_type == 'rain'"
+                                    >
+                                      <span class="pl-8 text-lg font-bold"
+                                        >-</span
+                                      >
+                                    </ng-container>
+                                  </ng-template>
+                                </td>
+                                <td
+                                  class="
+                                    p-2
+                                    text-sm text-gray-700
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.status }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- <noah-pagination
+                          class="hidden lg:block"
+                          [allPagesNumber]="rainAllPages"
+                          (changePage)="onPageChange($event)"
+                        ></noah-pagination> -->
+                        <!-- MOBILE VIEW FLOOD -->
+                        <div class="flex flex-row flex-wrap lg:hidden w-full">
+                          <div
+                            class="
+                              flex
+                              w-full
+                              items-center
+                              justify-between
+                              border-b
+                              pb-3
+                            "
+                          >
+                            <div class="flex items-center space-x-3">
+                              <div
+                                class="
+                                  h-6
+                                  w-20
+                                  md:mb-0
+                                  rounded-lg
+                                  flex
+                                  items-center
+                                  justify-center
+                                  dropdown
+                                "
+                              >
+                                <div
+                                  class="
+                                    flex
+                                    items-center
+                                    justify-around
+                                    h-full
+                                    w-full
+                                  "
+                                >
+                                  <div class="dropdown inline-block relative">
+                                    <button
+                                      class="
+                                        bg-gray-200
+                                        text-gray-800
+                                        font-semibold
+                                        p-1
+                                        m-2
+                                        rounded
+                                        inline-flex
+                                        items-center
+                                        hover:bg-gray-200
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-gray-600
+                                        focus:ring-opacity-50
+                                        text-sm
+                                      "
+                                    >
+                                      Sort By:
+                                    </button>
+                                    <ul
+                                      class="
+                                        dropdown-menu
+                                        z-50
+                                        rounded-lg
+                                        drop-shadow-xl
+                                        bg-white
+                                        left-20
+                                        top-0
+                                        absolute
+                                        hidden
+                                        text-sm text-gray-700
+                                        w-32
+                                        h-48
+                                        overflow-y-auto
+                                      "
+                                    >
+                                      <li
+                                        class="w-32"
+                                        *ngFor="let col of columns"
+                                      >
+                                        <a
+                                          class="
+                                            rounded-lg
+                                            block
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            leading-5
+                                            text-gray-700
+                                            transition
+                                            duration-150
+                                            ease-in-out
+                                            hover:bg-gray-100
+                                            focus:outline-none focus:bg-gray-100
+                                          "
+                                          (click)="onHeaderColumnClick(col.key)"
+                                          role="button"
+                                          >{{ col.mobileHeader }}</a
+                                        >
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="flex items-center space-x-1.5">
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-low
+                                  font-bold
+                                "
+                              >
+                                Low(0 - 0.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-medium
+                                  font-bold
+                                "
+                              >
+                                Medium(0.6 - 1.5m)
+                              </div>
+                              <div
+                                class="
+                                  text-[11px]
+                                  sm:text-sm
+                                  text-high
+                                  font-bold
+                                "
+                              >
+                                High(1.6m+)
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          class="
+                            items-center
+                            justify-center
+                            py-2
+                            px-3
+                            lg:hidden
+                            grid grid-cols-1
+                            sm:grid-cols-2
+                            h-96
+                            overflow-y-auto
+                            sm:grid-cols-
+                            gap-4
+                          "
+                        >
+                          <div
+                            class="
+                              md:w-full
+                              rounded-md
+                              drop-shadow-2xl
+                              py-4
+                              px-5
+                              w-full
+                              bg-white
+                            "
+                            *ngFor="
+                              let data of rainSummaryData
+                                | sort: sortField:sortDirection
+                                | searchfilter: searchValue
+                            "
+                          >
+                            <h1
+                              class="
+                                text-base
+                                font-bold
+                                text-gray-800
+                                leading-5
+                                pt-2
+                              "
+                            >
+                              {{ data.name }}
+                            </h1>
+                            <div class="pt-2 relative">
+                              <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                  <span class="text-sm font-normal">
+                                    <ng-container
+                                      *ngIf="
+                                        data.latest_date == null;
+                                        else showDate
+                                      "
+                                    >
+                                      <div>N/A</div>
+                                    </ng-container>
+                                    <ng-template #showDate>
+                                      <div
+                                        *ngIf="
+                                          data.latest_date == data.latest_date
+                                        "
+                                      >
+                                        {{
+                                          data.latest_date
+                                            | date: 'medium':'+0000'
+                                        }}
+                                      </div>
+                                    </ng-template>
+                                  </span>
+                                </div>
+                              </div>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Sensor Type: {{ data.iot_type }}
+                              </p>
+                              <p
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                Status: {{ data.status }}
+                              </p>
+
+                              <div
+                                class="
+                                  text-sm
+                                  leading-none
+                                  pt-2
+                                  text-gray-600
+                                  first
+                                  capitalize
+                                "
+                              >
+                                <ng-container
+                                  *ngIf="
+                                    data.latest_data == null;
+                                    else showLabel
+                                  "
+                                >
+                                  <div>Latest Data: N/A</div>
+                                </ng-container>
+                                <ng-template #showLabel>
+                                  <div *ngIf="data.iot_type == 'rain'">
+                                    <div>
+                                      Latest Data: {{ data.latest_data }}mm
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END MOBILE VIEW FLOOD -->
+                      </div>
+                    </ng-template>
+                  </div>
+                </article>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- alert -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
+  *ngIf="alertSummary"
+>
+  <!--content-->
+  <div class="min-w-screen min-h-screen flex items-center z-40 justify-center">
+    <div
+      class="
+        flex
+        items-center
+        justify-center
+        fixed
+        left-0
+        bottom-0
+        w-full
+        h-full
+      "
+    >
+      <div
+        id="modal"
+        class="
+          container
+          mx-auto
+          flex
+          justify-center
+          items-center
+          px-4
+          md:px-10
+          py-12
+        "
+      >
+        <div
+          class="absolute top-0 flex items-center z-10 justify-center px-5 py-5"
+        >
+          <div
+            class="flex bg-yellow-200 rounded-lg p-4 mb-4 text-sm text-red-700"
+            role="alertModal"
+          >
+            <div class="sm:flex items-center">
+              <div class="flex items-end">
+                <div class="mr-2 mt-0.5 sm:mt-0 text-yellow-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    fill="currentColor"
+                  >
+                    <path
+                      class="heroicon-ui"
+                      d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 9a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0v4a1 1 0 0 1-1 1zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                    />
+                  </svg>
+                </div>
+                <p class="mr-2 text-base font-bold text-yellow-500">Warning</p>
+              </div>
+              <div
+                class="h-1 w-1 bg-yellow-500 rounded-full mr-2 hidden xl:block"
+              ></div>
+              <p class="text-base text-black font-bold">
+                Unable to fetch Quezon City Summary Data
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- alert -->
