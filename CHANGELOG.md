@@ -1,3 +1,95 @@
+## [3.0.1](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.0.1) (2023-08-10)
+
+### New Feature - Internet of Things (IoT)
+
+- **internet-of-things:** combination of Quezon City and Laguna ([#331](https://github.com/UPRI-NOAH/noah-frontend/pull/331)) ([88931c3](https://github.com/UPRI-NOAH/noah-frontend/commit/88931c35a1b514dcd9ad4e2d50965a66cdd9cf31))
+
+#### Features
+
+- **iot:** circle size depending on zoom level ([#334](https://github.com/UPRI-NOAH/noah-frontend/pull/334)) ([829d351](https://github.com/UPRI-NOAH/noah-frontend/commit/829d35131776e3462c62d06160523aebc2f23d65))
+- **qc-iot:** QC IoT summary dashboard ui and mobile view ([#326](https://github.com/UPRI-NOAH/noah-frontend/pull/326)) ([6d7dab0](https://github.com/UPRI-NOAH/noah-frontend/commit/6d7dab03b4aa4fc4d121652f16b8f2c948851627))
+- **qc-iot:** showing battery level hover points ([#314](https://github.com/UPRI-NOAH/noah-frontend/pull/314)) ([15b02a5](https://github.com/UPRI-NOAH/noah-frontend/commit/15b02a56284c5ed207a8c71c7b3b3156ab80b0dd))
+- **qc-iot:** hovering chart value in 2 decimal places ([#313](https://github.com/UPRI-NOAH/noah-frontend/pull/313)) ([cd50b50](https://github.com/UPRI-NOAH/noah-frontend/commit/cd50b5094937797cbf23fdd53f6d50fd1194716a))
+- **qc-iot:** qa chart IoT graph ([#311](https://github.com/UPRI-NOAH/noah-frontend/pull/311)) ([f612451](https://github.com/UPRI-NOAH/noah-frontend/commit/f6124519e842b21b9b846c62cd250ee808fd02a6))
+- **qc-iot:** chart default to all ([#305](https://github.com/UPRI-NOAH/noah-frontend/pull/305)) ([594d8aa](https://github.com/UPRI-NOAH/noah-frontend/commit/594d8aa3b6c4d42965fb9f91065bb5ef3179ffd3))
+- **qc-iot:** added unit for iot dot and KYH legend ([#303](https://github.com/UPRI-NOAH/noah-frontend/pull/303)) ([4d63ff0](https://github.com/UPRI-NOAH/noah-frontend/commit/4d63ff0db6b1e51c8ab9348551ca08bcbd429db4))
+- **qc-iot:** add Quezon City Municipal boundary ([#302](https://github.com/UPRI-NOAH/noah-frontend/pull/302)) ([08f64e3](https://github.com/UPRI-NOAH/noah-frontend/commit/08f64e3ceacf787bc7e9af17639c443fa80e2e65))
+- **qc-iot:** display all data by default in graph ([#300](https://github.com/UPRI-NOAH/noah-frontend/pull/300)) ([7e04203](https://github.com/UPRI-NOAH/noah-frontend/commit/7e04203fbfc898c501fce8442014fc8cde5f5f9c))
+- **qc-iot:** login in noah studio ([#298](https://github.com/UPRI-NOAH/noah-frontend/pull/298)) ([f271354](https://github.com/UPRI-NOAH/noah-frontend/commit/f27135438c9e9d990e212467c7fad1fe751b5b52))
+- **qc-iot:** loading for noah login ([#297](https://github.com/UPRI-NOAH/noah-frontend/pull/297)) ([186a627](https://github.com/UPRI-NOAH/noah-frontend/commit/186a627b909665266956f9516a67d14cbf61381a))
+- **qc-iot:** summary dashboard UI and mobile view ([#296](https://github.com/UPRI-NOAH/noah-frontend/pull/296)) ([c97c877](https://github.com/UPRI-NOAH/noah-frontend/commit/c97c877322465248609aca86cc0b5cb7f6ab7023))
+- **qc-iot:** change UI for dashboard summary and update graph/chart ([#295](https://github.com/UPRI-NOAH/noah-frontend/pull/295)) ([5234bb8](https://github.com/UPRI-NOAH/noah-frontend/commit/5234bb805392735b1d4e230680a4144739262150))
+- **qc-iot:** summary dashboard label and rain value and mobile view ([#294](https://github.com/UPRI-NOAH/noah-frontend/pull/294)) ([cc70492](https://github.com/UPRI-NOAH/noah-frontend/commit/cc70492cc5a0fcef4f2fac591d749f01551e1c2b))
+- **qc-iot:** add tab navigation for different type in summary dashboard ([#292](https://github.com/UPRI-NOAH/noah-frontend/pull/292)) ([8aee7fb](https://github.com/UPRI-NOAH/noah-frontend/commit/8aee7fb5a427bfb6cf830e1800c7790970f30a9f))
+- **qc-iot:** additional features/enhancement for qc iot ([#287](https://github.com/UPRI-NOAH/noah-frontend/pull/287)) ([ae778af](https://github.com/UPRI-NOAH/noah-frontend/commit/ae778af1814dbb52af9c1feb7f7bfb9b529cde36))
+- **qc-iot:** update IOT sensors tab and IOT graph ([#274](https://github.com/UPRI-NOAH/noah-frontend/pull/274)) ([3a3f2a5](https://github.com/UPRI-NOAH/noah-frontend/commit/3a3f2a57db12bc8330120466b05ddf07c4d45218))
+
+#### Bug Fixes
+
+- **iot:** add latest data in popup map display ([#336](https://github.com/UPRI-NOAH/noah-frontend/pull/336)) ([8920041](https://github.com/UPRI-NOAH/noah-frontend/commit/89200416a9ec617f579c8bf6bf6884a418b02356))
+- **iot:** fix bug and errors in login modal ang graph display ([#333](https://github.com/UPRI-NOAH/noah-frontend/pull/333)) ([70f0a59](https://github.com/UPRI-NOAH/noah-frontend/commit/70f0a598a3d2d9e8e0375249a375c2382ace27b5))
+- **iot:** fix bugs for qc and laguna iot combination ([#332](https://github.com/UPRI-NOAH/noah-frontend/pull/332)) ([0fb478f](https://github.com/UPRI-NOAH/noah-frontend/commit/0fb478f7283ac0ad83cad51b7913dc18335241b6))
+- **qc-iot:** add accumulated data for rain per hour ([#329](https://github.com/UPRI-NOAH/noah-frontend/pull/329)) ([62c0a87](https://github.com/UPRI-NOAH/noah-frontend/commit/62c0a87fee70a190c2bb9f58eecb431eb5a69367))
+- **qc-iot:** change rain gauge title in summary dashboard ([#312](https://github.com/UPRI-NOAH/noah-frontend/pull/312)) ([d213394](https://github.com/UPRI-NOAH/noah-frontend/commit/d213394d817ccfbe6160850e7d649ff481afb4ce))
+- **qc-iot:** when IoT sidebar unchecked hide popup ([#310](https://github.com/UPRI-NOAH/noah-frontend/pull/310)) ([4d44e64](https://github.com/UPRI-NOAH/noah-frontend/commit/4d44e64bff867a8db4d6db52ddca80de97ab39ff))
+- **qc-iot:** change QC boundary legend ([#309](https://github.com/UPRI-NOAH/noah-frontend/pull/309)) ([6cebd5e](https://github.com/UPRI-NOAH/noah-frontend/commit/6cebd5e0790f7d09943d6d89d50d92d0ad569167))
+- **qc-iot:** hovering IoT sensor and still open the popup chart ([#308](https://github.com/UPRI-NOAH/noah-frontend/pull/308)) ([2e24b1b](https://github.com/UPRI-NOAH/noah-frontend/commit/2e24b1b188ac798c47963d20835c591ea0395232))
+- **qc-iot:** fix bugs from QA ([#306](https://github.com/UPRI-NOAH/noah-frontend/pull/306)) ([239b15b](https://github.com/UPRI-NOAH/noah-frontend/commit/239b15b209e1b980df53ad5df32e129185cd1136))
+- **qc-iot:** fix ui for summary dashboard and name sensor type ([#301](https://github.com/UPRI-NOAH/noah-frontend/pull/301)) ([1a44b86](https://github.com/UPRI-NOAH/noah-frontend/commit/1a44b861e911398e51d8265056bd8f2a69b2edd6))
+
+## [3.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v2.0.0...v3.0.0) (2023-03-15)
+
+### Bug Fixes
+
+- **noah-studio:** change default color for hazard layers ([#323](https://github.com/UPRI-NOAH/noah-frontend/pull/323)) ([5a94d0d](https://github.com/UPRI-NOAH/noah-frontend/commit/5a94d0ddfc2a85001ac96f3211a3d546cd31392d))
+- **know-your-hazards:** remove KYH legend ([#322](https://github.com/UPRI-NOAH/noah-frontend/pull/322)) ([79fb75f](https://github.com/UPRI-NOAH/noah-frontend/commit/79fb75ffeedf140558c43b93752d1040e17c408f))
+- **know-your-hazards:** add debris flow in assessment in know your hazard page ([#316](https://github.com/UPRI-NOAH/noah-frontend/pull/316)) ([2dcd220](https://github.com/UPRI-NOAH/noah-frontend/commit/2dcd220a15cecf8d52e89142c66466ea1df177cb))
+- **noah-studio:** remove 24hour lapse contour ([#307](https://github.com/UPRI-NOAH/noah-frontend/pull/307)) ([bfe434b](https://github.com/UPRI-NOAH/noah-frontend/commit/bfe434b9ff791177868a60ad480be3a8e131848c))
+
+### Features
+
+- **know-your-hazards:** add draggable marker location for new assessments ([#319](https://github.com/UPRI-NOAH/noah-frontend/pull/319)) ([bb9f93f](https://github.com/UPRI-NOAH/noah-frontend/commit/bb9f93f92f80dec75c566bd71d97f6e8a24733fd))
+- **know-your-hazards:** added tip for draggable and kyh legend ([#321](https://github.com/UPRI-NOAH/noah-frontend/pull/321)) ([3556243](https://github.com/UPRI-NOAH/noah-frontend/commit/35562437a01f4ef3cc0ad6ffe40f04d62678b3ed))
+- **know-your-hazards:** update kyh legend ([#304](https://github.com/UPRI-NOAH/noah-frontend/pull/304)) ([9d26a21](https://github.com/UPRI-NOAH/noah-frontend/commit/9d26a21de1c03bc7951f8a29e4264a4041195f98))
+
+## [2.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.2...v2.0.0) (2022-11-15)
+
+### Bug Fixes
+
+- **know-your-hazards:** KYH Assessment ([#291](https://github.com/UPRI-NOAH/noah-frontend/pull/291)) ([b7929f7](https://github.com/UPRI-NOAH/noah-frontend/commit/b7929f7b7022fad3b747beed5ff20a225e072d5f))
+- **know-your-hazards:** remove set value of radius for kyh assessments ([#283](https://github.com/UPRI-NOAH/noah-frontend/pull/283)) ([9aa80d0](https://github.com/UPRI-NOAH/noah-frontend/commit/9aa80d08e78c51844268fac0ce26f7f3b8218949))
+- **know-your-hazards:** set default risklevelNum into Little to None ([#282](https://github.com/UPRI-NOAH/noah-frontend/pull/282)) ([d555543](https://github.com/UPRI-NOAH/noah-frontend/commit/d555543b410779245315410f5cfca6729e73ef01))
+- **know-your-hazards:** remove alluvial fan and debris flow in kyh ([#279](https://github.com/UPRI-NOAH/noah-frontend/pull/279)) ([d7743f8](https://github.com/UPRI-NOAH/noah-frontend/commit/d7743f8147f520a5ee58ab4c61799b4bc604ef4f))
+- **know-your-hazards:** remove lh3 tileset ([#278](https://github.com/UPRI-NOAH/noah-frontend/pull/278)) ([a5ba261](https://github.com/UPRI-NOAH/noah-frontend/commit/a5ba261846355f6ef3d54461f219631223b6bd6b))
+- **studio:** change sensor's base url for testing ([#254](https://github.com/UPRI-NOAH/noah-frontend/pull/254)) ([fc9939b](https://github.com/UPRI-NOAH/noah-frontend/commit/fc9939bf38cff68b4b993d63e6f35b2130f8556f))
+- **studio:** revert base sensor url ([#252](https://github.com/UPRI-NOAH/noah-frontend/pull/252)) ([5b588aa](https://github.com/UPRI-NOAH/noah-frontend/commit/5b588aae1bdfe8a3514090253212d2482135ad52))
+- **studio:** revert sensor base url ([#251](https://github.com/UPRI-NOAH/noah-frontend/pull/251)) ([f6c8ed0](https://github.com/UPRI-NOAH/noah-frontend/commit/f6c8ed09f5cecb3ff8194eacee1ec1f5397bf5d3))
+- **studio:** change sensor base url ([#250](https://github.com/UPRI-NOAH/noah-frontend/pull/250)) ([2c5ae52](https://github.com/UPRI-NOAH/noah-frontend/commit/2c5ae520c26345013aa96fc863f9fe2f76e75d7d))
+- **studio:** enhance volcano feature ([#248](https://github.com/UPRI-NOAH/noah-frontend/pull/248)) ([ba577d3](https://github.com/UPRI-NOAH/noah-frontend/commit/ba577d324050b435aa46de9d469ddbd4ae3604e4))
+
+### Features
+
+- **studio:** display volcanoes ([#244](https://github.com/UPRI-NOAH/noah-frontend/pull/244)) ([004e15c](https://github.com/UPRI-NOAH/noah-frontend/commit/004e15cdea3a030cfe8093bf4266bd2d3c474b49))
+- **know-your-hazards:** added condition in kyh assessment ([#293](https://github.com/UPRI-NOAH/noah-frontend/pull/293)) ([cd05398](https://github.com/UPRI-NOAH/noah-frontend/commit/cd05398c0ad501aaa72f67d25382d30aa6b2d4bf))
+
+## [1.0.2](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.1...v1.0.2) (2021-12-03)
+
+### Bug Fixes
+
+- **studio:** sensors - visually display fetch data errors ([#218](https://github.com/UPRI-NOAH/noah-frontend/pull/218)) ([e271288](https://github.com/UPRI-NOAH/noah-frontend/commit/e27128813d42a08d6ba790cb21b45591f5c7fec7))
+- **know-your-hazards:** change text info in sidebar base component ([#229](https://github.com/UPRI-NOAH/noah-frontend/pull/229)) ([ae231ac](https://github.com/UPRI-NOAH/noah-frontend/commit/ae231ac78496c440f55b819f2adf5285fee29211))
+- **studio:** change unstable slopes low to high color mapping ([#228](https://github.com/UPRI-NOAH/noah-frontend/pull/228)) ([b9313df](https://github.com/UPRI-NOAH/noah-frontend/commit/b9313df24b463b8e86323e774da2864d84d32078))
+- **style:** update critical facilities text styles ([#227](https://github.com/UPRI-NOAH/noah-frontend/pull/227)) ([94798ff](https://github.com/UPRI-NOAH/noah-frontend/commit/94798ff905ee8779c57dd2ec9adad0c5416c68b4))
+- **studio:** update critical facilities source links ([#226](https://github.com/UPRI-NOAH/noah-frontend/pull/226)) ([fc66db7](https://github.com/UPRI-NOAH/noah-frontend/commit/fc66db76dad36b116e84c6b0848f3cdfdb96a096))
+- **studio:** change source url for himawari ([#224](https://github.com/UPRI-NOAH/noah-frontend/pull/224)) ([c1351aa](https://github.com/UPRI-NOAH/noah-frontend/commit/c1351aaf3dfbae2f20b8af3dce3a123675cbce3f))
+- missing critical facilities ([4450809](https://github.com/UPRI-NOAH/noah-frontend/commit/44508095cedc4df19fcaf37ec918348f50c5e370))
+
+### Features
+
+- **studio:** rain contour maps -- added 24-hour lapse option ([#222](https://github.com/UPRI-NOAH/noah-frontend/pull/222)) ([6430b09](https://github.com/UPRI-NOAH/noah-frontend/commit/6430b09820648b7997128434fe201185cf99e3ae))
+- **ci:** workflows for production deployment ([#235](https://github.com/UPRI-NOAH/noah-frontend/pull/235)) ([4a43386](https://github.com/UPRI-NOAH/noah-frontend/commit/4a43386a606dadf538625d6f3a23d88d35237999))
+- **studio:** add options with opacity for weather satellite component ([#217](https://github.com/UPRI-NOAH/noah-frontend/pull/217)) ([6bb8b09](https://github.com/UPRI-NOAH/noah-frontend/commit/6bb8b09f4e761f15ab2c6e57768a2614aecdb890))
+
 ## [1.0.1](https://github.com/UPRI-NOAH/noah-frontend/compare/v1.0.0...v1.0.1) (2021-10-31)
 
 ### Bug Fixes

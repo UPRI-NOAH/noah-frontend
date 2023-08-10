@@ -1,4 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  ElementRef,
+  EventEmitter,
+} from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -8,7 +16,15 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { combineLatest, fromEvent, Subject } from 'rxjs';
+import {
+  combineLatest,
+  from,
+  fromEvent,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -38,11 +54,25 @@ import {
   SensorService,
   SensorType,
 } from '@features/noah-playground/services/sensor.service';
-import { SENSOR_COLORS } from '@shared/mocks/noah-colors';
-import * as Highcharts from 'highcharts';
+
+const Highcharts = require('highcharts/highstock');
+// Load Highcharts Maps as a module
+require('highcharts/modules/map')(Highcharts);
+declare const require: any;
+import HC_exporting from 'highcharts/modules/exporting';
+import HC_Data from 'highcharts/modules/export-data';
+import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
+import {
+  QcSensorService,
+  QCSENSORS,
+  QCCRITFAC,
+  QCBoundary,
+  BARANGAYBOUNDARY,
+} from '@features/noah-playground/services/qc-sensor.service';
 
 import {
   ContourMapType,
@@ -55,8 +85,25 @@ import {
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
   WEATHER_SATELLITE_ARR,
+  QC_DEFAULT_CENTER,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
+  QuezonCitySensorType,
+  QuezonCityMunicipalBoundary,
+  BarangayBoundary,
+  LAGUNA_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
-import { NOAH_COLORS } from '@shared/mocks/noah-colors';
+import {
+  QCSensorChartOpts,
+  QcSensorChartService,
+} from '@features/noah-playground/services/qc-sensor-chart.service';
+import {
+  NOAH_COLORS,
+  IOT_SENSOR_COLORS,
+  SENSOR_COLORS,
+} from '@shared/mocks/noah-colors';
+import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -87,13 +134,15 @@ export type RawLandslideHazards =
 
 type LH2Subtype = 'af' | 'df';
 
-// hazardOpacity$: Observable<number>;
-// hazardShown$: Observable<boolean>;
+HC_exporting(Highcharts);
+HC_Data(Highcharts);
+Accessbility(Highcharts);
 
 @Component({
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
   styleUrls: ['./map-playground.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
@@ -102,21 +151,30 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
-
+  disclaimerModal: boolean;
+  showAlert: boolean = false;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
+  LoginStatus$: Observable<boolean>;
+  showAlert$ = new Subject<boolean>();
+  private subscriptions: Subscription[] = [];
+  isWarningAlert: boolean = true;
+  municity = [];
 
+  @ViewChild('selectQc') selectQc: ElementRef;
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private qcSensorService: QcSensorService,
+    private qcSensorChartService: QcSensorChartService,
+    private modalService: ModalServicesService
   ) {}
 
   ngOnInit(): void {
     this.initMap();
-
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
@@ -133,9 +191,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         this.initSensors();
+        this.initQuezonCitySensors();
+        this.initQCCritFac();
+        this.initQCMunicipalBoundary();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
         this.showContourMaps();
+        this.initQcCenterListener();
+        this.initLagunaCenterListener();
+        this.initBarangayBoundary();
       });
   }
 
@@ -188,6 +252,30 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
   }
 
+  initQcCenterListener() {
+    const centerQC = localStorage.getItem('loginStatus');
+    if (centerQC == '1') {
+      this.map.flyTo({
+        center: QC_DEFAULT_CENTER,
+        zoom: 12,
+        essential: true,
+        duration: 1000,
+      });
+    }
+  }
+
+  initLagunaCenterListener() {
+    const centerLagunna = localStorage.getItem('loginStatus');
+    if (centerLagunna == '2') {
+      this.map.flyTo({
+        center: LAGUNA_DEFAULT_CENTER,
+        zoom: 12.74,
+        essential: true,
+        duration: 1000,
+      });
+    }
+  }
+
   /**
    * Initializes reverse geocoder.
    *
@@ -222,6 +310,791 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     }
   }
 
+  // start OF QC IOT
+  initQuezonCitySensors() {
+    QCSENSORS.forEach((qcSensorType) => {
+      this.qcSensorService
+        .getQcSensors(qcSensorType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          const qcTextID = `${qcSensorType}-text`;
+          const minZoom = 12;
+          // add layer to map
+          this.map.addLayer({
+            id: qcSensorType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-color': IOT_SENSOR_COLORS[qcSensorType],
+              'circle-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5.5,
+                10, // Minimum zoom level: circle radius of 5
+                12,
+                12, // Minimum zoom level: circle radius of 12
+                18,
+                20, // Maximum zoom level: circle radius of 20
+              ],
+              'circle-opacity': 0,
+            },
+          });
+          this.map.addLayer({
+            id: qcTextID,
+            type: 'symbol',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            layout: {
+              'text-field': [
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                ['concat', ['get', 'latest_data'], 'mm'],
+                ['concat', ['get', 'latest_data'], 'm'],
+              ],
+              'text-allow-overlap': true,
+              'text-optional': true,
+              'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+              'text-size': 18,
+              'text-offset': [0, 1],
+              'text-anchor': 'top',
+              'text-letter-spacing': 0.05,
+              visibility: 'none',
+            },
+            paint: {
+              'text-color': [
+                'case',
+                ['==', ['get', 'iot_type'], 'rain'],
+                '#06b9e6',
+                '#519259',
+              ],
+            },
+            minzoom: minZoom,
+          });
+          // add show/hide listeners
+
+          combineLatest([
+            this.pgService.qcSensorsGroupShown$,
+            this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                qcSensorType,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+              if (groupShown && soloShown) {
+                if (this.map.getZoom() < minZoom) {
+                  this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+                }
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'visible');
+              } else {
+                this.map.setLayoutProperty(qcTextID, 'visibility', 'none');
+              }
+            });
+
+          this.pgService.setQuezonCitySensorTypeFetched(qcSensorType, true);
+          // show mouse event listeners
+          this.showQcDataPoints(qcSensorType);
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from QC for sensors of type "${qcSensorType}"`
+          )
+        );
+    });
+  }
+
+  showQcDataPoints(qcSensorType: QuezonCitySensorType) {
+    const graphDiv = document.getElementById('graph-dom');
+    let chartPopUpOpen = false;
+
+    const popUp = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const chartPopUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const _this = this;
+
+    combineLatest([
+      this.pgService.qcSensorsGroupShown$,
+      this.pgService.getQuezonCitySensorTypeShown$(qcSensorType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        if (groupShown && soloShown) {
+          this.map.on('mouseenter', qcSensorType, (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            const name = e.features[0].properties.name;
+            const iotType = e.features[0].properties.iot_type;
+            const status = e.features[0].properties.status;
+            const latestData = e.features[0].properties.latest_data;
+            const batPercent = e.features[0].properties.battery_percent;
+            const municity = e.features[0].properties.municity;
+            this.municity = municity;
+            const formattedBatPercent =
+              batPercent && batPercent !== 'null'
+                ? `${batPercent}%`
+                : 'Not Available';
+            const iotTypeLatestData =
+              iotType && iotType == 'flood'
+                ? `${latestData}m`
+                : `${latestData}mm`;
+
+            while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+              coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+            }
+            popUp.setLngLat(coordinates).setHTML(
+              `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
+            <div><b>Name:</b> ${name} </div>
+            <div><b>IoT Sensor Type:</b> ${iotType}</div>
+            <div><b>Status:</b> ${status}</div>
+            <div><b>Battery Level:</b> ${formattedBatPercent}</div>
+            <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
+          </div>`
+            );
+            if (!chartPopUpOpen) {
+              popUp.addTo(_this.map);
+            }
+            _this.map.getCanvas().style.cursor = 'pointer';
+          });
+
+          this.map.on('click', qcSensorType, function (e) {
+            graphDiv.hidden = false;
+            chartPopUpOpen = false;
+            _this.map.flyTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+              zoom: 13,
+              essential: true,
+            });
+            const name = e.features[0].properties.name;
+            const pk = e.features[0].properties.pk;
+
+            chartPopUp
+              .setLngLat((e.features[0].geometry as any).coordinates.slice())
+              .setDOMContent(graphDiv);
+            chartPopUp.addTo(_this.map);
+            _this.showQcChart(+pk, name, qcSensorType);
+            popUp.remove();
+          });
+        } else {
+          popUp.remove();
+          chartPopUp.remove();
+          this.map.on('mouseenter', qcSensorType, (e) => {
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+            chartPopUpOpen = false;
+          });
+          this.map.on('mouseleave', qcSensorType, (e) => {
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+            popUp.remove();
+            chartPopUpOpen = false;
+          });
+        }
+      });
+    popUp.on('close', () => (_this._graphShown = false));
+    this.map.on('mouseleave', qcSensorType, function () {
+      if (_this._graphShown) return;
+      _this.map.getCanvas().style.cursor = '';
+      popUp.remove();
+    });
+  }
+
+  async showQcChart(
+    pk: number,
+    appID: string,
+    qcSensorType: QuezonCitySensorType
+  ) {
+    localStorage.setItem('municity', JSON.stringify(this.municity));
+    const _this = this;
+
+    const options: any = {
+      title: {
+        text: `${appID}`,
+        style: {
+          fontSize: '23px', // set the font size to 16 pixels
+        },
+      },
+      credits: {
+        enabled: false,
+      },
+      navigator: {
+        enabled: true,
+      },
+      exporting: {
+        fileName: 'Quezon IoT Data',
+        buttons: {
+          contextButton: {
+            menuItems: [
+              {
+                text: 'Download PDF',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn === '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (
+                    loggedIn === '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download CSV',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toLocaleString() === 'laguna'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toLocaleString() === 'quezon_city'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Print Chart',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download JPEG',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+                separator: false,
+              },
+            ],
+          },
+        },
+      },
+
+      ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
+    };
+    const chart = Highcharts.stockChart('graph-dom', options);
+    chart.showLoading();
+    let qcSensorChartOpts; // Declare the variable outside the try block
+    try {
+      const data = await this.qcSensorService.getQcSensorData(pk);
+      qcSensorChartOpts = {
+        data: data,
+        qcSensorType,
+      };
+      // Handle the response and chart options here
+    } catch (error) {
+      // Handle any errors
+    }
+    chart.hideLoading();
+    this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
+  }
+
+  initQCCritFac() {
+    QCCRITFAC.forEach((qcCriticalFacilities: QuezonCityCriticalFacilities) => {
+      this.qcSensorService
+        .getQcCriticalFacilities()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'private_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#FF87CA', // PINK color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'barangay',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#9EA9F0', // BLUE color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'hospital',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#CD5D7D', // GREEN color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'health_center',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#F7D59C', // YELLOW color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'university',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#54BAB9', // TEAL color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'elem_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#B983FF', // purple color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'high_school',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#6E85B7', // LIGHT BLUE color fill
+              'fill-opacity': 0.75,
+            },
+            filter: ['==', 'CF Type', 'High School'],
+          });
+          // 4 - add a outline around the polygon
+          this.map.addLayer({
+            id: 'ps_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#FF87CA', // PINK LINE fill
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Private School'],
+          });
+          this.map.addLayer({
+            id: 'b_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#9EA9F0', // BLUE LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Barangay'],
+          });
+          this.map.addLayer({
+            id: 'h_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#CD5D7D', // red LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Hospital'],
+          });
+          this.map.addLayer({
+            id: 'hc_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#F7D59C', // YELLOW LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Health Center'],
+          });
+          this.map.addLayer({
+            id: 'u_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#54BAB9', // TEAL LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'University'],
+          });
+          this.map.addLayer({
+            id: 'es_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#B983FF', // purple LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'Elementary School'],
+          });
+          this.map.addLayer({
+            id: 'hs_outline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#6E85B7', // LIGHT BLUE LINE color
+              'line-width': 3,
+              'line-opacity': 1,
+            },
+            filter: ['==', 'CF Type', 'High School'],
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcCriticalFacilitiesShown$,
+            this.pgService.getQcCriticalFacilitiesShown$(qcCriticalFacilities),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                'private_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'barangay',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hospital',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'health_center',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'university',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'elem_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'high_school',
+                'fill-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'ps_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'b_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'h_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hc_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'u_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'es_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+              this.map.setPaintProperty(
+                'hs_outline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc critical facilities data "${qcCriticalFacilities}"`
+          )
+        );
+    });
+  }
+
+  initQCMunicipalBoundary() {
+    QCBoundary.forEach((qcMunicipalBoundary: QuezonCityMunicipalBoundary) => {
+      this.qcSensorService
+        .getQcMunicipalBoundary()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'qc_muni_boundary',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#000000', // white fill
+              'fill-opacity': 0.01,
+            },
+          });
+          this.map.addLayer({
+            id: 'qc_muni_boudline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#000', // black line
+              'line-width': 3,
+              'line-opacity': 0.75,
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.qcMunicipalBoundaryShown$,
+            this.pgService.getQcMunicipalBoundaryShown$(qcMunicipalBoundary),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              const fillColor =
+                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
+              this.map.setPaintProperty(
+                'qc_muni_boundary',
+                'fill-color',
+                fillColor
+              );
+              this.map.setPaintProperty(
+                'qc_muni_boudline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc municipal boundary "${qcMunicipalBoundary}"`
+          )
+        );
+    });
+  }
+
+  initBarangayBoundary() {
+    BARANGAYBOUNDARY.forEach((barangayBoundary: BarangayBoundary) => {
+      this.qcSensorService
+        .getBarangayBoundary()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'brgy-boundary',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#000000', // white fill
+              'fill-opacity': 0.01,
+            },
+          });
+          this.map.addLayer({
+            id: 'brgy_boundline',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#000', // black line
+              'line-width': 3,
+              'line-opacity': 0.75,
+              'line-dasharray': [1, 2],
+            },
+          });
+
+          // add show/hide listeners
+          combineLatest([
+            this.pgService.barangayBoundaryShown$,
+            this.pgService.getBarangayBoundaryShown$(barangayBoundary),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              const fillColor =
+                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
+              this.map.setPaintProperty(
+                'brgy-boundary',
+                'fill-color',
+                fillColor
+              );
+              this.map.setPaintProperty(
+                'brgy_boundline',
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc municipal boundary "${barangayBoundary}"`
+          )
+        );
+    });
+  }
+
+  // END OF QC IOT
   initSensors() {
     SENSORS.forEach((sensorType) => {
       this.sensorService
@@ -381,6 +1254,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
+      maxWidth: 'auto',
     });
     const _this = this;
 
@@ -411,7 +1285,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-              <div style="color: #333333;">
+              <div style="color: #333333; font-size: 13px; padding-top: 4px;">
                 <div><strong>#${stationID} - ${location}</strong></div>
                 <div>Type: ${typeName}</div>
                 <div>Status: ${status}</div>

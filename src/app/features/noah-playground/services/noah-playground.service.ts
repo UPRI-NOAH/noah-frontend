@@ -17,10 +17,17 @@ import {
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
+  QuezonCitySensorType,
+  QuezonCityCriticalFacilitiesState,
+  QuezonCityCriticalFacilities,
+  QuezonCityMunicipalBoundaryState,
+  QuezonCityMunicipalBoundary,
+  BarangayBoundary,
+  BarangayBoundaryState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
@@ -56,6 +63,12 @@ export class NoahPlaygroundService {
     );
   }
 
+  get iotMunicipalitiesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.iotMunicipalities.shown)
+    );
+  }
+
   get volcanoGroupShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.volcanoes.shown));
   }
@@ -70,6 +83,58 @@ export class NoahPlaygroundService {
 
   get sensorsGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.sensors.expanded));
+  }
+
+  get qcSensorsGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcSensors.shown));
+  }
+
+  get qcSensorsGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcSensors.expanded));
+  }
+
+  get qcCriticalFacilitiesShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcCriticalfacilities.qcshown)
+    );
+  }
+
+  get qcCriticalFacilitiesExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcCriticalfacilities.qcexpanded)
+    );
+  }
+
+  get qcMunicipalBoundaryShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.qcbshown)
+    );
+  }
+
+  get barangayBoundaryShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.brgyShown)
+    );
+  }
+
+  get qcMunicipalBoundaryExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.qcbexpanded)
+    );
+  }
+
+  get barangayExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.brgyExpanded)
+    );
+  }
+
+  get lagunaShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lagunaCenter.shown));
+  }
+
+  get qcShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.qcZoomCenter.shown));
   }
 
   get weatherSatellitesShown$(): Observable<boolean> {
@@ -141,6 +206,18 @@ export class NoahPlaygroundService {
     return this.store.state.exaggeration;
   }
 
+  getQcCriticalFacilities(): QuezonCityCriticalFacilitiesState {
+    return this.store.state.qcCriticalfacilities;
+  }
+
+  getQcMunicipalBoundary(): QuezonCityMunicipalBoundaryState {
+    return this.store.state.qcMunicipalboundary;
+  }
+
+  getBarangayBoundary(): BarangayBoundaryState {
+    return this.store.state.barangayBoundary;
+  }
+
   getHazard(
     hazardType: HazardType
   ): FloodState | StormSurgeState | LandslideState {
@@ -203,6 +280,48 @@ export class NoahPlaygroundService {
     );
   }
 
+  getQuezonCitySensorTypeShown$(
+    qcSensorType: QuezonCitySensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcSensors.types[qcSensorType].shown)
+    );
+  }
+
+  getQuezonCitySensorTypeFetched$(
+    qcSensorType: QuezonCitySensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcSensors.types[qcSensorType].fetched)
+    );
+  }
+
+  getQcCriticalFacilitiesShown$(
+    qcCriticalFacilities: QuezonCityCriticalFacilities
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map(
+        (state) => state.qcCriticalfacilities.types[qcCriticalFacilities].shown
+      )
+    );
+  }
+
+  getQcMunicipalBoundaryShown$(
+    qcMunicipalBoundary: QuezonCityMunicipalBoundary
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.qcMunicipalboundary.types[qcMunicipalBoundary].shown)
+    );
+  }
+
+  getBarangayBoundaryShown$(
+    barangayBoundary: BarangayBoundary
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.barangayBoundary.types[barangayBoundary].shown)
+    );
+  }
+
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
@@ -224,6 +343,10 @@ export class NoahPlaygroundService {
       'updated 3D Terrain - Exaggeration level'
     );
   }
+
+  // setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
+  //   this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
+  // }
 
   setHazardExpansion(
     hazardType: HazardType,
@@ -337,6 +460,10 @@ export class NoahPlaygroundService {
     this.store.patch({ center });
   }
 
+  setQcCenter(qcCenter: { lat: number; lng: number }) {
+    this.store.patch({ qcCenter }, 'Update Quezon City Location');
+  }
+
   setCurrentLocation(currentLocation: string): void {
     this.store.patch({ currentLocation }, 'update current location');
     this.gaService.event('change_location', 'noah_studio');
@@ -380,6 +507,125 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `change sensor ${sensorType}'visibility to ${!shown}`
+    );
+  }
+
+  toggleQuezonCityIOTGroupExpanded(): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
+    };
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
+    };
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
+
+    const { expanded } = qcSensors;
+    const { qcexpanded } = qcCriticalfacilities;
+    const { qcbexpanded } = qcMunicipalboundary;
+    const { brgyExpanded } = barangayBoundary;
+
+    qcSensors.expanded = !expanded;
+    qcCriticalfacilities.qcexpanded = !qcexpanded;
+    qcMunicipalboundary.qcbexpanded = !qcbexpanded;
+    barangayBoundary.brgyExpanded = !brgyExpanded;
+
+    this.store.patch(
+      { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
+      `update quezon city iot group state expanded to 
+      ${!expanded} ${!qcexpanded} ${!qcbexpanded} ${!brgyExpanded}`
+    );
+  }
+
+  toggleQuezonCityIOTGroupShown(): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
+    };
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
+    };
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
+
+    const { shown } = qcSensors;
+    const { qcshown } = qcCriticalfacilities;
+    const { qcbshown } = qcMunicipalboundary;
+    const { brgyShown } = barangayBoundary;
+
+    qcSensors.shown = !qcSensors.shown;
+    qcCriticalfacilities.qcshown = !qcCriticalfacilities.qcshown;
+    qcMunicipalboundary.qcbshown = !qcMunicipalboundary.qcbshown;
+    barangayBoundary.brgyShown = !barangayBoundary.brgyShown;
+
+    this.store.patch(
+      {
+        qcSensors,
+        qcCriticalfacilities,
+        qcMunicipalboundary,
+        barangayBoundary,
+      },
+      `update quezon city iot group state shown to 
+      ${shown}, ${qcshown}, ${qcbshown}, Barangay boundary ${brgyShown}`
+    );
+  }
+
+  setQuezonCitySensorTypeShown(qcSensorType: QuezonCitySensorType): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    const { shown } = qcSensors.types[qcSensorType];
+    qcSensors.types[qcSensorType].shown = !shown;
+    this.store.patch(
+      { qcSensors },
+      `change quezon city sensor ${qcSensorType}'visibility to ${!shown}`
+    );
+  }
+
+  setQuezonCityCritFacTypeShown(type: QuezonCityCriticalFacilities): void {
+    const qcCriticalfacilities = {
+      ...this.store.state.qcCriticalfacilities,
+    };
+
+    const { shown } = qcCriticalfacilities.types[type];
+    qcCriticalfacilities.types[type].shown = !shown;
+    this.store.patch(
+      { qcCriticalfacilities },
+      `change quezon city critical facilities ${type}'visibility to ${!shown}`
+    );
+  }
+
+  setQuezonCityMuniBoundaryTypeShown(type: QuezonCityMunicipalBoundary): void {
+    const qcMunicipalboundary = {
+      ...this.store.state.qcMunicipalboundary,
+    };
+
+    const { shown } = qcMunicipalboundary.types[type];
+    qcMunicipalboundary.types[type].shown = !shown;
+    this.store.patch(
+      { qcMunicipalboundary },
+      `change quezon city municipal boundary ${type}'visibility to ${!shown}`
+    );
+  }
+
+  setBarangayBoundaryShown(type: BarangayBoundary): void {
+    const barangayBoundary = {
+      ...this.store.state.barangayBoundary,
+    };
+
+    const { shown } = barangayBoundary.types[type];
+    barangayBoundary.types[type].shown = !shown;
+    this.store.patch(
+      { barangayBoundary },
+      `change barangay boundary ${type}'visibility to ${!shown}`
     );
   }
 
@@ -430,6 +676,22 @@ export class NoahPlaygroundService {
     );
   }
 
+  toggleZoomForLaguna(): void {
+    const lagunaCenter = {
+      ...this.store.state.lagunaCenter,
+    };
+
+    const { shown } = lagunaCenter;
+    lagunaCenter.shown = !lagunaCenter.shown;
+
+    this.store.patch(
+      {
+        lagunaCenter,
+      },
+      `Update laguna IoT group state shown to ${shown}`
+    );
+  }
+
   toggleWeatherSatelliteGroupVisibility(): void {
     const weatherSatellite = {
       ...this.store.state.weatherSatellite,
@@ -439,6 +701,20 @@ export class NoahPlaygroundService {
     this.store.patch(
       { weatherSatellite },
       `toggle weather satellite visibility`
+    );
+  }
+
+  toggleIotMunicipalitiesVisibility(): void {
+    const iotMunicipalities = {
+      ...this.store.state.iotMunicipalities,
+    };
+    const { shown } = iotMunicipalities;
+    iotMunicipalities.shown = !shown;
+
+    iotMunicipalities.shown = !iotMunicipalities.shown;
+    this.store.patch(
+      { iotMunicipalities },
+      `toggle iot municipality visibility ${!shown}`
     );
   }
 
@@ -463,6 +739,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { sensors },
       `change sensor's fetched status ${sensorType}' to ${!fetched}`
+    );
+  }
+
+  setQuezonCitySensorTypeFetched(
+    qcSensorType: QuezonCitySensorType,
+    fetched = true
+  ): void {
+    const qcSensors = {
+      ...this.store.state.qcSensors,
+    };
+
+    qcSensors.types[qcSensorType].fetched = fetched;
+    this.store.patch(
+      { qcSensors },
+      `change quezon city sensor's fetched status ${qcSensorType}' to ${!fetched}`
     );
   }
 
