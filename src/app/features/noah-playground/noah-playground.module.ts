@@ -22,6 +22,12 @@ import { ContourMapsComponent } from './components/contour-maps/contour-maps.com
 import { WeatherSatellitePlaygroundComponent } from './components/weather-satellite-playground/weather-satellite-playground.component';
 import { VolcanoGroupComponent } from './components/volcano-group/volcano-group.component';
 import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.component';
+import { QcSensorsGroupComponent } from './components/qc-sensors-group/qc-sensors-group.component';
+import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-solo.component';
+import { QcCriticalFacilitiesComponent } from './components/qc-critical-facilities/qc-critical-facilities.component';
+import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.component';
+import { LagunaSensorSoloComponent } from './components/laguna-sensor-solo/laguna-sensor-solo.component';
+import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +47,12 @@ import { VolcanoSoloComponent } from './components/volcano-solo/volcano-solo.com
     WeatherSatellitePlaygroundComponent,
     VolcanoGroupComponent,
     VolcanoSoloComponent,
+    QcSensorsGroupComponent,
+    QcSensorSoloComponent,
+    QcCriticalFacilitiesComponent,
+    QcBoundaryComponent,
+    LagunaSensorSoloComponent,
+    BrgyBoundaryComponent,
   ],
   imports: [
     CommonModule,

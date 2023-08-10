@@ -1,0 +1,87 @@
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+// navigation / menu
+
+nav {
+  // margin: 0 0 0.75em;
+  padding-top: 0.75em;
+  // border-bottom: 1px solid #717073;
+
+  ul {
+    list-style: none;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    float: left;
+    position: relative;
+
+    // + li {
+    //   border-left: 1px solid #717073;
+    //   margin-left: 1em;
+    //   padding-left: 1em;
+    // }
+  }
+  .sensor-item > .active > li {
+    color: #c20d91;
+  }
+
+  .tab-navigation > .active > label {
+    --tw-text-opacity: 1;
+    color: rgba(29, 78, 216, var(--tw-text-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgba(191, 219, 254, var(--tw-bg-opacity));
+  }
+
+  label {
+    cursor: pointer;
+
+    &:hover {
+      --tw-text-opacity: 1;
+      color: rgba(29, 78, 216, var(--tw-text-opacity));
+      --tw-bg-opacity: 1;
+      background-color: rgba(191, 219, 254, var(--tw-bg-opacity));
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+  }
+
+  label[tabindex]:focus {
+    --tw-text-opacity: 1;
+    color: rgba(29, 78, 216, var(--tw-text-opacity));
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    --tw-bg-opacity: 1;
+    background-color: rgba(191, 219, 254, var(--tw-bg-opacity));
+  }
+}
+
+// hiding the indicators
+input.tab-indicator {
+  // don't use "display: none" - triggering the inputs via label won't work anymore
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+// containers / content
+.tab-content {
+  display: none;
+
+  input.tab-indicator:checked + & {
+    display: block;
+  }
+}
+// dummy-hightlighting of tab-contents
+.tab-all strong {
+  color: #fd8a02;
+}
+.tab-flood strong {
+  color: #4cb016;
+}
+.tab-rain strong {
+  color: #01669a;
+}
