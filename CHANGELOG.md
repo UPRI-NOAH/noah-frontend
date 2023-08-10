@@ -1,4 +1,4 @@
-## [3.0.1](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.0.1) (2023-08-10)
+## [3.1.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.1.0) (2023-08-10)
 
 ### New Feature - Internet of Things (IoT)
 
