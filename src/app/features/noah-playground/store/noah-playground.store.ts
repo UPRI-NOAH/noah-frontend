@@ -13,7 +13,25 @@ export const PH_DEFAULT_CENTER = {
   lng: 120.443461,
 };
 
+export const QC_DEFAULT_CENTER = {
+  lat: 14.676,
+  lng: 121.0437,
+};
+
+export const LAGUNA_DEFAULT_CENTER = {
+  lat: 14.26084,
+  lng: 121.38849,
+};
+
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
+
+export type QuezonCitySensorType = 'rain' | 'flood';
+
+export type QuezonCityCriticalFacilities = 'qc-critical-facilities';
+
+export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
+
+export type BarangayBoundary = 'brgy-boundary';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -90,6 +108,14 @@ export type CriticalFacilitiesState = {
   types: CriticalFacilityTypesState;
 };
 
+export type IotMunicipalityTypeState = {
+  shown: boolean;
+};
+
+export type IotMunicipalitiesState = {
+  shown: boolean;
+};
+
 export type VolcanoGroupState = {
   shown: boolean;
   expanded: boolean;
@@ -108,6 +134,14 @@ export type WeatherSatelliteState = {
   expanded: boolean;
   selectedType: WeatherSatelliteType;
   types: WeatherSatelliteTypesState;
+};
+
+export type LagunaState = {
+  shown: boolean;
+};
+
+export type QuezonCityZoomState = {
+  shown: boolean;
 };
 
 export type WeatherSatelliteTypeState = {
@@ -130,6 +164,59 @@ export type SensorsState = {
   types: Record<SensorType, SensorTypeState>;
 };
 
+export type QuezonCitySensorTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type QuezonCityCriticalFacilitiesTypeState = {
+  shown: boolean;
+};
+
+export type QuezonCityCriticalFacilitiesTypesState = {
+  'qc-critical-facilities': QuezonCityCriticalFacilitiesTypeState;
+};
+
+export type QuezonCityCriticalFacilitiesState = {
+  qcshown: boolean;
+  qcexpanded: boolean;
+  types: QuezonCityCriticalFacilitiesTypesState;
+};
+
+export type QuezonCityMunicipalBoundaryTypeState = {
+  shown: boolean;
+};
+
+export type QuezonCityMunicipalBoundaryTypesState = {
+  'qc-municipal-boundary': QuezonCityMunicipalBoundaryTypeState;
+};
+
+export type QuezonCityMunicipalBoundaryState = {
+  qcbshown: boolean;
+  qcbexpanded: boolean;
+  types: QuezonCityMunicipalBoundaryTypesState;
+};
+
+export type BarangayBoundaryTypeState = {
+  shown: boolean;
+};
+
+export type BarangayBoundaryTypesState = {
+  'brgy-boundary': BarangayBoundaryTypeState;
+};
+
+export type BarangayBoundaryState = {
+  brgyShown: boolean;
+  brgyExpanded: boolean;
+  types: BarangayBoundaryTypesState;
+};
+
+export type QuezonCitySensorsState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -139,13 +226,22 @@ type NoahPlaygroundState = {
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
+  qcCenter: { lng: number; lat: number };
+  qcZoom: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
+  qcSensors: QuezonCitySensorsState;
+  lagunaCenter: LagunaState;
+  qcZoomCenter: QuezonCityZoomState;
+  qcCriticalfacilities: QuezonCityCriticalFacilitiesState;
+  qcMunicipalboundary: QuezonCityMunicipalBoundaryState;
+  barangayBoundary: BarangayBoundaryState;
   contourMaps: {
     shown: boolean;
     expanded: boolean;
     selectedType: ContourMapType;
   };
+  iotMunicipalities: IotMunicipalitiesState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -154,8 +250,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     level: 1.8,
   },
+  qcZoom: QC_DEFAULT_CENTER,
+  qcZoomCenter: {
+    shown: false,
+  },
+  lagunaCenter: {
+    shown: false,
+  },
   flood: {
-    shown: true,
+    shown: false,
     expanded: false,
     levels: {
       'flood-return-period-5': {
@@ -267,6 +370,9 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+  iotMunicipalities: {
+    shown: false,
+  },
   weatherSatellite: {
     shown: false,
     expanded: false,
@@ -281,6 +387,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   center: null,
+  qcCenter: QC_DEFAULT_CENTER,
   currentLocation: '-----',
   sensors: {
     shown: false,
@@ -301,6 +408,47 @@ const createInitialValue = (): NoahPlaygroundState => ({
       wlmsarg: {
         shown: true,
         fetched: false,
+      },
+    },
+  },
+  qcSensors: {
+    shown: false,
+    expanded: false,
+    types: {
+      rain: {
+        shown: true,
+        fetched: false,
+      },
+      flood: {
+        shown: true,
+        fetched: false,
+      },
+    },
+  },
+  qcCriticalfacilities: {
+    qcshown: false,
+    qcexpanded: false,
+    types: {
+      'qc-critical-facilities': {
+        shown: true,
+      },
+    },
+  },
+  qcMunicipalboundary: {
+    qcbshown: false,
+    qcbexpanded: false,
+    types: {
+      'qc-municipal-boundary': {
+        shown: true,
+      },
+    },
+  },
+  barangayBoundary: {
+    brgyShown: false,
+    brgyExpanded: false,
+    types: {
+      'brgy-boundary': {
+        shown: true,
       },
     },
   },
