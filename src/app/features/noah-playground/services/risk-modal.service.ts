@@ -10,6 +10,17 @@ export class RiskModalService {
   private riskModal = new Subject<boolean>();
   riskModal$ = this.riskModal.asObservable();
 
+  private btnRa = new Subject<boolean>();
+  btnRa$ = this.btnRa.asObservable();
+
+  openBtnRa() {
+    this.btnRa.next(true);
+  }
+
+  closeBtnRa() {
+    this.btnRa.next(false);
+  }
+
   openRiskModal() {
     this.riskModal.next(true);
   }

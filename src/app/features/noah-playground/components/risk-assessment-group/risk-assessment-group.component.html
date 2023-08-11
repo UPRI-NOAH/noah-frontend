@@ -97,6 +97,20 @@
       [class.cursor-not-allowed]="!(exposureShown$ | async)"
     ></noah-risk-exposure>
 
+    <div class="f-f-r py-2 pl-10">
+      <div class="flex items-center">
+        <noah-slider
+          label="Opacity"
+          [class.cursor-not-allowed]="!(exposureShown$ | async)"
+          [class.opacity-30]="!(exposureShown$ | async)"
+          [initialValue]="opacityValue"
+          [min]="0"
+          [max]="100"
+          (valueChange)="changeOpacity($event)"
+        ></noah-slider>
+      </div>
+    </div>
+
     <div class="px-6 flex justify-around items-center">
       <button
         class="

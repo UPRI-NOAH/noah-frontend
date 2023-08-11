@@ -14,7 +14,7 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./risk-exposure.component.scss'],
 })
 export class RiskExposureComponent implements OnInit {
-  names: RiskExposureType[] = ['population', 'building'];
+  names: RiskExposureType[] = ['population', 'buildings'];
 
   selectedRiskExposure$: Observable<RiskExposureType>;
   exposureShown$: Observable<boolean>;

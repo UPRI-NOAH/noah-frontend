@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export type RiskAssessmentType = 'rain';
 
@@ -31,6 +33,24 @@ export class RiskAssessmentService {
   getBrgy100yr() {
     return this.http.get(
       `${this.EXPOSURE_BASE_URL}/test/3_Prov_100yr_Bgy_var0_3.geojson`
+    );
+  }
+
+  getBuilding(): Observable<any[]> {
+    const urls = [
+      'test/bldg_intersect_aklan_brgy.geojson',
+      'test/bldg_intersect_aklan_prov.geojson',
+      'test/bldg_intersect_capiz_brgy.geojson',
+      'test/bldg_intersect_capiz_prov.geojson',
+      'test/bldg_intersect_iloilo_brgy.geojson',
+      'test/bldg_intersect_iloilo_prov.geojson',
+    ];
+    const requests = urls.map((url) =>
+      this.http.get<any>(`${this.EXPOSURE_BASE_URL}/${url}`)
+    );
+
+    return forkJoin(requests).pipe(
+      map((responses: any[]) => responses.map((response) => response))
     );
   }
 }
