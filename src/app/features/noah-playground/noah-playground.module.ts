@@ -29,6 +29,9 @@ import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.compon
 import { LagunaSensorSoloComponent } from './components/laguna-sensor-solo/laguna-sensor-solo.component';
 import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.component';
 
+import { RiskAssessmentSoloComponent } from './components/risk-assessment-solo/risk-assessment-solo.component';
+import { RiskAssessmentGroupComponent } from './components/risk-assessment-group/risk-assessment-group.component';
+import { RiskExposureComponent } from './components/risk-exposure/risk-exposure.component';
 @NgModule({
   declarations: [
     NoahPlaygroundComponent,
@@ -53,6 +56,9 @@ import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.
     QcBoundaryComponent,
     LagunaSensorSoloComponent,
     BrgyBoundaryComponent,
+    RiskAssessmentSoloComponent,
+    RiskAssessmentGroupComponent,
+    RiskExposureComponent,
   ],
   imports: [
     CommonModule,

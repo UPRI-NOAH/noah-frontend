@@ -57,6 +57,14 @@ module.exports = {
           medium: '#8B8B8B',
           high: '#333333',
         },
+        'age-agre': {
+          elderly: '#146c94',
+          youth: '#faa74b',
+          children: '#c95c92',
+          repro: '#63269f',
+          women: '#fa2bb2',
+          men: '#1ad3ff',
+        },
       },
       fontFamily: {
         sans: ['Nunito', ...defaultTheme.fontFamily.sans],

@@ -36,3 +36,9 @@ text-noah-green-high
 text-noah-black-low
 text-noah-black-medium
 text-noah-black-high
+text-age-agre-elderly
+text-age-agre-youth
+text-age-agre-children
+text-age-agre-repro
+text-age-agre-women
+text-age-agre-men
