@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 
 /**
- * Malacañang palace
+ * UPRI OFFICE
  */
 export const PH_DEFAULT_CENTER = {
-  lat: 14.594112104824488,
-  lng: 120.9943811923392,
+  lat: 14.6577006,
+  lng: 121.0709613,
 };
 
 export type HazardType = 'flood' | 'landslide' | 'storm-surge';
