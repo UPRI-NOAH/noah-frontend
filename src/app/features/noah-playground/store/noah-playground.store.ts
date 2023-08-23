@@ -33,6 +33,8 @@ export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
 
 export type BarangayBoundary = 'brgy-boundary';
 
+export type RiskAssessmentType = 'rain-forecast' | 'population';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -114,6 +116,16 @@ export type IotMunicipalityTypeState = {
 
 export type IotMunicipalitiesState = {
   shown: boolean;
+};
+
+export type RiskAssessmentState = {
+  shown: boolean;
+};
+
+export type RiskAssessmentGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<RiskAssessmentType, RiskAssessmentState>;
 };
 
 export type VolcanoGroupState = {
@@ -223,6 +235,7 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   volcanoes: VolcanoGroupState;
+  riskAssessment: RiskAssessmentGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
@@ -345,6 +358,18 @@ const createInitialValue = (): NoahPlaygroundState => ({
       inactive: {
         shown: false,
         opacity: 100,
+      },
+    },
+  },
+  riskAssessment: {
+    shown: false,
+    expanded: false,
+    types: {
+      'rain-forecast': {
+        shown: false,
+      },
+      population: {
+        shown: false,
       },
     },
   },
