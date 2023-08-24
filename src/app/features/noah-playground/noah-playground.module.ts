@@ -28,6 +28,7 @@ import { QcCriticalFacilitiesComponent } from './components/qc-critical-faciliti
 import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.component';
 import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.component';
 import { RiskAssessmentGroupComponent } from './components/risk-assessment-group/risk-assessment-group.component';
+import { RiskAssessmentSoloComponent } from './components/risk-assessment-solo/risk-assessment-solo.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { RiskAssessmentGroupComponent } from './components/risk-assessment-group
     QcBoundaryComponent,
     BrgyBoundaryComponent,
     RiskAssessmentGroupComponent,
+    RiskAssessmentSoloComponent,
   ],
   imports: [
     CommonModule,
