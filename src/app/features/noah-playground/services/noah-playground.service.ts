@@ -24,6 +24,9 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   BarangayBoundaryState,
+  RiskAssessmentType,
+  RiskAssessmentState,
+  RiskAssessmentGroupState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -75,6 +78,16 @@ export class NoahPlaygroundService {
 
   get volcanoGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
+  }
+
+  get riskAssessmentGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskAssessment.shown));
+  }
+
+  get riskAssessmentGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.expanded)
+    );
   }
 
   get sensorsGroupShown$(): Observable<boolean> {
@@ -195,6 +208,14 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
+  getRiskAssessment$(
+    riskType: RiskAssessmentType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.types[riskType])
     );
   }
 
@@ -430,6 +451,31 @@ export class NoahPlaygroundService {
     const currentValue = volcanoes[property];
     volcanoes[property] = !currentValue;
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
+  }
+
+  toggleRiskAssessmentGroupProperty(property: 'expanded' | 'shown') {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    const currentValue = riskAssessment[property];
+    riskAssessment[property] = !currentValue;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment ${property}, ${!currentValue}`
+    );
+  }
+
+  setRiskAssessmentSoloShown(value: boolean, type: RiskAssessmentType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.types[type].shown = value;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment - update ${type}'s shown to ${value}`
+    );
   }
 
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
