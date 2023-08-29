@@ -14,6 +14,9 @@ import { SearchfilterPipe } from './pipes/searchfilter.pipe';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
+import { RiskAssessmentModalComponent } from './components/risk-assessment-modal/risk-assessment-modal.component';
+import { RiskAssessmentSummaryComponent } from './components/risk-assessment-summary/risk-assessment-summary.component';
+import { RiskAssessmentNeedsComponent } from './components/risk-assessment-needs/risk-assessment-needs.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -26,6 +29,9 @@ const components = [
   QcLoginComponent,
   PaginationComponent,
   AlertComponent,
+  RiskAssessmentModalComponent,
+  RiskAssessmentSummaryComponent,
+  RiskAssessmentNeedsComponent,
 ];
 const directives = [];
 const pipes = [ReplacePipe, SortPipe, SearchfilterPipe];

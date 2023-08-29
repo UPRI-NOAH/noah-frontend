@@ -185,6 +185,26 @@
       </div>
     </div>
     <!-- MAPBOX LOGO -->
+
+    <div class="flex" *ngIf="raBtn">
+      <div class="absolute z-50 md:left-96 bottom-5 hidden md:block mb-3">
+        <a class="fixed max-w-xs items-center">
+          <div class="mapboxgl-ctrl-bottom-left">
+            <div class="mapboxgl-ctrl">
+              <button class="raBtn" (click)="openRiskModal()">
+                Risk Assessment
+              </button>
+              <span
+                role="button"
+                class="x-button"
+                (click)="closeRiskBtn()"
+              ></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <div class="flex" *ngIf="isMenu">
       <div class="absolute z-50 md:left-96 bottom-0 hidden md:block">
         <a class="fixed max-w-xs items-center">
@@ -354,6 +374,7 @@
       <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group>
       <noah-qc-sensors-group></noah-qc-sensors-group>
+      <noah-risk-assessment-group></noah-risk-assessment-group>
     </div>
   </nav>
   <!-- //Customizing Mapbox attribution -->

@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
+import { RiskModalService } from '@features/noah-playground/services/risk-modal.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
 
@@ -29,11 +30,13 @@ export class NoahPlaygroundComponent implements OnInit {
   qcAdmin: boolean;
   lagunaAdmin: boolean;
   isWarningAlert = false;
+  raBtn = false;
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
     private qcLoginService: QcLoginService,
-    private modalService: ModalServicesService
+    private modalService: ModalServicesService,
+    private rmService: RiskModalService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +71,10 @@ export class NoahPlaygroundComponent implements OnInit {
       this.lagunaAdmin = true;
       this.qcAdmin = false;
     }
+    this.raBtn = false;
+    this.rmService.btnRa$.subscribe((btnRa) => {
+      this.raBtn = btnRa;
+    });
   }
 
   selectPlace(selectedPlace) {
@@ -90,5 +97,15 @@ export class NoahPlaygroundComponent implements OnInit {
 
   closeWarning() {
     this.modalService.warningClose();
+  }
+
+  openRiskModal() {
+    this.rmService.openRiskModal();
+    this.rmService.closeBtnRa();
+  }
+
+  closeRiskBtn() {
+    this.raBtn = false;
+    this.pgService.toggleAffectedExposureGroupVisibility();
   }
 }
