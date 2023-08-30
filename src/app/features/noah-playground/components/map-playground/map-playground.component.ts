@@ -5,7 +5,6 @@ import {
   ViewEncapsulation,
   ViewChild,
   ElementRef,
-  EventEmitter,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -16,15 +15,7 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import {
-  combineLatest,
-  from,
-  fromEvent,
-  Observable,
-  of,
-  Subject,
-  Subscription,
-} from 'rxjs';
+import { combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   debounceTime,
@@ -32,10 +23,8 @@ import {
   filter,
   first,
   map,
-  pluck,
   shareReplay,
   takeUntil,
-  tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
@@ -93,24 +82,17 @@ import {
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
 } from '@features/noah-playground/store/noah-playground.store';
-import {
-  QCSensorChartOpts,
-  QcSensorChartService,
-} from '@features/noah-playground/services/qc-sensor-chart.service';
+import { QcSensorChartService } from '@features/noah-playground/services/qc-sensor-chart.service';
 import {
   NOAH_COLORS,
   IOT_SENSOR_COLORS,
   SENSOR_COLORS,
 } from '@shared/mocks/noah-colors';
-import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 import { RiskExposureType } from '@features/noah-playground/store/noah-playground.store';
-
 import { RiskAssessmentService } from '@features/noah-playground/services/risk-assessment.service';
 
 type MapStyle = 'terrain' | 'satellite';
-
-type StreetStyle = 'terrain' | 'satellite' | 'streets';
 
 type LayerSettingsParam = {
   layerID: string;
@@ -155,7 +137,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   centerMarker!: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
-  streetStyle: StreetStyle = 'terrain';
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
@@ -164,7 +145,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private _changeStyle = new Subject();
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
-  private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
   public geojsonDataBuildings: any[] = [];
@@ -177,8 +157,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
-    private modalService: ModalServicesService,
-    private riskServices: RiskAssessmentService
+    private modalService: ModalServicesService
   ) {}
 
   ngOnInit(): void {
@@ -208,9 +187,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
-        this.initExpPopulation();
         this.initAffectedExposure();
-        //this.initAffectedBuildings();
+        this.initAffectedBuildings();
       });
   }
 
@@ -1590,93 +1568,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     );
   }
 
-  initExpPopulation() {
-    let prevExposureType: RiskExposureType | null = null;
-    const exposureData = {
-      population: {
-        url: 'mapbox://upri-noah.ph_pop_den_tls',
-        type: 'vector',
-      },
-    };
-
-    const getExposure = (exposureDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (exposureDetails.type) {
-        case 'vector':
-          return {
-            type: 'vector',
-            url: exposureDetails.url,
-          };
-        default:
-          throw new Error('ERROR');
-      }
-    };
-
-    Object.keys(exposureData).forEach((expType: RiskExposureType) => {
-      const expDetails = exposureData[expType];
-      this.map.addSource(expType, getExposure(expDetails));
-      this.map.addLayer({
-        id: expType,
-        type: 'fill',
-        source: expType,
-        'source-layer': 'PH060000000_POP_den',
-        paint: {
-          'fill-opacity': 0.7,
-          'fill-color': '#008040',
-        },
-      });
-
-      const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
-        shareReplay(1)
-      );
-      const allShown$ = this.pgService.riskExposureShown$.pipe(shareReplay(1));
-      const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
-        shareReplay(1)
-      );
-
-      const expoOpacity$ = this.pgService.getRiskExposure$(expType).pipe(
-        map((exposure) => exposure.opacity),
-        distinctUntilChanged()
-      );
-      combineLatest([groupShown$, allShown$, selectedExpoType$, expoOpacity$])
-        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-        .subscribe(([groupShown, allshown, selectedExpoType, expoOpacity]) => {
-          let opacity = +(
-            groupShown &&
-            allshown &&
-            selectedExpoType === expType
-          );
-          this.map.setPaintProperty(expType, 'fill-opacity', opacity);
-        });
-      this.pgService.selectedRiskExposure$
-        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-        .subscribe((selectedExposure: RiskExposureType) => {
-          if (selectedExposure === 'buildings') {
-            this.switchStreetMap('streets');
-            prevExposureType = selectedExposure;
-          } else if (selectedExposure === 'population') {
-            if (prevExposureType === 'buildings') {
-              // Revert the map style to the default style when going back to population
-              this.switchStreetMap('terrain'); // Replace 'default-style' with your default map style
-              prevExposureType = null;
-            }
-          }
-        });
-    });
-  }
-
-  switchStreetMap(style: StreetStyle) {
-    if (this.streetStyle === style) return;
-
-    if (style in environment.mapbox.styles) {
-      this.streetStyle = style;
-      this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
-    }
-  }
-
   async initAffectedExposure() {
     const PH_AFFECTED_DATA = await this.pgService.getAffectedPopulationData();
     const colors = {
@@ -1684,30 +1575,45 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       2: '#FF5CAD',
       3: '#FF007F',
     };
-    this.map.on('load', () => {
-      PH_AFFECTED_DATA.forEach((layerData) => {
-        const sourceUrl = layerData.url;
-        layerData.sourceLayer.forEach((sourceLayer) => {
-          this.map.addSource(sourceLayer, {
-            type: 'vector',
-            url: sourceUrl,
-          });
 
-          this.map.addLayer({
-            id: sourceLayer,
-            type: 'fill',
-            source: sourceLayer, // Use the sourceLayer as the source
-            'source-layer': sourceLayer, // Set the source-layer property
-            paint: {
-              'fill-color': [
-                'coalesce', // Use the first non-null value from the arguments
+    PH_AFFECTED_DATA.forEach((layerData) => {
+      const sourceData = {
+        type: 'vector',
+        url: layerData.url,
+      } as mapboxgl.AnySourceData;
+      layerData.sourceLayer.forEach((sourceLayer) => {
+        this.map.addSource(sourceLayer, sourceData);
+
+        this.map.addLayer({
+          id: sourceLayer,
+          type: 'fill',
+          source: sourceLayer, // Use the sourceLayer as the source
+          'source-layer': sourceLayer, // Set the source-layer property
+          paint: {
+            'fill-color': [
+              'coalesce', // Use the first non-null value from the arguments
+              [
+                'match',
+                ['typeof', ['get', 'Var']],
+                'number', // Check if 'Var' is a number
                 [
                   'match',
-                  ['typeof', ['get', 'Var']],
-                  'number', // Check if 'Var' is a number
+                  ['get', 'Var'],
+                  1,
+                  colors[1],
+                  2,
+                  colors[2],
+                  3,
+                  colors[3],
+                  '#868B8E',
+                ], // Use colors based on 'Var'
+                [
+                  'match',
+                  ['typeof', ['get', 'HAZ']],
+                  'number', // Check if 'HAZ' is a number
                   [
                     'match',
-                    ['get', 'Var'],
+                    ['get', 'HAZ'],
                     1,
                     colors[1],
                     2,
@@ -1715,48 +1621,36 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     3,
                     colors[3],
                     '#868B8E',
-                  ], // Use colors based on 'Var'
-                  [
-                    'match',
-                    ['typeof', ['get', 'HAZ']],
-                    'number', // Check if 'HAZ' is a number
-                    [
-                      'match',
-                      ['get', 'HAZ'],
-                      1,
-                      colors[1],
-                      2,
-                      colors[2],
-                      3,
-                      colors[3],
-                      '#868B8E',
-                    ], // Use colors based on 'HAZ'
-                    '#868B8E', // Use your desired default color here if both 'Var' and 'HAZ' are not available
-                  ],
+                  ], // Use colors based on 'HAZ'
+                  '#868B8E', // Use your desired default color here if both 'Var' and 'HAZ' are not available
                 ],
               ],
-              'fill-opacity': 0.7,
-            },
-          });
-          const affectedShown$ = this.pgService.affectedExposureShown$.pipe(
-            shareReplay(1)
-          );
-
-          const groupShown$ = this.pgService.riskExposureShown$.pipe(
-            shareReplay(1)
-          );
-
-          const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
-            shareReplay(1)
-          );
-
-          combineLatest([affectedShown$, groupShown$])
-            .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-            .subscribe(([allShown, groupShown]) => {
-              let opacity = +(allShown && groupShown);
-              this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
-            });
+            ],
+            'fill-opacity': 0.7,
+          },
         });
+        const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+          shareReplay(1)
+        );
+
+        const groupShown$ = this.pgService.affectedExposureShown$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
+          shareReplay(1)
+        );
+
+        combineLatest([allShown$, groupShown$, selectedExpoType$])
+          .pipe(takeUntil(this._unsub))
+          .subscribe(([allShown, groupShown, selectedExpoType]) => {
+            let opacity = +(
+              allShown &&
+              groupShown &&
+              selectedExpoType == 'population'
+            );
+            this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
+          });
       });
     });
   }
@@ -1794,9 +1688,31 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         'source-layer': 'PH060000000_BLDG_osm',
         paint: {
           'fill-opacity': 1,
-          'fill-color': '#122620', // Set a fixed color for the 3D buildings
+          'fill-color': '#FF007F', // Set a fixed color for the 3D buildings
         },
       });
+      const affectedShown$ = this.pgService.affectedExposureShown$.pipe(
+        shareReplay(1)
+      );
+
+      const groupShown$ = this.pgService.riskExposureShown$.pipe(
+        shareReplay(1)
+      );
+
+      const selectedExpoType$ = this.pgService.selectedRiskExposure$.pipe(
+        shareReplay(1)
+      );
+
+      combineLatest([affectedShown$, groupShown$, selectedExpoType$])
+        .pipe(takeUntil(this._unsub))
+        .subscribe(([allShown, groupShown, selectedExpoType]) => {
+          let opacity = +(
+            allShown &&
+            groupShown &&
+            selectedExpoType == 'buildings'
+          );
+          this.map.setPaintProperty(expType, 'fill-opacity', opacity);
+        });
     });
   }
 
