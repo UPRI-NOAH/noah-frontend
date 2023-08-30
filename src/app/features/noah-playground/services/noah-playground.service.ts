@@ -973,4 +973,22 @@ export class NoahPlaygroundService {
     riskAssessment.shown = !shown;
     this.store.patch({ riskAssessment }, `Update Risk ${!shown}`);
   }
+
+  toggleAffectedExposureGroupVisibilityFalse(): void {
+    const affectedExposure = {
+      ...this.store.state.affectedExposure,
+    };
+
+    affectedExposure.shown = false;
+    this.store.patch({ affectedExposure }, `False`);
+  }
+
+  toggleAffectedExposureGroupVisibilityTrue(): void {
+    const affectedExposure = {
+      ...this.store.state.affectedExposure,
+    };
+
+    affectedExposure.shown = true;
+    this.store.patch({ affectedExposure }, `False`);
+  }
 }

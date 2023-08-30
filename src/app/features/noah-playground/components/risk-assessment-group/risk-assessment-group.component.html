@@ -1,3 +1,33 @@
+<div class="flex" *ngIf="raBtnPopu">
+  <div class="absolute z-50 md:left-96 -ml-4 -mt-12">
+    <a class="fixed max-w-xs items-center">
+      <div class="mapboxgl-ctrl-bottom-left">
+        <div class="mapboxgl-ctrl">
+          <button class="raBtn" (click)="openRaModalPopu()">
+            Risk Assessment
+          </button>
+          <span role="button" class="x-button" (click)="closeRiskBtn()"></span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="flex" *ngIf="raBtnBldg">
+  <div class="absolute z-50 md:left-96 -ml-4 -mt-12">
+    <a class="fixed max-w-xs items-center">
+      <div class="mapboxgl-ctrl-bottom-left">
+        <div class="mapboxgl-ctrl">
+          <button class="raBtn" (click)="openRaModalBldg()">
+            Risk Assessment
+          </button>
+          <span role="button" class="x-button" (click)="closeRiskBtn()"></span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
 <div
   class="
     flex flex-col
@@ -96,8 +126,7 @@
       [class.opacity-30]="!(exposureShown$ | async)"
       [class.cursor-not-allowed]="!(exposureShown$ | async)"
     ></noah-risk-exposure>
-
-    <div class="px-6 flex justify-around items-center">
+    <div class="px-6 flex justify-around items-center" *ngIf="btnPopulation">
       <button
         class="
           text-xs
@@ -121,11 +150,41 @@
           disabled:cursor-not-allowed disabled:opacity-30
         "
         [disabled]="!isButtonEnabled"
-        (click)="openModalRisk()"
+        (click)="calculateRiskPopu()"
       >
         Calculate Risk
       </button>
     </div>
+    <div class="px-6 flex justify-around items-center" *ngIf="btnBuildings">
+      <button
+        class="
+          text-xs
+          font-bold
+          bg-blue-600
+          rounded-full
+          px-10
+          py-2
+          my-4
+          inline-flex
+          items-center
+          justify-center
+          text-white
+          focus:outline-none
+          mx-auto
+          lg:mx-0
+          tracking-widest
+          hover:bg-blue-700
+          focus:ring-opacity-50
+          border-2
+          disabled:cursor-not-allowed disabled:opacity-30
+        "
+        [disabled]="!isButtonEnabled"
+        (click)="calculateRiskBldg()"
+      >
+        Calculate Risk
+      </button>
+    </div>
+
     <noah-risk-assessment-modal></noah-risk-assessment-modal>
   </div>
 </div>

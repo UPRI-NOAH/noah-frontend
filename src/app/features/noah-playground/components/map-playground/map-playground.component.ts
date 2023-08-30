@@ -1695,7 +1695,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         shareReplay(1)
       );
 
-      const groupShown$ = this.pgService.riskExposureShown$.pipe(
+      const groupShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
         shareReplay(1)
       );
 

@@ -13,6 +13,17 @@ export class RiskModalService {
   private btnRa = new Subject<boolean>();
   btnRa$ = this.btnRa.asObservable();
 
+  private affectedBuildingsModal = new Subject<boolean>();
+  affectedBuildingsModal$ = this.affectedBuildingsModal.asObservable();
+
+  openAffectedBuildings() {
+    this.affectedBuildingsModal.next(true);
+  }
+
+  closeAffectedBuildings() {
+    this.affectedBuildingsModal.next(false);
+  }
+
   openBtnRa() {
     this.btnRa.next(true);
   }
