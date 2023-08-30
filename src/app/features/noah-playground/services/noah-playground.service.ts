@@ -926,10 +926,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  getRiskExposureOpacity(exposureType: RiskExposureType): number {
-    return this.store.state.riskExposure.types[exposureType].opacity;
-  }
-
   toggleRiskExposureGroupVisibility(): void {
     const riskExposure = {
       ...this.store.state.riskExposure,
@@ -976,16 +972,5 @@ export class NoahPlaygroundService {
     const { shown } = riskAssessment;
     riskAssessment.shown = !shown;
     this.store.patch({ riskAssessment }, `Update Risk ${!shown}`);
-  }
-
-  setRiskExposureOpacity(opacity: number, exposureType: RiskExposureType) {
-    const riskExposure: RiskExposureState = {
-      ...this.store.state.riskExposure,
-    };
-    riskExposure.types[exposureType].opacity = opacity;
-    this.store.patch(
-      { riskExposure },
-      `Risk Exposure - update ${exposureType}'s opacity to ${opacity}`
-    );
   }
 }
