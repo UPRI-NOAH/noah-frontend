@@ -33,7 +33,9 @@ export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
 
 export type BarangayBoundary = 'brgy-boundary';
 
-export type RiskAssessmentType = 'rain-forecast' | 'population';
+export type RiskAssessmentRainType = 'rain-forecast';
+
+export type RiskAssessmentExposureType = 'population';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -125,7 +127,8 @@ export type RiskAssessmentState = {
 export type RiskAssessmentGroupState = {
   shown: boolean;
   expanded: boolean;
-  types: Record<RiskAssessmentType, RiskAssessmentState>;
+  raintypes: Record<RiskAssessmentRainType, RiskAssessmentState>;
+  exposuretypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
 };
 
 export type VolcanoGroupState = {
@@ -364,10 +367,12 @@ const createInitialValue = (): NoahPlaygroundState => ({
   riskAssessment: {
     shown: false,
     expanded: false,
-    types: {
+    raintypes: {
       'rain-forecast': {
         shown: false,
       },
+    },
+    exposuretypes: {
       population: {
         shown: false,
       },

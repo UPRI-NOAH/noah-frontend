@@ -24,7 +24,8 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   BarangayBoundaryState,
-  RiskAssessmentType,
+  RiskAssessmentRainType,
+  RiskAssessmentExposureType,
   RiskAssessmentState,
   RiskAssessmentGroupState,
 } from '../store/noah-playground.store';
@@ -211,11 +212,19 @@ export class NoahPlaygroundService {
     );
   }
 
-  getRiskAssessment$(
-    riskType: RiskAssessmentType
+  getRainRiskAssessment$(
+    riskType: RiskAssessmentRainType
   ): Observable<RiskAssessmentState> {
     return this.store.state$.pipe(
-      map((state) => state.riskAssessment.types[riskType])
+      map((state) => state.riskAssessment.raintypes[riskType])
+    );
+  }
+
+  getExposureRiskAssessment$(
+    riskType: RiskAssessmentExposureType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes[riskType])
     );
   }
 
@@ -365,10 +374,6 @@ export class NoahPlaygroundService {
     );
   }
 
-  // setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
-  //   this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
-  // }
-
   setHazardExpansion(
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
@@ -466,12 +471,27 @@ export class NoahPlaygroundService {
     );
   }
 
-  setRiskAssessmentSoloShown(value: boolean, type: RiskAssessmentType) {
+  setRainRiskAssessmentSoloShown(value: boolean, type: RiskAssessmentRainType) {
     const riskAssessment: RiskAssessmentGroupState = {
       ...this.store.state.riskAssessment,
     };
 
-    riskAssessment.types[type].shown = value;
+    riskAssessment.raintypes[type].shown = value;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setExposureRiskAssessmentSoloShown(
+    value: boolean,
+    type: RiskAssessmentExposureType
+  ) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes[type].shown = value;
     this.store.patch(
       { riskAssessment },
       `Risk Assessment - update ${type}'s shown to ${value}`

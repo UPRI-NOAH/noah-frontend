@@ -52,12 +52,30 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="pl-6">
+    <div class="pl-2">
       <div class="items-center">
-        <noah-risk-assessment-solo
-          *ngFor="let riskType of riskAssessmentTypeList"
-          [riskType]="riskType"
-        ></noah-risk-assessment-solo>
+        <noah-risk-assessment-rain
+          *ngFor="let riskType of riskAssessmentRainTypeList"
+          [rainRiskType]="riskType"
+        ></noah-risk-assessment-rain>
+        <div class="flex items-center pt-2">
+          <div class="flex flex-col pl-8">
+            <div class="text-lg f-f-r mb-2">Legend</div>
+            <div class="flex items-center mb-1">
+              <label class="inline-flex items-center">
+                <img src="assets/legends/rainfall-forecast-legend.png" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="pl-2">
+          <p class="text-xl font-semibold mt-4">Exposure</p>
+        </div>
+        <noah-risk-assessment-exposure
+          *ngFor="let riskType of riskAssessmentExposureTypeList"
+          [exposureRiskType]="riskType"
+        ></noah-risk-assessment-exposure>
         <hr class="p-2" />
         <noah-risk-assessment-modal></noah-risk-assessment-modal>
       </div>

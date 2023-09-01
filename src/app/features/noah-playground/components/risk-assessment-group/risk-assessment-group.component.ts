@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { RiskAssessmentType } from '@features/noah-playground/store/noah-playground.store';
+import {
+  RiskAssessmentExposureType,
+  RiskAssessmentRainType,
+} from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -10,10 +13,8 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./risk-assessment-group.component.scss'],
 })
 export class RiskAssessmentGroupComponent implements OnInit {
-  riskAssessmentTypeList: RiskAssessmentType[] = [
-    'rain-forecast',
-    'population',
-  ];
+  riskAssessmentRainTypeList: RiskAssessmentRainType[] = ['rain-forecast'];
+  riskAssessmentExposureTypeList: RiskAssessmentExposureType[] = ['population'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
