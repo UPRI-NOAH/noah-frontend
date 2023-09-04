@@ -47,15 +47,19 @@
           h-4
           p-1
           text-black
-          border-none
+          border-2
+          font-bold
           rounded-none
           opacity-50
           focus:shadow-none focus:outline-none focus:opacity-100
           hover:text-black hover:opacity-75 hover:no-underline
         "
         data-bs-dismiss="modal"
+        (click)="closeModal()"
         aria-label="Close"
-      ></button>
+      >
+        X
+      </button>
     </div>
     <div class="flex-auto overflow-y-auto relative p-4">
       <!--  -->
