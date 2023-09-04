@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 
 @Component({
   selector: 'noah-qc-login',
@@ -43,7 +43,7 @@ export class QcLoginComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private _location: Location,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   LoginStatus$: Observable<boolean>;
