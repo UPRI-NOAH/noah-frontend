@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   RiskAssessmentExposureType,
@@ -19,7 +20,10 @@ export class RiskAssessmentGroupComponent implements OnInit {
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.riskAssessmentGroupExpanded$.pipe(
@@ -40,5 +44,9 @@ export class RiskAssessmentGroupComponent implements OnInit {
     event.stopImmediatePropagation();
 
     this.pgService.toggleRiskAssessmentGroupProperty('shown');
+  }
+
+  openModalRisk() {
+    this.modalService.openRiskModal();
   }
 }
