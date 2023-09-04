@@ -76,8 +76,33 @@
           *ngFor="let riskType of riskAssessmentExposureTypeList"
           [exposureRiskType]="riskType"
         ></noah-risk-assessment-exposure>
-        <hr class="p-2" />
-        <noah-risk-assessment-modal></noah-risk-assessment-modal>
+      </div>
+      <div class="px-6 justify-center items-center">
+        <button
+          class="
+            text-xs
+            font-bold
+            bg-green-600
+            rounded-full
+            px-10
+            py-2
+            my-4
+            inline-flex
+            items-center
+            justify-center
+            text-white
+            focus:outline-none
+            mx-auto
+            lg:mx-0
+            tracking-widest
+            hover:bg-green-700
+            focus:ring-opacity-50
+            border-2
+          "
+          (click)="openModalRisk()"
+        >
+          Calculate Risk
+        </button>
       </div>
     </div>
   </div>

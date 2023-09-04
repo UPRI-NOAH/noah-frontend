@@ -17,7 +17,7 @@ export class RiskAssessmentService {
 
   getAffectedPopulation(): Observable<any> {
     return this.http.get(
-      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/brgy_rankings.json'
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/prov_rankings.json'
     );
   }
 }

@@ -1,355 +1,256 @@
-<!-- <div class="px-6 justify-center items-center">
-  <button
-    class="
-      text-xs
-      font-bold
-      bg-green-600
-      rounded-full
-      px-10
-      py-2
-      my-4
-      inline-flex
-      items-center
-      justify-center
-      text-white
-      focus:outline-none
-      mx-auto
-      lg:mx-0
-      tracking-widest
-      hover:bg-green-700
-      focus:ring-opacity-50
-      border-2
-    "
-  >
-    Calculate Risk
-  </button>
-</div> -->
-
-<!-- modal -->
 <div
-  class="
-    max-h-full
-    overflow-hidden
-    border-none
-    shadow-lg
-    relative
-    flex flex-col
-    w-full
-    pointer-events-auto
-    bg-white bg-clip-padding
-    rounded-md
-    outline-none
-    text-current
-    h-screen
-  "
+  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 p-10 '"
+  *ngIf="riskModal"
 >
+  <!-- *ngIf="riskModal" -->
+  <div class="w-full h-full opacity-80 bg-black z-0 absolute inset-0"></div>
+  <!-- modal -->
   <div
     class="
-      flex flex-shrink-0
-      items-center
-      justify-between
-      p-4
-      border-b border-gray-200
-      rounded-t-md
+      max-h-full
+      overflow-hidden
+      border-none
+      shadow-lg
+      relative
+      flex flex-col
+      w-full
+      pointer-events-auto
+      bg-white bg-clip-padding
+      rounded-md
+      outline-none
+      text-current
     "
   >
-    <h5
-      class="text-2xl font-medium leading-normal text-gray-800"
-      id="exampleModalScrollableLabel"
-    >
-      In the event of a Flood 100-year return period, how many people might be
-      affected and need evacuation in the Philippines?
-    </h5>
-    <button
-      type="button"
+    <div
       class="
-        btn-close
-        box-content
-        w-4
-        h-4
-        p-1
-        text-black
-        border-none
-        rounded-none
-        opacity-50
-        focus:shadow-none focus:outline-none focus:opacity-100
-        hover:text-black hover:opacity-75 hover:no-underline
+        flex flex-shrink-0
+        items-center
+        justify-between
+        p-4
+        border-b border-gray-200
+        rounded-t-md
       "
-      data-bs-dismiss="modal"
-      aria-label="Close"
-    ></button>
-  </div>
-  <div class="flex-auto overflow-y-auto relative p-4">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead
-          class="
-            text-xs text-gray-700
-            uppercase
-            bg-blue-300
-            dark:bg-gray-700 dark:text-gray-400
-          "
+    >
+      <h5
+        class="text-2xl font-medium leading-normal text-gray-800"
+        id="exampleModalScrollableLabel"
+      >
+        In the event of a Flood 100-year return period, how many people might be
+        affected and need evacuation in the Philippines?
+      </h5>
+      <button
+        type="button"
+        class="
+          btn-close
+          box-content
+          w-4
+          h-4
+          p-1
+          text-black
+          border-none
+          rounded-none
+          opacity-50
+          focus:shadow-none focus:outline-none focus:opacity-100
+          hover:text-black hover:opacity-75 hover:no-underline
+        "
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="flex-auto overflow-y-auto relative p-4">
+      <!--  -->
+      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table
+          class="w-full text-lg text-left text-gray-500 dark:text-gray-400"
         >
-          <tr>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Province
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Municipality
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Total Population
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Exposed to Med-High
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Total Affected Population
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="
-                px-6
-                py-3
-                text-lg
-                font-bold
-                whitespace-nowrap
-                dark:text-white
-              "
-            >
-              <div class="flex items-center">
-                Percentage of Exposed to Med-High
-                <a href="#"
-                  ><svg
-                    class="w-3 h-3 ml-1.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                    /></svg
-                ></a>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let data of affectedData"
+          <thead
             class="
-              text-lg
-              bg-white
-              border-b
-              dark:bg-gray-800 dark:border-gray-700
+              font-bold
+              whitespace-nowrap
+              text-lg text-gray-700
+              uppercase
+              bg-blue-300
+              dark:bg-gray-700 dark:text-gray-400
             "
           >
-            <!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Apple MacBook Pro 17"
-                </th> -->
-            <td class="px-6 py-4">
-              {{ data.province }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.Municipality }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.total_population }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.medium_high }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.total_affected_population }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.percentage_of_affected_medium_high }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <tr>
+              <th scope="col" class="px-6 py-3">
+                <div class="flex items-center">
+                  Province
+                  <a href="#"
+                    ><svg
+                      class="w-3 h-3 ml-1.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      /></svg
+                  ></a>
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-3">
+                <div class="flex items-center">
+                  Total Population
+                  <a href="#"
+                    ><svg
+                      class="w-3 h-3 ml-1.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      /></svg
+                  ></a>
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-3">
+                <div class="flex items-center">
+                  Exposed to Med-High
+                  <a href="#"
+                    ><svg
+                      class="w-3 h-3 ml-1.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      /></svg
+                  ></a>
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-3">
+                <div class="flex items-center">
+                  Total Affected Population
+                  <a href="#"
+                    ><svg
+                      class="w-3 h-3 ml-1.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      /></svg
+                  ></a>
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-3">
+                <div class="flex items-center">
+                  Percentage of Exposed to Med-High
+                  <a href="#"
+                    ><svg
+                      class="w-3 h-3 ml-1.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      /></svg
+                  ></a>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let data of affectedData"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            >
+              <!-- <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Apple MacBook Pro 17"
+                    </th> -->
+              <td class="px-6 py-4">
+                {{ data.province }}
+              </td>
+              <td class="px-6 py-4">
+                {{ data.total_population }}
+              </td>
+              <td class="px-6 py-4">
+                {{ data.medium_high }}
+              </td>
+              <td class="px-6 py-4">
+                {{ data.total_affected_population }}
+              </td>
+              <td class="px-6 py-4">
+                {{ data.percentage_of_affected_medium_high }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--  -->
     </div>
-  </div>
-  <div
-    class="
-      flex flex-shrink-0 flex-wrap
-      items-center
-      justify-end
-      p-4
-      border-t border-gray-200
-      rounded-b-md
-    "
-  >
-    <button
-      type="button"
+    <div
       class="
-        inline-block
-        px-6
-        py-2.5
-        bg-purple-600
-        text-white
-        font-medium
-        text-xs
-        leading-tight
-        uppercase
-        rounded
-        shadow-md
-        hover:bg-purple-700 hover:shadow-lg
-        focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0
-        active:bg-purple-800 active:shadow-lg
-        transition
-        duration-150
-        ease-in-out
-      "
-      data-bs-dismiss="modal"
-    >
-      Close
-    </button>
-    <button
-      type="button"
-      class="
-        inline-block
-        px-6
-        py-2.5
-        bg-blue-600
-        text-white
-        font-medium
-        text-xs
-        leading-tight
-        uppercase
-        rounded
-        shadow-md
-        hover:bg-blue-700 hover:shadow-lg
-        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-        active:bg-blue-800 active:shadow-lg
-        transition
-        duration-150
-        ease-in-out
-        ml-1
+        flex flex-shrink-0 flex-wrap
+        items-center
+        justify-end
+        p-4
+        border-t border-gray-200
+        rounded-b-md
       "
     >
-      Hide Modal
-    </button>
+      <button
+        type="button"
+        class="
+          inline-block
+          px-6
+          py-2.5
+          bg-purple-600
+          text-white
+          font-medium
+          text-xs
+          leading-tight
+          uppercase
+          rounded
+          shadow-md
+          hover:bg-purple-700 hover:shadow-lg
+          focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0
+          active:bg-purple-800 active:shadow-lg
+          transition
+          duration-150
+          ease-in-out
+        "
+        data-bs-dismiss="modal"
+        (click)="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        class="
+          inline-block
+          px-6
+          py-2.5
+          bg-blue-600
+          text-white
+          font-medium
+          text-xs
+          leading-tight
+          uppercase
+          rounded
+          shadow-md
+          hover:bg-blue-700 hover:shadow-lg
+          focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+          active:bg-blue-800 active:shadow-lg
+          transition
+          duration-150
+          ease-in-out
+          ml-1
+        "
+      >
+        Hide Modal
+      </button>
+    </div>
   </div>
 </div>
