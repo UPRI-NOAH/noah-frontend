@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RiskAssessmentService } from '@features/noah-playground/services/risk-assessment.service';
 
 @Component({
   selector: 'noah-risk-assessment-modal',
@@ -6,7 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./risk-assessment-modal.component.scss'],
 })
 export class RiskAssessmentModalComponent implements OnInit {
-  constructor() {}
+  affectedData: Array<any> = [];
+
+  constructor(private riskAssessment: RiskAssessmentService) {
+    this.riskAssessment.getAffectedPopulation().subscribe((response) => {
+      console.log(response);
+      this.affectedData = response;
+    });
+  }
 
   ngOnInit(): void {}
 }
