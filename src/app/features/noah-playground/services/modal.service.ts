@@ -5,6 +5,9 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ModalService {
+  private riskModal = new Subject<boolean>();
+  riskModal$ = this.riskModal.asObservable();
+
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
@@ -21,6 +24,14 @@ export class ModalService {
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
   constructor() {}
+
+  openRiskModal() {
+    this.riskModal.next(true);
+  }
+
+  closeRiskModal() {
+    this.riskModal.next(false);
+  }
 
   lagunaLoginPopup() {
     this.lagunaLogin.next(true);
