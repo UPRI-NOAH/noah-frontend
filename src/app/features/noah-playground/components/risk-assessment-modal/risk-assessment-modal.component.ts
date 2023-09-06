@@ -27,6 +27,7 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   closeModal() {
     this.modalServices.closeRiskModal();
+    this.modalServices.closeBtnRiskAssessment();
   }
   hideModal() {
     this.modalServices.closeRiskModal();

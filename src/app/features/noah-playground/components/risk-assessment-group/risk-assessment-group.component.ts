@@ -85,4 +85,8 @@ export class RiskAssessmentGroupComponent implements OnInit {
   closeBtnRisk() {
     this.raBtnPopu = false;
   }
+
+  openModalPopu() {
+    this.modalService.openRiskModal();
+  }
 }
