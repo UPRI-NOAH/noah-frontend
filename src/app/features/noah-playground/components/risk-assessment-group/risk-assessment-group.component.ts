@@ -74,10 +74,14 @@ export class RiskAssessmentGroupComponent implements OnInit {
     events.stopImmediatePropagation();
     this.checkedPopu = (events.target as HTMLInputElement).checked;
     this.updateButtonEnabled();
+    if (!this.checkedShown) {
+      this.pgService.toggleAffectedPopulationVisibilityFalse();
+    }
   }
 
   calculateRisk() {
     this.modalService.openRiskModal();
+    this.pgService.toggleAffectedPopulationVisibility();
     this.raBtnPopu = false;
   }
 
