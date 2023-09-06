@@ -56,6 +56,10 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.checkedShown = (event.target as HTMLInputElement).checked;
     this.pgService.toggleRiskAssessmentGroupProperty('shown');
     this.updateButtonEnabled();
+
+    if (!this.checkedShown) {
+      this.modalService.closeBtnRiskAssessment();
+    }
   }
 
   toggleRain(events: Event) {
