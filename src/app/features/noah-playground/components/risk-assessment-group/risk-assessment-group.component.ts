@@ -26,12 +26,15 @@ export class RiskAssessmentGroupComponent implements OnInit {
   checkedPopu = false;
   checkedShown = false;
 
+  raBtnPopu: boolean;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
+    this.raBtnPopu = false;
     this.expanded$ = this.pgService.riskAssessmentGroupExpanded$.pipe(
       shareReplay(1)
     );
@@ -67,12 +70,17 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.updateButtonEnabled();
   }
 
-  openModalRisk() {
+  calculateRisk() {
     this.modalService.openRiskModal();
+    this.raBtnPopu = false;
   }
 
   updateButtonEnabled() {
     this.isButtonEnabled =
       this.checkedPopu && this.checkedRain && this.checkedShown;
+  }
+
+  closeBtnRisk() {
+    this.raBtnPopu = false;
   }
 }

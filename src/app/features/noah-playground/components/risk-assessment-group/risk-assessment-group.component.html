@@ -1,10 +1,10 @@
-<div class="flex">
-  <div class="absolute z-50 md:left-96 -ml-5 mt-36">
+<div class="flex" *ngIf="raBtnPopu">
+  <div class="absolute z-50 md:left-96 -ml-5 -mt-11">
     <a class="fixed max-w-xs items-center">
       <div class="mapboxgl-ctrl-bottom-left">
         <div class="mapboxgl-ctrl">
-          <button class="raBtn">Risk Assessment Popu</button>
-          <span role="button" class="x-button"></span>
+          <button class="raBtn">Risk Assessment</button>
+          <span role="button" class="x-raBtn" (click)="closeBtnRisk()"></span>
         </div>
       </div>
     </a>
@@ -114,7 +114,7 @@
             border-2
             disabled:cursor-not-allowed disabled:opacity-30
           "
-          (click)="openModalRisk()"
+          (click)="calculateRisk()"
           [disabled]="!isButtonEnabled"
         >
           Calculate Risk
