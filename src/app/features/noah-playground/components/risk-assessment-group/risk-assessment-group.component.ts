@@ -26,7 +26,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
   checkedPopu = false;
   checkedShown = false;
 
-  raBtnPopu: boolean;
+  raBtnPopu = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -34,7 +34,9 @@ export class RiskAssessmentGroupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.raBtnPopu = false;
+    this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
+      this.raBtnPopu = raBtnPopu;
+    });
     this.expanded$ = this.pgService.riskAssessmentGroupExpanded$.pipe(
       shareReplay(1)
     );

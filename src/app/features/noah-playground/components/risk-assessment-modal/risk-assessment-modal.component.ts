@@ -21,11 +21,15 @@ export class RiskAssessmentModalComponent implements OnInit {
       this.riskModal = riskModal;
     });
     this.riskAssessment.getAffectedPopulation().subscribe((response) => {
-      console.log(response);
       this.affectedData = response;
     });
   }
+
   closeModal() {
     this.modalServices.closeRiskModal();
+  }
+  hideModal() {
+    this.modalServices.closeRiskModal();
+    this.modalServices.openBtnRiskAssessment();
   }
 }

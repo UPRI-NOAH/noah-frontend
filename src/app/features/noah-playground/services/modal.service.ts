@@ -23,7 +23,18 @@ export class ModalService {
   private lagunaLogin = new Subject<boolean>();
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
+  private btnRiskAssessment = new Subject<boolean>();
+  btnRiskAssessment$ = this.btnRiskAssessment.asObservable();
+
   constructor() {}
+
+  openBtnRiskAssessment() {
+    this.btnRiskAssessment.next(true);
+  }
+
+  closeBtnRiskAssessment() {
+    this.btnRiskAssessment.next(false);
+  }
 
   openRiskModal() {
     this.riskModal.next(true);
