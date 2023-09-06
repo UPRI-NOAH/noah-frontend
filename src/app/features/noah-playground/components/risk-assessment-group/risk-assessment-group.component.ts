@@ -18,7 +18,13 @@ export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentExposureTypeList: RiskAssessmentExposureType[] = ['population'];
 
   expanded$: Observable<boolean>;
+  riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
+
+  isButtonEnabled = false;
+  checkedRain = false;
+  checkedPopu = false;
+  checkedShown = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -30,23 +36,43 @@ export class RiskAssessmentGroupComponent implements OnInit {
       shareReplay(1)
     );
     this.shown$ = this.pgService.riskAssessmentGroupShown$.pipe(shareReplay(1));
+    this.pgService.riskAssessmentPopuShown$;
   }
 
   toggleExpanded(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-
     this.pgService.toggleRiskAssessmentGroupProperty('expanded');
   }
 
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-
+    this.checkedShown = (event.target as HTMLInputElement).checked;
     this.pgService.toggleRiskAssessmentGroupProperty('shown');
+    this.updateButtonEnabled();
+  }
+
+  toggleRain(events: Event) {
+    events.stopPropagation();
+    events.stopImmediatePropagation();
+    this.checkedRain = (events.target as HTMLInputElement).checked;
+    this.updateButtonEnabled();
+  }
+
+  togglePopu(events: Event) {
+    events.stopPropagation();
+    events.stopImmediatePropagation();
+    this.checkedPopu = (events.target as HTMLInputElement).checked;
+    this.updateButtonEnabled();
   }
 
   openModalRisk() {
     this.modalService.openRiskModal();
+  }
+
+  updateButtonEnabled() {
+    this.isButtonEnabled =
+      this.checkedPopu && this.checkedRain && this.checkedShown;
   }
 }
