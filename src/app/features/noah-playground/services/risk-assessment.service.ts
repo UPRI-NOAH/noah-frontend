@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// export type AffectedData = {
-//   province: string;
-//   total_population: string;
-//   total_affected: string;
-//   med_high: string;
-//   percentage_med_high: string;
-// };
+export type AffectedData = {
+  province: string;
+  Municipality: string;
+  Barangay: string;
+  total_population: string;
+  total_affected_population: string;
+  medium_high: string;
+  percentage_of_affected_medium_high: string;
+};
 @Injectable({
   providedIn: 'root',
 })

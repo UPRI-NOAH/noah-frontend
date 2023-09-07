@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RiskAssessmentService } from '@features/noah-playground/services/risk-assessment.service';
+import {
+  AffectedData,
+  RiskAssessmentService,
+} from '@features/noah-playground/services/risk-assessment.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 
 @Component({
@@ -8,8 +11,9 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
   styleUrls: ['./risk-assessment-modal.component.scss'],
 })
 export class RiskAssessmentModalComponent implements OnInit {
-  affectedData: Array<any> = [];
+  affectedData: AffectedData[] = [];
   riskModal = false;
+  searchValue: string;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
