@@ -15,7 +15,6 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
-import { SortRiskAffectedPipe } from './pipes/sort-risk-affected.pipe';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -30,13 +29,7 @@ const components = [
   AlertComponent,
 ];
 const directives = [];
-const pipes = [
-  ReplacePipe,
-  SortPipe,
-  SearchfilterPipe,
-  SearchRiskAffectedPipe,
-  SortRiskAffectedPipe,
-];
+const pipes = [ReplacePipe, SortPipe, SearchfilterPipe, SearchRiskAffectedPipe];
 @NgModule({
   declarations: [...components, ...directives, ...pipes],
   imports: [...modules],
