@@ -18,7 +18,7 @@
       bg-white bg-clip-padding
       rounded-md
       outline-none
-      text-current
+      text-xl
     "
   >
     <div
@@ -31,39 +31,61 @@
         rounded-t-md
       "
     >
-      <h5
-        class="text-2xl font-medium leading-normal text-gray-800"
+      <p
+        class="font-medium leading-normal text-gray-800"
         id="exampleModalScrollableLabel"
       >
         In the event of a Flood 100-year return period, how many people might be
         affected and need evacuation in the Philippines?
-      </h5>
-      <button
-        type="button"
-        class="
-          btn-close
-          box-content
-          w-4
-          h-4
-          p-1
-          text-black
-          border-2
-          font-bold
-          rounded-none
-          opacity-50
-          focus:shadow-none focus:outline-none focus:opacity-100
-          hover:text-black hover:opacity-75 hover:no-underline
-        "
-        data-bs-dismiss="modal"
-        (click)="closeModal()"
-        aria-label="Close"
-      >
-        X
-      </button>
+      </p>
+      <div class="flex flex-shrink-0 flex-wrap justify-end">
+        <button
+          type="button"
+          class="
+            btn-close
+            box-content
+            w-4
+            h-4
+            p-1
+            text-black
+            font-bold
+            rounded-none
+            opacity-50
+            focus:shadow-none focus:outline-none focus:opacity-100
+            hover:text-black hover:opacity-75 hover:no-underline
+          "
+          data-bs-dismiss="modal"
+          (click)="hideModal()"
+          aria-label="Close"
+        >
+          _
+        </button>
+        <button
+          type="button"
+          class="
+            btn-close
+            box-content
+            w-4
+            h-4
+            p-1
+            text-black
+            font-bold
+            rounded-none
+            opacity-50
+            focus:shadow-none focus:outline-none focus:opacity-100
+            hover:text-black hover:opacity-75 hover:no-underline
+          "
+          data-bs-dismiss="modal"
+          (click)="closeModal()"
+          aria-label="Close"
+        >
+          X
+        </button>
+      </div>
     </div>
     <div class="flex-auto overflow-auto relative p-4">
       <!--  -->
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div class="relative shadow-md sm:rounded-lg">
         <div class="pb-4 bg-white dark:bg-gray-900">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
@@ -207,7 +229,7 @@
         rounded-b-md
       "
     >
-      <button
+      <!-- <button
         type="button"
         class="
           inline-block
@@ -258,7 +280,7 @@
         (click)="hideModal()"
       >
         Hide Modal
-      </button>
+      </button> -->
     </div>
   </div>
 </div>
