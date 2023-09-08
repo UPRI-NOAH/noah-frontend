@@ -511,11 +511,81 @@
                                     <ng-container
                                       *ngIf="data.iot_type == 'rain'"
                                     >
-                                      <span class="pl-10 text-lg font-bold"
-                                        >-</span
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0' &&
+                                          data.latest_data < '7.5'
+                                        "
                                       >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-normal
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-gray-300
+                                          "
+                                          >Light (0 - 7.5mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '7.51' &&
+                                          data.latest_data < '15'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-low
+                                          "
+                                          >Heavy (7.51 - 15mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '15.1' &&
+                                          data.latest_data <= '30'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-medium
+                                          "
+                                          >Intense (15 - 30mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="data.latest_data > '30'"
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-high
+                                          "
+                                          >Torrential (> 30.1mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <!-- Flood -->
                                     </ng-container>
-
                                     <ng-container
                                       *ngIf="data.iot_type == 'flood'"
                                     >
@@ -530,7 +600,6 @@
                                             p-1.5
                                             text-xs
                                             font-medium
-                                            uppercase
                                             tracking-wider
                                             text-black
                                             bg-low
@@ -551,7 +620,6 @@
                                             p-1.5
                                             text-xs
                                             font-medium
-                                            uppercase
                                             tracking-wider
                                             text-black
                                             bg-medium
@@ -569,7 +637,6 @@
                                             p-1.5
                                             text-xs
                                             font-medium
-                                            uppercase
                                             tracking-wider
                                             text-black
                                             bg-high
@@ -1619,10 +1686,81 @@
                                     <ng-container
                                       *ngIf="data.iot_type == 'rain'"
                                     >
-                                      <span class="pl-8 text-lg font-bold"
-                                        >-</span
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '0' &&
+                                          data.latest_data < '7.5'
+                                        "
                                       >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-normal
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-gray-300
+                                          "
+                                          >Light (0 - 7.5mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '7.51' &&
+                                          data.latest_data < '15'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-low
+                                          "
+                                          >Heavy (7.51 - 15mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="
+                                          data.latest_data >= '15.1' &&
+                                          data.latest_data <= '30'
+                                        "
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-medium
+                                          "
+                                          >Intense (15 - 30mm/hr)</span
+                                        >
+                                      </ng-container>
+                                      <ng-container
+                                        *ngIf="data.latest_data > '30'"
+                                      >
+                                        <span
+                                          class="
+                                            p-1.5
+                                            text-xs
+                                            font-medium
+                                            tracking-wider
+                                            text-black
+                                            rounded-lg
+                                            bg-high
+                                          "
+                                          >Torrential (> 30.1mm/hr)</span
+                                        >
+                                      </ng-container>
                                     </ng-container>
+                                    <!-- END RAIN TAB -->
                                   </ng-template>
                                 </td>
                                 <td
