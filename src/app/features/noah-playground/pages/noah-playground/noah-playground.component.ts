@@ -29,6 +29,7 @@ export class NoahPlaygroundComponent implements OnInit {
   lagunaAdmin: boolean;
   isWarningAlert = false;
   disclaimerModalOpen = false;
+  iotModalOpen = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -42,11 +43,17 @@ export class NoahPlaygroundComponent implements OnInit {
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
+
     this.modalService.accountWarning$.subscribe((isWarningAlert) => {
       this.isWarningAlert = isWarningAlert;
     });
+
     this.modalService.disclaimerModal$.subscribe((disclaimerModal) => {
       this.disclaimerModalOpen = disclaimerModal;
+    });
+
+    this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
+      this.iotModalOpen = iotModalOpen;
     });
 
     const disableAlert = localStorage.getItem('loginStatus');

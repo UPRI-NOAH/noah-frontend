@@ -35,10 +35,11 @@ export class QcSensorsGroupComponent implements OnInit {
   qcbShown: QuezonCityMunicipalBoundaryState;
   brgyShown: BarangayBoundaryState;
   disclaimerModal = false;
+  isChecked: boolean = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
-    private ModalService: ModalServicesService
+    private modalService: ModalServicesService
   ) {}
 
   ngOnInit(): void {
@@ -58,16 +59,20 @@ export class QcSensorsGroupComponent implements OnInit {
 
   toggleShown(event: Event) {
     event.stopPropagation();
+    this.isChecked = !this.isChecked;
     event.stopImmediatePropagation();
     this.pgService.toggleQuezonCityIOTGroupShown();
 
     const discStatus = localStorage.getItem('disclaimerStatus');
     if (discStatus == 'true') {
-      this.ModalService.disclaimerModalOpen();
+      this.modalService.disclaimerModalOpen();
     }
     if (discStatus == 'false') {
-      this.ModalService.disclaimerModalClose();
+      this.modalService.disclaimerModalClose();
     }
-    //this.ModalService.disclaimerModalOpen();
+  }
+
+  iotModalOpen() {
+    this.modalService.iotSummaryModalOpen();
   }
 }

@@ -20,6 +20,7 @@
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
           [checked]="shown$ | async"
+          [(ngModel)]="isChecked"
           (click)="toggleShown($event)"
         />
       </label>
@@ -115,9 +116,38 @@
         [qcCriticalFacilities]="qcCriticalFacilities"
       >
       </noah-qc-critical-facilities>
-      <noah-summary
-        [ngClass]="(shown$ | async) ? ' pt-5 ' : ' hidden '"
-      ></noah-summary>
+
+      <div class="px-6 justify-center items-center">
+        <button
+          class="
+            text-xs
+            font-bold
+            bg-green-600
+            rounded-full
+            px-10
+            py-2
+            my-4
+            inline-flex
+            items-center
+            justify-center
+            text-white
+            focus:outline-none
+            mx-auto
+            lg:mx-0
+            tracking-widest
+            hover:bg-green-700
+            focus:ring-opacity-50
+            border-2
+            disabled:opacity-25
+            disabled:cursor-not-allowed
+            disabled:hover:bg-green-600
+          "
+          (click)="iotModalOpen()"
+          [disabled]="!isChecked"
+        >
+          View Data Summary
+        </button>
+      </div>
     </div>
   </div>
 </div>
