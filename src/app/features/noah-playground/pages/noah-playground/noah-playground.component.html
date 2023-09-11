@@ -445,11 +445,6 @@
     <noah-map-playground></noah-map-playground>
   </main>
 </div>
-<div *ngIf="DisclaimerStatus$ | async as DisclaimerStatus">
-  <noah-disclaimer
-    *ngIf="DisclaimerStatus || disclaimerModal"
-  ></noah-disclaimer>
-</div>
 <noah-alert *ngIf="showAlert"></noah-alert>
 <noah-qc-login *ngIf="modalAlert"></noah-qc-login>
 
@@ -766,3 +761,4 @@
     </div>
   </div>
 </div>
+<noah-disclaimer *ngIf="disclaimerModalOpen"></noah-disclaimer>

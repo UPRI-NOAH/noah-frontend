@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QCSENSORS } from '@features/noah-playground/services/qc-sensor.service';
 import {
@@ -35,7 +36,10 @@ export class QcSensorsGroupComponent implements OnInit {
   brgyShown: BarangayBoundaryState;
   disclaimerModal = false;
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private ModalService: ModalServicesService
+  ) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
@@ -59,10 +63,11 @@ export class QcSensorsGroupComponent implements OnInit {
 
     const discStatus = localStorage.getItem('disclaimerStatus');
     if (discStatus == 'true') {
-      this.disclaimerModal = true;
+      this.ModalService.disclaimerModalOpen();
     }
     if (discStatus == 'false') {
-      this.disclaimerModal = false;
+      this.ModalService.disclaimerModalClose();
     }
+    //this.ModalService.disclaimerModalOpen();
   }
 }

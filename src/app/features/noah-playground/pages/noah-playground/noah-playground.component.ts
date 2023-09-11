@@ -25,10 +25,11 @@ export class NoahPlaygroundComponent implements OnInit {
   UserName$: Observable<string>;
   showAlert: boolean;
   modalAlert: boolean;
-  DisclaimerStatus$: Observable<boolean>;
   qcAdmin: boolean;
   lagunaAdmin: boolean;
   isWarningAlert = false;
+  disclaimerModalOpen = false;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -41,10 +42,11 @@ export class NoahPlaygroundComponent implements OnInit {
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
-    this.DisclaimerStatus$ = this.qcLoginService.isDisclaimerStatus;
-
     this.modalService.accountWarning$.subscribe((isWarningAlert) => {
       this.isWarningAlert = isWarningAlert;
+    });
+    this.modalService.disclaimerModal$.subscribe((disclaimerModal) => {
+      this.disclaimerModalOpen = disclaimerModal;
     });
 
     const disableAlert = localStorage.getItem('loginStatus');
@@ -59,14 +61,17 @@ export class NoahPlaygroundComponent implements OnInit {
     if (admin == '0') {
       this.qcAdmin = false;
       this.lagunaAdmin = false;
+      this.disclaimerModalOpen = false;
     }
     if (admin == '1') {
       this.qcAdmin = true;
       this.lagunaAdmin = false;
+      this.disclaimerModalOpen = true;
     }
     if (admin == '2') {
       this.lagunaAdmin = true;
       this.qcAdmin = false;
+      this.disclaimerModalOpen = true;
     }
   }
 

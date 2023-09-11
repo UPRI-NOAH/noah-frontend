@@ -20,7 +20,18 @@ export class ModalServicesService {
   private lagunaLogin = new Subject<boolean>();
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
+  private disclaimerModal = new Subject<boolean>();
+  disclaimerModal$ = this.disclaimerModal.asObservable();
+
   constructor() {}
+
+  disclaimerModalOpen() {
+    this.disclaimerModal.next(true);
+  }
+
+  disclaimerModalClose() {
+    this.disclaimerModal.next(false);
+  }
 
   lagunaLoginPopup() {
     this.lagunaLogin.next(true);
