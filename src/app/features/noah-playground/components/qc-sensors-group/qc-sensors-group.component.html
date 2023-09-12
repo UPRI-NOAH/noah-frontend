@@ -20,7 +20,6 @@
           type="checkbox"
           class="checkbox h-5 w-5 text-blue-600"
           [checked]="shown$ | async"
-          [(ngModel)]="isChecked"
           (click)="toggleShown($event)"
         />
       </label>
@@ -141,9 +140,10 @@
             disabled:opacity-25
             disabled:cursor-not-allowed
             disabled:hover:bg-green-600
+            whitespace-nowrap
           "
           (click)="iotModalOpen()"
-          [disabled]="!isChecked"
+          [disabled]="!(shown$ | async)"
         >
           View Data Summary
         </button>

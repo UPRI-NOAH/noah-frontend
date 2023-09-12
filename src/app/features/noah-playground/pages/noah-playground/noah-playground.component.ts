@@ -68,17 +68,14 @@ export class NoahPlaygroundComponent implements OnInit {
     if (admin == '0') {
       this.qcAdmin = false;
       this.lagunaAdmin = false;
-      this.disclaimerModalOpen = false;
     }
     if (admin == '1') {
       this.qcAdmin = true;
       this.lagunaAdmin = false;
-      this.disclaimerModalOpen = true;
     }
     if (admin == '2') {
       this.lagunaAdmin = true;
       this.qcAdmin = false;
-      this.disclaimerModalOpen = true;
     }
   }
 

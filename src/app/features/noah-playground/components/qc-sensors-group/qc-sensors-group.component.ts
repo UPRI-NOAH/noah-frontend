@@ -11,7 +11,9 @@ import {
   QuezonCityMunicipalBoundaryState,
   QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'noah-qc-sensors-group',
   templateUrl: './qc-sensors-group.component.html',
@@ -51,6 +53,7 @@ export class QcSensorsGroupComponent implements OnInit {
     this.qcbexpanded$ = this.pgService.qcMunicipalBoundaryExpanded$;
     this.brgyShown$ = this.pgService.barangayBoundaryShown$;
     this.brgyExpanded$ = this.pgService.barangayExpanded$;
+    this.disclaimerLoginModal();
   }
 
   toggleExpansion() {
@@ -59,20 +62,29 @@ export class QcSensorsGroupComponent implements OnInit {
 
   toggleShown(event: Event) {
     event.stopPropagation();
-    this.isChecked = !this.isChecked;
     event.stopImmediatePropagation();
     this.pgService.toggleQuezonCityIOTGroupShown();
 
-    const discStatus = localStorage.getItem('disclaimerStatus');
-    if (discStatus == 'true') {
-      this.modalService.disclaimerModalOpen();
-    }
-    if (discStatus == 'false') {
-      this.modalService.disclaimerModalClose();
+    if (event.target instanceof HTMLInputElement) {
+      const checked = event.target.checked;
+      if (checked) {
+        this.modalService.disclaimerModalOpen();
+      } else {
+        this.modalService.disclaimerModalClose();
+      }
     }
   }
 
   iotModalOpen() {
     this.modalService.iotSummaryModalOpen();
+  }
+
+  disclaimerLoginModal() {
+    const adminLogin = localStorage.getItem('loginStatus');
+    if (adminLogin == '1' || adminLogin == '2') {
+      this.modalService.disclaimerModalOpen();
+    } else {
+      this.modalService.disclaimerModalClose();
+    }
   }
 }
