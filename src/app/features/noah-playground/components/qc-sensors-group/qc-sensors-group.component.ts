@@ -81,8 +81,11 @@ export class QcSensorsGroupComponent implements OnInit {
 
   disclaimerLoginModal() {
     const adminLogin = localStorage.getItem('loginStatus');
-    if (adminLogin == '1' || adminLogin == '2') {
+    if (adminLogin == '1') {
       this.modalService.disclaimerModalOpen();
+    }
+    if (adminLogin == '2') {
+      localStorage.setItem('disclaimerStatus', 'false');
     } else {
       this.modalService.disclaimerModalClose();
     }
