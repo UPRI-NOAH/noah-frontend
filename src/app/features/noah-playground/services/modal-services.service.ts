@@ -20,7 +20,29 @@ export class ModalServicesService {
   private lagunaLogin = new Subject<boolean>();
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
+  private disclaimerModal = new Subject<boolean>();
+  disclaimerModal$ = this.disclaimerModal.asObservable();
+
+  private iotSummaryModal = new Subject<boolean>();
+  iotSummaryModal$ = this.iotSummaryModal.asObservable();
+
   constructor() {}
+
+  disclaimerModalOpen() {
+    this.disclaimerModal.next(true);
+  }
+
+  disclaimerModalClose() {
+    this.disclaimerModal.next(false);
+  }
+
+  iotSummaryModalOpen() {
+    this.iotSummaryModal.next(true);
+  }
+
+  iotSummaryModalClose() {
+    this.iotSummaryModal.next(false);
+  }
 
   lagunaLoginPopup() {
     this.lagunaLogin.next(true);

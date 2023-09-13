@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QCSENSORS } from '@features/noah-playground/services/qc-sensor.service';
 import {
@@ -10,7 +11,9 @@ import {
   QuezonCityMunicipalBoundaryState,
   QuezonCitySensorType,
 } from '@features/noah-playground/store/noah-playground.store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'noah-qc-sensors-group',
   templateUrl: './qc-sensors-group.component.html',
@@ -34,8 +37,12 @@ export class QcSensorsGroupComponent implements OnInit {
   qcbShown: QuezonCityMunicipalBoundaryState;
   brgyShown: BarangayBoundaryState;
   disclaimerModal = false;
+  isChecked: boolean = false;
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private modalService: ModalServicesService
+  ) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.qcSensorsGroupExpanded$;
@@ -46,6 +53,7 @@ export class QcSensorsGroupComponent implements OnInit {
     this.qcbexpanded$ = this.pgService.qcMunicipalBoundaryExpanded$;
     this.brgyShown$ = this.pgService.barangayBoundaryShown$;
     this.brgyExpanded$ = this.pgService.barangayExpanded$;
+    this.disclaimerLoginModal();
   }
 
   toggleExpansion() {
@@ -57,12 +65,29 @@ export class QcSensorsGroupComponent implements OnInit {
     event.stopImmediatePropagation();
     this.pgService.toggleQuezonCityIOTGroupShown();
 
-    const discStatus = localStorage.getItem('disclaimerStatus');
-    if (discStatus == 'true') {
-      this.disclaimerModal = true;
+    if (event.target instanceof HTMLInputElement) {
+      const checked = event.target.checked;
+      if (checked) {
+        this.modalService.disclaimerModalOpen();
+      } else {
+        this.modalService.disclaimerModalClose();
+      }
     }
-    if (discStatus == 'false') {
-      this.disclaimerModal = false;
+  }
+
+  iotModalOpen() {
+    this.modalService.iotSummaryModalOpen();
+  }
+
+  disclaimerLoginModal() {
+    const adminLogin = localStorage.getItem('loginStatus');
+    if (adminLogin == '1') {
+      this.modalService.disclaimerModalOpen();
+    }
+    if (adminLogin == '2') {
+      localStorage.setItem('disclaimerStatus', 'false');
+    } else {
+      this.modalService.disclaimerModalClose();
     }
   }
 }
