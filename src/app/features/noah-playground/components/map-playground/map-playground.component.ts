@@ -103,7 +103,7 @@ import {
   SENSOR_COLORS,
 } from '@shared/mocks/noah-colors';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -170,7 +170,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {

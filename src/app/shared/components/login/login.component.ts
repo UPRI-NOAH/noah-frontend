@@ -11,7 +11,7 @@ import { QcLoginService } from '@features/noah-playground/services/qc-login.serv
 import { Observable, Subject } from 'rxjs';
 import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 @Component({
   selector: 'noah-login',
   templateUrl: './login.component.html',
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private pgService: NoahPlaygroundService,
     private _location: Location,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   LoginStatus$: Observable<boolean>;
