@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import {
   QcSensorService,
   SummaryItem,
@@ -52,7 +52,7 @@ export class SummaryComponent implements OnInit {
 
   constructor(
     private qcSensorService: QcSensorService,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
   columns = [
     {

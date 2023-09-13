@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
@@ -35,7 +35,7 @@ export class NoahPlaygroundComponent implements OnInit {
     private pgService: NoahPlaygroundService,
     private title: Title,
     private qcLoginService: QcLoginService,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
