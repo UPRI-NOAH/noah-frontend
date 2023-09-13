@@ -28,11 +28,11 @@ export class RiskAssessmentModalComponent implements OnInit {
       header: 'Province',
     },
     // {
-    //   key: 'Municipality',
+    //   key: 'municipality',
     //   header: 'Municipality',
     // },
     // {
-    //   key: 'Barangay',
+    //   key: 'barangay',
     //   header: 'Barangay',
     // },
     {

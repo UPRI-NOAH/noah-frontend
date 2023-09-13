@@ -9,16 +9,20 @@ export class SearchRiskAffectedPipe implements PipeTransform {
     if (!summaryData || !searchValue) {
       return summaryData;
     }
-    return summaryData.filter((data) =>
+    return summaryData.filter(
+      (data) =>
+        data.province
+          .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase())
       // data.province
       //   .toLocaleLowerCase()
       //   .includes(searchValue.toLocaleLowerCase()) ||
-      // data.Municipality
+      // data.municipality
       //   .toLocaleLowerCase()
       //   .includes(searchValue.toLocaleLowerCase()) ||
-      data.province
-        .toLocaleLowerCase()
-        .includes(searchValue.toLocaleLowerCase())
+      // data.barangay
+      //   .toLocaleLowerCase()
+      //   .includes(searchValue.toLocaleLowerCase())
     );
   }
 }

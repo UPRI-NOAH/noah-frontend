@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 
 export type AffectedData = {
   province: string;
-  Municipality: string;
-  Barangay: string;
-  total_population: string;
-  total_affected_population: string;
-  medium_high: string;
-  percentage_of_affected_medium_high: string;
+  municipality: string;
+  barangay: string;
+  total_population: number;
+  total_affected_population: number;
+  medium_high: number;
+  percentage_of_affected_medium_high: number;
 };
 @Injectable({
   providedIn: 'root',
