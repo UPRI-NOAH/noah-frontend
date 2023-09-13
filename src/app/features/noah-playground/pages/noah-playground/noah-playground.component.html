@@ -213,7 +213,7 @@
     <div class="relative flex items-center justify-between mb-2">
       <div class="w-full">
         <img
-          src="assets/icons/logo-noah.svg"
+          src="assets/icons/noah_logo.png"
           routerLink="/"
           role="button"
           class="z-50 w-20"
@@ -221,7 +221,7 @@
       </div>
       <!-- QC IOT ACCOUNT LOCAL   -->
       <img
-        class="w-auto h-10 rounded-full mx-auto"
+        class="w-auto h-10 mx-auto"
         src="assets/icons/qclogo.png"
         alt=""
         width="100%"
@@ -230,7 +230,7 @@
       />
 
       <img
-        class="w-auto h-10 rounded-full mx-auto"
+        class="w-auto h-10 mx-auto"
         src="assets/icons/laguna_logo.png"
         alt=""
         width="100%"
@@ -445,12 +445,8 @@
     <noah-map-playground></noah-map-playground>
   </main>
 </div>
-<div *ngIf="DisclaimerStatus$ | async as DisclaimerStatus">
-  <noah-disclaimer
-    *ngIf="DisclaimerStatus || disclaimerModal"
-  ></noah-disclaimer>
-</div>
 <noah-alert *ngIf="showAlert"></noah-alert>
+<noah-summary *ngIf="iotModalOpen"></noah-summary>
 <noah-qc-login *ngIf="modalAlert"></noah-qc-login>
 
 <!-- LOGOUT ALERT -->
@@ -766,3 +762,4 @@
     </div>
   </div>
 </div>
+<noah-disclaimer *ngIf="disclaimerModalOpen"></noah-disclaimer>
