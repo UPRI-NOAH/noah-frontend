@@ -5,9 +5,6 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ModalService {
-  private riskModal = new Subject<boolean>();
-  riskModal$ = this.riskModal.asObservable();
-
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
