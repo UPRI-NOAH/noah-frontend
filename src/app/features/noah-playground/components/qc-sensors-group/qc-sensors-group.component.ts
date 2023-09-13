@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QCSENSORS } from '@features/noah-playground/services/qc-sensor.service';
 import {
@@ -41,7 +41,7 @@ export class QcSensorsGroupComponent implements OnInit {
 
   constructor(
     private pgService: NoahPlaygroundService,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
