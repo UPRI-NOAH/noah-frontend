@@ -26,6 +26,12 @@ export class ModalService {
   private btnRiskAssessment = new Subject<boolean>();
   btnRiskAssessment$ = this.btnRiskAssessment.asObservable();
 
+  private disclaimerModal = new Subject<boolean>();
+  disclaimerModal$ = this.disclaimerModal.asObservable();
+
+  private iotSummaryModal = new Subject<boolean>();
+  iotSummaryModal$ = this.iotSummaryModal.asObservable();
+
   constructor() {}
 
   openBtnRiskAssessment() {
@@ -36,12 +42,28 @@ export class ModalService {
     this.btnRiskAssessment.next(false);
   }
 
+  disclaimerModalOpen() {
+    this.disclaimerModal.next(true);
+  }
+
+  disclaimerModalClose() {
+    this.disclaimerModal.next(false);
+  }
+
   openRiskModal() {
     this.riskModal.next(true);
   }
 
   closeRiskModal() {
     this.riskModal.next(false);
+  }
+
+  iotSummaryModalOpen() {
+    this.iotSummaryModal.next(true);
+  }
+
+  iotSummaryModalClose() {
+    this.iotSummaryModal.next(false);
   }
 
   lagunaLoginPopup() {
