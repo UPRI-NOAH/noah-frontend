@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ModalServicesService {
+export class ModalService {
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
