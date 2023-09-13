@@ -5,6 +5,9 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ModalService {
+  private riskModal = new Subject<boolean>();
+  riskModal$ = this.riskModal.asObservable();
+
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
@@ -20,6 +23,9 @@ export class ModalService {
   private lagunaLogin = new Subject<boolean>();
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
+  private btnRiskAssessment = new Subject<boolean>();
+  btnRiskAssessment$ = this.btnRiskAssessment.asObservable();
+
   private disclaimerModal = new Subject<boolean>();
   disclaimerModal$ = this.disclaimerModal.asObservable();
 
@@ -28,12 +34,28 @@ export class ModalService {
 
   constructor() {}
 
+  openBtnRiskAssessment() {
+    this.btnRiskAssessment.next(true);
+  }
+
+  closeBtnRiskAssessment() {
+    this.btnRiskAssessment.next(false);
+  }
+
   disclaimerModalOpen() {
     this.disclaimerModal.next(true);
   }
 
   disclaimerModalClose() {
     this.disclaimerModal.next(false);
+  }
+
+  openRiskModal() {
+    this.riskModal.next(true);
+  }
+
+  closeRiskModal() {
+    this.riskModal.next(false);
   }
 
   iotSummaryModalOpen() {

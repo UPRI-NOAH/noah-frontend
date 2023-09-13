@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RiskAssessmentService } from '@features/noah-playground/services/risk-assessment.service';
+import {
+  AffectedData,
+  RiskAssessmentService,
+} from '@features/noah-playground/services/risk-assessment.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 
 @Component({
@@ -8,24 +11,72 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
   styleUrls: ['./risk-assessment-modal.component.scss'],
 })
 export class RiskAssessmentModalComponent implements OnInit {
-  affectedData: Array<any> = [];
+  affectedData: AffectedData[] = [];
   riskModal = false;
+  searchValue: string;
+  sortField = 'province';
+  sortDirection = 'descending';
 
   constructor(
     private riskAssessment: RiskAssessmentService,
     private modalServices: ModalService
   ) {}
 
+  columns = [
+    {
+      key: 'province',
+      header: 'Province',
+    },
+    // {
+    //   key: 'Municipality',
+    //   header: 'Municipality',
+    // },
+    // {
+    //   key: 'Barangay',
+    //   header: 'Barangay',
+    // },
+    {
+      key: 'total_population',
+      header: 'Total Population',
+    },
+    {
+      key: 'total_affected_population',
+      header: 'Total Affected Population',
+    },
+    {
+      key: 'medium_high',
+      header: 'Exposed to Med-High Hazard',
+    },
+    {
+      key: 'percentage_of_affected_medium_high',
+      header: 'Percentage of Exposed to Med-High',
+    },
+  ];
+
   ngOnInit(): void {
     this.modalServices.riskModal$.subscribe((riskModal) => {
       this.riskModal = riskModal;
     });
     this.riskAssessment.getAffectedPopulation().subscribe((response) => {
-      console.log(response);
       this.affectedData = response;
     });
   }
+
   closeModal() {
     this.modalServices.closeRiskModal();
+    this.modalServices.closeBtnRiskAssessment();
+  }
+  hideModal() {
+    this.modalServices.closeRiskModal();
+    this.modalServices.openBtnRiskAssessment();
+  }
+  onHeaderColumnClick(field: string) {
+    if (this.sortField === field) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'ascending';
+    }
   }
 }

@@ -181,10 +181,27 @@ export class NoahPlaygroundService {
     );
   }
 
+  get riskAssessmentPopuShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes.population.shown)
+    );
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
+  getAffectedPopulationData(): Promise<
+    { url: string; sourceLayer: string[] }[]
+  > {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/combined_fl_bgy.json'
       )
       .pipe(first())
       .toPromise();
@@ -848,5 +865,19 @@ export class NoahPlaygroundService {
 
     contourMaps.expanded = !contourMaps.expanded;
     this.store.patch({ contourMaps }, `toggle expansion`);
+  }
+
+  toggleAffectedPopulationVisibility(): void {
+    const riskAssessment = {
+      ...this.store.state.riskAssessment.exposuretypes.population,
+    };
+    riskAssessment.shown = true;
+  }
+
+  toggleAffectedPopulationVisibilityFalse(): void {
+    const riskAssessment = {
+      ...this.store.state.riskAssessment.exposuretypes.population,
+    };
+    riskAssessment.shown = false;
   }
 }

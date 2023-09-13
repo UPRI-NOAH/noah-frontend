@@ -200,6 +200,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
+        this.initAffectedExposure();
       });
   }
 
@@ -1577,6 +1578,85 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
       }
     );
+  }
+
+  async initAffectedExposure() {
+    const PH_AFFECTED_DATA = await this.pgService.getAffectedPopulationData();
+    const colors = {
+      1: '#FF8AC4',
+      2: '#FF5CAD',
+      3: '#FF007F',
+    };
+
+    PH_AFFECTED_DATA.forEach((layerData) => {
+      const sourceData = {
+        type: 'vector',
+        url: layerData.url,
+      } as mapboxgl.AnySourceData;
+      layerData.sourceLayer.forEach((sourceLayer) => {
+        this.map.addSource(sourceLayer, sourceData);
+
+        this.map.addLayer({
+          id: sourceLayer,
+          type: 'fill',
+          source: sourceLayer, // Use the sourceLayer as the source
+          'source-layer': sourceLayer, // Set the source-layer property
+          paint: {
+            'fill-color': [
+              'coalesce', // Use the first non-null value from the arguments
+              [
+                'match',
+                ['typeof', ['get', 'Var']],
+                'number', // Check if 'Var' is a number
+                [
+                  'match',
+                  ['get', 'Var'],
+                  1,
+                  colors[1],
+                  2,
+                  colors[2],
+                  3,
+                  colors[3],
+                  '#868B8E',
+                ], // Use colors based on 'Var'
+                [
+                  'match',
+                  ['typeof', ['get', 'HAZ']],
+                  'number', // Check if 'HAZ' is a number
+                  [
+                    'match',
+                    ['get', 'HAZ'],
+                    1,
+                    colors[1],
+                    2,
+                    colors[2],
+                    3,
+                    colors[3],
+                    '#868B8E',
+                  ], // Use colors based on 'HAZ'
+                  '#868B8E', // Use your desired default color here if both 'Var' and 'HAZ' are not available
+                ],
+              ],
+            ],
+            'fill-opacity': 0.7,
+          },
+        });
+        const groupShown$ = this.pgService.riskAssessmentPopuShown$.pipe(
+          shareReplay(1)
+        );
+
+        const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+          shareReplay(1)
+        );
+
+        combineLatest([allShown$, groupShown$])
+          .pipe(takeUntil(this._unsub))
+          .subscribe(([allShown, groupShown]) => {
+            let opacity = +(allShown && groupShown);
+            this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
+          });
+      });
+    });
   }
 
   showContourMaps() {
