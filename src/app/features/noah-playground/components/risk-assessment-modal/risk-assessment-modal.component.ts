@@ -4,6 +4,7 @@ import {
   RiskAssessmentService,
 } from '@features/noah-playground/services/risk-assessment.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 
 @Component({
   selector: 'noah-risk-assessment-modal',
@@ -19,7 +20,8 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   constructor(
     private riskAssessment: RiskAssessmentService,
-    private modalServices: ModalService
+    private modalServices: ModalService,
+    private pgService: NoahPlaygroundService
   ) {}
 
   columns = [
@@ -70,11 +72,14 @@ export class RiskAssessmentModalComponent implements OnInit {
   closeModal() {
     this.modalServices.closeRiskModal();
     this.modalServices.closeBtnRiskAssessment();
+    this.pgService.toggleAffectedPopulationVisibilityFalse();
   }
+
   hideModal() {
     this.modalServices.closeRiskModal();
     this.modalServices.openBtnRiskAssessment();
   }
+
   onHeaderColumnClick(field: string) {
     if (this.sortField === field) {
       this.sortDirection =
