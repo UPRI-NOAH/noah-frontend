@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
@@ -25,15 +25,17 @@ export class NoahPlaygroundComponent implements OnInit {
   UserName$: Observable<string>;
   showAlert: boolean;
   modalAlert: boolean;
-  DisclaimerStatus$: Observable<boolean>;
   qcAdmin: boolean;
   lagunaAdmin: boolean;
   isWarningAlert = false;
+  disclaimerModalOpen = false;
+  iotModalOpen = false;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
     private qcLoginService: QcLoginService,
-    private modalService: ModalServicesService
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -41,10 +43,17 @@ export class NoahPlaygroundComponent implements OnInit {
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
-    this.DisclaimerStatus$ = this.qcLoginService.isDisclaimerStatus;
 
     this.modalService.accountWarning$.subscribe((isWarningAlert) => {
       this.isWarningAlert = isWarningAlert;
+    });
+
+    this.modalService.disclaimerModal$.subscribe((disclaimerModal) => {
+      this.disclaimerModalOpen = disclaimerModal;
+    });
+
+    this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
+      this.iotModalOpen = iotModalOpen;
     });
 
     const disableAlert = localStorage.getItem('loginStatus');

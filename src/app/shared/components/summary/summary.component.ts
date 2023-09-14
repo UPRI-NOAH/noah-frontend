@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import {
   QcSensorService,
   SummaryItem,
@@ -31,6 +32,8 @@ export class SummaryComponent implements OnInit {
   rainFetchedData: SummaryItem[] = [];
   activeRainSensor: number;
 
+  iotSummaryModal = false;
+
   searchValue: string;
 
   itemsPerPage: number = 20;
@@ -47,7 +50,10 @@ export class SummaryComponent implements OnInit {
   sortField = 'latest_date';
   sortDirection = 'ascending';
 
-  constructor(private qcSensorService: QcSensorService) {}
+  constructor(
+    private qcSensorService: QcSensorService,
+    private modalService: ModalService
+  ) {}
   columns = [
     {
       key: 'name',
@@ -81,7 +87,9 @@ export class SummaryComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.viewSummary();
+  }
 
   async viewSummary() {
     if (this.loading) {
@@ -89,7 +97,7 @@ export class SummaryComponent implements OnInit {
     }
 
     try {
-      this.summaryModal = true;
+      this.iotSummaryModal = true;
       this.loading = true;
 
       const response: any = await this.qcSensorService
@@ -271,7 +279,7 @@ export class SummaryComponent implements OnInit {
       this.activeRainSensor = activeRain.length;
       this.activeFloodSensor = activeFlood.length;
     } catch (error) {
-      this.summaryModal = false;
+      this.iotSummaryModal = false;
       this.loading = !this.loading;
       this.alertSummary = true;
       setTimeout(() => {
@@ -283,9 +291,8 @@ export class SummaryComponent implements OnInit {
   }
 
   closeModal() {
-    this.subscription.unsubscribe(); //stop popup modal
+    this.modalService.iotSummaryModalClose();
     this.alert = !this.alert;
-    this.summaryModal = !this.summaryModal;
   }
 
   onPageChange(page: number = 1): void {

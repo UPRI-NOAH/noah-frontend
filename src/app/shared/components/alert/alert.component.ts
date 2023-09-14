@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalServicesService } from '@features/noah-playground/services/modal-services.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { Subject } from 'rxjs';
 @Component({
@@ -14,7 +14,7 @@ export class AlertComponent implements OnInit {
   modalLogin: boolean = false;
 
   constructor(
-    private modalService: ModalServicesService,
+    private modalService: ModalService,
     private qcLoginService: QcLoginService
   ) {}
 
