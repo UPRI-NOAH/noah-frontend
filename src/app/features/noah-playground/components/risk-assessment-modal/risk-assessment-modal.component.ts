@@ -58,7 +58,12 @@ export class RiskAssessmentModalComponent implements OnInit {
       this.riskModal = riskModal;
     });
     this.riskAssessment.getAffectedPopulation().subscribe((response) => {
-      this.affectedData = response;
+      // Assuming response is a JSON string representing an array of AffectedData
+      try {
+        this.affectedData = response;
+      } catch (error) {
+        console.error('Error parsing response:', error);
+      }
     });
   }
 

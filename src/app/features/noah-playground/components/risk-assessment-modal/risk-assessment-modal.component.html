@@ -202,13 +202,13 @@
               {{ data.barangay }}
             </td> -->
               <td class="px-6 py-4">
-                {{ data.total_population }}
+                {{ data.total_population | number: '1.0-0' }}
               </td>
               <td class="px-6 py-4">
-                {{ data.total_affected_population }}
+                {{ data.total_affected_population | number: '1.0-0' }}
               </td>
               <td class="px-6 py-4">
-                {{ data.medium_high }}
+                {{ data.medium_high | number: '1.0-0' }}
               </td>
               <td class="px-6 py-4">
                 {{ data.percentage_of_affected_medium_high }}%
