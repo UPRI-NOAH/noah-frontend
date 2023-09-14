@@ -59,6 +59,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
     if (!this.checkedShown) {
       this.modalService.closeBtnRiskAssessment();
+      this.pgService.toggleAffectedPopulationVisibilityFalse();
     }
   }
 
@@ -76,6 +77,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.updateButtonEnabled();
     if (!this.checkedShown) {
       this.pgService.toggleAffectedPopulationVisibilityFalse();
+      console.log('asdadasd');
     }
   }
 
@@ -92,6 +94,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
   closeBtnRisk() {
     this.raBtnPopu = false;
+    this.pgService.toggleAffectedPopulationVisibilityFalse();
   }
 
   openModalPopu() {

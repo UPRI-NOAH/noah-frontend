@@ -508,10 +508,25 @@ export class NoahPlaygroundService {
       ...this.store.state.riskAssessment,
     };
 
-    riskAssessment.exposuretypes[type].shown = value;
+    riskAssessment.exposuretypes[type].shown = true;
     this.store.patch(
       { riskAssessment },
       `Risk Assessment - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setExposureRiskAssessmentSoloShownFalse(
+    value: boolean,
+    type: RiskAssessmentExposureType
+  ) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes[type].shown = false;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment - update ${type}'s hide to ${value}`
     );
   }
 
@@ -869,15 +884,17 @@ export class NoahPlaygroundService {
 
   toggleAffectedPopulationVisibility(): void {
     const riskAssessment = {
-      ...this.store.state.riskAssessment.exposuretypes.population,
+      ...this.store.state.riskAssessment,
     };
-    riskAssessment.shown = true;
+    riskAssessment.exposuretypes.population.shown = true;
+    this.store.patch({ riskAssessment }, `Show Affected Population`);
   }
 
   toggleAffectedPopulationVisibilityFalse(): void {
     const riskAssessment = {
-      ...this.store.state.riskAssessment.exposuretypes.population,
+      ...this.store.state.riskAssessment,
     };
-    riskAssessment.shown = false;
+    riskAssessment.exposuretypes.population.shown = false;
+    this.store.patch({ riskAssessment }, `Hide Affected Population`);
   }
 }
