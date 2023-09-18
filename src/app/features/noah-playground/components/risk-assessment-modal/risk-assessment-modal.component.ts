@@ -26,7 +26,7 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   columns = [
     {
-      key: 'province',
+      key: 'prov',
       header: 'Province',
     },
     // {
@@ -38,19 +38,19 @@ export class RiskAssessmentModalComponent implements OnInit {
     //   header: 'Barangay',
     // },
     {
-      key: 'total_population',
+      key: 'total_pop',
       header: 'Total Population',
     },
     {
-      key: 'total_affected_population',
+      key: 'total_aff_pop',
       header: 'Total Affected Population',
     },
     {
-      key: 'medium_high',
+      key: 'exposed_medhigh',
       header: 'Exposed to Med-High Hazard',
     },
     {
-      key: 'percentage_of_affected_medium_high',
+      key: 'perc_aff_medhigh',
       header: 'Percentage of Exposed to Med-High',
     },
   ];
@@ -59,14 +59,25 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.modalServices.riskModal$.subscribe((riskModal) => {
       this.riskModal = riskModal;
     });
-    this.riskAssessment.getAffectedPopulation().subscribe((response) => {
+    this.riskAssessment.getAffectedPopulation().subscribe((results) => {
       // Assuming response is a JSON string representing an array of AffectedData
       try {
-        this.affectedData = response;
+        this.affectedData = results;
       } catch (error) {
         console.error('Error parsing response:', error);
       }
     });
+
+    this.riskAssessment.getAffectedPopulations().subscribe(
+      (data) => {
+        console.log(data);
+        // Handle the data as needed
+      },
+      (error) => {
+        console.error('Error:', error);
+        // Handle errors
+      }
+    );
   }
 
   closeModal() {
