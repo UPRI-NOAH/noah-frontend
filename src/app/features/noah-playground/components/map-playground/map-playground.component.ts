@@ -1582,12 +1582,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   async initAffectedExposure() {
     const PH_AFFECTED_DATA = await this.pgService.getAffectedPopulationData();
-    const colors = {
-      1: '#FF8AC4',
-      2: '#FF5CAD',
-      3: '#FF007F',
-    };
-
     const response = await fetch(
       'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/affected_psgc.json'
     );
@@ -1630,9 +1624,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       1,
                       'transparent',
                       2,
-                      colors[2],
+                      NOAH_COLORS['noah-pink'].medium,
                       3,
-                      colors[3],
+                      NOAH_COLORS['noah-pink'].high,
                       'transparent',
                     ],
                     [
@@ -1641,9 +1635,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       1,
                       'transparent',
                       2,
-                      colors[2],
+                      NOAH_COLORS['noah-pink'].medium,
                       3,
-                      colors[3],
+                      NOAH_COLORS['noah-pink'].high,
                       'transparent',
                     ],
                   ],
