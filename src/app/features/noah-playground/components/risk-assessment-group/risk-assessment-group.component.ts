@@ -77,7 +77,6 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.updateButtonEnabled();
     if (!this.checkedShown) {
       this.pgService.toggleAffectedPopulationVisibilityFalse();
-      console.log('asdadasd');
     }
   }
 
