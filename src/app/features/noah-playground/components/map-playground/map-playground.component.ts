@@ -1588,75 +1588,88 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       3: '#FF007F',
     };
 
-    PH_AFFECTED_DATA.forEach((layerData) => {
-      const sourceData = {
-        type: 'vector',
-        url: layerData.url,
-      } as mapboxgl.AnySourceData;
-      layerData.sourceLayer.forEach((sourceLayer) => {
-        this.map.addSource(sourceLayer, sourceData);
+    const response = await fetch(
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/affected_psgc.json'
+    );
+    const affectedData = await response.json();
 
-        this.map.addLayer({
-          id: sourceLayer,
-          type: 'fill',
-          source: sourceLayer, // Use the sourceLayer as the source
-          'source-layer': sourceLayer, // Set the source-layer property
-          paint: {
-            'fill-color': [
-              'coalesce', // Use the first non-null value from the arguments
-              [
-                'match',
-                ['typeof', ['get', 'Var']],
-                'number', // Check if 'Var' is a number
-                [
-                  'match',
-                  ['get', 'Var'],
-                  1,
-                  colors[1],
-                  2,
-                  colors[2],
-                  3,
-                  colors[3],
-                  '#868B8E',
-                ], // Use colors based on 'Var'
-                [
-                  'match',
-                  ['typeof', ['get', 'HAZ']],
-                  'number', // Check if 'HAZ' is a number
+    // Extract Bgy_Codes from affectedData and create a Set for faster lookup
+    const affectedBgyCodes = new Set(affectedData.map((item) => item));
+
+    // Use Promise.all to batch load sources and layers
+    await Promise.all(
+      PH_AFFECTED_DATA.map(async (layerData) => {
+        const sourceData = {
+          type: 'vector',
+          url: layerData.url,
+        } as mapboxgl.AnySourceData;
+
+        await Promise.all(
+          layerData.sourceLayer.map(async (sourceLayer) => {
+            this.map.addSource(sourceLayer, sourceData);
+
+            this.map.addLayer({
+              id: sourceLayer,
+              type: 'fill',
+              source: sourceLayer,
+              'source-layer': sourceLayer,
+              paint: {
+                'fill-color': [
+                  'case',
                   [
-                    'match',
-                    ['get', 'HAZ'],
-                    1,
-                    colors[1],
-                    2,
-                    colors[2],
-                    3,
-                    colors[3],
-                    '#868B8E',
-                  ], // Use colors based on 'HAZ'
-                  '#868B8E', // Use your desired default color here if both 'Var' and 'HAZ' are not available
+                    'in',
+                    ['get', 'Bgy_Code'],
+                    ['literal', [...affectedBgyCodes]],
+                  ],
+                  [
+                    'case',
+                    ['has', 'Var'],
+                    [
+                      'match',
+                      ['get', 'Var'],
+                      1,
+                      'transparent',
+                      2,
+                      colors[2],
+                      3,
+                      colors[3],
+                      'transparent',
+                    ],
+                    [
+                      'match',
+                      ['get', 'HAZ'],
+                      1,
+                      'transparent',
+                      2,
+                      colors[2],
+                      3,
+                      colors[3],
+                      'transparent',
+                    ],
+                  ],
+                  'transparent',
                 ],
-              ],
-            ],
-            'fill-opacity': 0.7,
-          },
-        });
-        const groupShown$ = this.pgService.riskAssessmentPopuShown$.pipe(
-          shareReplay(1)
-        );
+                'fill-opacity': 0.7,
+              },
+            });
+            const groupShown$ = this.pgService.riskAssessmentPopuShown$.pipe(
+              shareReplay(1)
+            );
 
-        const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
-          shareReplay(1)
-        );
+            const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+              shareReplay(1)
+            );
 
-        combineLatest([allShown$, groupShown$])
-          .pipe(takeUntil(this._unsub))
-          .subscribe(([allShown, groupShown]) => {
-            let opacity = +(allShown && groupShown);
-            this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
-          });
-      });
-    });
+            combineLatest([allShown$, groupShown$])
+              .pipe(takeUntil(this._unsub))
+              .subscribe(([allShown, groupShown]) => {
+                let opacity = +(allShown && groupShown);
+                this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
+              });
+          })
+        );
+      })
+    );
   }
 
   showContourMaps() {
