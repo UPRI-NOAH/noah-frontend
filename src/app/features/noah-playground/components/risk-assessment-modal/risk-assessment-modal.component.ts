@@ -5,7 +5,7 @@ import {
 } from '@features/noah-playground/services/risk-assessment.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-
+import { first } from 'rxjs/operators';
 @Component({
   selector: 'noah-risk-assessment-modal',
   templateUrl: './risk-assessment-modal.component.html',
@@ -18,6 +18,10 @@ export class RiskAssessmentModalComponent implements OnInit {
   sortField = 'province';
   sortDirection = 'descending';
 
+  currentPage = 1;
+  itemsPerPage = 20;
+  totalPages: number = 0;
+
   constructor(
     private riskAssessment: RiskAssessmentService,
     private modalServices: ModalService,
@@ -26,8 +30,8 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   columns = [
     {
-      key: 'prov',
-      header: 'Province',
+      key: 'brgy',
+      header: 'Barangay',
     },
     // {
     //   key: 'municipality',
@@ -59,25 +63,34 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.modalServices.riskModal$.subscribe((riskModal) => {
       this.riskModal = riskModal;
     });
-    this.riskAssessment.getAffectedPopulation().subscribe((results) => {
-      // Assuming response is a JSON string representing an array of AffectedData
-      try {
-        this.affectedData = results;
-      } catch (error) {
-        console.error('Error parsing response:', error);
-      }
-    });
 
-    this.riskAssessment.getAffectedPopulations().subscribe(
-      (data) => {
-        console.log(data);
-        // Handle the data as needed
-      },
-      (error) => {
-        console.error('Error:', error);
-        // Handle errors
-      }
-    );
+    this.loadData(this.currentPage);
+  }
+
+  async loadData(page: number) {
+    const response: any = await this.riskAssessment
+      .getAffectedPopulations(page)
+      .pipe(first())
+      .toPromise();
+    const raData = response.results.map((a) => {
+      return {
+        brgy: a.brgy,
+        total_pop: a.total_pop,
+        total_aff_pop: a.total_aff_pop,
+        exposed_medhigh: a.exposed_medhigh,
+        perc_aff_medhigh: a.perc_aff_medhigh,
+      };
+    });
+    this.currentPage = page;
+    this.totalPages = raData.total_pages;
+    this.affectedData = raData; // displaying data
+  }
+  loadNextPage() {
+    // Load the next page of data
+    this.riskAssessment.loadNextPage().subscribe((response) => {
+      // Append the new data to the existing data
+      this.affectedData = this.affectedData.concat(response.results);
+    });
   }
 
   closeModal() {

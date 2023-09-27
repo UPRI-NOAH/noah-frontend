@@ -11,9 +11,7 @@ export class SearchRiskAffectedPipe implements PipeTransform {
     }
     return summaryData.filter(
       (data) =>
-        data.province
-          .toLocaleLowerCase()
-          .includes(searchValue.toLocaleLowerCase())
+        data.brgy.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
       // data.province
       //   .toLocaleLowerCase()
       //   .includes(searchValue.toLocaleLowerCase()) ||

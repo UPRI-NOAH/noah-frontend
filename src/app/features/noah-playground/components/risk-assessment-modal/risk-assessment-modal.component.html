@@ -263,23 +263,68 @@
                   "
                 >
                   <td class="p-1">
-                    {{ data.province }}
+                    {{ data.brgy }}
                   </td>
                   <td class="p-3">
-                    {{ data.total_population | number: '1.0-0' }}
+                    {{ data.total_pop | number: '1.0-0' }}
                   </td>
                   <td class="p-3">
-                    {{ data.total_affected_population | number: '1.0-0' }}
+                    {{ data.total_aff_pop | number: '1.0-0' }}
                   </td>
                   <td class="p-3">
-                    {{ data.medium_high | number: '1.0-0' }}
+                    {{ data.exposed_medhigh | number: '1.0-0' }}
                   </td>
-                  <td class="p-3">
-                    {{ data.percentage_of_affected_medium_high }}%
-                  </td>
+                  <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div>
+            <button
+              class="
+                mx-2
+                my-2
+                bg-white
+                transition
+                duration-150
+                ease-in-out
+                hover:border-gray-900 hover:text-gray-900
+                rounded
+                border border-gray-800
+                text-gray-800
+                px-6
+                py-2
+                text-xs
+                disabled:opacity-75 disabled:cursor-not-allowed
+              "
+              (click)="loadData(currentPage - 1)"
+              [disabled]="currentPage === 1"
+            >
+              Previous
+            </button>
+
+            <button
+              class="
+                mx-2
+                my-2
+                bg-white
+                transition
+                duration-150
+                ease-in-out
+                hover:border-gray-900 hover:text-gray-900
+                rounded
+                border border-gray-800
+                text-gray-800
+                px-6
+                py-2
+                text-xs
+                disabled:opacity-75 disabled:cursor-not-allowed
+              "
+              (click)="loadData(currentPage + 1)"
+              [disabled]="currentPage === totalPages"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

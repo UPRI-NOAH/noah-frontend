@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export type AffectedData = {
-  province: string;
+  prov: string;
   municipality: string;
-  barangay: string;
-  total_population: number;
-  total_affected_population: number;
-  medium_high: number;
-  percentage_of_affected_medium_high: number;
+  brgy: string;
+  total_pop: number;
+  total_aff_pop: number;
+  exposed_medhigh: number;
+  perc_aff_medhigh: number;
 };
 @Injectable({
   providedIn: 'root',
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-
-  private NGROK_BASE_URL = 'https://e1f6-136-158-11-135.ngrok-free.app';
+  private currentPage = 1;
+  private NGROK_BASE_URL = 'http://9def-136-158-11-8.ngrok.io';
 
   getAffectedPopulation(): Observable<any> {
     return this.http.get(
@@ -27,9 +28,16 @@ export class RiskAssessmentService {
 
   //https://e1f6-136-158-11-135.ngrok-free.app/api/affected_brgy/?affected=yes
 
-  getAffectedPopulations(): Observable<any> {
-    return this.http.get(
-      `${this.NGROK_BASE_URL}/api/affected_brgy/?affected=yes`
-    );
+  getAffectedPopulations(page: number): Observable<any> {
+    // Add pagination parameters to the URL
+    const url = `${this.NGROK_BASE_URL}/api/affected_brgy/?affected=yes&page=${page}`;
+
+    return this.http.get(url);
+  }
+
+  loadNextPage(): Observable<any> {
+    // Increment the current page and load the next page of data
+    this.currentPage++;
+    return this.getAffectedPopulations(this.currentPage);
   }
 }
