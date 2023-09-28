@@ -18,7 +18,7 @@ export type AffectedData = {
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
   private currentPage = 1;
-  private NGROK_BASE_URL = 'http://9def-136-158-11-8.ngrok.io';
+  private NGROK_BASE_URL = 'http://bd4a-136-158-11-8.ngrok.io';
 
   getAffectedPopulation(): Observable<any> {
     return this.http.get(

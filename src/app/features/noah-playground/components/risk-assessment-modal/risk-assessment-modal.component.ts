@@ -21,6 +21,8 @@ export class RiskAssessmentModalComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 20;
   totalPages: number = 0;
+  totalItems = 0;
+  totalDataCount = 0;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -84,7 +86,9 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.currentPage = page;
     this.totalPages = raData.total_pages;
     this.affectedData = raData; // displaying data
+    this.totalDataCount = response.count; // displaying over all total data for pagination
   }
+
   loadNextPage() {
     // Load the next page of data
     this.riskAssessment.loadNextPage().subscribe((response) => {
