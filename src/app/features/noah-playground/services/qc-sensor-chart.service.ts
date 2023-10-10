@@ -209,42 +209,130 @@ export class QcSensorChartService {
       },
       yAxis: {
         title: {
-          text: 'Flood Height in Meters (m)',
+          text: 'Flood Depth in Meters (m)',
         },
         alignTicks: false,
         color: '#0a59f7',
         opposite: false,
         plotBands: [
+          // {
+          //   from: 0,
+          //   to: 0.5,
+          //   color: '#F2C94C',
+          //   label: {
+          //     text: 'Low (0 - 0.5m)',
+          //     style: {
+          //       color: '#0C2D48',
+          //     },
+          //   },
+          // },
+          // {
+          //   from: 0.5,
+          //   to: 1.5,
+          //   color: '#F2994A',
+          //   label: {
+          //     text: 'Moderate (0.5m - 1.5m)',
+          //     style: {
+          //       color: '#0C2D48',
+          //     },
+          //   },
+          // },
+          // {
+          //   from: 1.5,
+          //   to: 15,
+          //   color: '#EB5757',
+          //   label: {
+          //     text: 'High (> 1.5m)',
+          //     style: {
+          //       color: '#0C2D48',
+          //     },
+          //   },
+          // },
           {
             from: 0,
-            to: 0.5,
-            color: '#F2C94C',
+            to: 0.1,
+            color: '#A9A9A9',
             label: {
-              text: 'Low (0 - 0.5m)',
+              text: 'Ankle Level (0 - 0.1m)',
               style: {
-                color: '#0C2D48',
+                color: '#FFFFFF',
               },
             },
           },
           {
-            from: 0.5,
-            to: 1.5,
-            color: '#F2994A',
+            from: 0.1,
+            to: 0.201,
+            color: '#9f9a34',
             label: {
-              text: 'Moderate (0.5m - 1.5m)',
+              text: 'Gutter Level (0.1m - 0.201m)',
               style: {
-                color: '#0C2D48',
+                color: '#FFFFFF',
               },
             },
           },
           {
-            from: 1.5,
-            to: 15,
-            color: '#EB5757',
+            from: 0.201,
+            to: 0.255,
+            color: '#9f9a34',
             label: {
-              text: 'High (> 1.5m)',
+              text: 'Half Knee Level (0.201m - 0.255m)',
               style: {
-                color: '#0C2D48',
+                color: '#FFFFFF',
+              },
+            },
+          },
+          {
+            from: 0.255,
+            to: 0.331,
+            color: '#020296',
+            label: {
+              text: 'Half Tire Level (0.255m - 0.331m)',
+              style: {
+                color: '#FFFFFF',
+              },
+            },
+          },
+          {
+            from: 0.331,
+            to: 0.484,
+            color: '#020296',
+            label: {
+              text: 'Knee Level (0.331m - 0.484m)',
+              style: {
+                color: '#FFFFFF',
+              },
+            },
+          },
+          {
+            from: 0.484,
+            to: 0.661,
+            color: '#b20000',
+            label: {
+              text: 'Tire Level (0.484m - 0.661m)',
+              style: {
+                color: '#FFFFFF',
+              },
+            },
+          },
+          {
+            from: 0.661,
+            to: 0.941,
+            color: '#b20000',
+            label: {
+              text: 'Waist Level (0.661m - 0.941m)',
+              style: {
+                color: '#FFFFFF',
+              },
+            },
+          },
+          {
+            from: 0.941,
+            to: 1.144,
+            color: '#b20000',
+            label: {
+              text: 'Chest Level (0.9411m - 1.144m)',
+              style: {
+                color: '#FFFFFF',
               },
             },
           },
@@ -277,7 +365,7 @@ export class QcSensorChartService {
       },
       series: [
         {
-          name: 'Flood Height (m)',
+          name: 'Flood Depth (m)',
           color: '#0a59f7',
           data: [],
           lineWidth: 1.5,
@@ -295,7 +383,7 @@ export class QcSensorChartService {
             xDateFormat: '',
             valueDecimal: 2,
             pointFormat:
-              '<span style="font-size: 14px">Flood Height: {point.y:.2f}m</span>',
+              '<span style="font-size: 14px">Flood Depth: {point.y:.2f}m</span>',
           },
         },
       ],
