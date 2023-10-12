@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 export type AffectedData = {
   prov: string;
-  municipality: string;
+  muni: string;
   brgy: string;
   total_pop: number;
   total_aff_pop: number;
@@ -18,26 +18,28 @@ export type AffectedData = {
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
   private currentPage = 1;
-  private NGROK_BASE_URL = 'http://bd4a-136-158-11-8.ngrok.io';
+  private API_BASE_URL = 'http://cf90-180-195-114-49.ngrok.io';
+  private nextPageUrl: string | null = null;
+  private previousPageUrl: string | null = null;
 
-  getAffectedPopulation(): Observable<any> {
-    return this.http.get(
-      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/prov_rankings.json'
+  getAffectedPopulations(page?: number, brgy?: string): Observable<any> {
+    let url = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
+
+    // Add the brgy parameter if it's provided
+    if (brgy) {
+      url += `&search=${brgy}`;
+    }
+
+    // Add the page parameter if it's provided
+    if (page) {
+      url += `&page=${page}`;
+    }
+
+    return this.http.get(url).pipe(
+      tap((response: any) => {
+        this.nextPageUrl = response.next;
+        this.previousPageUrl = response.previous;
+      })
     );
-  }
-
-  //https://e1f6-136-158-11-135.ngrok-free.app/api/affected_brgy/?affected=yes
-
-  getAffectedPopulations(page: number): Observable<any> {
-    // Add pagination parameters to the URL
-    const url = `${this.NGROK_BASE_URL}/api/affected_brgy/?affected=yes&page=${page}`;
-
-    return this.http.get(url);
-  }
-
-  loadNextPage(): Observable<any> {
-    // Increment the current page and load the next page of data
-    this.currentPage++;
-    return this.getAffectedPopulations(this.currentPage);
   }
 }

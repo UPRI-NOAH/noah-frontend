@@ -23,6 +23,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalPages: number = 0;
   totalItems = 0;
   totalDataCount = 0;
+  errorMsg: string = '';
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -35,14 +36,14 @@ export class RiskAssessmentModalComponent implements OnInit {
       key: 'brgy',
       header: 'Barangay',
     },
-    // {
-    //   key: 'municipality',
-    //   header: 'Municipality',
-    // },
-    // {
-    //   key: 'barangay',
-    //   header: 'Barangay',
-    // },
+    {
+      key: 'muni',
+      header: 'Municipality',
+    },
+    {
+      key: 'prov',
+      header: 'Provincial',
+    },
     {
       key: 'total_pop',
       header: 'Total Population',
@@ -69,32 +70,41 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.loadData(this.currentPage);
   }
 
-  async loadData(page: number) {
-    const response: any = await this.riskAssessment
-      .getAffectedPopulations(page)
-      .pipe(first())
-      .toPromise();
-    const raData = response.results.map((a) => {
-      return {
-        brgy: a.brgy,
-        total_pop: a.total_pop,
-        total_aff_pop: a.total_aff_pop,
-        exposed_medhigh: a.exposed_medhigh,
-        perc_aff_medhigh: a.perc_aff_medhigh,
-      };
-    });
-    this.currentPage = page;
-    this.totalPages = raData.total_pages;
-    this.affectedData = raData; // displaying data
-    this.totalDataCount = response.count; // displaying over all total data for pagination
-  }
+  async loadData(page: number, brgy?: string) {
+    try {
+      const response: any = await this.riskAssessment
+        .getAffectedPopulations(page, brgy)
+        .pipe(first())
+        .toPromise();
 
-  loadNextPage() {
-    // Load the next page of data
-    this.riskAssessment.loadNextPage().subscribe((response) => {
-      // Append the new data to the existing data
-      this.affectedData = this.affectedData.concat(response.results);
-    });
+      // Check if response contains data, if not, display "No data available"
+      if (!response.results || response.results.length === 0) {
+        this.affectedData = [];
+        this.errorMsg = 'No data available';
+        return;
+      }
+
+      const raData = response.results.map((a) => {
+        return {
+          brgy: a.brgy,
+          muni: a.muni,
+          prov: a.prov,
+          total_pop: a.total_pop,
+          total_aff_pop: a.total_aff_pop,
+          exposed_medhigh: a.exposed_medhigh,
+          perc_aff_medhigh: a.perc_aff_medhigh,
+        };
+      });
+
+      this.currentPage = page;
+      this.totalPages = raData.total_pages;
+      this.affectedData = raData; // displaying data
+      this.totalDataCount = response.count; // displaying overall total data for pagination
+    } catch (error) {
+      console.error('An error occurred:', error);
+      this.affectedData = [];
+      this.errorMsg = 'An error occurred while fetching data';
+    }
   }
 
   closeModal() {

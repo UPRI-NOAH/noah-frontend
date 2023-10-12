@@ -195,6 +195,7 @@
                 dark:focus:ring-blue-500
                 dark:focus:border-blue-500
               "
+              (input)="loadData(1, searchValue)"
               placeholder="Search Location"
             />
           </div>
@@ -214,7 +215,7 @@
                   top-0
                   text-xs
                   lg:text-base
-                  xl:text-lg
+                  xl:text-sm
                   text-gray-700
                   uppercase
                   bg-blue-200
@@ -222,7 +223,7 @@
                 "
               >
                 <tr>
-                  <th class="sticky top-0 p-3" *ngFor="let col of columns">
+                  <th class="sticky top-0 p-2" *ngFor="let col of columns">
                     <div
                       role="button"
                       (click)="onHeaderColumnClick(col.key)"
@@ -244,39 +245,101 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let data of affectedData
-                      | sort: sortField:sortDirection
-                      | searchRiskAffected: searchValue
-                  "
-                  class="
-                    bg-white
-                    border-b
-                    dark:bg-gray-800 dark:border-gray-700
-                    hover:bg-gray-50
-                    dark:hover:bg-gray-600
-                    text-xs
-                    lg:text-base
-                    xl:text-lg
-                  "
-                >
-                  <td class="p-1">
-                    {{ data.brgy }}
-                  </td>
-                  <td class="p-3">
-                    {{ data.total_pop | number: '1.0-0' }}
-                  </td>
-                  <td class="p-3">
-                    {{ data.total_aff_pop | number: '1.0-0' }}
-                  </td>
-                  <td class="p-3">
-                    {{ data.exposed_medhigh | number: '1.0-0' }}
-                  </td>
-                  <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
-                </tr>
-              </tbody>
+              <ng-container>
+                <div *ngIf="errorMsg; else dataAvailable">
+                  <div
+                    class="
+                      flex
+                      items-center
+                      absolute
+                      justify-center
+                      w-full
+                      py-12
+                    "
+                  >
+                    <div
+                      class="
+                        bg-white
+                        border
+                        rounded-md
+                        flex
+                        items-center
+                        justify-center
+                        mx-4
+                        md:w-2/3
+                      "
+                    >
+                      <div class="flex flex-col items-center py-16">
+                        <h1
+                          class="
+                            px-4
+                            pt-8
+                            pb-4
+                            text-center text-5xl
+                            font-bold
+                            leading-10
+                            text-gray-800
+                          "
+                        >
+                          OOPS!
+                        </h1>
+                        <p
+                          class="
+                            px-4
+                            pb-10
+                            text-base
+                            leading-none
+                            text-center text-gray-600
+                          "
+                        >
+                          No data available
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #dataAvailable>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let data of affectedData
+                        | sort: sortField:sortDirection
+                        | searchRiskAffected: searchValue
+                    "
+                    class="
+                      bg-white
+                      border-b
+                      dark:bg-gray-800 dark:border-gray-700
+                      hover:bg-gray-50
+                      dark:hover:bg-gray-600
+                      text-xs
+                      lg:text-base
+                      xl:text-sm
+                    "
+                  >
+                    <td class="p-1">
+                      {{ data.brgy }}
+                    </td>
+                    <td class="p-1">
+                      {{ data.muni }}
+                    </td>
+                    <td class="p-1">
+                      {{ data.prov }}
+                    </td>
+                    <td class="p-3">
+                      {{ data.total_pop | number: '1.0-0' }}
+                    </td>
+                    <td class="p-3">
+                      {{ data.total_aff_pop | number: '1.0-0' }}
+                    </td>
+                    <td class="p-3">
+                      {{ data.exposed_medhigh | number: '1.0-0' }}
+                    </td>
+                    <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
+                  </tr>
+                </tbody>
+              </ng-template>
             </table>
           </div>
 
