@@ -14,6 +14,7 @@ export class RiskAssessmentExposureComponent implements OnInit {
   @Input() exposureRiskType: RiskAssessmentExposureType;
   riskExposureShown$: Observable<boolean>;
   shown$ = new BehaviorSubject<boolean>(false);
+  hideLegend = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -22,6 +23,9 @@ export class RiskAssessmentExposureComponent implements OnInit {
 
   ngOnInit(): void {
     this.riskExposureShown$ = this.pgService.riskAssessmentPopuShown$;
+    this.modalService.legendHide$.subscribe((hideLegend) => {
+      this.hideLegend = hideLegend;
+    });
   }
 
   toggleShown() {
@@ -31,6 +35,7 @@ export class RiskAssessmentExposureComponent implements OnInit {
       this.shown$.next(false); // If it's currently true, set it to false
       this.modalService.closeBtnRiskAssessment();
       this.pgService.toggleAffectedPopulationVisibilityFalse();
+      this.modalService.hideLegend();
     } else {
       this.shown$.next(true); // If it's currently false, set it to true
     }

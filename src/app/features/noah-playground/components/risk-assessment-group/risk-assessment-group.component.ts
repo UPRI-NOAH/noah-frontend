@@ -84,6 +84,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.modalService.openRiskModal();
     this.pgService.toggleAffectedPopulationVisibility();
     this.raBtnPopu = false;
+    this.modalService.showLegend();
   }
 
   updateButtonEnabled() {
@@ -93,6 +94,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
   closeBtnRisk() {
     this.raBtnPopu = false;
+    this.modalService.hideLegend();
     this.pgService.toggleAffectedPopulationVisibilityFalse();
   }
 

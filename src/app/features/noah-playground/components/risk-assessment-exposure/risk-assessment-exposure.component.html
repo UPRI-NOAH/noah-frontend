@@ -16,10 +16,10 @@
     </div>
   </div>
 </div>
-<div class="flex flex-col ml-8">
+<div class="flex flex-col ml-7 mt-2" *ngIf="hideLegend">
+  <div class="text-base ml-2 f-f-r mb-2">Risk Exposure to Flood 100-Year</div>
   <div class="px-6">
     <div class="flex flex-col">
-      <div class="text-lg f-f-r mb-2">Legend</div>
       <div class="flex items-center mb-1">
         <label class="inline-flex items-center">
           <div
@@ -39,7 +39,7 @@
           ></div>
         </label>
         <div class="flex flex-col ml-3">
-          <div class="text-m leading-none capitalize">Medium</div>
+          <div class="text-m leading-none capitalize">Moderate</div>
         </div>
       </div>
       <div class="flex items-center mb-1">
