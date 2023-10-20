@@ -187,6 +187,12 @@ export class NoahPlaygroundService {
     );
   }
 
+  get rainForcastShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.raintypes['rain-forecast'].shown)
+    );
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(

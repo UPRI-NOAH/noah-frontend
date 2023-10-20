@@ -201,6 +201,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
         this.initAffectedExposure();
+        this.initRainForcast();
       });
   }
 
@@ -1481,6 +1482,63 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
+    });
+  }
+
+  initRainForcast() {
+    const rainForcastImage = {
+      'rain-forecast': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/test/rainmap_gtif_day1.png',
+        type: 'image',
+      },
+    };
+
+    const getRainForcastSource = (rainForcastDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (rainForcastDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: rainForcastDetails.url,
+            coordinates: [
+              [116.955, 19.352],
+              [126.955, 19.352],
+              [126.955, 5.305],
+              [116.955, 5.305],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Rain Forcast');
+      }
+    };
+    Object.keys(rainForcastImage).forEach((rainType) => {
+      const rainForcastDetails = rainForcastImage[rainType];
+      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
+
+      this.map.addLayer({
+        id: rainType,
+        type: 'raster',
+        source: rainType,
+        paint: {
+          'raster-fade-duration': 0,
+          'raster-opacity': 1,
+        },
+      });
+
+      const soloShown$ = this.pgService.rainForcastShown$.pipe(shareReplay(1));
+
+      const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+        shareReplay(1)
+      );
+
+      combineLatest([allShown$, soloShown$])
+        .pipe(takeUntil(this._unsub))
+        .subscribe(([allShown, groupShown]) => {
+          let opacity = +(allShown && groupShown);
+          this.map.setPaintProperty(rainType, 'raster-opacity', opacity);
+        });
     });
   }
 
