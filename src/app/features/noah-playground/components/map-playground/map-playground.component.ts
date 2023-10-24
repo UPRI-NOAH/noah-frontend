@@ -1488,7 +1488,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initRainForcast() {
     const rainForcastImage = {
       'rain-forecast': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/test/rainmap_gtif_day1.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
         type: 'image',
       },
     };
