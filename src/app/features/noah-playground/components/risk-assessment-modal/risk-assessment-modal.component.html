@@ -425,10 +425,12 @@
                   text-gray-600
                   hover:text-indigo-700
                   cursor-pointer
-                  disabled:opacity-75 disabled:cursor-not-allowed
+                  disabled:opacity-75
+                  disabled:cursor-not-allowed
+                  disabled:hover:text-gray-600
                 "
                 (click)="loadData(currentPage + 1)"
-                [disabled]="currentPage === totalPages"
+                [disabled]="currentPage * itemsPerPage >= totalDataCount"
               >
                 <p class="text-sm font-medium leading-none mr-3">Next</p>
                 <svg

@@ -70,19 +70,12 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.loadData(this.currentPage);
   }
 
-  async loadData(page: number, brgy?: string) {
+  async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
-        .getAffectedPopulations(page, brgy)
+        .getAffectedPopulations(page, searchTerm)
         .pipe(first())
         .toPromise();
-
-      // Check if response contains data, if not, display "No data available"
-      if (!response.results || response.results.length === 0) {
-        this.affectedData = [];
-        this.errorMsg = 'No data available';
-        return;
-      }
 
       const raData = response.results.map((a) => {
         return {
@@ -97,7 +90,6 @@ export class RiskAssessmentModalComponent implements OnInit {
       });
 
       this.currentPage = page;
-      this.totalPages = raData.total_pages;
       this.affectedData = raData; // displaying data
       this.totalDataCount = response.count; // displaying overall total data for pagination
     } catch (error) {
