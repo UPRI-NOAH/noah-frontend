@@ -31,7 +31,7 @@
         rounded-t-md
       "
     >
-      <div class="relative w-full r p-6 dark:bg-gray-800">
+      <div class="relative w-full r p-4 dark:bg-gray-800">
         <div
           class="
             cursor-pointer
@@ -127,7 +127,8 @@
         </div>
         <p
           class="
-            text-lg
+            lg:text-2xl
+            md:text-lg
             font-bold
             leading-none
             md:mt-2
@@ -139,12 +140,41 @@
           In the event of a Flood 100-year return period, how many people might
           be affected and need evacuation in the Philippines?
         </p>
+
+        <p
+          class="
+            lg:text-base
+            text-sm
+            italic
+            mt-4
+            whitespace-pre-line
+            text-ellipsis
+          "
+        >
+          <b>Disclaimer:</b> The streams and catchment boundaries presented are
+          indicative and have not gone through ground validation.
+          <span
+            role="button"
+            *ngIf="btnReadMore"
+            class="display md:hidden text-blue-500"
+            (click)="mobileDisclaimerSeemore()"
+            >Read more...</span
+          >
+          <span *ngIf="mobileDisclaimer"
+            >These have been derived from elevation data obtained using
+            Interferometric Synthetic Aperture Radar (IfSAR) technology and
+            delineated using ArcGIS Hydrological Tools. The UP NOAH Center is
+            not liable for positioning inaccuracies, discrepancies from
+            subsequent updates, errors, or data omissions. However, suggestions
+            for improvement or error notifications are welcome.</span
+          >
+        </p>
       </div>
     </div>
 
     <div class="flex-auto relative p-4">
       <div class="relative shadow-md sm:rounded-lg">
-        <div class="pb-4 bg-white dark:bg-gray-900">
+        <div class="pb-2 bg-white dark:bg-gray-900">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative mt-1">
             <div
@@ -204,7 +234,7 @@
         <div class="dark flex flex-col h-screen shadow-md sm:rounded-lg">
           <div
             class="flex-grow overflow-auto"
-            style="max-height: calc(100vh - 300px)"
+            style="max-height: calc(93vh - 300px)"
           >
             <table
               class="w-full text-sm text-left text-gray-500 dark:text-gray-400"

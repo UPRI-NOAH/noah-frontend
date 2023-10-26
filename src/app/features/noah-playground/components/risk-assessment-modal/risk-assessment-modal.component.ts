@@ -24,6 +24,8 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalItems = 0;
   totalDataCount = 0;
   errorMsg: string = '';
+  mobileDisclaimer: boolean = true;
+  btnReadMore: boolean;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -108,6 +110,11 @@ export class RiskAssessmentModalComponent implements OnInit {
   hideModal() {
     this.modalServices.closeRiskModal();
     this.modalServices.openBtnRiskAssessment();
+  }
+
+  mobileDisclaimerSeemore() {
+    this.mobileDisclaimer = true;
+    this.btnReadMore = false;
   }
 
   onHeaderColumnClick(field: string) {
