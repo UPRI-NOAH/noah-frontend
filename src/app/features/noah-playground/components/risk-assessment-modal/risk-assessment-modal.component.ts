@@ -24,8 +24,8 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalItems = 0;
   totalDataCount = 0;
   errorMsg: string = '';
-  mobileDisclaimer: boolean = true;
-  btnReadMore: boolean;
+  mobileDisclaimer: boolean = false;
+  btnReadMore: boolean = true;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -79,21 +79,25 @@ export class RiskAssessmentModalComponent implements OnInit {
         .pipe(first())
         .toPromise();
 
-      const raData = response.results.map((a) => {
-        return {
-          brgy: a.brgy,
-          muni: a.muni,
-          prov: a.prov,
-          total_pop: a.total_pop,
-          total_aff_pop: a.total_aff_pop,
-          exposed_medhigh: a.exposed_medhigh,
-          perc_aff_medhigh: a.perc_aff_medhigh,
-        };
-      });
-
-      this.currentPage = page;
-      this.affectedData = raData; // displaying data
-      this.totalDataCount = response.count; // displaying overall total data for pagination
+      if (response.results.length === 0) {
+        this.affectedData = [];
+        this.errorMsg = 'NO DATA';
+      } else {
+        const raData = response.results.map((a) => {
+          return {
+            brgy: a.brgy,
+            muni: a.muni,
+            prov: a.prov,
+            total_pop: a.total_pop,
+            total_aff_pop: a.total_aff_pop,
+            exposed_medhigh: a.exposed_medhigh,
+            perc_aff_medhigh: a.perc_aff_medhigh,
+          };
+        });
+        this.currentPage = page;
+        this.affectedData = raData;
+        this.totalDataCount = response.count;
+      }
     } catch (error) {
       console.error('An error occurred:', error);
       this.affectedData = [];

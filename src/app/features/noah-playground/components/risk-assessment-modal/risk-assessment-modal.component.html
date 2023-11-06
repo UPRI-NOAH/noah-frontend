@@ -160,8 +160,16 @@
             (click)="mobileDisclaimerSeemore()"
             >Read more...</span
           >
-          <span *ngIf="mobileDisclaimer"
-            >These have been derived from elevation data obtained using
+          <span class="hidden md:inline">
+            These have been derived from elevation data obtained using
+            Interferometric Synthetic Aperture Radar (IfSAR) technology and
+            delineated using ArcGIS Hydrological Tools. The UP NOAH Center is
+            not liable for positioning inaccuracies, discrepancies from
+            subsequent updates, errors, or data omissions. However, suggestions
+            for improvement or error notifications are welcome.</span
+          >
+          <span *ngIf="mobileDisclaimer">
+            These have been derived from elevation data obtained using
             Interferometric Synthetic Aperture Radar (IfSAR) technology and
             delineated using ArcGIS Hydrological Tools. The UP NOAH Center is
             not liable for positioning inaccuracies, discrepancies from
@@ -310,7 +318,7 @@
                             text-center text-gray-600
                           "
                         >
-                          No data available
+                          No Affected Data Available
                         </p>
                       </div>
                     </div>
