@@ -26,7 +26,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
   checkedPopu = false;
   checkedShown = false;
 
-  raBtnPopu = false;
+  popuLegend = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -34,9 +34,10 @@ export class RiskAssessmentGroupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
-      this.raBtnPopu = raBtnPopu;
+    this.modalService.legendHide$.subscribe((hideLegend) => {
+      this.popuLegend = hideLegend;
     });
+
     this.expanded$ = this.pgService.riskAssessmentGroupExpanded$.pipe(
       shareReplay(1)
     );
@@ -75,30 +76,20 @@ export class RiskAssessmentGroupComponent implements OnInit {
     events.stopImmediatePropagation();
     this.checkedPopu = (events.target as HTMLInputElement).checked;
     this.updateButtonEnabled();
-    if (!this.checkedShown) {
-      this.pgService.toggleAffectedPopulationVisibilityFalse();
+    if (!this.checkedPopu) {
+      this.popuLegend = false;
+      this.modalService.closeBtnRiskAssessment();
     }
   }
 
   calculateRisk() {
     this.modalService.openRiskModal();
+    this.popuLegend = true;
     this.pgService.toggleAffectedPopulationVisibility();
-    this.raBtnPopu = false;
-    this.modalService.showLegend();
   }
 
   updateButtonEnabled() {
     this.isButtonEnabled =
       this.checkedPopu && this.checkedRain && this.checkedShown;
-  }
-
-  closeBtnRisk() {
-    this.raBtnPopu = false;
-    this.modalService.hideLegend();
-    this.pgService.toggleAffectedPopulationVisibilityFalse();
-  }
-
-  openModalPopu() {
-    this.modalService.openRiskModal();
   }
 }
