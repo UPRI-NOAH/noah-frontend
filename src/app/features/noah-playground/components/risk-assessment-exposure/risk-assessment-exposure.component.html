@@ -1,60 +1,16 @@
 <div class="text-m f-f-r py-2 pl-6">
   <div class="flex items-center">
-    <div class="inline-flex items-center checkbox {{ exposureRiskType }}">
+    <div class="inline-flex items-center checkbox {{ exposureName }}">
       <input
         type="checkbox"
         class="h-5 w-5 text-blue-600"
-        [checked]="shown$ | async"
+        [checked]="shown"
+        name="input-{{ exposureName }}"
         (click)="toggleShown()"
-        name="input-{{ exposureRiskType }}"
       />
     </div>
     <div class="flex flex-col ml-3">
-      <div class="text-lg f-f-r capitalize">
-        {{ exposureRiskType | replace: '-':' ' | titlecase }}
-      </div>
-    </div>
-  </div>
-</div>
-<div class="flex flex-col ml-7 mt-2" *ngIf="hideLegend">
-  <div class="text-base ml-2 f-f-r mb-2">
-    Population Exposure to Flood 100-Year Return Period
-  </div>
-  <div class="px-6">
-    <div class="flex flex-col">
-      <div class="flex items-center mb-1">
-        <label class="inline-flex items-center">
-          <div
-            class="h-6 w-6 mx-auto rounded-md"
-            ngClass="bg-noah-pink-low"
-          ></div>
-        </label>
-        <div class="flex flex-col ml-3">
-          <div class="text-m leading-none capitalize">Low</div>
-        </div>
-      </div>
-      <div class="flex items-center mb-1">
-        <label class="inline-flex items-center">
-          <div
-            class="h-6 w-6 mx-auto rounded-md"
-            ngClass="bg-noah-pink-medium"
-          ></div>
-        </label>
-        <div class="flex flex-col ml-3">
-          <div class="text-m leading-none capitalize">Moderate</div>
-        </div>
-      </div>
-      <div class="flex items-center mb-1">
-        <label class="inline-flex items-center">
-          <div
-            class="h-6 w-6 mx-auto rounded-md"
-            ngClass="bg-noah-pink-high"
-          ></div>
-        </label>
-        <div class="flex flex-col ml-3">
-          <div class="text-m leading-none capitalize">High</div>
-        </div>
-      </div>
+      <div class="text-lg f-f-r capitalize">Population</div>
     </div>
   </div>
 </div>
