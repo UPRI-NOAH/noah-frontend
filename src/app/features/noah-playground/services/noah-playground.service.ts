@@ -243,7 +243,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  getExposureRiskAssessment$(
+  getPopulationExposure$(
     riskType: RiskAssessmentExposureType
   ): Observable<RiskAssessmentState> {
     return this.store.state$.pipe(
@@ -518,21 +518,6 @@ export class NoahPlaygroundService {
     this.store.patch(
       { riskAssessment },
       `Risk Assessment - update ${type}'s shown to ${value}`
-    );
-  }
-
-  setExposureRiskAssessmentSoloShownFalse(
-    value: boolean,
-    type: RiskAssessmentExposureType
-  ) {
-    const riskAssessment: RiskAssessmentGroupState = {
-      ...this.store.state.riskAssessment,
-    };
-
-    riskAssessment.exposuretypes[type].shown = false;
-    this.store.patch(
-      { riskAssessment },
-      `Risk Assessment - update ${type}'s hide to ${value}`
     );
   }
 
