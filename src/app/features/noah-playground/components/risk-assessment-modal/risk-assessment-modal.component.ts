@@ -108,6 +108,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   closeModal() {
     this.modalServices.closeRiskModal();
     this.modalServices.closeBtnRiskAssessment();
+    this.modalServices.hideLegend();
     this.pgService.toggleAffectedPopulationVisibilityFalse();
   }
 

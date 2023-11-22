@@ -42,7 +42,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
       shareReplay(1)
     );
     this.shown$ = this.pgService.riskAssessmentGroupShown$.pipe(shareReplay(1));
-    this.pgService.riskAssessmentPopuShown$;
+    this.pgService.riskAssessmentExpoShown$;
   }
 
   toggleExpanded(event: Event) {
@@ -60,6 +60,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
     if (!this.checkedShown) {
       this.modalService.closeBtnRiskAssessment();
+      this.popuLegend = false;
       this.pgService.toggleAffectedPopulationVisibilityFalse();
     }
   }

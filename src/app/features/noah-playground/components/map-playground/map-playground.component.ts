@@ -1704,7 +1704,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 'fill-opacity': 0.7,
               },
             });
-            const groupShown$ = this.pgService.riskAssessmentPopuShown$.pipe(
+            const groupShown$ = this.pgService.populationShown$.pipe(
               shareReplay(1)
             );
 

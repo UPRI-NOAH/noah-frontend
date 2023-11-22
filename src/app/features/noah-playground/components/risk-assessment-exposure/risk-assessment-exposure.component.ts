@@ -17,9 +17,7 @@ export const EXPOSURE_NAME: Record<RiskAssessmentExposureType, string> = {
 export class RiskAssessmentExposureComponent implements OnInit {
   @Input() exposureRiskType: RiskAssessmentExposureType;
   riskExposureShown$: Observable<boolean>;
-  shown = false;
-
-  private _unsub = new Subject();
+  shown: boolean = false;
 
   get exposureName(): string {
     return EXPOSURE_NAME[this.exposureRiskType];
@@ -32,7 +30,7 @@ export class RiskAssessmentExposureComponent implements OnInit {
 
   ngOnInit(): void {
     this.pgService
-      .getPopulationExposure$(this.exposureRiskType)
+      .getExposure$(this.exposureRiskType)
       .pipe(first())
       .subscribe(({ shown }) => {
         this.shown = shown;
@@ -41,9 +39,13 @@ export class RiskAssessmentExposureComponent implements OnInit {
 
   toggleShown() {
     this.shown = !this.shown;
-    this.pgService.setExposureRiskAssessmentSoloShown(
-      this.shown,
-      this.exposureRiskType
-    );
+
+    if (this.shown) {
+      this.pgService.setExposureCheckShown(this.shown, this.exposureRiskType);
+    } else {
+      this.modalService.closeBtnRiskAssessment();
+      this.pgService.toggleAffectedPopulationVisibilityFalse();
+      this.modalService.hideLegend();
+    }
   }
 }
