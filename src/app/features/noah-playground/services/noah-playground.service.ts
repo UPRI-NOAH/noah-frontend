@@ -181,9 +181,15 @@ export class NoahPlaygroundService {
     );
   }
 
-  get riskAssessmentPopuShown$(): Observable<boolean> {
+  get riskAssessmentExpoShown$(): Observable<boolean> {
     return this.store.state$.pipe(
-      map((state) => state.riskAssessment.exposuretypes.population.shown)
+      map((state) => state.riskAssessment.exposuretypes.shown)
+    );
+  }
+
+  get populationShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.populationtypes.population.shown)
     );
   }
 
@@ -248,6 +254,14 @@ export class NoahPlaygroundService {
   ): Observable<RiskAssessmentState> {
     return this.store.state$.pipe(
       map((state) => state.riskAssessment.exposuretypes[riskType])
+    );
+  }
+
+  getExposure$(
+    riskType: RiskAssessmentExposureType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes)
     );
   }
 
@@ -514,11 +528,20 @@ export class NoahPlaygroundService {
       ...this.store.state.riskAssessment,
     };
 
-    riskAssessment.exposuretypes[type].shown = true;
+    riskAssessment.exposuretypes[type].shown = value;
     this.store.patch(
       { riskAssessment },
       `Risk Assessment - update ${type}'s shown to ${value}`
     );
+  }
+
+  setExposureCheckShown(value: boolean, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes.shown = value;
+    this.store.patch({ riskAssessment }, `Checkbox - update shown to ${value}`);
   }
 
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
@@ -877,7 +900,7 @@ export class NoahPlaygroundService {
     const riskAssessment = {
       ...this.store.state.riskAssessment,
     };
-    riskAssessment.exposuretypes.population.shown = true;
+    riskAssessment.populationtypes.population.shown = true;
     this.store.patch({ riskAssessment }, `Show Affected Population`);
   }
 
@@ -885,7 +908,7 @@ export class NoahPlaygroundService {
     const riskAssessment = {
       ...this.store.state.riskAssessment,
     };
-    riskAssessment.exposuretypes.population.shown = false;
+    riskAssessment.populationtypes.population.shown = false;
     this.store.patch({ riskAssessment }, `Hide Affected Population`);
   }
 }

@@ -128,7 +128,8 @@ export type RiskAssessmentGroupState = {
   shown: boolean;
   expanded: boolean;
   raintypes: Record<RiskAssessmentRainType, RiskAssessmentState>;
-  exposuretypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
+  exposuretypes: RiskAssessmentState;
+  populationtypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
 };
 
 export type VolcanoGroupState = {
@@ -373,6 +374,9 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
     exposuretypes: {
+      shown: false,
+    },
+    populationtypes: {
       population: {
         shown: false,
       },
