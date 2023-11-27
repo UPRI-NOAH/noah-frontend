@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
+  CalculateRiskButton,
   RiskAssessmentExposureType,
   RiskAssessmentRainType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, first } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-risk-assessment-group',
@@ -16,12 +17,13 @@ import { shareReplay } from 'rxjs/operators';
 export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentRainTypeList: RiskAssessmentRainType[] = ['rain-forecast'];
   riskAssessmentExposureTypeList: RiskAssessmentExposureType[] = ['population'];
+  @Input() btnCalculateRisk: CalculateRiskButton;
 
   expanded$: Observable<boolean>;
   riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
 
-  isButtonEnabled = false;
+  isButtonEnabled: boolean = false;
   checkedRain = false;
   checkedPopu = false;
   checkedShown = false;
@@ -43,6 +45,13 @@ export class RiskAssessmentGroupComponent implements OnInit {
     );
     this.shown$ = this.pgService.riskAssessmentGroupShown$.pipe(shareReplay(1));
     this.pgService.riskAssessmentExpoShown$;
+
+    this.pgService
+      .getCalculateRiskBtn(this.btnCalculateRisk)
+      .pipe(first())
+      .subscribe(({ shown }) => {
+        this.isButtonEnabled = shown;
+      });
   }
 
   toggleExpanded(event: Event) {
@@ -90,6 +99,11 @@ export class RiskAssessmentGroupComponent implements OnInit {
   }
 
   updateButtonEnabled() {
+    this.isButtonEnabled = !this.isButtonEnabled;
+    this.pgService.setBtnCalculateRiskShown(
+      this.isButtonEnabled,
+      this.btnCalculateRisk
+    );
     this.isButtonEnabled =
       this.checkedPopu && this.checkedRain && this.checkedShown;
   }

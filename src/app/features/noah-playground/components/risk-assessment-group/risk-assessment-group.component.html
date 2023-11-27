@@ -117,11 +117,18 @@
     <hr class="pb-4" />
     <div class="pl-2">
       <div class="items-center">
-        <noah-risk-assessment-rain
-          *ngFor="let riskType of riskAssessmentRainTypeList"
-          [rainRiskType]="riskType"
-          (click)="toggleRain($event)"
-        ></noah-risk-assessment-rain>
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-rain
+              *ngFor="let riskType of riskAssessmentRainTypeList"
+              [rainRiskType]="riskType"
+              (click)="toggleRain($event)"
+            ></noah-risk-assessment-rain>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Rain Forecast</div>
+          </div>
+        </div>
         <div class="flex items-center pt-2">
           <div class="flex flex-col pl-12">
             <div class="flex items-center mb-1">
@@ -132,11 +139,18 @@
           </div>
         </div>
 
-        <noah-risk-assessment-exposure
-          *ngFor="let riskTypes of riskAssessmentExposureTypeList"
-          [exposureRiskType]="riskTypes"
-          (click)="togglePopu($event)"
-        ></noah-risk-assessment-exposure>
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-exposure
+              *ngFor="let riskTypes of riskAssessmentExposureTypeList"
+              [exposureRiskType]="riskTypes"
+              (click)="togglePopu($event)"
+            ></noah-risk-assessment-exposure>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Population</div>
+          </div>
+        </div>
 
         <div class="flex flex-col ml-7 mt-2" *ngIf="popuLegend">
           <div class="text-base ml-2 f-f-r mb-2">
