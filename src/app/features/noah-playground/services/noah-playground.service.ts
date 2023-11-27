@@ -28,6 +28,7 @@ import {
   RiskAssessmentExposureType,
   RiskAssessmentState,
   RiskAssessmentGroupState,
+  CalculateRiskButton,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -197,6 +198,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.riskAssessment.raintypes['rain-forecast'].shown)
     );
+  }
+
+  get btnCalculateShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -387,6 +392,27 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.barangayBoundary.types[barangayBoundary].shown)
     );
+  }
+
+  setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
+    const btnCalculateRisk: CalculateRiskButton = {
+      ...this.store.state.btnCalculateRisk,
+    };
+
+    btnCalculateRisk.shown = value;
+
+    this.store.patch(
+      {
+        btnCalculateRisk,
+      },
+      `Check Button Calculate Risk ${value}`
+    );
+  }
+
+  getCalculateRiskBtn(
+    calculateRisk: CalculateRiskButton
+  ): Observable<CalculateRiskButton> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk));
   }
 
   setHazardTypeColor(

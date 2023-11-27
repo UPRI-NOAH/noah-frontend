@@ -124,6 +124,10 @@ export type RiskAssessmentState = {
   shown: boolean;
 };
 
+export type CalculateRiskButton = {
+  shown: boolean;
+};
+
 export type RiskAssessmentGroupState = {
   shown: boolean;
   expanded: boolean;
@@ -244,6 +248,7 @@ type NoahPlaygroundState = {
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
   qcCenter: { lng: number; lat: number };
+  btnCalculateRisk: CalculateRiskButton;
   qcZoom: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -262,6 +267,9 @@ type NoahPlaygroundState = {
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
+  btnCalculateRisk: {
+    shown: false,
+  },
   exaggeration: {
     shown: true,
     expanded: false,
