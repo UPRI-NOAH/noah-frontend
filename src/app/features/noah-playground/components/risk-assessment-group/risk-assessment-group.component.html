@@ -139,6 +139,16 @@
           </div>
         </div>
 
+        <div class="flex items-center pl-6 pt-2">
+          <noah-slider
+            label="Opacity"
+            [initialValue]="initialOpacityValue"
+            [min]="0"
+            [max]="100"
+            (valueChange)="changeOpacity($event)"
+          ></noah-slider>
+        </div>
+
         <div class="flex flex-row">
           <div>
             <noah-risk-assessment-exposure

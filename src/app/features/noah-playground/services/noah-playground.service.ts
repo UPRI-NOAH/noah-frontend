@@ -582,6 +582,18 @@ export class NoahPlaygroundService {
     );
   }
 
+  setRainForeCastOpacity(value: number, type: RiskAssessmentRainType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.raintypes['rain-forecast'].opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Rain Forecast - update ${type}'s opacity to ${value}`
+    );
+  }
+
   setVolcanoSoloShown(value: boolean, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,

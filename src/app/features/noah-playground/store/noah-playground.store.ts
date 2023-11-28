@@ -122,6 +122,7 @@ export type IotMunicipalitiesState = {
 
 export type RiskAssessmentState = {
   shown: boolean;
+  opacity: number;
 };
 
 export type CalculateRiskButton = {
@@ -379,14 +380,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
     raintypes: {
       'rain-forecast': {
         shown: false,
+        opacity: 100,
       },
     },
     exposuretypes: {
       shown: false,
+      opacity: 100,
     },
     populationtypes: {
       population: {
         shown: false,
+        opacity: 100,
       },
     },
   },

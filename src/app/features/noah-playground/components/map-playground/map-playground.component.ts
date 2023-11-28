@@ -1533,11 +1533,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         shareReplay(1)
       );
 
-      combineLatest([allShown$, soloShown$])
-        .pipe(takeUntil(this._unsub))
-        .subscribe(([allShown, groupShown]) => {
-          let opacity = +(allShown && groupShown);
-          this.map.setPaintProperty(rainType, 'raster-opacity', opacity);
+      const rainForeCast$ = this.pgService
+        .getRainRiskAssessment$('rain-forecast')
+        .pipe(shareReplay(1));
+
+      combineLatest([allShown$, soloShown$, rainForeCast$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, groupShown, rainForeCast]) => {
+          let newOpacity = 0;
+          if (allShown && groupShown) {
+            newOpacity = rainForeCast.opacity / 100;
+          }
+          // let opacity = +(allShown && groupShown);
+          this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
         });
     });
   }

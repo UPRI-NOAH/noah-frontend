@@ -18,10 +18,12 @@ export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentRainTypeList: RiskAssessmentRainType[] = ['rain-forecast'];
   riskAssessmentExposureTypeList: RiskAssessmentExposureType[] = ['population'];
   @Input() btnCalculateRisk: CalculateRiskButton;
+  @Input() rainForecast: RiskAssessmentRainType;
 
   expanded$: Observable<boolean>;
   riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
+  initialOpacityValue: number = 100;
 
   isButtonEnabled: boolean = false;
   checkedRain = false;
@@ -52,6 +54,17 @@ export class RiskAssessmentGroupComponent implements OnInit {
       .subscribe(({ shown }) => {
         this.isButtonEnabled = shown;
       });
+
+    this.pgService
+      .getRainRiskAssessment$(this.rainForecast)
+      .pipe(first())
+      .subscribe(({ opacity }) => {
+        this.initialOpacityValue = opacity;
+      });
+  }
+
+  changeOpacity(opacity: number) {
+    this.pgService.setRainForeCastOpacity(opacity, this.rainForecast);
   }
 
   toggleExpanded(event: Event) {
