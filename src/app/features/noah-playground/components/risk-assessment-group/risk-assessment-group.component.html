@@ -142,10 +142,10 @@
         <div class="flex items-center pl-6 pt-2">
           <noah-slider
             label="Opacity"
-            [initialValue]="initialOpacityValue"
+            [initialValue]="initialRainOpacityValue"
             [min]="0"
             [max]="100"
-            (valueChange)="changeOpacity($event)"
+            (valueChange)="changeRainOpacity($event)"
           ></noah-slider>
         </div>
 
@@ -202,6 +202,15 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="flex items-center pt-2">
+            <noah-slider
+              label="Opacity"
+              [initialValue]="initialPopuOpacityValue"
+              [min]="0"
+              [max]="100"
+              (valueChange)="changePopuOpacity($event)"
+            ></noah-slider>
           </div>
         </div>
       </div>

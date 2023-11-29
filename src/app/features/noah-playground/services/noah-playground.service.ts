@@ -258,7 +258,7 @@ export class NoahPlaygroundService {
     riskType: RiskAssessmentExposureType
   ): Observable<RiskAssessmentState> {
     return this.store.state$.pipe(
-      map((state) => state.riskAssessment.exposuretypes[riskType])
+      map((state) => state.riskAssessment.exposuretypes)
     );
   }
 
@@ -591,6 +591,17 @@ export class NoahPlaygroundService {
     this.store.patch(
       { riskAssessment },
       `Rain Forecast - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setPopulationOpacity(value: number, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+    riskAssessment.exposuretypes.opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Population Affected - update ${type}'s opacity to ${value}`
     );
   }
 

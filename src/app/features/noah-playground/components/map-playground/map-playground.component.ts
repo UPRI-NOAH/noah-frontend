@@ -1719,12 +1719,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
               shareReplay(1)
             );
+            const populationAffected$ = this.pgService
+              .getPopulationExposure$('population')
+              .pipe(shareReplay(1));
 
-            combineLatest([allShown$, groupShown$])
-              .pipe(takeUntil(this._unsub))
-              .subscribe(([allShown, groupShown]) => {
-                let opacity = +(allShown && groupShown);
-                this.map.setPaintProperty(sourceLayer, 'fill-opacity', opacity);
+            combineLatest([allShown$, groupShown$, populationAffected$])
+              .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+              .subscribe(([allShown, groupShown, populationAffected]) => {
+                let newOpacity = 0;
+                if (populationAffected.shown && allShown && groupShown) {
+                  newOpacity = populationAffected.opacity / 100;
+                }
+                this.map.setPaintProperty(
+                  sourceLayer,
+                  'fill-opacity',
+                  newOpacity
+                );
               });
           })
         );
