@@ -1,15 +1,3 @@
-<div class="flex" *ngIf="raBtnPopu">
-  <div class="absolute z-50 md:left-96 -ml-5 -mt-11">
-    <a class="fixed max-w-xs items-center">
-      <div class="mapboxgl-ctrl-bottom-left">
-        <div class="mapboxgl-ctrl">
-          <button class="raBtn" (click)="openModalPopu()">Data Summary</button>
-          <span role="button" class="x-raBtn" (click)="closeBtnRisk()"></span>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
 <div class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6">
   <div class="flex cursor-pointer select-none" (click)="toggleExpanded($event)">
     <label class="inline-flex items-center checkbox">
@@ -20,8 +8,71 @@
         (click)="toggleShown($event)"
       />
     </label>
-    <div class="ml-3 text-xl leading-none font-bold flex items-center">
+    <div class="ml-3 text-xl leading-none font-bold flex items-center mr-2">
       Risk Assessment
+    </div>
+    <div class="flex space-x-5 justify-center items-center pl-2">
+      <div
+        class="
+          relative
+          cursor-pointer
+          focus:outline-none
+          focus:ring-2
+          focus:ring-offset-2
+          focus:ring-gray-800
+        "
+      >
+        <div
+          class="
+            center
+            relative
+            inline-block
+            select-none
+            whitespace-nowrap
+            rounded-[4px]
+            bg-blue-700
+            py-1
+            px-2
+            align-baseline
+            font-sans
+            text-xs
+            font-medium
+            capitalize
+            leading-none
+            tracking-wide
+            text-white
+          "
+        >
+          <div class="mt-px">BETA</div>
+        </div>
+        <div
+          class="
+            animate-ping
+            w-1.5
+            h-1.5
+            bg-indigo-700
+            rounded-full
+            absolute
+            top-0
+            -right-1
+            m-auto
+            duration-200
+          "
+        ></div>
+        <div
+          class="
+            w-1.5
+            h-1.5
+            bg-indigo-700
+            rounded-full
+            absolute
+            top-0
+            -right-1
+            m-auto
+            shadow-lg
+          "
+        ></div>
+      </div>
     </div>
     <div class="ml-auto">
       <button
@@ -66,14 +117,20 @@
     <hr class="pb-4" />
     <div class="pl-2">
       <div class="items-center">
-        <noah-risk-assessment-rain
-          *ngFor="let riskType of riskAssessmentRainTypeList"
-          [rainRiskType]="riskType"
-          (click)="toggleRain($event)"
-        ></noah-risk-assessment-rain>
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-rain
+              *ngFor="let riskType of riskAssessmentRainTypeList"
+              [rainRiskType]="riskType"
+              (click)="toggleRain($event)"
+            ></noah-risk-assessment-rain>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Rain Forecast</div>
+          </div>
+        </div>
         <div class="flex items-center pt-2">
-          <div class="flex flex-col pl-6">
-            <div class="text-lg f-f-r mb-2">Legend</div>
+          <div class="flex flex-col pl-12">
             <div class="flex items-center mb-1">
               <label class="inline-flex items-center">
                 <img src="assets/legends/rainfall-forecast-legend.png" />
@@ -82,19 +139,85 @@
           </div>
         </div>
 
-        <div class="pl-2">
-          <p class="text-xl font-semibold mt-4">Exposure</p>
+        <div class="flex items-center pl-6 pt-2">
+          <noah-slider
+            label="Opacity"
+            [initialValue]="initialRainOpacityValue"
+            [min]="0"
+            [max]="100"
+            (valueChange)="changeRainOpacity($event)"
+          ></noah-slider>
         </div>
-        <noah-risk-assessment-exposure
-          *ngFor="let riskType of riskAssessmentExposureTypeList"
-          [exposureRiskType]="riskType"
-          (click)="togglePopu($event)"
-        ></noah-risk-assessment-exposure>
+
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-exposure
+              *ngFor="let riskTypes of riskAssessmentExposureTypeList"
+              [exposureRiskType]="riskTypes"
+              (click)="togglePopu($event)"
+            ></noah-risk-assessment-exposure>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Population</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col ml-7 mt-2" *ngIf="popuLegend">
+          <div class="text-base ml-2 f-f-r mb-2">
+            Population Exposure to Flood 100-Year Return Period
+          </div>
+          <div class="px-6">
+            <div class="flex flex-col">
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-low"
+                  ></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none capitalize">Low</div>
+                </div>
+              </div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-medium"
+                  ></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none capitalize">Moderate</div>
+                </div>
+              </div>
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-high"
+                  ></div>
+                </label>
+                <div class="flex flex-col ml-3">
+                  <div class="text-m leading-none capitalize">High</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center pt-2">
+            <noah-slider
+              label="Opacity"
+              [initialValue]="initialPopuOpacityValue"
+              [min]="0"
+              [max]="100"
+              (valueChange)="changePopuOpacity($event)"
+            ></noah-slider>
+          </div>
+        </div>
       </div>
       <div class="px-6 justify-center items-center">
         <button
           class="
-            text-xs
+            text-sm
             font-bold
             bg-green-600
             rounded-full

@@ -32,7 +32,18 @@ export class ModalService {
   private iotSummaryModal = new Subject<boolean>();
   iotSummaryModal$ = this.iotSummaryModal.asObservable();
 
+  private legendHide = new Subject<boolean>();
+  legendHide$ = this.legendHide.asObservable();
+
   constructor() {}
+
+  hideLegend() {
+    this.legendHide.next(false);
+  }
+
+  showLegend() {
+    this.legendHide.next(true);
+  }
 
   openBtnRiskAssessment() {
     this.btnRiskAssessment.next(true);

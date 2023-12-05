@@ -1,5 +1,5 @@
 <div
-  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 p-10 '"
+  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 lg:p-10 p-5'"
   *ngIf="riskModal"
 >
   <!-- *ngIf="riskModal" -->
@@ -26,137 +26,238 @@
         flex flex-shrink-0
         items-center
         justify-between
-        p-4
+        p-2
         border-b border-gray-200
         rounded-t-md
       "
     >
-      <p
-        class="font-medium leading-normal text-gray-800"
-        id="exampleModalScrollableLabel"
-      >
-        In the event of a Flood 100-year return period, how many people might be
-        affected and need evacuation in the Philippines?
-      </p>
-      <div class="flex flex-shrink-0 flex-wrap justify-end">
-        <button
-          type="button"
+      <!-- Modal Header -->
+
+      <div class="relative w-full r p-2 dark:bg-gray-800">
+        <div
           class="
-            btn-close
-            box-content
-            w-4
-            h-4
-            p-1
-            text-black
-            font-bold
-            rounded-none
-            opacity-50
-            focus:shadow-none focus:outline-none focus:opacity-100
-            hover:text-black hover:opacity-75 hover:no-underline
+            cursor-pointer
+            absolute
+            top-0
+            right-0
+            m-3
+            dark:text-gray-10
+            text-gray-600
+            transition
+            duration-150
+            ease-in-out
           "
-          data-bs-dismiss="modal"
-          (click)="hideModal()"
-          aria-label="Close"
         >
-          _
-        </button>
-        <button
-          type="button"
-          class="
-            btn-close
-            box-content
-            w-4
-            h-4
-            p-1
-            text-black
-            font-bold
-            rounded-none
-            opacity-50
-            focus:shadow-none focus:outline-none focus:opacity-100
-            hover:text-black hover:opacity-75 hover:no-underline
-          "
-          data-bs-dismiss="modal"
-          (click)="closeModal()"
-          aria-label="Close"
-        >
-          X
-        </button>
-      </div>
-    </div>
-    <div class="flex-auto overflow-auto relative p-4">
-      <!--  -->
-      <div class="relative shadow-md sm:rounded-lg">
-        <div class="pb-4 bg-white dark:bg-gray-900">
-          <label for="table-search" class="sr-only">Search</label>
-          <div class="relative mt-1">
-            <div
-              class="
-                absolute
-                inset-y-0
-                left-0
-                flex
-                items-center
-                pl-3
-                pointer-events-none
-              "
+          <button
+            class="
+              btn-close
+              box-content
+              w-4
+              h-4
+              p-1
+              text-black
+              font-bold
+              rounded-none
+              opacity-50
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-black hover:opacity-75 hover:no-underline
+            "
+            (click)="closeModal()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xml:space="preserve"
+              fill-rule="evenodd"
+              stroke-linejoin="round"
+              stroke-miterlimit="2"
+              clip-rule="evenodd"
+              viewBox="0 0 32 40"
             >
-              <svg
-                class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              [(ngModel)]="searchValue"
-              type="search"
-              id="table-search"
-              class="
-                block
-                p-2
-                pl-10
-                text-base text-gray-700
-                border-4 border-blue-200
-                rounded-lg
-                w-120
-                bg-blue-50
-                focus:ring-blue-500 focus:border-blue-500
-                dark:bg-gray-700
-                dark:border-blue-600
-                dark:placeholder-gray-400
-                dark:text-white
-                dark:focus:ring-blue-500
-                dark:focus:border-blue-500
-              "
-              placeholder="Search Location"
-            />
-          </div>
+              <path
+                d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
+              />
+            </svg>
+          </button>
         </div>
+
+        <div
+          class="
+            cursor-pointer
+            absolute
+            top-0
+            right-8
+            m-3
+            dark:text-gray-10
+            text-gray-600
+            transition
+            duration-150
+            ease-in-out
+          "
+        >
+          <button
+            class="
+              btn-mininmize
+              box-content
+              w-4
+              h-4
+              p-1
+              text-black
+              font-bold
+              rounded-none
+              opacity-50
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-black hover:opacity-75 hover:no-underline
+            "
+            (click)="hideModal()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              data-name="Layer 1"
+              viewBox="0 0 100 125"
+            >
+              <rect
+                width="90"
+                height="16.1"
+                x="5"
+                y="41.9"
+                rx="5.7"
+                ry="5.7"
+                style="stroke-width: 0"
+              />
+            </svg>
+          </button>
+        </div>
+        <p
+          class="
+            lg:text-2xl
+            md:text-lg
+            font-bold
+            leading-none
+            md:mt-2
+            mt-6
+            text-gray-800
+            dark:text-gray-100
+          "
+        >
+          In the event of a Flood 100-year return period, how many people might
+          be affected and need evacuation in the Philippines?
+        </p>
+
+        <p
+          class="
+            lg:text-base
+            text-sm
+            italic
+            mt-4
+            whitespace-pre-line
+            text-ellipsis
+          "
+        >
+          <b>Disclaimer:</b> The streams and catchment boundaries presented are
+          indicative and have not gone through ground validation.
+          <span
+            role="button"
+            *ngIf="btnReadMore"
+            class="display xl:hidden text-blue-500"
+            (click)="mobileDisclaimerSeemore()"
+            >Read more...</span
+          >
+          <span class="hidden xl:inline">
+            These have been derived from elevation data obtained using
+            Interferometric Synthetic Aperture Radar (IfSAR) technology and
+            delineated using ArcGIS Hydrological Tools. The UP NOAH Center is
+            not liable for positioning inaccuracies, discrepancies from
+            subsequent updates, errors, or data omissions. However, suggestions
+            for improvement or error notifications are welcome.</span
+          >
+          <span *ngIf="mobileDisclaimer">
+            These have been derived from elevation data obtained using
+            Interferometric Synthetic Aperture Radar (IfSAR) technology and
+            delineated using ArcGIS Hydrological Tools. The UP NOAH Center is
+            not liable for positioning inaccuracies, discrepancies from
+            subsequent updates, errors, or data omissions. However, suggestions
+            for improvement or error notifications are welcome.</span
+          >
+        </p>
+      </div>
+
+      <!-- ... Your existing header content ... -->
+    </div>
+    <div class="flex-auto p-2">
+      <div class="mb-2 bg-white">
+        <label for="table-search" class="sr-only">Search</label>
+        <div class="relative mt-1">
+          <div
+            class="
+              absolute
+              inset-y-0
+              left-0
+              flex
+              items-center
+              pl-3
+              pointer-events-none
+            "
+          >
+            <svg
+              class="w-5 h-5 text-gray-500 dark:text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <input
+            [(ngModel)]="searchValue"
+            type="search"
+            id="table-search"
+            class="
+              bg-gray-50
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              focus:ring-blue-500 focus:border-blue-500
+              block
+              w-80
+              pl-10
+              p-2.5
+              dark:bg-gray-700
+              dark:border-gray-600
+              dark:placeholder-gray-400
+              dark:text-white
+              dark:focus:ring-blue-500
+              dark:focus:border-blue-500
+            "
+            placeholder="Search Location"
+            (input)="loadData(1, searchValue)"
+          />
+        </div>
+      </div>
+      <!-- Modal Content -->
+      <div class="flex-grow overflow-auto max-h-full" style="height: 58vh">
         <table
-          class="w-full text-lg text-left text-gray-500 dark:text-gray-400"
+          class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
           <thead
             class="
-              text-lg
-              whitespace-nowrap
+              sticky
+              top-0
+              text-xs
+              md:text-base
               text-gray-700
               uppercase
               bg-blue-200
-              dark:bg-gray-700 dark:text-gray-400
+              dark:text-gray-400
             "
           >
             <tr>
-              <th *ngFor="let col of columns" scope="col" class="px-6 py-3">
+              <th class="sticky top-0 p-2" *ngFor="let col of columns">
                 <div
+                  role="button"
                   (click)="onHeaderColumnClick(col.key)"
                   class="flex items-center"
                 >
@@ -176,111 +277,191 @@
               </th>
             </tr>
           </thead>
-          <tbody>
-            <tr
-              *ngFor="
-                let data of affectedData
-                  | sort: sortField:sortDirection
-                  | searchRiskAffected: searchValue
-              "
-              class="
-                bg-white
-                uppercase
-                border-b
-                dark:bg-gray-800 dark:border-gray-700
-                hover:bg-gray-50
-                dark:hover:bg-gray-600
-              "
-            >
-              <td class="px-6 py-4">
-                {{ data.province }}
-              </td>
-              <!-- <td class="px-6 py-4">
-              {{ data.municipality }}
-            </td>
-            <td class="px-6 py-4">
-              {{ data.barangay }}
-            </td> -->
-              <td class="px-6 py-4">
-                {{ data.total_population }}
-              </td>
-              <td class="px-6 py-4">
-                {{ data.total_affected_population }}
-              </td>
-              <td class="px-6 py-4">
-                {{ data.medium_high }}
-              </td>
-              <td class="px-6 py-4">
-                {{ data.percentage_of_affected_medium_high }}%
-              </td>
-            </tr>
-          </tbody>
+          <ng-container>
+            <div *ngIf="errorMsg; else dataAvailable">
+              <div
+                class="flex items-center absolute justify-center w-full py-12"
+              >
+                <div
+                  class="
+                    bg-white
+                    border
+                    rounded-md
+                    flex
+                    items-center
+                    justify-center
+                    mx-4
+                    md:w-2/3
+                  "
+                >
+                  <div class="flex flex-col items-center py-16">
+                    <p
+                      class="
+                        px-4
+                        pb-10
+                        text-base
+                        md:text-2xl
+                        leading-none
+                        text-center text-gray-600
+                      "
+                    >
+                      No Affected Data Available
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #dataAvailable>
+            <tbody>
+              <tr
+                *ngFor="
+                  let data of affectedData
+                    | sort: sortField:sortDirection
+                    | searchRiskAffected: searchValue
+                "
+                class="
+                  bg-white
+                  border-b
+                  dark:bg-gray-800 dark:border-gray-700
+                  hover:bg-gray-50
+                  dark:hover:bg-gray-600
+                  text-xs
+                  md:text-base
+                "
+              >
+                <td class="p-1">
+                  {{ data.brgy }}
+                </td>
+                <td class="p-1">
+                  {{ data.muni }}
+                </td>
+                <td class="p-1">
+                  {{ data.prov }}
+                </td>
+                <td class="p-3">
+                  {{ data.total_pop | number: '1.0-0' }}
+                </td>
+                <td class="p-3">
+                  {{ data.total_aff_pop | number: '1.0-0' }}
+                </td>
+                <td class="p-3">
+                  {{ data.exposed_medhigh | number: '1.0-0' }}
+                </td>
+                <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
+              </tr>
+            </tbody>
+          </ng-template>
         </table>
       </div>
-      <!--  -->
+      <!-- ... Your existing content ... -->
     </div>
-    <div
-      class="
-        flex flex-shrink-0 flex-wrap
-        items-center
-        justify-end
-        p-4
-        border-t border-gray-200
-        rounded-b-md
-      "
-    >
-      <!-- <button
-        type="button"
-        class="
-          inline-block
-          px-6
-          py-2.5
-          bg-purple-600
-          text-white
-          font-medium
-          text-xs
-          leading-tight
-          uppercase
-          rounded
-          shadow-md
-          hover:bg-purple-700 hover:shadow-lg
-          focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0
-          active:bg-purple-800 active:shadow-lg
-          transition
-          duration-150
-          ease-in-out
-        "
-        data-bs-dismiss="modal"
-        (click)="closeModal()"
-      >
-        Close
-      </button>
-      <button
-        type="button"
-        class="
-          inline-block
-          px-6
-          py-2.5
-          bg-blue-600
-          text-white
-          font-medium
-          text-xs
-          leading-tight
-          uppercase
-          rounded
-          shadow-md
-          hover:bg-blue-700 hover:shadow-lg
-          focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-          active:bg-blue-800 active:shadow-lg
-          transition
-          duration-150
-          ease-in-out
-          ml-1
-        "
-        (click)="hideModal()"
-      >
-        Hide Modal
-      </button> -->
+    <div class="flex-shrink- p-1 md:p-4 border-t border-gray-200 rounded-b-md">
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-center">
+        <div class="lg:w-3/5 w-full flex items-center justify-between">
+          <button
+            class="
+              flex
+              items-center
+              pt-3
+              text-gray-600
+              hover:text-indigo-700
+              cursor-pointer
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:hover:text-gray-600
+            "
+            (click)="loadData(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.1665 4H12.8332"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M1.1665 4L4.49984 7.33333"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M1.1665 4.00002L4.49984 0.666687"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p class="text-sm ml-3 font-medium leading-none">Previous</p>
+          </button>
+          <div class="sm:flex hidden">
+            <!-- Display count per display and total data count -->
+            <p class="text-sm font-medium leading-none text-gray-600 pt-3 px-2">
+              {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
+              {{ currentPage * itemsPerPage | number: '1.0-0' }} of
+              {{ totalDataCount | number: '1.0-0' }}
+            </p>
+          </div>
+          <button
+            class="
+              flex
+              items-center
+              pt-3
+              text-gray-600
+              hover:text-indigo-700
+              cursor-pointer
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:hover:text-gray-600
+            "
+            (click)="loadData(currentPage + 1)"
+            [disabled]="currentPage * itemsPerPage >= totalDataCount"
+          >
+            <p class="text-sm font-medium leading-none mr-3">Next</p>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.1665 4H12.8332"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.5 7.33333L12.8333 4"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.5 0.666687L12.8333 4.00002"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

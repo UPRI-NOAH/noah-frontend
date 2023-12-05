@@ -28,6 +28,7 @@ import {
   RiskAssessmentExposureType,
   RiskAssessmentState,
   RiskAssessmentGroupState,
+  CalculateRiskButton,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -181,10 +182,26 @@ export class NoahPlaygroundService {
     );
   }
 
-  get riskAssessmentPopuShown$(): Observable<boolean> {
+  get riskAssessmentExpoShown$(): Observable<boolean> {
     return this.store.state$.pipe(
-      map((state) => state.riskAssessment.exposuretypes.population.shown)
+      map((state) => state.riskAssessment.exposuretypes.shown)
     );
+  }
+
+  get populationShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.populationtypes.population.shown)
+    );
+  }
+
+  get rainForcastShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.raintypes['rain-forecast'].shown)
+    );
+  }
+
+  get btnCalculateShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -237,11 +254,19 @@ export class NoahPlaygroundService {
     );
   }
 
-  getExposureRiskAssessment$(
+  getPopulationExposure$(
     riskType: RiskAssessmentExposureType
   ): Observable<RiskAssessmentState> {
     return this.store.state$.pipe(
-      map((state) => state.riskAssessment.exposuretypes[riskType])
+      map((state) => state.riskAssessment.exposuretypes)
+    );
+  }
+
+  getExposure$(
+    riskType: RiskAssessmentExposureType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes)
     );
   }
 
@@ -367,6 +392,27 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.barangayBoundary.types[barangayBoundary].shown)
     );
+  }
+
+  setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
+    const btnCalculateRisk: CalculateRiskButton = {
+      ...this.store.state.btnCalculateRisk,
+    };
+
+    btnCalculateRisk.shown = value;
+
+    this.store.patch(
+      {
+        btnCalculateRisk,
+      },
+      `Check Button Calculate Risk ${value}`
+    );
+  }
+
+  getCalculateRiskBtn(
+    calculateRisk: CalculateRiskButton
+  ): Observable<CalculateRiskButton> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk));
   }
 
   setHazardTypeColor(
@@ -515,6 +561,15 @@ export class NoahPlaygroundService {
     );
   }
 
+  setExposureCheckShown(value: boolean, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes.shown = value;
+    this.store.patch({ riskAssessment }, `Checkbox - update shown to ${value}`);
+  }
+
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -524,6 +579,29 @@ export class NoahPlaygroundService {
     this.store.patch(
       { volcanoes },
       `Volcano - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setRainForeCastOpacity(value: number, type: RiskAssessmentRainType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.raintypes['rain-forecast'].opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Rain Forecast - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setPopulationOpacity(value: number, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+    riskAssessment.exposuretypes.opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Population Affected - update ${type}'s opacity to ${value}`
     );
   }
 
@@ -869,15 +947,17 @@ export class NoahPlaygroundService {
 
   toggleAffectedPopulationVisibility(): void {
     const riskAssessment = {
-      ...this.store.state.riskAssessment.exposuretypes.population,
+      ...this.store.state.riskAssessment,
     };
-    riskAssessment.shown = true;
+    riskAssessment.populationtypes.population.shown = true;
+    this.store.patch({ riskAssessment }, `Show Affected Population`);
   }
 
   toggleAffectedPopulationVisibilityFalse(): void {
     const riskAssessment = {
-      ...this.store.state.riskAssessment.exposuretypes.population,
+      ...this.store.state.riskAssessment,
     };
-    riskAssessment.shown = false;
+    riskAssessment.populationtypes.population.shown = false;
+    this.store.patch({ riskAssessment }, `Hide Affected Population`);
   }
 }

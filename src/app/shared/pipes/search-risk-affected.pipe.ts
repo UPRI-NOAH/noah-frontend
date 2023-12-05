@@ -5,24 +5,37 @@ import { AffectedData } from '@features/noah-playground/services/risk-assessment
   name: 'searchRiskAffected',
 })
 export class SearchRiskAffectedPipe implements PipeTransform {
-  transform(summaryData: AffectedData[], searchValue: string): AffectedData[] {
-    if (!summaryData || !searchValue) {
-      return summaryData;
+  transform(allData: AffectedData[], searchValue: string): AffectedData[] {
+    if (!allData || !searchValue) {
+      return allData;
     }
-    return summaryData.filter(
+    return allData.filter(
       (data) =>
-        data.province
+        data.brgy
           .toLocaleLowerCase()
-          .includes(searchValue.toLocaleLowerCase())
-      // data.province
-      //   .toLocaleLowerCase()
-      //   .includes(searchValue.toLocaleLowerCase()) ||
-      // data.municipality
-      //   .toLocaleLowerCase()
-      //   .includes(searchValue.toLocaleLowerCase()) ||
-      // data.barangay
-      //   .toLocaleLowerCase()
-      //   .includes(searchValue.toLocaleLowerCase())
+          .includes(searchValue.toLocaleLowerCase()) ||
+        data.muni
+          .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase()) ||
+        data.prov
+          .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase()) ||
+        data.total_pop
+          .toLocaleString()
+          .replace(/,/g, '')
+          .includes(searchValue.toLocaleString()) ||
+        data.total_aff_pop
+          .toLocaleString()
+          .replace(/,/g, '')
+          .includes(searchValue.toLocaleString()) ||
+        data.exposed_medhigh
+          .toLocaleString()
+          .replace(/,/g, '')
+          .includes(searchValue.toLocaleString()) ||
+        data.perc_aff_medhigh
+          .toLocaleString()
+          .replace(/,/g, '')
+          .includes(searchValue.toLocaleString())
     );
   }
 }

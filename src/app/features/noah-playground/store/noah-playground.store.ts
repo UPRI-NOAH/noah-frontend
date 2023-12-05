@@ -122,13 +122,19 @@ export type IotMunicipalitiesState = {
 
 export type RiskAssessmentState = {
   shown: boolean;
+  opacity: number;
+};
+
+export type CalculateRiskButton = {
+  shown: boolean;
 };
 
 export type RiskAssessmentGroupState = {
   shown: boolean;
   expanded: boolean;
   raintypes: Record<RiskAssessmentRainType, RiskAssessmentState>;
-  exposuretypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
+  exposuretypes: RiskAssessmentState;
+  populationtypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
 };
 
 export type VolcanoGroupState = {
@@ -243,6 +249,7 @@ type NoahPlaygroundState = {
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
   qcCenter: { lng: number; lat: number };
+  btnCalculateRisk: CalculateRiskButton;
   qcZoom: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -261,6 +268,9 @@ type NoahPlaygroundState = {
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
+  btnCalculateRisk: {
+    shown: false,
+  },
   exaggeration: {
     shown: true,
     expanded: false,
@@ -370,11 +380,17 @@ const createInitialValue = (): NoahPlaygroundState => ({
     raintypes: {
       'rain-forecast': {
         shown: false,
+        opacity: 100,
       },
     },
     exposuretypes: {
+      shown: false,
+      opacity: 100,
+    },
+    populationtypes: {
       population: {
         shown: false,
+        opacity: 100,
       },
     },
   },

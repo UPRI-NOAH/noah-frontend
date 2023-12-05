@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
+  CalculateRiskButton,
   RiskAssessmentExposureType,
   RiskAssessmentRainType,
 } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { shareReplay, first } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-risk-assessment-group',
@@ -16,17 +17,23 @@ import { shareReplay } from 'rxjs/operators';
 export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentRainTypeList: RiskAssessmentRainType[] = ['rain-forecast'];
   riskAssessmentExposureTypeList: RiskAssessmentExposureType[] = ['population'];
+  @Input() btnCalculateRisk: CalculateRiskButton;
+  @Input() rainForecast: RiskAssessmentRainType;
+  @Input() populationAffected: RiskAssessmentExposureType;
 
   expanded$: Observable<boolean>;
   riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
 
-  isButtonEnabled = false;
+  initialRainOpacityValue: number = 100;
+  initialPopuOpacityValue: number = 100;
+
+  isButtonEnabled: boolean = false;
   checkedRain = false;
   checkedPopu = false;
   checkedShown = false;
 
-  raBtnPopu = false;
+  popuLegend = false;
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -34,14 +41,44 @@ export class RiskAssessmentGroupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
-      this.raBtnPopu = raBtnPopu;
+    this.modalService.legendHide$.subscribe((hideLegend) => {
+      this.popuLegend = hideLegend;
     });
+
     this.expanded$ = this.pgService.riskAssessmentGroupExpanded$.pipe(
       shareReplay(1)
     );
     this.shown$ = this.pgService.riskAssessmentGroupShown$.pipe(shareReplay(1));
-    this.pgService.riskAssessmentPopuShown$;
+    this.pgService.riskAssessmentExpoShown$;
+
+    this.pgService
+      .getCalculateRiskBtn(this.btnCalculateRisk)
+      .pipe(first())
+      .subscribe(({ shown }) => {
+        this.isButtonEnabled = shown;
+      });
+
+    this.pgService
+      .getRainRiskAssessment$(this.rainForecast)
+      .pipe(first())
+      .subscribe(({ opacity }) => {
+        this.initialRainOpacityValue = opacity;
+      });
+
+    this.pgService
+      .getPopulationExposure$(this.populationAffected)
+      .pipe(first())
+      .subscribe(({ opacity }) => {
+        this.initialPopuOpacityValue = opacity;
+      });
+  }
+
+  changeRainOpacity(opacity: number) {
+    this.pgService.setRainForeCastOpacity(opacity, this.rainForecast);
+  }
+
+  changePopuOpacity(opacity: number) {
+    this.pgService.setPopulationOpacity(opacity, this.populationAffected);
   }
 
   toggleExpanded(event: Event) {
@@ -59,6 +96,8 @@ export class RiskAssessmentGroupComponent implements OnInit {
 
     if (!this.checkedShown) {
       this.modalService.closeBtnRiskAssessment();
+      this.popuLegend = false;
+      this.pgService.toggleAffectedPopulationVisibilityFalse();
     }
   }
 
@@ -74,27 +113,25 @@ export class RiskAssessmentGroupComponent implements OnInit {
     events.stopImmediatePropagation();
     this.checkedPopu = (events.target as HTMLInputElement).checked;
     this.updateButtonEnabled();
-    if (!this.checkedShown) {
-      this.pgService.toggleAffectedPopulationVisibilityFalse();
+    if (!this.checkedPopu) {
+      this.popuLegend = false;
+      this.modalService.closeBtnRiskAssessment();
     }
   }
 
   calculateRisk() {
     this.modalService.openRiskModal();
+    this.popuLegend = true;
     this.pgService.toggleAffectedPopulationVisibility();
-    this.raBtnPopu = false;
   }
 
   updateButtonEnabled() {
+    this.isButtonEnabled = !this.isButtonEnabled;
+    this.pgService.setBtnCalculateRiskShown(
+      this.isButtonEnabled,
+      this.btnCalculateRisk
+    );
     this.isButtonEnabled =
       this.checkedPopu && this.checkedRain && this.checkedShown;
-  }
-
-  closeBtnRisk() {
-    this.raBtnPopu = false;
-  }
-
-  openModalPopu() {
-    this.modalService.openRiskModal();
   }
 }
