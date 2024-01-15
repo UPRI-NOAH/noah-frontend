@@ -33,6 +33,10 @@ export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
 
 export type BarangayBoundary = 'brgy-boundary';
 
+export type RiskAssessmentRainType = 'rain-forecast';
+
+export type RiskAssessmentExposureType = 'population';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -114,6 +118,23 @@ export type IotMunicipalityTypeState = {
 
 export type IotMunicipalitiesState = {
   shown: boolean;
+};
+
+export type RiskAssessmentState = {
+  shown: boolean;
+  opacity: number;
+};
+
+export type CalculateRiskButton = {
+  shown: boolean;
+};
+
+export type RiskAssessmentGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  raintypes: Record<RiskAssessmentRainType, RiskAssessmentState>;
+  exposuretypes: RiskAssessmentState;
+  populationtypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
 };
 
 export type VolcanoGroupState = {
@@ -223,10 +244,12 @@ type NoahPlaygroundState = {
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
   volcanoes: VolcanoGroupState;
+  riskAssessment: RiskAssessmentGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
   center: { lng: number; lat: number };
   qcCenter: { lng: number; lat: number };
+  btnCalculateRisk: CalculateRiskButton;
   qcZoom: { lng: number; lat: number };
   currentLocation: string;
   sensors: SensorsState;
@@ -245,6 +268,9 @@ type NoahPlaygroundState = {
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
+  btnCalculateRisk: {
+    shown: false,
+  },
   exaggeration: {
     shown: true,
     expanded: false,
@@ -343,6 +369,26 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 100,
       },
       inactive: {
+        shown: false,
+        opacity: 100,
+      },
+    },
+  },
+  riskAssessment: {
+    shown: false,
+    expanded: false,
+    raintypes: {
+      'rain-forecast': {
+        shown: false,
+        opacity: 100,
+      },
+    },
+    exposuretypes: {
+      shown: false,
+      opacity: 100,
+    },
+    populationtypes: {
+      population: {
         shown: false,
         opacity: 100,
       },

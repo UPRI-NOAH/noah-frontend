@@ -200,6 +200,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
+        this.initAffectedExposure();
+        this.initRainForcast();
       });
   }
 
@@ -1483,6 +1485,71 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  initRainForcast() {
+    const rainForcastImage = {
+      'rain-forecast': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        type: 'image',
+      },
+    };
+
+    const getRainForcastSource = (rainForcastDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (rainForcastDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: rainForcastDetails.url,
+            coordinates: [
+              [116.955, 19.352],
+              [126.955, 19.352],
+              [126.955, 5.305],
+              [116.955, 5.305],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Rain Forcast');
+      }
+    };
+    Object.keys(rainForcastImage).forEach((rainType) => {
+      const rainForcastDetails = rainForcastImage[rainType];
+      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
+
+      this.map.addLayer({
+        id: rainType,
+        type: 'raster',
+        source: rainType,
+        paint: {
+          'raster-fade-duration': 0,
+          'raster-opacity': 1,
+        },
+      });
+
+      const soloShown$ = this.pgService.rainForcastShown$.pipe(shareReplay(1));
+
+      const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+        shareReplay(1)
+      );
+
+      const rainForeCast$ = this.pgService
+        .getRainRiskAssessment$('rain-forecast')
+        .pipe(shareReplay(1));
+
+      combineLatest([allShown$, soloShown$, rainForeCast$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, groupShown, rainForeCast]) => {
+          let newOpacity = 0;
+          if (allShown && groupShown) {
+            newOpacity = rainForeCast.opacity / 100;
+          }
+          // let opacity = +(allShown && groupShown);
+          this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
+        });
+    });
+  }
+
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
@@ -1576,6 +1643,102 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
       }
+    );
+  }
+
+  async initAffectedExposure() {
+    const PH_AFFECTED_DATA = await this.pgService.getAffectedPopulationData();
+    const response = await fetch(
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/affected_psgc.json'
+    );
+    const affectedData = await response.json();
+
+    // Extract Bgy_Codes from affectedData and create a Set for faster lookup
+    const affectedBgyCodes = new Set(affectedData.map((item) => item));
+
+    // Use Promise.all to batch load sources and layers
+    await Promise.all(
+      PH_AFFECTED_DATA.map(async (layerData) => {
+        const sourceData = {
+          type: 'vector',
+          url: layerData.url,
+        } as mapboxgl.AnySourceData;
+
+        await Promise.all(
+          layerData.sourceLayer.map(async (sourceLayer) => {
+            this.map.addSource(sourceLayer, sourceData);
+
+            this.map.addLayer({
+              id: sourceLayer,
+              type: 'fill',
+              source: sourceLayer,
+              'source-layer': sourceLayer,
+              paint: {
+                'fill-color': [
+                  'case',
+                  [
+                    'in',
+                    ['get', 'Bgy_Code'],
+                    ['literal', [...affectedBgyCodes]],
+                  ],
+                  [
+                    'case',
+                    ['has', 'Var'],
+                    [
+                      'match',
+                      ['get', 'Var'],
+                      1,
+                      NOAH_COLORS['noah-pink'].low,
+                      2,
+                      NOAH_COLORS['noah-pink'].medium,
+                      3,
+                      NOAH_COLORS['noah-pink'].high,
+                      'transparent',
+                    ],
+                    [
+                      'match',
+                      ['get', 'HAZ'],
+                      1,
+                      NOAH_COLORS['noah-pink'].low,
+                      2,
+                      NOAH_COLORS['noah-pink'].medium,
+                      3,
+                      NOAH_COLORS['noah-pink'].high,
+                      'transparent',
+                    ],
+                  ],
+                  'transparent',
+                ],
+                'fill-opacity': 0.7,
+              },
+            });
+            const groupShown$ = this.pgService.populationShown$.pipe(
+              shareReplay(1)
+            );
+
+            const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+              shareReplay(1)
+            );
+            const populationAffected$ = this.pgService
+              .getPopulationExposure$('population')
+              .pipe(shareReplay(1));
+
+            combineLatest([allShown$, groupShown$, populationAffected$])
+              .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+              .subscribe(([allShown, groupShown, populationAffected]) => {
+                let newOpacity = 0;
+                if (populationAffected.shown && allShown && groupShown) {
+                  newOpacity = populationAffected.opacity / 100;
+                }
+                this.map.setPaintProperty(
+                  sourceLayer,
+                  'fill-opacity',
+                  newOpacity
+                );
+              });
+          })
+        );
+      })
     );
   }
 
