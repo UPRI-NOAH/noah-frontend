@@ -31,6 +31,7 @@ import { RiskAssessmentGroupComponent } from './components/risk-assessment-group
 import { RiskAssessmentModalComponent } from './components/risk-assessment-modal/risk-assessment-modal.component';
 import { RiskAssessmentRainComponent } from './components/risk-assessment-rain/risk-assessment-rain.component';
 import { RiskAssessmentExposureComponent } from './components/risk-assessment-exposure/risk-assessment-exposure.component';
+import { BrgyInawayanComponent } from './components/brgy-inawayan/brgy-inawayan.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { RiskAssessmentExposureComponent } from './components/risk-assessment-ex
     RiskAssessmentModalComponent,
     RiskAssessmentRainComponent,
     RiskAssessmentExposureComponent,
+    BrgyInawayanComponent,
   ],
   imports: [
     CommonModule,

@@ -29,6 +29,8 @@ import {
   RiskAssessmentState,
   RiskAssessmentGroupState,
   CalculateRiskButton,
+  BarangayInawayanGroupState,
+  BrgyInawayan,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -202,6 +204,14 @@ export class NoahPlaygroundService {
 
   get btnCalculateShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
+  }
+
+  get brgyInawayanShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.brgyInawayan.shown));
+  }
+
+  get brgyInawayanExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.brgyInawayan.expanded));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -394,6 +404,10 @@ export class NoahPlaygroundService {
     );
   }
 
+  getBarangayInawayanShown$(brgyInawayan: BrgyInawayan): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.brgyInawayan.shown));
+  }
+
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
     const btnCalculateRisk: CalculateRiskButton = {
       ...this.store.state.btnCalculateRisk,
@@ -531,6 +545,19 @@ export class NoahPlaygroundService {
     this.store.patch(
       { riskAssessment },
       `Risk Assessment ${property}, ${!currentValue}`
+    );
+  }
+
+  toggleBarangayInawayanGroupProperty(property: 'expanded' | 'shown') {
+    const brgyInawayan: BarangayInawayanGroupState = {
+      ...this.store.state.brgyInawayan,
+    };
+
+    const currentvalue = brgyInawayan[property];
+    brgyInawayan[property] = !currentvalue;
+    this.store.patch(
+      { brgyInawayan },
+      `Barangay Inawayan ${property}, ${!currentvalue}`
     );
   }
 

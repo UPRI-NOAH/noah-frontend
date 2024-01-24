@@ -72,6 +72,7 @@ import {
   QCCRITFAC,
   QCBoundary,
   BARANGAYBOUNDARY,
+  INAWAYAN,
 } from '@features/noah-playground/services/qc-sensor.service';
 
 import {
@@ -92,6 +93,7 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
+  BrgyInawayan,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -202,6 +204,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initBarangayBoundary();
         this.initAffectedExposure();
         this.initRainForcast();
+        this.initBrgyInawayan();
       });
   }
 
@@ -1097,6 +1100,66 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   // END OF QC IOT
+
+  initBrgyInawayan() {
+    INAWAYAN.forEach((brgyInawayan: BrgyInawayan) => {
+      this.qcSensorService
+        .getBrgyInawayan()
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // add layer to map
+          this.map.addLayer({
+            id: 'brgy-inawayan',
+            type: 'fill',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'fill-color': '#000000', // white fill
+              'fill-opacity': 0.01,
+            },
+          });
+          this.map.addLayer({
+            id: 'brgy_inawayan',
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'line-color': '#000', // black line
+              'line-width': 3,
+              'line-opacity': 0.75,
+              'line-dasharray': [1, 2],
+            },
+          });
+          // add show/hide listeners
+          combineLatest([this.pgService.brgyInawayanShown$])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown]) => {
+              const fillColor = groupShown ? '#000000' : 'rgba(0,0,0,0)';
+              this.map.setPaintProperty(
+                'brgy-inawayan',
+                'fill-color',
+                fillColor
+              );
+              this.map.setPaintProperty(
+                'brgy_inawayan',
+                'line-opacity',
+                +groupShown
+              );
+            });
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch qc municipal boundary "${brgyInawayan}"`
+          )
+        );
+    });
+  }
+
   initSensors() {
     SENSORS.forEach((sensorType) => {
       this.sensorService

@@ -37,6 +37,8 @@ export type RiskAssessmentRainType = 'rain-forecast';
 
 export type RiskAssessmentExposureType = 'population';
 
+export type BrgyInawayan = 'brgy-inawayan';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -66,6 +68,11 @@ export type HazardLevel =
   | LandslideHazards;
 
 type HazardState = {
+  shown: boolean;
+  expanded: boolean;
+};
+
+export type BarangayInawayanGroupState = {
   shown: boolean;
   expanded: boolean;
 };
@@ -240,6 +247,7 @@ export type QuezonCitySensorsState = {
 
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
+  brgyInawayan: BarangayInawayanGroupState;
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
@@ -270,6 +278,10 @@ type NoahPlaygroundState = {
 const createInitialValue = (): NoahPlaygroundState => ({
   btnCalculateRisk: {
     shown: false,
+  },
+  brgyInawayan: {
+    shown: true,
+    expanded: false,
   },
   exaggeration: {
     shown: true,

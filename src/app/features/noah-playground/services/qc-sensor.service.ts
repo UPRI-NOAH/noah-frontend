@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BarangayBoundary,
+  BrgyInawayan,
   QuezonCityCriticalFacilities,
   QuezonCityMunicipalBoundary,
   QuezonCitySensorType,
@@ -30,6 +31,7 @@ export const QCBoundary: QuezonCityMunicipalBoundary[] = [
 
 export const BARANGAYBOUNDARY: BarangayBoundary[] = ['brgy-boundary'];
 
+export const INAWAYAN: BrgyInawayan[] = ['brgy-inawayan'];
 interface ResponseData {
   results: any[]; // Replace 'any' with the appropriate type of the 'results' property
   next: string | null; // Adjust the type if needed
@@ -75,6 +77,12 @@ export class QcSensorService {
   getLocation() {
     return this.http.get(
       `${this.QCBASE_URL}/api/iot-sensors/?municity[]=laguna&municity[]=quezon_city`
+    );
+  }
+
+  getBrgyInawayan() {
+    return this.http.get(
+      `${this.UPRI_S3_BASE_URL}/boundary/inawayan_stacruz_davaodelsur.geojson`
     );
   }
 
