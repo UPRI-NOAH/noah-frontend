@@ -17,7 +17,7 @@ export type AffectedData = {
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-  private API_BASE_URL = 'https://5608-136-158-11-188.ngrok.io';
+  private API_BASE_URL = 'https://panahon.up.edu.ph';
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
