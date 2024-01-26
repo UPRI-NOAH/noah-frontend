@@ -379,7 +379,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     raintypes: {
       'rain-forecast': {
-        shown: false,
+        shown: true,
         opacity: 100,
       },
     },

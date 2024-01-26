@@ -8,8 +8,8 @@
         (click)="toggleShown($event)"
       />
     </label>
-    <div class="ml-3 text-xl leading-none font-bold flex items-center mr-2">
-      Risk Assessment
+    <div class="ml-3 text-lg leading-none font-bold flex items-center mr-1">
+      Exposure Assessment
     </div>
     <div class="flex space-x-5 justify-center items-center pl-2">
       <div
@@ -32,7 +32,7 @@
             rounded-[4px]
             bg-blue-700
             py-1
-            px-2
+            px-1
             align-baseline
             font-sans
             text-xs
@@ -158,7 +158,7 @@
             ></noah-risk-assessment-exposure>
           </div>
           <div class="mt-1 pl-3">
-            <div class="text-lg f-f-r capitalize">Population</div>
+            <div class="text-lg f-f-r capitalize">Flood Prone Population</div>
           </div>
         </div>
 
@@ -217,11 +217,11 @@
       <div class="px-6 justify-center items-center">
         <button
           class="
-            text-sm
+            text-xs
             font-bold
             bg-green-600
             rounded-full
-            px-10
+            px-4
             py-2
             my-4
             inline-flex
@@ -240,7 +240,7 @@
           (click)="calculateRisk()"
           [disabled]="!isButtonEnabled"
         >
-          Calculate Risk
+          Calculate Flood Exposure
         </button>
       </div>
     </div>
