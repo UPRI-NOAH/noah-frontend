@@ -29,7 +29,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
   initialPopuOpacityValue: number = 100;
 
   isButtonEnabled: boolean = false;
-  checkedRain = false;
+  checkedRain = true;
   checkedPopu = false;
   checkedShown = false;
 
