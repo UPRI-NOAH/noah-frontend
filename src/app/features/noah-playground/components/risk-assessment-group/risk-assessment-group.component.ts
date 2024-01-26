@@ -25,8 +25,8 @@ export class RiskAssessmentGroupComponent implements OnInit {
   riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
 
-  initialRainOpacityValue: number = 100;
-  initialPopuOpacityValue: number = 100;
+  initialRainOpacityValue: number = 80;
+  initialPopuOpacityValue: number = 80;
 
   isButtonEnabled: boolean = false;
   checkedRain = true;
