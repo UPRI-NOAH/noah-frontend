@@ -352,7 +352,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
       'storm-surge-advisory-4': {
         opacity: 85,
         color: 'noah-red',
-        shown: false,
+        shown: true,
       },
     },
   },

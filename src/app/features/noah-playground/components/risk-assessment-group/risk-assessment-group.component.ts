@@ -92,6 +92,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
     event.stopImmediatePropagation();
     this.checkedShown = (event.target as HTMLInputElement).checked;
     this.pgService.toggleRiskAssessmentGroupProperty('shown');
+    this.pgService.toggleRiskAssessmentGroupProperty('expanded');
     this.updateButtonEnabled();
 
     if (!this.checkedShown) {

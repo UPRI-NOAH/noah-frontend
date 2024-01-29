@@ -240,7 +240,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center,
-          zoom: 13,
+          zoom: 16,
           essential: true,
         });
 

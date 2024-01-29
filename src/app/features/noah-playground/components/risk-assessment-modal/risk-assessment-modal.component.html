@@ -207,7 +207,7 @@
                 <div
                   role="button"
                   (click)="onHeaderColumnClick(col.key)"
-                  class="flex items-center"
+                  class="flex leading-none items-center"
                 >
                   {{ col.header }}
                   <svg
@@ -409,13 +409,14 @@
           </button>
         </div>
       </div>
-      <div class="bg-red-100 p-2 leading-none rounded-lg">
+      <div class="bg-red-100 p-2 rounded-lg">
         <p
           class="
             lg:text-base
             text-sm
             italic
             my-2
+            leading-none
             whitespace-pre-line
             text-ellipsis
           "
@@ -428,11 +429,11 @@
           <span
             role="button"
             *ngIf="btnReadMore"
-            class="display xl:hidden text-blue-500"
+            class="display text-blue-500"
             (click)="mobileDisclaimerSeemore()"
             >Read more...</span
           >
-          <span class="hidden xl:inline">
+          <!-- <span class="hidden xl:inline">
             The UP NOAH Center holds no responsibility or liability for any
             inconsistencies, inaccuracies, or data omissions related to
             predicted or depicted weather forecasts, whether reported, ongoing,
@@ -444,7 +445,7 @@
             improvement or error notifications are welcome. Please follow the
             official sites of the government and use this site only for
             supplementary information.
-          </span>
+          </span> -->
           <span *ngIf="mobileDisclaimer">
             The UP NOAH Center holds no responsibility or liability for any
             inconsistencies, inaccuracies, or data omissions related to
