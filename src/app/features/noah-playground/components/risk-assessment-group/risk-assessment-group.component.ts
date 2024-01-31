@@ -116,6 +116,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
         'expanded',
         this.expandedValue
       );
+      this.modalService.showEaPopup();
     }
   }
 

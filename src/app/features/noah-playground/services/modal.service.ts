@@ -35,7 +35,24 @@ export class ModalService {
   private legendHide = new Subject<boolean>();
   legendHide$ = this.legendHide.asObservable();
 
+  private eaPopup = new Subject<boolean>();
+  private popupShown = false;
+  eaPopup$ = this.eaPopup.asObservable();
+
   constructor() {}
+
+  hideEaPopup() {
+    this.eaPopup.next(false);
+  }
+
+  showEaPopup() {
+    // this.eaPopup.next(true);
+    // Check if the popup has already been shown
+    if (!this.popupShown) {
+      this.eaPopup.next(true);
+      this.popupShown = true; // Set the flag to true once the popup is shown
+    }
+  }
 
   hideLegend() {
     this.legendHide.next(false);
