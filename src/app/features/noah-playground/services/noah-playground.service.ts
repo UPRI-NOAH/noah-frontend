@@ -521,13 +521,17 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
-  toggleRiskAssessmentGroupProperty(property: 'expanded' | 'shown') {
+  toggleRiskAssessmentGroupProperty(
+    property: 'expanded' | 'shown',
+    value: boolean
+  ) {
     const riskAssessment: RiskAssessmentGroupState = {
       ...this.store.state.riskAssessment,
     };
 
     const currentValue = riskAssessment[property];
-    riskAssessment[property] = !currentValue;
+    //riskAssessment[property] = !currentValue; remain this if ever we have changes
+    riskAssessment[property] = value;
     this.store.patch(
       { riskAssessment },
       `Risk Assessment ${property}, ${!currentValue}`

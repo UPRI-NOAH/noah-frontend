@@ -1,5 +1,5 @@
 <div class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6">
-  <div class="flex cursor-pointer select-none">
+  <div class="flex cursor-pointer select-none" (click)="toggleExpanded($event)">
     <label class="inline-flex items-center checkbox">
       <input
         type="checkbox"
@@ -123,7 +123,10 @@
       </button>
     </div>
   </div>
-  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
+  <div
+    *ngIf="isExpanded"
+    [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '"
+  >
     <hr class="pb-4" />
     <div class="pl-2">
       <div class="items-center">
