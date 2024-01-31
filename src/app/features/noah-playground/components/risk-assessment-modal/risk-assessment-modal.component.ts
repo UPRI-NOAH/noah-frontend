@@ -81,7 +81,6 @@ export class RiskAssessmentModalComponent implements OnInit {
 
       if (response.results.length === 0) {
         this.affectedData = [];
-        this.errorMsg = 'NO DATA';
       } else {
         const raData = response.results.map((a) => {
           return {
