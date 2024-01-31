@@ -143,16 +143,6 @@
           </div>
         </div>
         <div class="flex items-center pt-2">
-          <div class="flex flex-col pl-12">
-            <div class="flex items-center mb-1">
-              <label class="inline-flex items-center">
-                <img src="assets/legends/rainfall-forecast-legend.png" />
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center pl-6 pt-2">
           <noah-slider
             label="Opacity"
             [initialValue]="initialRainOpacityValue"
@@ -160,6 +150,15 @@
             [max]="100"
             (valueChange)="changeRainOpacity($event)"
           ></noah-slider>
+        </div>
+        <div class="flex items-center pl-6 py-4">
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <label class="inline-flex items-center">
+                <img src="assets/legends/rainfall-forecast-legend.png" />
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="flex flex-row">
@@ -174,35 +173,21 @@
             <div class="text-lg f-f-r capitalize">Flood Prone Population</div>
           </div>
         </div>
-
-        <div class="flex flex-col ml-7 mt-2" *ngIf="popuLegend">
-          <div class="text-base ml-2 f-f-r mb-2">
+        <div class="flex items-center pt-2">
+          <noah-slider
+            label="Opacity"
+            [initialValue]="initialPopuOpacityValue"
+            [min]="0"
+            [max]="100"
+            (valueChange)="changePopuOpacity($event)"
+          ></noah-slider>
+        </div>
+        <div class="flex flex-col ml-6 mt-2" *ngIf="popuLegend">
+          <div class="text-base f-f-r mb-4">
             Population Exposure to Flood 100-Year Return Period
           </div>
-          <div class="px-6">
-            <div class="flex flex-col">
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div
-                    class="h-6 w-6 mx-auto rounded-md"
-                    ngClass="bg-noah-pink-low"
-                  ></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none capitalize">Low</div>
-                </div>
-              </div>
-              <div class="flex items-center mb-1">
-                <label class="inline-flex items-center">
-                  <div
-                    class="h-6 w-6 mx-auto rounded-md"
-                    ngClass="bg-noah-pink-medium"
-                  ></div>
-                </label>
-                <div class="flex flex-col ml-3">
-                  <div class="text-m leading-none capitalize">Moderate</div>
-                </div>
-              </div>
+          <div class="inline-flex">
+            <div class="inline-flex flex-col">
               <div class="flex items-center mb-1">
                 <label class="inline-flex items-center">
                   <div
@@ -210,20 +195,29 @@
                     ngClass="bg-noah-pink-high"
                   ></div>
                 </label>
-                <div class="flex flex-col ml-3">
+                <div class="flex flex-col mx-2">
                   <div class="text-m leading-none capitalize">High</div>
+                </div>
+                <label class="inline-flex items-center ml-2">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-medium"
+                  ></div>
+                </label>
+                <div class="flex flex-col mx-2">
+                  <div class="text-m leading-none capitalize">Moderate</div>
+                </div>
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-low"
+                  ></div>
+                </label>
+                <div class="flex flex-col mx-2">
+                  <div class="text-m leading-none capitalize">Low</div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="flex items-center pt-2">
-            <noah-slider
-              label="Opacity"
-              [initialValue]="initialPopuOpacityValue"
-              [min]="0"
-              [max]="100"
-              (valueChange)="changePopuOpacity($event)"
-            ></noah-slider>
           </div>
         </div>
       </div>
