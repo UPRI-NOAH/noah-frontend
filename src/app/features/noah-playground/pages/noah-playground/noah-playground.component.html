@@ -48,6 +48,15 @@
     <span class="sr-only">Open menu</span>
   </button>
 
+  <div class="p-2 z-50 h-10 bottom-10" *ngIf="raBtnPopu">
+    <div class="mapboxgl-ctrl-bottom-left mb-6">
+      <div class="mapboxgl-ctrl">
+        <button class="raBtn" (click)="openModalPopu()">Data Summary</button>
+        <span role="button" class="x-raBtn" (click)="closeBtnRisk()"></span>
+      </div>
+    </div>
+  </div>
+
   <noah-search
     class="
       fixed
@@ -86,6 +95,24 @@
     *ngIf="isMenu"
     id="sidebar"
   >
+    <div
+      class="
+        md:bottom-20
+        absolute
+        z-10
+        hidden
+        md:inline-block md:left-96
+        flex-row
+        py-4
+      "
+      *ngIf="raBtnPopu && isMenu"
+    >
+      <a class="fixed max-w-xs items-center">
+        <button class="raBtn" (click)="openModalPopu()">Data Summary</button>
+        <span role="button" class="x-raBtn" (click)="closeBtnRisk()"></span>
+      </a>
+    </div>
+
     <!-- MAPBOX LOGO -->
     <div class="flex" *ngIf="isMenu">
       <div class="absolute p-2 z-20 -left-2 top-0 md:hidden">
@@ -100,6 +127,25 @@
                 aria-label="Mapbox logo"
               >
               </a>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="flex" *ngIf="raBtnPopu">
+      <div class="absolute z-20 -left-2 -top-4 md:hidden">
+        <a class="fixed max-w-xs items-center">
+          <div class="mapboxgl-ctrl-bottom-left mb-2">
+            <div class="mapboxgl-ctrl">
+              <button class="raBtn" (click)="openModalPopu()">
+                Data Summary
+              </button>
+              <span
+                role="button"
+                class="x-raBtn"
+                (click)="closeBtnRisk()"
+              ></span>
             </div>
           </div>
         </a>
@@ -184,6 +230,7 @@
         </a>
       </div>
     </div>
+
     <!-- MAPBOX LOGO -->
     <div class="flex" *ngIf="isMenu">
       <div class="absolute z-50 md:left-96 bottom-0 hidden md:block">
@@ -354,6 +401,7 @@
       <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group>
       <noah-qc-sensors-group></noah-qc-sensors-group>
+      <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
     </div>
   </nav>
   <!-- //Customizing Mapbox attribution -->
@@ -616,6 +664,9 @@
     </div>
   </div>
 </div>
+
+<noah-risk-assessment-modal></noah-risk-assessment-modal>
+
 <!-- WARNING FOR ACCOUNT DOWNLOAD RESTRICTION -->
 <div
   class="'z-50 fixed w-full flex justify-center inset-0"
