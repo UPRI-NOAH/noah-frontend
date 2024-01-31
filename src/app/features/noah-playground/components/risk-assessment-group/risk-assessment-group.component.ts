@@ -24,7 +24,7 @@ export class RiskAssessmentGroupComponent implements OnInit {
   expanded$: Observable<boolean>;
   riskAssessmentPopuShown$: Observable<boolean>;
   shown$: Observable<boolean>;
-
+  expandedValue: boolean = false;
   initialRainOpacityValue: number = 80;
   initialPopuOpacityValue: number = 80;
 
@@ -34,6 +34,10 @@ export class RiskAssessmentGroupComponent implements OnInit {
   checkedShown = false;
 
   popuLegend = false;
+
+  get isExpanded(): boolean {
+    return this.expandedValue;
+  }
 
   constructor(
     private pgService: NoahPlaygroundService,
@@ -84,21 +88,34 @@ export class RiskAssessmentGroupComponent implements OnInit {
   toggleExpanded(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    this.pgService.toggleRiskAssessmentGroupProperty('expanded');
+    this.expandedValue = !this.expandedValue;
+    this.pgService.toggleRiskAssessmentGroupProperty(
+      'expanded',
+      this.expandedValue
+    );
   }
 
   toggleShown(event: Event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     this.checkedShown = (event.target as HTMLInputElement).checked;
-    this.pgService.toggleRiskAssessmentGroupProperty('shown');
-    this.pgService.toggleRiskAssessmentGroupProperty('expanded');
     this.updateButtonEnabled();
-
+    this.expandedValue = true;
     if (!this.checkedShown) {
       this.modalService.closeBtnRiskAssessment();
       this.popuLegend = false;
       this.pgService.toggleAffectedPopulationVisibilityFalse();
+      this.pgService.toggleRiskAssessmentGroupProperty('shown', false);
+      this.pgService.toggleRiskAssessmentGroupProperty(
+        'expanded',
+        (this.expandedValue = false)
+      );
+    } else {
+      this.pgService.toggleRiskAssessmentGroupProperty('shown', true);
+      this.pgService.toggleRiskAssessmentGroupProperty(
+        'expanded',
+        this.expandedValue
+      );
     }
   }
 
