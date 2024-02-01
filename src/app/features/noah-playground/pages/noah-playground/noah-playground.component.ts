@@ -30,7 +30,7 @@ export class NoahPlaygroundComponent implements OnInit {
   isWarningAlert = false;
   disclaimerModalOpen = false;
   iotModalOpen = false;
-
+  raBtnPopu = false;
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -44,6 +44,10 @@ export class NoahPlaygroundComponent implements OnInit {
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
     this.UserName$ = this.qcLoginService.currentUserName;
 
+    this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
+      this.raBtnPopu = raBtnPopu;
+    });
+
     this.modalService.accountWarning$.subscribe((isWarningAlert) => {
       this.isWarningAlert = isWarningAlert;
     });
@@ -55,6 +59,7 @@ export class NoahPlaygroundComponent implements OnInit {
     this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
       this.iotModalOpen = iotModalOpen;
     });
+    3;
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
@@ -91,6 +96,16 @@ export class NoahPlaygroundComponent implements OnInit {
 
   openLogoutModal() {
     this.isLogoutAlert = true;
+  }
+
+  openModalPopu() {
+    this.modalService.openRiskModal();
+  }
+
+  closeBtnRisk() {
+    this.raBtnPopu = false;
+    this.modalService.hideLegend();
+    this.pgService.toggleAffectedPopulationVisibilityFalse();
   }
 
   closeModal() {

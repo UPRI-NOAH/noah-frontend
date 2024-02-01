@@ -1,0 +1,255 @@
+<div class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6">
+  <div class="flex cursor-pointer select-none" (click)="toggleExpanded($event)">
+    <label class="inline-flex items-center checkbox">
+      <input
+        type="checkbox"
+        class="checkbox h-5 w-5 text-blue-600"
+        [checked]="shown$ | async"
+        (click)="toggleShown($event)"
+      />
+    </label>
+    <div
+      class="
+        ml-3
+        text-lg text-left
+        leading-none
+        font-bold
+        flex
+        items-center
+        mr-2
+      "
+    >
+      Exposure Assessment
+    </div>
+    <div class="flex space-x-5 justify-center items-center">
+      <div
+        class="
+          relative
+          cursor-pointer
+          focus:outline-none
+          focus:ring-2
+          focus:ring-offset-2
+          focus:ring-gray-800
+        "
+      >
+        <div
+          class="
+            center
+            relative
+            inline-block
+            select-none
+            whitespace-nowrap
+            rounded-[4px]
+            bg-blue-700
+            py-1
+            px-1
+            align-baseline
+            font-sans
+            text-xs
+            font-medium
+            capitalize
+            leading-none
+            tracking-wide
+            text-white
+          "
+        >
+          <div class="mt-px">BETA</div>
+        </div>
+        <div
+          class="
+            animate-ping
+            w-1.5
+            h-1.5
+            bg-red-600
+            rounded-full
+            absolute
+            top-0
+            -right-1
+            m-auto
+            duration-200
+          "
+        ></div>
+        <div
+          class="
+            w-1.5
+            h-1.5
+            bg-red-600
+            rounded-full
+            absolute
+            top-0
+            -right-1
+            m-auto
+            shadow-lg
+          "
+        ></div>
+      </div>
+    </div>
+    <div class="ml-auto">
+      <button
+        class="
+          w-6
+          h-6
+          focus:outline-none
+          flex
+          items-center
+          justify-center
+          rounded-full
+        "
+      >
+        <svg
+          [ngClass]="(expanded$ | async) ? ' hidden ' : ' '"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1000 1000"
+          width="18"
+          height="12"
+        >
+          <path
+            d="M283.7 10l-58.4 58.4L656 500 225.3 931.6l58.4 58.4 491-490-491-490z"
+          />
+        </svg>
+        <svg
+          [ngClass]="(expanded$ | async) ? ' ' : ' hidden '"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 18 12"
+          fill="none"
+        >
+          <path
+            d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+            fill="#4A5568"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div
+    *ngIf="isExpanded"
+    [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '"
+  >
+    <hr class="pb-4" />
+    <div class="pl-2">
+      <div class="items-center">
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-rain
+              *ngFor="let riskType of riskAssessmentRainTypeList"
+              [rainRiskType]="riskType"
+              (click)="toggleRain($event)"
+            ></noah-risk-assessment-rain>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Rain Forecast</div>
+          </div>
+        </div>
+        <div class="flex items-center pt-2">
+          <noah-slider
+            label="Opacity"
+            [initialValue]="initialRainOpacityValue"
+            [min]="0"
+            [max]="100"
+            (valueChange)="changeRainOpacity($event)"
+          ></noah-slider>
+        </div>
+        <div class="flex items-center pl-6 py-4">
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <label class="inline-flex items-center">
+                <img src="assets/legends/rainfall-forecast-legend.png" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-row">
+          <div>
+            <noah-risk-assessment-exposure
+              *ngFor="let riskTypes of riskAssessmentExposureTypeList"
+              [exposureRiskType]="riskTypes"
+              (click)="togglePopu($event)"
+            ></noah-risk-assessment-exposure>
+          </div>
+          <div class="mt-1 pl-3">
+            <div class="text-lg f-f-r capitalize">Flood Prone Population</div>
+          </div>
+        </div>
+        <div class="flex items-center pt-2">
+          <noah-slider
+            label="Opacity"
+            [initialValue]="initialPopuOpacityValue"
+            [min]="0"
+            [max]="100"
+            (valueChange)="changePopuOpacity($event)"
+          ></noah-slider>
+        </div>
+        <div class="flex flex-col ml-6 mt-2" *ngIf="popuLegend">
+          <div class="text-base f-f-r mb-4">
+            Population Exposure to Flood 100-Year Return Period
+          </div>
+          <div class="inline-flex">
+            <div class="inline-flex flex-col">
+              <div class="flex items-center mb-1">
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-high"
+                  ></div>
+                </label>
+                <div class="flex flex-col mx-2">
+                  <div class="text-m leading-none capitalize">High</div>
+                </div>
+                <label class="inline-flex items-center ml-2">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-medium"
+                  ></div>
+                </label>
+                <div class="flex flex-col mx-2">
+                  <div class="text-m leading-none capitalize">Moderate</div>
+                </div>
+                <label class="inline-flex items-center">
+                  <div
+                    class="h-6 w-6 mx-auto rounded-md"
+                    ngClass="bg-noah-pink-low"
+                  ></div>
+                </label>
+                <div class="flex flex-col mx-2">
+                  <div class="text-m leading-none capitalize">Low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 justify-center items-center">
+        <button
+          class="
+            text-xs
+            font-bold
+            bg-green-600
+            rounded-full
+            px-4
+            py-2
+            my-4
+            inline-flex
+            items-center
+            justify-center
+            text-white
+            focus:outline-none
+            mx-auto
+            lg:mx-0
+            tracking-widest
+            hover:bg-green-700
+            focus:ring-opacity-50
+            border-2
+            disabled:cursor-not-allowed disabled:opacity-30
+          "
+          (click)="calculateRisk()"
+          [disabled]="!isButtonEnabled"
+        >
+          Calculate Flood Exposure
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

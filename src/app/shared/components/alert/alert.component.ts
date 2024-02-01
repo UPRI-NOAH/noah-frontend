@@ -11,7 +11,7 @@ export class AlertComponent implements OnInit {
   showAlert = false;
   isOpen = false;
   isLogoutAlert = false;
-  modalLogin: boolean = false;
+  eaPopup = false;
 
   constructor(
     private modalService: ModalService,
@@ -25,6 +25,10 @@ export class AlertComponent implements OnInit {
 
     this.modalService.logoutAlert$.subscribe((isLogoutAlert) => {
       this.isLogoutAlert = isLogoutAlert;
+    });
+
+    this.modalService.eaPopup$.subscribe((eaPopup) => {
+      this.eaPopup = eaPopup;
     });
   }
 
@@ -42,6 +46,7 @@ export class AlertComponent implements OnInit {
   close() {
     this.modalService.closeModal();
     this.modalService.closeLogoutModal();
+    this.modalService.hideEaPopup();
   }
 
   processLogout() {
