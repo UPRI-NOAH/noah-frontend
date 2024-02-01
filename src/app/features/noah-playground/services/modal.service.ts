@@ -5,6 +5,9 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ModalService {
+  private riskModal = new Subject<boolean>();
+  riskModal$ = this.riskModal.asObservable();
+
   private loginAlert = new Subject<boolean>();
   loginAlert$ = this.loginAlert.asObservable();
 
@@ -20,13 +23,52 @@ export class ModalService {
   private lagunaLogin = new Subject<boolean>();
   lagunaLogin$ = this.lagunaLogin.asObservable();
 
+  private btnRiskAssessment = new Subject<boolean>();
+  btnRiskAssessment$ = this.btnRiskAssessment.asObservable();
+
   private disclaimerModal = new Subject<boolean>();
   disclaimerModal$ = this.disclaimerModal.asObservable();
 
   private iotSummaryModal = new Subject<boolean>();
   iotSummaryModal$ = this.iotSummaryModal.asObservable();
 
+  private legendHide = new Subject<boolean>();
+  legendHide$ = this.legendHide.asObservable();
+
+  private eaPopup = new Subject<boolean>();
+  private popupShown = false;
+  eaPopup$ = this.eaPopup.asObservable();
+
   constructor() {}
+
+  hideEaPopup() {
+    this.eaPopup.next(false);
+  }
+
+  showEaPopup() {
+    // this.eaPopup.next(true);
+    // Check if the popup has already been shown
+    if (!this.popupShown) {
+      this.eaPopup.next(true);
+      this.popupShown = true; // Set the flag to true once the popup is shown
+    }
+  }
+
+  hideLegend() {
+    this.legendHide.next(false);
+  }
+
+  showLegend() {
+    this.legendHide.next(true);
+  }
+
+  openBtnRiskAssessment() {
+    this.btnRiskAssessment.next(true);
+  }
+
+  closeBtnRiskAssessment() {
+    this.btnRiskAssessment.next(false);
+  }
 
   disclaimerModalOpen() {
     this.disclaimerModal.next(true);
@@ -34,6 +76,14 @@ export class ModalService {
 
   disclaimerModalClose() {
     this.disclaimerModal.next(false);
+  }
+
+  openRiskModal() {
+    this.riskModal.next(true);
+  }
+
+  closeRiskModal() {
+    this.riskModal.next(false);
   }
 
   iotSummaryModalOpen() {
