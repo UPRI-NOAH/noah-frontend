@@ -6,6 +6,8 @@
 
 #### Features  
 
+- **4as:** change legend for rain forecast and population and adjust whitespace in mobile view ([#353](https://github.com/UPRI-NOAH/noah-frontend/pull/353)) ([35ab8cb](https://github.com/UPRI-NOAH/noah-frontend/commit/35ab8cb69afdbd5b6229da82300f976f77c96ce7))
+- **4as:** disclaimer IoT and 4as responsive, also the bug when search ([#352](https://github.com/UPRI-NOAH/noah-frontend/pull/352)) ([64d0016](https://github.com/UPRI-NOAH/noah-frontend/commit/64d00165c08885176c62612a3b244ab3c3b8fe7a))
 - **4as:** exposure assessment sidebar expand and check at the same time ([#351](https://github.com/UPRI-NOAH/noah-frontend/pull/351)) ([4e920a1](https://github.com/UPRI-NOAH/noah-frontend/commit/4e920a11d146e181e4f0d0f574481152658cf78b))
 - **4as:** change UI/UX of 4As feature and summary dashboard ([#350](https://github.com/UPRI-NOAH/noah-frontend/pull/350)) ([1e11d10](https://github.com/UPRI-NOAH/noah-frontend/commit/1e11d1056a6da5b31e51a5bb8fb5c4a782d8fec2))
 - **4as-modal:** changes on summary ([#349](https://github.com/UPRI-NOAH/noah-frontend/pull/349)) ([14a68ee](https://github.com/UPRI-NOAH/noah-frontend/commit/14a68ee76cada878a699a96a285126f2ae8ac920))
@@ -16,6 +18,7 @@
 
 #### Bug Fixes 
 
+- **iot:** update modal service for iot ([#345](https://github.com/UPRI-NOAH/noah-frontend/pull/345)) ([4e33505](https://github.com/UPRI-NOAH/noah-frontend/commit/4e3350554bf12c4bdb09f44e4b5c4412e0a56208))
 - **iot:** modal for safari testing ([#344](https://github.com/UPRI-NOAH/noah-frontend/pull/344)) ([315289e](https://github.com/UPRI-NOAH/noah-frontend/commit/315289e8ffd06fbf8e4899ef3eda0eb31275867b))
 
 ## [3.2.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.1.0...v3.2.0) (2023-08-23)
