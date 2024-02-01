@@ -1,3 +1,54 @@
 .font-mono {
   font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
 }
+.raBtn {
+  position: relative;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 5px;
+  padding: 9px 16px 7px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  position: relative;
+  border: none;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.x-raBtn::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: 2px;
+  top: 1px;
+  border: 1px solid white;
+  content: '';
+  background-color: hsla(0, 100%, 73%, 1);
+  border-radius: 50%;
+}
+
+.x-raBtn::after {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  right: 6px;
+  font-weight: bold;
+  top: 6px;
+  content: ' ';
+  background: -webkit-linear-gradient(
+      -45deg,
+      transparent 0%,
+      transparent 45%,
+      white 45%,
+      white 56%,
+      transparent 56%,
+      transparent 100%
+    ),
+    -webkit-linear-gradient(45deg, transparent 0%, transparent 45%, white 45%, white
+          56%, transparent 56%, transparent 100%);
+  background-color: hsla(0, 100%, 73%, 1);
+  transition: all 0.3s ease;
+}

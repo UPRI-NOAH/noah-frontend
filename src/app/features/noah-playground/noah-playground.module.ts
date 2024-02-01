@@ -26,8 +26,11 @@ import { QcSensorsGroupComponent } from './components/qc-sensors-group/qc-sensor
 import { QcSensorSoloComponent } from './components/qc-sensor-solo/qc-sensor-solo.component';
 import { QcCriticalFacilitiesComponent } from './components/qc-critical-facilities/qc-critical-facilities.component';
 import { QcBoundaryComponent } from './components/qc-boundary/qc-boundary.component';
-import { LagunaSensorSoloComponent } from './components/laguna-sensor-solo/laguna-sensor-solo.component';
 import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.component';
+import { RiskAssessmentGroupComponent } from './components/risk-assessment-group/risk-assessment-group.component';
+import { RiskAssessmentModalComponent } from './components/risk-assessment-modal/risk-assessment-modal.component';
+import { RiskAssessmentRainComponent } from './components/risk-assessment-rain/risk-assessment-rain.component';
+import { RiskAssessmentExposureComponent } from './components/risk-assessment-exposure/risk-assessment-exposure.component';
 
 @NgModule({
   declarations: [
@@ -51,8 +54,11 @@ import { BrgyBoundaryComponent } from './components/brgy-boundary/brgy-boundary.
     QcSensorSoloComponent,
     QcCriticalFacilitiesComponent,
     QcBoundaryComponent,
-    LagunaSensorSoloComponent,
     BrgyBoundaryComponent,
+    RiskAssessmentGroupComponent,
+    RiskAssessmentModalComponent,
+    RiskAssessmentRainComponent,
+    RiskAssessmentExposureComponent,
   ],
   imports: [
     CommonModule,

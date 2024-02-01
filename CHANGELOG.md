@@ -1,3 +1,33 @@
+## [4.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.2.0...v4.0.0) (2024-02-01)
+
+### New Feature - Exposure Assessment (4As)
+
+- **4as:** create base component for risk assessment feature ([#341](https://github.com/UPRI-NOAH/noah-frontend/pull/341)) ([aa3b397](https://github.com/UPRI-NOAH/noah-frontend/commit/aa3b397e8a9c5a3aad11b294164d40d17ef93399))
+
+#### Features  
+
+- **4as:** change legend for rain forecast and population and adjust whitespace in mobile view ([#353](https://github.com/UPRI-NOAH/noah-frontend/pull/353)) ([35ab8cb](https://github.com/UPRI-NOAH/noah-frontend/commit/35ab8cb69afdbd5b6229da82300f976f77c96ce7))
+- **4as:** disclaimer IoT and 4as responsive, also the bug when search ([#352](https://github.com/UPRI-NOAH/noah-frontend/pull/352)) ([64d0016](https://github.com/UPRI-NOAH/noah-frontend/commit/64d00165c08885176c62612a3b244ab3c3b8fe7a))
+- **4as:** exposure assessment sidebar expand and check at the same time ([#351](https://github.com/UPRI-NOAH/noah-frontend/pull/351)) ([4e920a1](https://github.com/UPRI-NOAH/noah-frontend/commit/4e920a11d146e181e4f0d0f574481152658cf78b))
+- **4as:** change UI/UX of 4As feature and summary dashboard ([#350](https://github.com/UPRI-NOAH/noah-frontend/pull/350)) ([1e11d10](https://github.com/UPRI-NOAH/noah-frontend/commit/1e11d1056a6da5b31e51a5bb8fb5c4a782d8fec2))
+- **4as-modal:** changes on summary ([#349](https://github.com/UPRI-NOAH/noah-frontend/pull/349)) ([14a68ee](https://github.com/UPRI-NOAH/noah-frontend/commit/14a68ee76cada878a699a96a285126f2ae8ac920))
+- **4as:** 4as modal, affected population display, legend and pagination ([#347](https://github.com/UPRI-NOAH/noah-frontend/pull/347)) ([9c02383](https://github.com/UPRI-NOAH/noah-frontend/commit/9c02383e8c1372ac467e36926cfe413f9d0e49ce))
+- **4as:** display population affected in map and list of affected population in modal ([#346](https://github.com/UPRI-NOAH/noah-frontend/pull/346)) ([6b7d83e](https://github.com/UPRI-NOAH/noah-frontend/commit/6b7d83e5f86c98eaeca3a7dd7177f20c7a34c27c))
+- **4as-modal:** add data in modal risk assessment ([#342](https://github.com/UPRI-NOAH/noah-frontend/pull/342)) ([9ec22ea](https://github.com/UPRI-NOAH/noah-frontend/commit/9ec22ea052b6b41612d28f6f76e36198323ecb6f))
+- **4as-modal:** popup modal when calculate risk button is clicked ([#340](https://github.com/UPRI-NOAH/noah-frontend/pull/340)) ([b4e5acc](https://github.com/UPRI-NOAH/noah-frontend/commit/b4e5accdf5f27a81ece9752cee2efdbe2809c629))
+
+#### Bug Fixes 
+
+- **iot:** update modal service for iot ([#345](https://github.com/UPRI-NOAH/noah-frontend/pull/345)) ([4e33505](https://github.com/UPRI-NOAH/noah-frontend/commit/4e3350554bf12c4bdb09f44e4b5c4412e0a56208))
+- **iot:** modal for safari testing ([#344](https://github.com/UPRI-NOAH/noah-frontend/pull/344)) ([315289e](https://github.com/UPRI-NOAH/noah-frontend/commit/315289e8ffd06fbf8e4899ef3eda0eb31275867b))
+
+## [3.2.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.1.0...v3.2.0) (2023-08-23)
+
+#### Bug Fixes - Mobile View and KYH page
+
+- **mobile-app:** adjust search button and map display in kyh page ([#339](https://github.com/UPRI-NOAH/noah-frontend/pull/339)) ([10a1def](https://github.com/UPRI-NOAH/noah-frontend/pull/339/commits/10a1def64a3ca9269adbc42dd3557fa9d67d898f))
+- **know-your-hazard:** larger map mobile view ([#338](https://github.com/UPRI-NOAH/noah-frontend/pull/338)) ([ef6394f](https://github.com/UPRI-NOAH/noah-frontend/pull/338/commits/ef6394feaae7fc1c1020b524d0ee532375ecb41a))
+
 ## [3.1.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.1.0) (2023-08-10)
 
 ### New Feature - Internet of Things (IoT)
@@ -6,6 +36,7 @@
 
 #### Features
 
+- **qc-iot:** add latest data in popup map display ([#336](https://github.com/UPRI-NOAH/noah-frontend/pull/336)) ([8370f86](https://github.com/UPRI-NOAH/noah-frontend/pull/336/commits/8370f8678838e360361342991c9e19fd8b0f1982))
 - **iot:** circle size depending on zoom level ([#334](https://github.com/UPRI-NOAH/noah-frontend/pull/334)) ([829d351](https://github.com/UPRI-NOAH/noah-frontend/commit/829d35131776e3462c62d06160523aebc2f23d65))
 - **qc-iot:** QC IoT summary dashboard ui and mobile view ([#326](https://github.com/UPRI-NOAH/noah-frontend/pull/326)) ([6d7dab0](https://github.com/UPRI-NOAH/noah-frontend/commit/6d7dab03b4aa4fc4d121652f16b8f2c948851627))
 - **qc-iot:** showing battery level hover points ([#314](https://github.com/UPRI-NOAH/noah-frontend/pull/314)) ([15b02a5](https://github.com/UPRI-NOAH/noah-frontend/commit/15b02a56284c5ed207a8c71c7b3b3156ab80b0dd))

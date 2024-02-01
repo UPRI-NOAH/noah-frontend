@@ -1,0 +1,466 @@
+<div
+  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 lg:p-10 p-5'"
+  *ngIf="riskModal"
+>
+  <!-- *ngIf="riskModal" -->
+  <div class="w-full h-full opacity-80 bg-black z-0 absolute inset-0"></div>
+  <!-- modal -->
+  <div
+    class="
+      max-h-full
+      overflow-y-auto overflow-x-hidden
+      border-none
+      shadow-lg
+      relative
+      flex flex-col
+      w-full
+      pointer-events-auto
+      bg-white bg-clip-padding
+      rounded-md
+      outline-none
+      text-xl
+    "
+  >
+    <div
+      class="
+        flex flex-shrink-0
+        items-center
+        justify-between
+        p-2
+        border-b border-gray-200
+        rounded-t-md
+      "
+    >
+      <!-- Modal Header -->
+
+      <div class="relative w-full r p-2 dark:bg-gray-800">
+        <div
+          class="
+            cursor-pointer
+            absolute
+            top-0
+            right-0
+            m-3
+            dark:text-gray-10
+            text-gray-600
+            transition
+            duration-150
+            ease-in-out
+          "
+        >
+          <button
+            class="
+              btn-mininmize
+              box-content
+              w-4
+              h-4
+              p-1
+              font-bold
+              rounded-none
+              mr-2
+              opacity-50
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-black hover:opacity-75 hover:no-underline
+            "
+            (click)="hideModal()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              data-name="Layer 1"
+              viewBox="0 0 100 125"
+            >
+              <rect
+                width="90"
+                height="16.1"
+                x="5"
+                y="41.9"
+                rx="5.7"
+                ry="5.7"
+                style="stroke-width: 0"
+              />
+            </svg>
+          </button>
+          <button
+            class="
+              btn-close
+              box-content
+              w-4
+              h-4
+              p-1
+              font-bold
+              rounded-none
+              opacity-50
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-black hover:opacity-75 hover:no-underline
+            "
+            (click)="closeModal()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xml:space="preserve"
+              fill-rule="evenodd"
+              stroke-linejoin="round"
+              stroke-miterlimit="2"
+              clip-rule="evenodd"
+              viewBox="0 0 32 40"
+            >
+              <path
+                d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
+              />
+            </svg>
+          </button>
+        </div>
+        <p
+          class="
+            lg:text-2xl
+            md:text-lg
+            font-bold
+            leading-none
+            whitespace-pre-line
+            md:mt-2
+            mt-6
+            pt-6
+            text-gray-800
+            dark:text-gray-100
+          "
+        >
+          In a large flood event, how many people might be affected and would
+          need evacuation?
+        </p>
+      </div>
+
+      <!-- ... Your existing header content ... -->
+    </div>
+    <div class="flex-auto p-2">
+      <div class="mb-2 bg-white">
+        <label for="table-search" class="sr-only">Search</label>
+        <div class="relative mt-1">
+          <div
+            class="
+              absolute
+              inset-y-0
+              left-0
+              flex
+              items-center
+              pl-3
+              pointer-events-none
+            "
+          >
+            <svg
+              class="w-5 h-5 text-gray-500 dark:text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <input
+            [(ngModel)]="searchValue"
+            type="search"
+            id="table-search"
+            class="
+              bg-gray-50
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              focus:ring-blue-500 focus:border-blue-500
+              block
+              w-80
+              pl-10
+              p-2.5
+              dark:bg-gray-700
+              dark:border-gray-600
+              dark:placeholder-gray-400
+              dark:text-white
+              dark:focus:ring-blue-500
+              dark:focus:border-blue-500
+            "
+            placeholder="Search Location"
+            (input)="loadData(1, searchValue)"
+          />
+        </div>
+      </div>
+      <!-- Modal Content -->
+      <div class="flex-grow overflow-auto max-h-full" style="height: 58vh">
+        <table
+          class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="
+              sticky
+              top-0
+              text-xs
+              md:text-base
+              text-gray-700
+              uppercase
+              bg-blue-200
+              dark:text-gray-400
+            "
+          >
+            <tr>
+              <th class="sticky top-0 p-2" *ngFor="let col of columns">
+                <div
+                  role="button"
+                  (click)="onHeaderColumnClick(col.key)"
+                  class="flex leading-none items-center"
+                >
+                  {{ col.header }}
+                  <svg
+                    class="w-3 h-3 ml-1.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                    />
+                  </svg>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <ng-container>
+            <div *ngIf="errorMsg; else dataAvailable">
+              <div
+                class="flex items-center absolute justify-center w-full py-6"
+              >
+                <div
+                  class="
+                    bg-white
+                    flex
+                    items-center
+                    justify-center
+                    mx-4
+                    md:w-2/3
+                  "
+                >
+                  <div class="flex flex-col items-center py-4">
+                    <p
+                      class="
+                        px-4
+                        pb-10
+                        text-base
+                        md:text-2xl
+                        leading-none
+                        text-center text-gray-600
+                      "
+                    >
+                      No forecast that meets pre-determined thresholds for large
+                      floods
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #dataAvailable>
+            <tbody>
+              <tr
+                *ngFor="
+                  let data of affectedData
+                    | sort: sortField:sortDirection
+                    | searchRiskAffected: searchValue
+                "
+                class="
+                  bg-white
+                  border-b
+                  dark:bg-gray-800 dark:border-gray-700
+                  hover:bg-gray-50
+                  dark:hover:bg-gray-600
+                  text-xs
+                  md:text-base
+                "
+              >
+                <td class="p-1">
+                  {{ data.brgy }}
+                </td>
+                <td class="p-1">
+                  {{ data.muni }}
+                </td>
+                <td class="p-1">
+                  {{ data.prov }}
+                </td>
+                <td class="p-3">
+                  {{ data.total_pop | number: '1.0-0' }}
+                </td>
+                <td class="p-3">
+                  {{ data.total_aff_pop | number: '1.0-0' }}
+                </td>
+                <td class="p-3">
+                  {{ data.exposed_medhigh | number: '1.0-0' }}
+                </td>
+                <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
+              </tr>
+            </tbody>
+          </ng-template>
+        </table>
+      </div>
+      <!-- ... Your existing content ... -->
+    </div>
+    <div class="flex-shrink- p-1 md:p-4 border-t border-gray-200 rounded-b-md">
+      <!-- Modal Footer -->
+      <div class="flex items-center pb-4 justify-center">
+        <div class="lg:w-3/5 w-full flex items-center justify-between">
+          <button
+            class="
+              flex
+              items-center
+              pt-3
+              text-gray-600
+              hover:text-indigo-700
+              cursor-pointer
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:hover:text-gray-600
+            "
+            (click)="loadData(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.1665 4H12.8332"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M1.1665 4L4.49984 7.33333"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M1.1665 4.00002L4.49984 0.666687"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p class="text-sm ml-3 font-medium leading-none">Previous</p>
+          </button>
+          <div class="sm:flex hidden">
+            <!-- Display count per display and total data count -->
+            <p class="text-sm font-medium leading-none text-gray-600 pt-3 px-2">
+              {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
+              {{ currentPage * itemsPerPage | number: '1.0-0' }} of
+              {{ totalDataCount | number: '1.0-0' }}
+            </p>
+          </div>
+          <button
+            class="
+              flex
+              items-center
+              pt-3
+              text-gray-600
+              hover:text-indigo-700
+              cursor-pointer
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:hover:text-gray-600
+            "
+            (click)="loadData(currentPage + 1)"
+            [disabled]="currentPage * itemsPerPage >= totalDataCount"
+          >
+            <p class="text-sm font-medium leading-none mr-3">Next</p>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.1665 4H12.8332"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.5 7.33333L12.8333 4"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.5 0.666687L12.8333 4.00002"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="bg-red-100 p-2 rounded-lg">
+        <p
+          class="
+            lg:text-base
+            text-sm
+            italic
+            my-2
+            leading-none
+            whitespace-pre-line
+            text-ellipsis
+          "
+        >
+          <b>Disclaimer:</b> The streams and catchment boundaries presented are
+          indicative. They have been derived from elevation data obtained using
+          Interferometric Synthetic Aperture Radar (IfSAR) topography and
+          delineated using ArcGIS Hydrological Tools.
+
+          <span
+            role="button"
+            *ngIf="btnReadMore"
+            class="display text-blue-500"
+            (click)="mobileDisclaimerSeemore()"
+            >Read more...</span
+          >
+          <!-- <span class="hidden xl:inline">
+            The UP NOAH Center holds no responsibility or liability for any
+            inconsistencies, inaccuracies, or data omissions related to
+            predicted or depicted weather forecasts, whether reported, ongoing,
+            or occurred, for both parties and non-parties alike. The UP NOAH
+            Center does not provide any explicit or implied warranties,
+            guarantees, or assurances regarding the occurrence or confirmation
+            of weather information, as presented in forecasts, graphics, data,
+            or any information included on the site. However, suggestions for
+            improvement or error notifications are welcome. Please follow the
+            official sites of the government and use this site only for
+            supplementary information.
+          </span> -->
+          <span *ngIf="mobileDisclaimer">
+            The UP NOAH Center holds no responsibility or liability for any
+            inconsistencies, inaccuracies, or data omissions related to
+            predicted or depicted weather forecasts, whether reported, ongoing,
+            or occurred, for both parties and non-parties alike. The UP NOAH
+            Center does not provide any explicit or implied warranties,
+            guarantees, or assurances regarding the occurrence or confirmation
+            of weather information, as presented in forecasts, graphics, data,
+            or any information included on the site. However, suggestions for
+            improvement or error notifications are welcome. Please follow the
+            official sites of the government and use this site only for
+            supplementary information.
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
