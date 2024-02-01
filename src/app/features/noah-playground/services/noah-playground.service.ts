@@ -24,6 +24,11 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   BarangayBoundaryState,
+  RiskAssessmentRainType,
+  RiskAssessmentExposureType,
+  RiskAssessmentState,
+  RiskAssessmentGroupState,
+  CalculateRiskButton,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -75,6 +80,16 @@ export class NoahPlaygroundService {
 
   get volcanoGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
+  }
+
+  get riskAssessmentGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riskAssessment.shown));
+  }
+
+  get riskAssessmentGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.expanded)
+    );
   }
 
   get sensorsGroupShown$(): Observable<boolean> {
@@ -167,10 +182,43 @@ export class NoahPlaygroundService {
     );
   }
 
+  get riskAssessmentExpoShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes.shown)
+    );
+  }
+
+  get populationShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.populationtypes.population.shown)
+    );
+  }
+
+  get rainForcastShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.raintypes['rain-forecast'].shown)
+    );
+  }
+
+  get btnCalculateShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+      )
+      .pipe(first())
+      .toPromise();
+  }
+
+  getAffectedPopulationData(): Promise<
+    { url: string; sourceLayer: string[] }[]
+  > {
+    return this.http
+      .get<{ url: string; sourceLayer: string[] }[]>(
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/combined_fl_bgy.json'
       )
       .pipe(first())
       .toPromise();
@@ -195,6 +243,30 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
+  getRainRiskAssessment$(
+    riskType: RiskAssessmentRainType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.raintypes[riskType])
+    );
+  }
+
+  getPopulationExposure$(
+    riskType: RiskAssessmentExposureType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes)
+    );
+  }
+
+  getExposure$(
+    riskType: RiskAssessmentExposureType
+  ): Observable<RiskAssessmentState> {
+    return this.store.state$.pipe(
+      map((state) => state.riskAssessment.exposuretypes)
     );
   }
 
@@ -322,6 +394,27 @@ export class NoahPlaygroundService {
     );
   }
 
+  setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
+    const btnCalculateRisk: CalculateRiskButton = {
+      ...this.store.state.btnCalculateRisk,
+    };
+
+    btnCalculateRisk.shown = value;
+
+    this.store.patch(
+      {
+        btnCalculateRisk,
+      },
+      `Check Button Calculate Risk ${value}`
+    );
+  }
+
+  getCalculateRiskBtn(
+    calculateRisk: CalculateRiskButton
+  ): Observable<CalculateRiskButton> {
+    return this.store.state$.pipe(map((state) => state.btnCalculateRisk));
+  }
+
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
@@ -343,10 +436,6 @@ export class NoahPlaygroundService {
       'updated 3D Terrain - Exaggeration level'
     );
   }
-
-  // setQcCritFac(qcCriticalfacilities: QuezonCityCriticalFacilitiesState) {
-  //   this.store.patch({ qcCriticalfacilities }, 'Update Qc Crit Fac');
-  // }
 
   setHazardExpansion(
     hazardType: HazardType,
@@ -432,6 +521,59 @@ export class NoahPlaygroundService {
     this.store.patch({ volcanoes }, `Volcanoes ${property}, ${!currentValue}`);
   }
 
+  toggleRiskAssessmentGroupProperty(
+    property: 'expanded' | 'shown',
+    value: boolean
+  ) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    const currentValue = riskAssessment[property];
+    //riskAssessment[property] = !currentValue; remain this if ever we have changes
+    riskAssessment[property] = value;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment ${property}, ${!currentValue}`
+    );
+  }
+
+  setRainRiskAssessmentSoloShown(value: boolean, type: RiskAssessmentRainType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.raintypes[type].shown = value;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setExposureRiskAssessmentSoloShown(
+    value: boolean,
+    type: RiskAssessmentExposureType
+  ) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes[type].shown = value;
+    this.store.patch(
+      { riskAssessment },
+      `Risk Assessment - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setExposureCheckShown(value: boolean, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.exposuretypes.shown = value;
+    this.store.patch({ riskAssessment }, `Checkbox - update shown to ${value}`);
+  }
+
   setVolcanoSoloOpacity(value: number, type: VolcanoType) {
     const volcanoes: VolcanoGroupState = {
       ...this.store.state.volcanoes,
@@ -441,6 +583,29 @@ export class NoahPlaygroundService {
     this.store.patch(
       { volcanoes },
       `Volcano - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setRainForeCastOpacity(value: number, type: RiskAssessmentRainType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+
+    riskAssessment.raintypes['rain-forecast'].opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Rain Forecast - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setPopulationOpacity(value: number, type: RiskAssessmentExposureType) {
+    const riskAssessment: RiskAssessmentGroupState = {
+      ...this.store.state.riskAssessment,
+    };
+    riskAssessment.exposuretypes.opacity = value;
+    this.store.patch(
+      { riskAssessment },
+      `Population Affected - update ${type}'s opacity to ${value}`
     );
   }
 
@@ -782,5 +947,21 @@ export class NoahPlaygroundService {
 
     contourMaps.expanded = !contourMaps.expanded;
     this.store.patch({ contourMaps }, `toggle expansion`);
+  }
+
+  toggleAffectedPopulationVisibility(): void {
+    const riskAssessment = {
+      ...this.store.state.riskAssessment,
+    };
+    riskAssessment.populationtypes.population.shown = true;
+    this.store.patch({ riskAssessment }, `Show Affected Population`);
+  }
+
+  toggleAffectedPopulationVisibilityFalse(): void {
+    const riskAssessment = {
+      ...this.store.state.riskAssessment,
+    };
+    riskAssessment.populationtypes.population.shown = false;
+    this.store.patch({ riskAssessment }, `Hide Affected Population`);
   }
 }

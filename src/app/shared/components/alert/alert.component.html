@@ -329,3 +329,244 @@
     </div>
   </div>
 </div>
+<!-- Exposure Assessment Popup -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
+  id="modal"
+  *ngIf="eaPopup"
+>
+  <div class="absolute bg-black opacity-80 inset-0 z-0" (click)="close()"></div>
+  <!--content-->
+  <div class="min-w-screen min-h-screen flex items-center z-10 justify-center">
+    <div
+      class="
+        flex
+        items-center
+        justify-center
+        fixed
+        left-0
+        bottom-0
+        w-full
+        h-full
+      "
+    >
+      <div
+        id="modal"
+        class="
+          container
+          mx-auto
+          flex
+          justify-center
+          items-center
+          px-4
+          md:px-10
+          py-10
+        "
+      >
+        <div class="flex flex-col items-start p-4">
+          <div
+            class="
+              bg-white
+              rounded-lg
+              px-3
+              md:px-4
+              pt-4
+              pb-7
+              flex flex-col
+              justify-center
+              items-center
+            "
+          >
+            <svg
+              class="ml-auto fill-current text-gray-700 w-6 h-6 cursor-pointer"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 18 18"
+              (click)="close()"
+            >
+              <path
+                d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+              />
+            </svg>
+            <div
+              role="img"
+              aria-label="Dashboard. Logo."
+              class="flex items-center w-full justify-center"
+            >
+              <div class="flex flex-col md:flex-row">
+                <!-- First row with three logos -->
+                <div class="flex flex-row md:space-x-8 space-x-3 mb-3 md:mb-0">
+                  <button
+                    class="
+                      max-w-xs
+                      rounded-full
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/images/usaid-logo.png"
+                      alt="usaid-logo"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    class="
+                      max-w-xs
+                      rounded-full
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/images/tufts-logo.png"
+                      alt="tufts-logo"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    class="
+                      max-w-xs
+                      rounded-full
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/images/upri_logo_text.png"
+                      alt="upri logo"
+                      loading="lazy"
+                    />
+                  </button>
+                </div>
+
+                <!-- Second row with two logos -->
+                <div class="flex flex-row md:space-x-8 space-x-2">
+                  <button
+                    class="
+                      max-w-xs
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/images/iesm-logo.png"
+                      alt="iesm-logo"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    class="
+                      max-w-xs
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 lg:h-12 sm:w-auto"
+                      src="assets/icons/noah_logo.png"
+                      alt="noah_logo"
+                      loading="lazy"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-y-auto overflow-auto h-auto px-2 md:px-10">
+              <h1
+                class="
+                  mt-2
+                  md:mt-12
+                  text-xl
+                  lg:text-4xl
+                  font-semibold
+                  leading-10
+                  text-gray-800 text-center
+                  md:w-full
+                  lg:w-full
+                "
+              >
+                Exposure Assessment
+              </h1>
+              <p
+                class="
+                  mt-5
+                  text-xs
+                  sm:text-base
+                  leading-normal
+                  text-left text-gray-600
+                  md:w-full
+                  lg:w-full
+                "
+              >
+                The Exposure Assessment feature, a collaboration within the
+                Academic Alliance for Anticipatory Action (4As) consortium with
+                UP Resilience Institute (UPRI) and Institute of Environmental
+                Science/Weather Manila as key partners, is led by Tufts
+                University and supported by the United States Agency for
+                International Development's Bureau for Humanitarian Assistance
+                (USAID/BHA).
+              </p>
+              <p
+                class="
+                  mt-2
+                  text-xs
+                  sm:text-base
+                  leading-normal
+                  text-left text-gray-600
+                  md:w-full
+                  lg:w-full
+                "
+              >
+                Currently in beta mode, ongoing enhancements and validations are
+                part of the project's development. It is essential to note that
+                the UP NOAH Center, as part of this initiative, does not offer
+                explicit or implied warranties, guarantees, or assurances
+                regarding the occurrence or confirmation of weather information,
+                including forecasts, graphics, data, or any information
+                presented on the site. Users are advised to be aware of the
+                project's evolving nature.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

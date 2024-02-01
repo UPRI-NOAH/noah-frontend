@@ -1,0 +1,13 @@
+<div class="text-m f-f-r py-2 pl-6">
+  <div class="flex items-center">
+    <div class="inline-flex items-center checkbox {{ exposureName }}">
+      <input
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        [checked]="shown"
+        name="input-{{ exposureName }}"
+        (click)="toggleShown()"
+      />
+    </div>
+  </div>
+</div>
