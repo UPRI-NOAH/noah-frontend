@@ -1,9 +1,29 @@
+## [4.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.2.0...v4.0.0) (2024-02-01)
+
+### New Feature - Exposure Assessment (4As)
+
+- **4as:** create base component for risk assessment feature ([#341](https://github.com/UPRI-NOAH/noah-frontend/pull/341)) ([aa3b397](https://github.com/UPRI-NOAH/noah-frontend/commit/aa3b397e8a9c5a3aad11b294164d40d17ef93399))
+
+#### Features  
+
+- **4as:** exposure assessment sidebar expand and check at the same time ([#351](https://github.com/UPRI-NOAH/noah-frontend/pull/351)) ([4e920a1](https://github.com/UPRI-NOAH/noah-frontend/commit/4e920a11d146e181e4f0d0f574481152658cf78b))
+- **4as:** change UI/UX of 4As feature and summary dashboard ([#350](https://github.com/UPRI-NOAH/noah-frontend/pull/350)) ([1e11d10](https://github.com/UPRI-NOAH/noah-frontend/commit/1e11d1056a6da5b31e51a5bb8fb5c4a782d8fec2))
+- **4as-modal:** changes on summary ([#349](https://github.com/UPRI-NOAH/noah-frontend/pull/349)) ([14a68ee](https://github.com/UPRI-NOAH/noah-frontend/commit/14a68ee76cada878a699a96a285126f2ae8ac920))
+- **4as:** 4as modal, affected population display, legend and pagination ([#347](https://github.com/UPRI-NOAH/noah-frontend/pull/347)) ([9c02383](https://github.com/UPRI-NOAH/noah-frontend/commit/9c02383e8c1372ac467e36926cfe413f9d0e49ce))
+- **4as:** display population affected in map and list of affected population in modal ([#346](https://github.com/UPRI-NOAH/noah-frontend/pull/346)) ([6b7d83e](https://github.com/UPRI-NOAH/noah-frontend/commit/6b7d83e5f86c98eaeca3a7dd7177f20c7a34c27c))
+- **4as-modal:** add data in modal risk assessment ([#342](https://github.com/UPRI-NOAH/noah-frontend/pull/342)) ([9ec22ea](https://github.com/UPRI-NOAH/noah-frontend/commit/9ec22ea052b6b41612d28f6f76e36198323ecb6f))
+- **4as-modal:** popup modal when calculate risk button is clicked ([#340](https://github.com/UPRI-NOAH/noah-frontend/pull/340)) ([b4e5acc](https://github.com/UPRI-NOAH/noah-frontend/commit/b4e5accdf5f27a81ece9752cee2efdbe2809c629))
+
+#### Bug Fixes 
+
+- **iot:** modal for safari testing ([#344](https://github.com/UPRI-NOAH/noah-frontend/pull/344)) ([315289e](https://github.com/UPRI-NOAH/noah-frontend/commit/315289e8ffd06fbf8e4899ef3eda0eb31275867b))
+
 ## [3.2.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.1.0...v3.2.0) (2023-08-23)
 
-### Mobile View and KYH page
+#### Bug Fixes - Mobile View and KYH page
 
-- **know-your-hazard:** larger map mobile view ([#338](https://github.com/UPRI-NOAH/noah-frontend/pull/338)) ([ef6394f](https://github.com/UPRI-NOAH/noah-frontend/pull/338/commits/ef6394feaae7fc1c1020b524d0ee532375ecb41a))
 - **mobile-app:** adjust search button and map display in kyh page ([#339](https://github.com/UPRI-NOAH/noah-frontend/pull/339)) ([10a1def](https://github.com/UPRI-NOAH/noah-frontend/pull/339/commits/10a1def64a3ca9269adbc42dd3557fa9d67d898f))
+- **know-your-hazard:** larger map mobile view ([#338](https://github.com/UPRI-NOAH/noah-frontend/pull/338)) ([ef6394f](https://github.com/UPRI-NOAH/noah-frontend/pull/338/commits/ef6394feaae7fc1c1020b524d0ee532375ecb41a))
 
 ## [3.1.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.1.0) (2023-08-10)
 
