@@ -23,7 +23,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalPages: number = 0;
   totalItems = 0;
   totalDataCount = 0;
-  errorMsg: string = '';
+  errorMsg: boolean = false;
   mobileDisclaimer: boolean = false;
   btnReadMore: boolean = true;
 
@@ -81,7 +81,7 @@ export class RiskAssessmentModalComponent implements OnInit {
 
       if (response.results.length === 0) {
         this.affectedData = [];
-        this.errorMsg = 'NO DATA';
+        this.errorMsg = true;
       } else {
         const raData = response.results.map((a) => {
           return {
@@ -97,11 +97,12 @@ export class RiskAssessmentModalComponent implements OnInit {
         this.currentPage = page;
         this.affectedData = raData;
         this.totalDataCount = response.count;
+        this.errorMsg = false;
       }
     } catch (error) {
       console.error('An error occurred:', error);
       this.affectedData = [];
-      this.errorMsg = 'An error occurred while fetching data';
+      this.errorMsg = true;
     }
   }
 
