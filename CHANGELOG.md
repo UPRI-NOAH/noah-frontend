@@ -1,3 +1,10 @@
+## [3.2.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.1.0...v3.2.0) (2023-08-23)
+
+### Mobile View and KYH page
+
+- **know-your-hazard:** larger map mobile view ([#338](https://github.com/UPRI-NOAH/noah-frontend/pull/338)) ([ef6394f](https://github.com/UPRI-NOAH/noah-frontend/pull/338/commits/ef6394feaae7fc1c1020b524d0ee532375ecb41a))
+- **mobile-app:** adjust search button and map display in kyh page ([#339](https://github.com/UPRI-NOAH/noah-frontend/pull/339)) ([10a1def](https://github.com/UPRI-NOAH/noah-frontend/pull/339/commits/10a1def64a3ca9269adbc42dd3557fa9d67d898f))
+
 ## [3.1.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.0.0...v3.1.0) (2023-08-10)
 
 ### New Feature - Internet of Things (IoT)
@@ -6,6 +13,7 @@
 
 #### Features
 
+- **qc-iot:** add latest data in popup map display ([#336](https://github.com/UPRI-NOAH/noah-frontend/pull/336)) ([8370f86](https://github.com/UPRI-NOAH/noah-frontend/pull/336/commits/8370f8678838e360361342991c9e19fd8b0f1982))
 - **iot:** circle size depending on zoom level ([#334](https://github.com/UPRI-NOAH/noah-frontend/pull/334)) ([829d351](https://github.com/UPRI-NOAH/noah-frontend/commit/829d35131776e3462c62d06160523aebc2f23d65))
 - **qc-iot:** QC IoT summary dashboard ui and mobile view ([#326](https://github.com/UPRI-NOAH/noah-frontend/pull/326)) ([6d7dab0](https://github.com/UPRI-NOAH/noah-frontend/commit/6d7dab03b4aa4fc4d121652f16b8f2c948851627))
 - **qc-iot:** showing battery level hover points ([#314](https://github.com/UPRI-NOAH/noah-frontend/pull/314)) ([15b02a5](https://github.com/UPRI-NOAH/noah-frontend/commit/15b02a56284c5ed207a8c71c7b3b3156ab80b0dd))
