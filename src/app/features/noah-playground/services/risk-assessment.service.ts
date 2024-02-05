@@ -21,6 +21,7 @@ export class RiskAssessmentService {
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
+  private S3_BASE_URL = 'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
 
   // Track the search term
   private currentSearchTerm: string | null = null;
@@ -50,5 +51,11 @@ export class RiskAssessmentService {
         this.previousPageUrl = response.previous;
       })
     );
+  }
+
+  getDateText(): Observable<string> {
+    return this.http.get(`${this.S3_BASE_URL}/rainfall/datetime.txt`, {
+      responseType: 'text',
+    });
   }
 }

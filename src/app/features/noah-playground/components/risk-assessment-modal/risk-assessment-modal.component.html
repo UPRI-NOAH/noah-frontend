@@ -127,6 +127,9 @@
           In a large flood event, how many people might be affected and would
           need evacuation?
         </p>
+        <div class="italic lg:text-lg text-sm">
+          <span>As of {{ dateDataText }}</span>
+        </div>
       </div>
 
       <!-- ... Your existing header content ... -->
@@ -442,7 +445,7 @@
           </button>
         </div>
       </div>
-      <div class="bg-red-100 p-2 rounded-lg">
+      <div class="p-2 rounded-lg">
         <p
           class="
             lg:text-base
@@ -454,44 +457,8 @@
             text-ellipsis
           "
         >
-          <b>Disclaimer:</b> The streams and catchment boundaries presented are
-          indicative. They have been derived from elevation data obtained using
-          Interferometric Synthetic Aperture Radar (IfSAR) topography and
-          delineated using ArcGIS Hydrological Tools.
-
-          <span
-            role="button"
-            *ngIf="btnReadMore"
-            class="display text-blue-500"
-            (click)="mobileDisclaimerSeemore()"
-            >Read more...</span
-          >
-          <!-- <span class="hidden xl:inline">
-            The UP NOAH Center holds no responsibility or liability for any
-            inconsistencies, inaccuracies, or data omissions related to
-            predicted or depicted weather forecasts, whether reported, ongoing,
-            or occurred, for both parties and non-parties alike. The UP NOAH
-            Center does not provide any explicit or implied warranties,
-            guarantees, or assurances regarding the occurrence or confirmation
-            of weather information, as presented in forecasts, graphics, data,
-            or any information included on the site. However, suggestions for
-            improvement or error notifications are welcome. Please follow the
-            official sites of the government and use this site only for
-            supplementary information.
-          </span> -->
-          <span *ngIf="mobileDisclaimer">
-            The UP NOAH Center holds no responsibility or liability for any
-            inconsistencies, inaccuracies, or data omissions related to
-            predicted or depicted weather forecasts, whether reported, ongoing,
-            or occurred, for both parties and non-parties alike. The UP NOAH
-            Center does not provide any explicit or implied warranties,
-            guarantees, or assurances regarding the occurrence or confirmation
-            of weather information, as presented in forecasts, graphics, data,
-            or any information included on the site. However, suggestions for
-            improvement or error notifications are welcome. Please follow the
-            official sites of the government and use this site only for
-            supplementary information.
-          </span>
+          <b>Access Data Archive</b> : Feel free to download past data by
+          clicking on the link.
         </p>
       </div>
     </div>

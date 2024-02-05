@@ -24,8 +24,10 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalItems = 0;
   totalDataCount = 0;
   errorMsg: boolean = false;
+  noResult: boolean = false;
   mobileDisclaimer: boolean = false;
   btnReadMore: boolean = true;
+  dateDataText: string;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -70,8 +72,15 @@ export class RiskAssessmentModalComponent implements OnInit {
     });
 
     this.loadData(this.currentPage);
+    this.loadDateText();
   }
 
+  loadDateText(): void {
+    this.riskAssessment.getDateText().subscribe((data: string) => {
+      this.dateDataText = data;
+      console.log('Data from the link:', this.dateDataText);
+    });
+  }
   async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
@@ -82,6 +91,9 @@ export class RiskAssessmentModalComponent implements OnInit {
       if (response.results.length === 0) {
         this.affectedData = [];
         this.errorMsg = true;
+        this.noResult = false;
+      } else if (searchTerm && this.affectedData.length === 0) {
+        this.noResult = true;
       } else {
         const raData = response.results.map((a) => {
           return {
@@ -98,11 +110,13 @@ export class RiskAssessmentModalComponent implements OnInit {
         this.affectedData = raData;
         this.totalDataCount = response.count;
         this.errorMsg = false;
+        this.noResult = false;
       }
     } catch (error) {
       console.error('An error occurred:', error);
       this.affectedData = [];
       this.errorMsg = true;
+      this.noResult = false;
     }
   }
 
