@@ -88,12 +88,14 @@ export class RiskAssessmentModalComponent implements OnInit {
         .pipe(first())
         .toPromise();
 
-      if (response.results.length === 0) {
+      if (searchTerm && response.results.length === 0) {
+        this.affectedData = [];
+        this.errorMsg = false;
+        this.noResult = true;
+      } else if (response.results.length === 0) {
         this.affectedData = [];
         this.errorMsg = true;
         this.noResult = false;
-      } else if (searchTerm && this.affectedData.length === 0) {
-        this.noResult = true;
       } else {
         const raData = response.results.map((a) => {
           return {
