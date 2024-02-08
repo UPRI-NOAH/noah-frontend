@@ -467,7 +467,7 @@
             flex
             items-center
             relative
-            w-64
+            w-44
             h-7
             rounded
             border border-blue-200
@@ -499,7 +499,7 @@
               *ngFor="let item of dropdown"
               [value]="item"
             >
-              {{ item | date: 'fullDate' }} {{ item | date: 'shortTime' }}
+              {{ item | date: 'medium':'+0000' }}
             </option>
           </select>
           <div class="mx-1 absolute right-0 z-10 pointer-event-none">
