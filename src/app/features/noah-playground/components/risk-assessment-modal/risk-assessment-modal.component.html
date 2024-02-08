@@ -447,7 +447,7 @@
           </button>
         </div>
       </div>
-      <div class="p-2 rounded-lg">
+      <div class="p-2 rounded-lg lg:flex">
         <p
           class="
             lg:text-base
@@ -460,8 +460,67 @@
           "
         >
           <b>Access Data Archive</b> : Feel free to download past data by
-          clicking on the link.
+          clicking on the list.
         </p>
+        <div
+          class="
+            flex
+            items-center
+            relative
+            w-64
+            h-7
+            lg:ml-2
+            rounded
+            border border-indigo-700
+          "
+        >
+          <select
+            (change)="onDateSelected($event)"
+            class="
+              px-2
+              uppercase
+              tracking-normal
+              focus:outline-none
+              text-xs
+              font-semibold
+              leading-none
+              text-left text-indigo-700
+              appearance-none
+              z-20
+              relative
+              bg-transparent
+              w-auto
+            "
+          >
+            <option id="dropdown" value="" disabled selected>
+              Select Date
+            </option>
+            <option
+              value="select-date"
+              *ngFor="let item of dropdown"
+              [value]="item"
+            >
+              {{ item | date: 'fullDate' }} {{ item | date: 'shortTime' }}
+            </option>
+          </select>
+          <div class="mx-1 absolute right-0 z-10 pointer-event-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-chevron-down"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#4338CA"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </div>
