@@ -425,6 +425,63 @@
                   >
                     <img
                       class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/images/upri_logo_text.png"
+                      alt="upri-logo"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    class="
+                      max-w-xs
+                      rounded-full
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-8 w-auto lg:h-12 sm:w-auto"
+                      src="assets/icons/noah_logo.png"
+                      alt="noah_logo"
+                      loading="lazy"
+                    />
+                  </button>
+                  <button
+                    class="
+                      max-w-xs
+                      rounded-full
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-14 w-auto lg:h-20 sm:w-auto"
+                      src="assets/images/wm-logo.jpg"
+                      alt="wm-logo"
+                      loading="lazy"
+                    />
+                  </button>
+                </div>
+
+                <!-- Second row with two logos -->
+                <div class="flex flex-row md:space-x-8 ml-6 space-x-2">
+                  <button
+                    class="
+                      max-w-xs
+                      flex
+                      items-center
+                      text-sm
+                      focus:outline-none
+                      relative
+                    "
+                  >
+                    <img
+                      class="h-14 w-auto lg:h-12 sm:w-auto"
                       src="assets/images/usaid-logo.png"
                       alt="usaid-logo"
                       loading="lazy"
@@ -433,7 +490,6 @@
                   <button
                     class="
                       max-w-xs
-                      rounded-full
                       flex
                       items-center
                       text-sm
@@ -443,64 +499,8 @@
                   >
                     <img
                       class="h-8 w-auto lg:h-12 sm:w-auto"
-                      src="assets/images/tufts-logo.png"
-                      alt="tufts-logo"
-                      loading="lazy"
-                    />
-                  </button>
-                  <button
-                    class="
-                      max-w-xs
-                      rounded-full
-                      flex
-                      items-center
-                      text-sm
-                      focus:outline-none
-                      relative
-                    "
-                  >
-                    <img
-                      class="h-8 w-auto lg:h-12 sm:w-auto"
-                      src="assets/images/upri_logo_text.png"
-                      alt="upri logo"
-                      loading="lazy"
-                    />
-                  </button>
-                </div>
-
-                <!-- Second row with two logos -->
-                <div class="flex flex-row md:space-x-8 space-x-2">
-                  <button
-                    class="
-                      max-w-xs
-                      flex
-                      items-center
-                      text-sm
-                      focus:outline-none
-                      relative
-                    "
-                  >
-                    <img
-                      class="h-8 w-auto lg:h-12 sm:w-auto"
-                      src="assets/images/iesm-logo.png"
-                      alt="iesm-logo"
-                      loading="lazy"
-                    />
-                  </button>
-                  <button
-                    class="
-                      max-w-xs
-                      flex
-                      items-center
-                      text-sm
-                      focus:outline-none
-                      relative
-                    "
-                  >
-                    <img
-                      class="h-8 lg:h-12 sm:w-auto"
-                      src="assets/icons/noah_logo.png"
-                      alt="noah_logo"
+                      src="assets/images/4as.png"
+                      alt="4as-logo"
                       loading="lazy"
                     />
                   </button>
@@ -535,13 +535,20 @@
                   lg:w-full
                 "
               >
-                The Exposure Assessment feature, a collaboration within the
-                Academic Alliance for Anticipatory Action (4As) consortium with
-                UP Resilience Institute (UPRI) and Institute of Environmental
-                Science/Weather Manila as key partners, is led by Tufts
-                University and supported by the United States Agency for
-                International Development's Bureau for Humanitarian Assistance
-                (USAID/BHA).
+                The Exposure Assessment tab is an Impact-Based Flood Forecasting
+                System developed by the UP Resilience Institute NOAH-Center and
+                Weather Manila, in collaboration with the Academic Alliance for
+                Anticipatory Action (4As) and was funded by the United States
+                Agency for International Development's Bureau for Humanitarian
+                Assistance (USAID/BHA). The Impact-Based Flood Forecasting
+                System allows users to determine how many people per barangay
+                will be affected by a large flood event, 24 hours from the
+                timestamp of the displayed rain forecast. The results can be
+                viewed in tabular format where specific information can be
+                searched. Users can also visualize the affected population in
+                map view. If there is no rain forecast for the next 24 hours,
+                there will be no flood exposure information that will be
+                displayed.
               </p>
               <p
                 class="
@@ -554,15 +561,36 @@
                   lg:w-full
                 "
               >
-                Currently in beta mode, ongoing enhancements and validations are
-                part of the project's development. It is essential to note that
-                the UP NOAH Center, as part of this initiative, does not offer
+                <b>Disclaimer</b>: The streams, catchment and administrative
+                boundaries used in the Impact-Based Flood Forecasting System are
+                indicative. The UP NOAH Center holds no responsibility or
+                liability for any inconsistencies, inaccuracies, or data
+                omissions related to predicted or depicted weather forecasts,
+                whether reported, ongoing, or occurred, for both parties and
+                non-parties alike. The UP NOAH Center does not provide any
                 explicit or implied warranties, guarantees, or assurances
                 regarding the occurrence or confirmation of weather information,
-                including forecasts, graphics, data, or any information
-                presented on the site. Users are advised to be aware of the
-                project's evolving nature.
+                as presented in forecasts, graphics, data, or any information
+                included on the site. However, suggestions for improvement or
+                error notifications are welcome. Please follow the official
+                sites of the government and use this site only for supplementary
+                information.
               </p>
+            </div>
+            <div class="ml-auto fill-current w-6 h-6 cursor-pointer mr-10">
+              <button
+                class="
+                  bg-blue-500
+                  p-2
+                  text-white
+                  rounded-lg
+                  focus:bg-gray-500
+                  hover:bg-blue-900
+                "
+                (click)="close()"
+              >
+                Accept
+              </button>
             </div>
           </div>
         </div>
