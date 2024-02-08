@@ -58,4 +58,8 @@ export class RiskAssessmentService {
       responseType: 'text',
     });
   }
+
+  archiveData(): Observable<any> {
+    return this.http.get(`${this.API_BASE_URL}/api/latest-results/`);
+  }
 }

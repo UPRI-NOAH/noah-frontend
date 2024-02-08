@@ -447,7 +447,7 @@
           </button>
         </div>
       </div>
-      <div class="p-2 rounded-lg lg:flex">
+      <div class="p-2 rounded-lg">
         <p
           class="
             lg:text-base
@@ -459,8 +459,8 @@
             text-ellipsis
           "
         >
-          <b>Access Data Archive</b> : Feel free to download past data by
-          clicking on the list.
+          <b>Access Data Archive</b> : Click the link to download previous
+          forecast data.
         </p>
         <div
           class="
@@ -469,27 +469,26 @@
             relative
             w-64
             h-7
-            lg:ml-2
             rounded
-            border border-indigo-700
+            border border-blue-200
           "
         >
           <select
             (change)="onDateSelected($event)"
             class="
               px-2
-              uppercase
               tracking-normal
               focus:outline-none
               text-xs
               font-semibold
               leading-none
-              text-left text-indigo-700
+              text-left
               appearance-none
               z-20
               relative
               bg-transparent
               w-auto
+              normal-case
             "
           >
             <option id="dropdown" value="" disabled selected>
