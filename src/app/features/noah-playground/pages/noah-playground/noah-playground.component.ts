@@ -59,7 +59,6 @@ export class NoahPlaygroundComponent implements OnInit {
     this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
       this.iotModalOpen = iotModalOpen;
     });
-    3;
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
