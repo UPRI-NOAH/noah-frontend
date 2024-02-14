@@ -127,6 +127,9 @@
           In a large flood event, how many people might be affected and would
           need evacuation?
         </p>
+        <div class="italic lg:text-lg text-sm">
+          <span>As of {{ dateDataText }}</span>
+        </div>
       </div>
 
       <!-- ... Your existing header content ... -->
@@ -179,9 +182,11 @@
               dark:text-white
               dark:focus:ring-blue-500
               dark:focus:border-blue-500
+              disabled:cursor-not-allowed
             "
             placeholder="Search Location"
             (input)="loadData(1, searchValue)"
+            [disabled]="errorMsg"
           />
         </div>
       </div>
@@ -226,6 +231,39 @@
             </tr>
           </thead>
           <ng-container>
+            <div *ngIf="noResult; else dataNoResult">
+              <div
+                class="flex items-center absolute justify-center w-full py-6"
+              >
+                <div
+                  class="
+                    bg-white
+                    flex
+                    items-center
+                    justify-center
+                    mx-4
+                    md:w-2/3
+                  "
+                >
+                  <div class="flex flex-col items-center py-4">
+                    <p
+                      class="
+                        px-4
+                        pb-10
+                        text-base
+                        md:text-2xl
+                        leading-none
+                        text-center text-gray-600
+                      "
+                    >
+                      No result
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container>
             <div *ngIf="errorMsg; else dataAvailable">
               <div
                 class="flex items-center absolute justify-center w-full py-6"
@@ -259,7 +297,7 @@
               </div>
             </div>
           </ng-container>
-          <ng-template #dataAvailable>
+          <ng-template #dataAvailable && #dataNoResult>
             <tbody>
               <tr
                 *ngFor="
@@ -409,7 +447,7 @@
           </button>
         </div>
       </div>
-      <div class="bg-red-100 p-2 rounded-lg">
+      <div class="p-2 rounded-lg">
         <p
           class="
             lg:text-base
@@ -421,45 +459,67 @@
             text-ellipsis
           "
         >
-          <b>Disclaimer:</b> The streams and catchment boundaries presented are
-          indicative. They have been derived from elevation data obtained using
-          Interferometric Synthetic Aperture Radar (IfSAR) topography and
-          delineated using ArcGIS Hydrological Tools.
-
-          <span
-            role="button"
-            *ngIf="btnReadMore"
-            class="display text-blue-500"
-            (click)="mobileDisclaimerSeemore()"
-            >Read more...</span
-          >
-          <!-- <span class="hidden xl:inline">
-            The UP NOAH Center holds no responsibility or liability for any
-            inconsistencies, inaccuracies, or data omissions related to
-            predicted or depicted weather forecasts, whether reported, ongoing,
-            or occurred, for both parties and non-parties alike. The UP NOAH
-            Center does not provide any explicit or implied warranties,
-            guarantees, or assurances regarding the occurrence or confirmation
-            of weather information, as presented in forecasts, graphics, data,
-            or any information included on the site. However, suggestions for
-            improvement or error notifications are welcome. Please follow the
-            official sites of the government and use this site only for
-            supplementary information.
-          </span> -->
-          <span *ngIf="mobileDisclaimer">
-            The UP NOAH Center holds no responsibility or liability for any
-            inconsistencies, inaccuracies, or data omissions related to
-            predicted or depicted weather forecasts, whether reported, ongoing,
-            or occurred, for both parties and non-parties alike. The UP NOAH
-            Center does not provide any explicit or implied warranties,
-            guarantees, or assurances regarding the occurrence or confirmation
-            of weather information, as presented in forecasts, graphics, data,
-            or any information included on the site. However, suggestions for
-            improvement or error notifications are welcome. Please follow the
-            official sites of the government and use this site only for
-            supplementary information.
-          </span>
+          <b>Access Data Archive</b> : Click the link to download previous
+          forecast data.
         </p>
+        <div
+          class="
+            flex
+            items-center
+            relative
+            w-44
+            h-7
+            rounded
+            border border-blue-200
+          "
+        >
+          <select
+            (change)="onDateSelected($event)"
+            class="
+              px-2
+              tracking-normal
+              focus:outline-none
+              text-xs
+              font-semibold
+              leading-none
+              text-left
+              appearance-none
+              z-20
+              relative
+              bg-transparent
+              w-auto
+              normal-case
+            "
+          >
+            <option id="dropdown" value="" disabled selected>
+              Select Date
+            </option>
+            <option
+              value="select-date"
+              *ngFor="let item of dropdown"
+              [value]="item"
+            >
+              {{ item | date: 'medium':'+0000' }}
+            </option>
+          </select>
+          <div class="mx-1 absolute right-0 z-10 pointer-event-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-chevron-down"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#4338CA"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import {
   AffectedData,
   RiskAssessmentService,
@@ -24,8 +24,14 @@ export class RiskAssessmentModalComponent implements OnInit {
   totalItems = 0;
   totalDataCount = 0;
   errorMsg: boolean = false;
+  noResult: boolean = false;
   mobileDisclaimer: boolean = false;
   btnReadMore: boolean = true;
+  dateDataText: string;
+
+  archieveDateTime: string;
+  archieveDownload: string;
+  dropdown: string[] = [];
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -68,10 +74,51 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.modalServices.riskModal$.subscribe((riskModal) => {
       this.riskModal = riskModal;
     });
-
     this.loadData(this.currentPage);
+    this.loadDateText();
+    this.archiveData();
   }
 
+  async downloadData(selectedDate: string) {
+    const response: any = await this.riskAssessment
+      .archiveData()
+      .pipe(first())
+      .toPromise();
+    if (response && response.results) {
+      const selectedResult = response.results.find(
+        (result: any) => result.datetime === selectedDate
+      );
+
+      if (selectedResult && selectedResult.s3_link) {
+        window.open(selectedResult.s3_link, '_blank');
+      } else {
+        console.error('Selected date not found or missing s3_link');
+      }
+    }
+  }
+
+  onDateSelected(event: any) {
+    const selectedDate = event.target.value;
+    if (selectedDate !== 'select-date') {
+      this.downloadData(selectedDate);
+    }
+  }
+  async archiveData() {
+    const response: any = await this.riskAssessment
+      .archiveData()
+      .pipe(first())
+      .toPromise();
+    if (response && response.results) {
+      const datetimes = response.results.map((result: any) => result.datetime);
+      this.dropdown = datetimes;
+    }
+  }
+
+  loadDateText(): void {
+    this.riskAssessment.getDateText().subscribe((data: string) => {
+      this.dateDataText = data;
+    });
+  }
   async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
@@ -79,9 +126,14 @@ export class RiskAssessmentModalComponent implements OnInit {
         .pipe(first())
         .toPromise();
 
-      if (response.results.length === 0) {
+      if (searchTerm && response.results.length === 0) {
+        this.affectedData = [];
+        this.errorMsg = false;
+        this.noResult = true;
+      } else if (response.results.length === 0) {
         this.affectedData = [];
         this.errorMsg = true;
+        this.noResult = false;
       } else {
         const raData = response.results.map((a) => {
           return {
@@ -98,11 +150,13 @@ export class RiskAssessmentModalComponent implements OnInit {
         this.affectedData = raData;
         this.totalDataCount = response.count;
         this.errorMsg = false;
+        this.noResult = false;
       }
     } catch (error) {
       console.error('An error occurred:', error);
       this.affectedData = [];
       this.errorMsg = true;
+      this.noResult = false;
     }
   }
 
