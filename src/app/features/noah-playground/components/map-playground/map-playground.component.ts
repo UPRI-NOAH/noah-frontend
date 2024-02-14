@@ -1503,10 +1503,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             type: 'image',
             url: rainForcastDetails.url,
             coordinates: [
-              [116.955, 19.352],
-              [126.955, 19.352],
-              [126.955, 5.305],
-              [116.955, 5.305],
+              [116.855, 19.402],
+              [127.055, 19.402],
+              [127.055, 5.205],
+              [116.855, 5.205],
             ],
           };
         default:
