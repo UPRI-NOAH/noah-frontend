@@ -40,7 +40,7 @@
             absolute
             top-0
             right-0
-            m-3
+            m-2
             dark:text-gray-10
             text-gray-600
             transition
@@ -451,64 +451,67 @@
           <b>Access Data Archive</b> : Click the link to download previous
           forecast data.
         </p>
-        <div
-          class="
-            flex
-            items-center
-            relative
-            w-56
-            h-7
-            rounded
-            border border-blue-200
-          "
-        >
-          <select
-            (change)="onDateSelected($event)"
+
+        <div class="dropdown inline-block relative">
+          <button
             class="
-              px-2
-              tracking-normal
-              focus:outline-none
-              text-xs
-              lg:text-lg
+              border border-blue-200
               font-semibold
-              leading-none
-              text-left
-              appearance-none
-              z-20
-              relative
-              bg-transparent
-              w-auto
-              normal-case
+              py-2
+              px-4
+              rounded
+              inline-flex
+              items-center
             "
           >
-            <option id="dropdown" value="" disabled selected>
-              Select Date
-            </option>
-            <option
-              value="select-date"
+            <span class="mr-1 text-xs lg:text-base"> Select Date: </span>
+            <svg
+              class="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </button>
+          <ul
+            class="
+              dropdown-menu
+              absolute
+              hidden
+              border-blue-200
+              h-36
+              overflow-y-auto
+              pt-1
+              bottom-full
+              top-auto
+            "
+          >
+            <li
+              class="w-32 lg:w-60"
               *ngFor="let item of dropdown"
               [value]="item"
+              role="button"
             >
-              {{ item | date: 'medium':'+0000' }}
-            </option>
-          </select>
-          <div class="mx-1 absolute right-0 z-10 pointer-event-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevron-down"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#4338CA"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" />
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
+              <a
+                class="
+                  rounded-t
+                  bg-gray-100
+                  text-xs
+                  lg:text-base
+                  hover:bg-gray-400
+                  py-2
+                  px-4
+                  block
+                  whitespace-no-wrap
+                "
+                (click)="onDateSelected(item)"
+              >
+                {{ item | date: 'medium':'+0000' }}</a
+              >
+            </li>
+          </ul>
         </div>
       </div>
     </div>

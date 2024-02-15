@@ -97,12 +97,12 @@ export class RiskAssessmentModalComponent implements OnInit {
     }
   }
 
-  onDateSelected(event: any) {
-    const selectedDate = event.target.value;
+  onDateSelected(selectedDate: string) {
     if (selectedDate !== 'select-date') {
       this.downloadData(selectedDate);
     }
   }
+
   async archiveData() {
     const response: any = await this.riskAssessment
       .archiveData()
