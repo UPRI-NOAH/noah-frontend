@@ -46,6 +46,10 @@ export class AlertComponent implements OnInit {
   close() {
     this.modalService.closeModal();
     this.modalService.closeLogoutModal();
+    this.modalService.acceptHidePopup();
+  }
+
+  acceptPopup() {
     this.modalService.hideEaPopup();
   }
 
