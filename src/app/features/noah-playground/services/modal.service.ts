@@ -45,12 +45,30 @@ export class ModalService {
     this.eaPopup.next(false);
   }
 
+  acceptHidePopup() {
+    this.eaPopup.next(false);
+    sessionStorage.clear(); // Clear the sessionStorage to force expiration
+  }
+
   showEaPopup() {
-    // this.eaPopup.next(true);
-    // Check if the popup has already been shown
-    if (!this.popupShown) {
+    // Check if the timestamp indicating when the popup was last shown is present in sessionStorage
+    const lastShownTimestamp = sessionStorage.getItem('popupShownTimestamp');
+
+    if (!lastShownTimestamp || isExpired(lastShownTimestamp)) {
+      // If the timestamp is not present or has expired, display the popup
       this.eaPopup.next(true);
-      this.popupShown = true; // Set the flag to true once the popup is shown
+
+      // Set the timestamp in sessionStorage to the current time
+      sessionStorage.setItem('popupShownTimestamp', Date.now().toString());
+
+      // Optionally, set a reload flag in sessionStorage to ensure the popup won't be shown again after a page refresh
+      sessionStorage.setItem('reloadFlag', 'true');
+    } else {
+      // Check if the reload flag is set, if not, reset the sessionStorage
+      const reloadFlag = sessionStorage.getItem('reloadFlag');
+      if (!reloadFlag) {
+        sessionStorage.clear();
+      }
     }
   }
 
@@ -131,4 +149,10 @@ export class ModalService {
   closeLogoutModal() {
     this.logoutAlert.next(false);
   }
+}
+function isExpired(timestamp) {
+  const currentTime = Date.now();
+  const expirationTime = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+  //const expirationTime = 60 * 1000; // 1 minute in milliseconds fot testing
+  return currentTime - parseInt(timestamp) > expirationTime;
 }
