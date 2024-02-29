@@ -232,7 +232,7 @@
                 <div
                   role="button"
                   (click)="onHeaderColumnClick(col.key)"
-                  class="whitespace-nowrap flex leading-none items-center"
+                  class="flex leading-none items-center"
                 >
                   {{ col.header }}
                   <svg
@@ -307,7 +307,7 @@
               </div>
             </div>
           </ng-container>
-          <ng-template #dataAvailable>
+          <ng-template #dataAvailable && #dataNoResult>
             <tbody class="h-96 overflow-y-auto">
               <tr
                 *ngFor="
@@ -328,13 +328,40 @@
                   md:text-base
                 "
               >
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.brgy }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.muni }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.prov }}
                 </td>
                 <td class="p-3">
@@ -465,6 +492,7 @@
           class="
             lg:text-base
             text-sm
+            py-4
             italic
             leading-none
             whitespace-pre-line
