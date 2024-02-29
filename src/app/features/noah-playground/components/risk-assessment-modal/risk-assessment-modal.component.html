@@ -1,14 +1,34 @@
-<div
+<!-- <div
   [ngClass]="'z-50 fixed w-full flex justify-center inset-0 lg:p-10 p-5'"
+  *ngIf="riskModal"
+> -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
   *ngIf="riskModal"
 >
   <!-- *ngIf="riskModal" -->
-  <div class="w-full h-full opacity-80 bg-black z-0 absolute inset-0"></div>
+  <div class="opacity-80 bg-black z-0 absolute inset-0"></div>
   <!-- modal -->
   <div
     class="
-      max-h-full
-      overflow-y-auto overflow-x-hidden
+      max-h-auto
       border-none
       shadow-lg
       relative
@@ -40,7 +60,7 @@
             absolute
             top-0
             right-0
-            m-3
+            m-2
             dark:text-gray-10
             text-gray-600
             transition
@@ -191,7 +211,7 @@
         </div>
       </div>
       <!-- Modal Content -->
-      <div class="flex-grow overflow-auto max-h-full" style="height: 58vh">
+      <div class="table-wrp block flex-grow max-h-full" style="height: 58vh">
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
@@ -230,39 +250,29 @@
               </th>
             </tr>
           </thead>
-          <ng-container>
-            <div *ngIf="noResult; else dataNoResult">
+          <div *ngIf="noResult">
+            <div class="flex items-center absolute justify-center w-full py-6">
               <div
-                class="flex items-center absolute justify-center w-full py-6"
+                class="bg-white flex items-center justify-center mx-4 md:w-2/3"
               >
-                <div
-                  class="
-                    bg-white
-                    flex
-                    items-center
-                    justify-center
-                    mx-4
-                    md:w-2/3
-                  "
-                >
-                  <div class="flex flex-col items-center py-4">
-                    <p
-                      class="
-                        px-4
-                        pb-10
-                        text-base
-                        md:text-2xl
-                        leading-none
-                        text-center text-gray-600
-                      "
-                    >
-                      No result
-                    </p>
-                  </div>
+                <div class="flex flex-col items-center py-4">
+                  <p
+                    class="
+                      px-4
+                      pb-10
+                      text-base
+                      md:text-2xl
+                      leading-none
+                      text-center text-gray-600
+                    "
+                  >
+                    No result
+                  </p>
                 </div>
               </div>
             </div>
-          </ng-container>
+          </div>
+
           <ng-container>
             <div *ngIf="errorMsg; else dataAvailable">
               <div
@@ -284,7 +294,7 @@
                         px-4
                         pb-10
                         text-base
-                        md:text-2xl
+                        md:text-xl
                         leading-none
                         text-center text-gray-600
                       "
@@ -298,7 +308,7 @@
             </div>
           </ng-container>
           <ng-template #dataAvailable && #dataNoResult>
-            <tbody>
+            <tbody class="h-96 overflow-y-auto">
               <tr
                 *ngFor="
                   let data of affectedData
@@ -308,6 +318,9 @@
                 class="
                   bg-white
                   border-b
+                  transition
+                  duration-300
+                  ease-in-out
                   dark:bg-gray-800 dark:border-gray-700
                   hover:bg-gray-50
                   dark:hover:bg-gray-600
@@ -315,13 +328,40 @@
                   md:text-base
                 "
               >
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.brgy }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.muni }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.prov }}
                 </td>
                 <td class="p-3">
@@ -343,7 +383,7 @@
     </div>
     <div class="flex-shrink- p-1 md:p-4 border-t border-gray-200 rounded-b-md">
       <!-- Modal Footer -->
-      <div class="flex items-center pb-4 justify-center">
+      <div class="flex items-center pb-2 justify-center">
         <div class="lg:w-3/5 w-full flex items-center justify-between">
           <button
             class="
@@ -447,13 +487,13 @@
           </button>
         </div>
       </div>
-      <div class="p-2 rounded-lg">
+      <div class="p-1 rounded-lg">
         <p
           class="
             lg:text-base
             text-sm
+            py-4
             italic
-            my-2
             leading-none
             whitespace-pre-line
             text-ellipsis
@@ -462,63 +502,67 @@
           <b>Access Data Archive</b> : Click the link to download previous
           forecast data.
         </p>
-        <div
-          class="
-            flex
-            items-center
-            relative
-            w-44
-            h-7
-            rounded
-            border border-blue-200
-          "
-        >
-          <select
-            (change)="onDateSelected($event)"
+
+        <div class="dropdown inline-block relative">
+          <button
             class="
-              px-2
-              tracking-normal
-              focus:outline-none
-              text-xs
+              border border-blue-200
               font-semibold
-              leading-none
-              text-left
-              appearance-none
-              z-20
-              relative
-              bg-transparent
-              w-auto
-              normal-case
+              py-2
+              px-4
+              rounded
+              inline-flex
+              items-center
             "
           >
-            <option id="dropdown" value="" disabled selected>
-              Select Date
-            </option>
-            <option
-              value="select-date"
+            <span class="mr-1 text-xs lg:text-base"> Select Date: </span>
+            <svg
+              class="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
+            </svg>
+          </button>
+          <ul
+            class="
+              dropdown-menu
+              absolute
+              hidden
+              border-blue-200
+              h-36
+              overflow-y-auto
+              pt-1
+              bottom-full
+              top-auto
+            "
+          >
+            <li
+              class="w-32 lg:w-60"
               *ngFor="let item of dropdown"
               [value]="item"
+              role="button"
             >
-              {{ item | date: 'medium':'+0000' }}
-            </option>
-          </select>
-          <div class="mx-1 absolute right-0 z-10 pointer-event-none">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-chevron-down"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#4338CA"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" />
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
+              <a
+                class="
+                  rounded-t
+                  bg-gray-100
+                  text-xs
+                  lg:text-base
+                  hover:bg-gray-400
+                  py-2
+                  px-4
+                  block
+                  whitespace-no-wrap
+                "
+                (click)="onDateSelected(item)"
+              >
+                {{ item | date: 'medium':'+0000' }}</a
+              >
+            </li>
+          </ul>
         </div>
       </div>
     </div>
