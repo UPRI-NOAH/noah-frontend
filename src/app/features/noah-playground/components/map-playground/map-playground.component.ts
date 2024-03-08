@@ -190,13 +190,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
-        this.initSensors();
+        //this.initSensors();
         this.initQuezonCitySensors();
         this.initQCCritFac();
         this.initQCMunicipalBoundary();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
-        this.showContourMaps();
+        //this.showContourMaps();
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
@@ -1097,53 +1097,53 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   // END OF QC IOT
-  initSensors() {
-    SENSORS.forEach((sensorType) => {
-      this.sensorService
-        .getSensors(sensorType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          // add layer to map
-          this.map.addLayer({
-            id: sensorType,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'circle-color': SENSOR_COLORS[sensorType],
-              'circle-radius': 5,
-              'circle-opacity': 0,
-            },
-          });
+  // initSensors() {
+  //   SENSORS.forEach((sensorType) => {
+  //     this.sensorService
+  //       .getSensors(sensorType)
+  //       .pipe(first())
+  //       .toPromise()
+  //       .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+  //         // add layer to map
+  //         this.map.addLayer({
+  //           id: sensorType,
+  //           type: 'circle',
+  //           source: {
+  //             type: 'geojson',
+  //             data,
+  //           },
+  //           paint: {
+  //             'circle-color': SENSOR_COLORS[sensorType],
+  //             'circle-radius': 5,
+  //             'circle-opacity': 0,
+  //           },
+  //         });
 
-          // add show/hide listeners
-          combineLatest([
-            this.pgService.sensorsGroupShown$,
-            this.pgService.getSensorTypeShown$(sensorType),
-          ])
-            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-            .subscribe(([groupShown, soloShown]) => {
-              this.map.setPaintProperty(
-                sensorType,
-                'circle-opacity',
-                +(groupShown && soloShown)
-              );
-            });
+  //         // add show/hide listeners
+  //         combineLatest([
+  //           this.pgService.sensorsGroupShown$,
+  //           this.pgService.getSensorTypeShown$(sensorType),
+  //         ])
+  //           .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+  //           .subscribe(([groupShown, soloShown]) => {
+  //             this.map.setPaintProperty(
+  //               sensorType,
+  //               'circle-opacity',
+  //               +(groupShown && soloShown)
+  //             );
+  //           });
 
-          this.pgService.setSensorTypeFetched(sensorType, true);
-          // show mouse event listeners
-          this.showDataPoints(sensorType);
-        })
-        .catch(() =>
-          console.error(
-            `Unable to fetch data from DOST for sensors of type "${sensorType}"`
-          )
-        );
-    });
-  }
+  //         this.pgService.setSensorTypeFetched(sensorType, true);
+  //         // show mouse event listeners
+  //         this.showDataPoints(sensorType);
+  //       })
+  //       .catch(() =>
+  //         console.error(
+  //           `Unable to fetch data from DOST for sensors of type "${sensorType}"`
+  //         )
+  //       );
+  //   });
+  // }
 
   initVolcanoes() {
     // 0 - declare the source json files
@@ -1742,97 +1742,97 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     );
   }
 
-  showContourMaps() {
-    const contourMapImages = {
-      '1hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '3hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '6hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '12hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '24hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '24hr-lapse': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
-        type: 'video',
-      },
-    };
+  // showContourMaps() {
+  //   const contourMapImages = {
+  //     '1hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '3hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '6hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '12hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '24hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '24hr-lapse': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+  //       type: 'video',
+  //     },
+  //   };
 
-    const getContourMapSource = (contourMapDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (contourMapDetails.type) {
-        case 'image':
-          return {
-            type: 'image',
-            url: contourMapDetails.url,
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
-          };
-        case 'video':
-          return {
-            type: 'video',
-            urls: [contourMapDetails.url],
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
-          };
-        default:
-          throw new Error('[MapPlayground] Unable to get contour map source');
-      }
-    };
+  //   const getContourMapSource = (contourMapDetails: {
+  //     url: string;
+  //     type: string;
+  //   }): AnySourceData => {
+  //     switch (contourMapDetails.type) {
+  //       case 'image':
+  //         return {
+  //           type: 'image',
+  //           url: contourMapDetails.url,
+  //           coordinates: [
+  //             [115.35, 21.55], // top-left
+  //             [128.25, 21.55], // top-right
+  //             [128.25, 3.85], // bottom-right
+  //             [115.35, 3.85], // bottom-left
+  //           ],
+  //         };
+  //       case 'video':
+  //         return {
+  //           type: 'video',
+  //           urls: [contourMapDetails.url],
+  //           coordinates: [
+  //             [115.35, 21.55], // top-left
+  //             [128.25, 21.55], // top-right
+  //             [128.25, 3.85], // bottom-right
+  //             [115.35, 3.85], // bottom-left
+  //           ],
+  //         };
+  //       default:
+  //         throw new Error('[MapPlayground] Unable to get contour map source');
+  //     }
+  //   };
 
-    Object.keys(contourMapImages).forEach((contourType) => {
-      const contourMapDetails = contourMapImages[contourType];
+  //   Object.keys(contourMapImages).forEach((contourType) => {
+  //     const contourMapDetails = contourMapImages[contourType];
 
-      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
+  //     this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
-      this.map.addLayer({
-        id: contourType,
-        type: 'raster',
-        source: contourType,
-        paint: {
-          'raster-fade-duration': 0,
-          'raster-opacity': 0,
-        },
-      });
+  //     this.map.addLayer({
+  //       id: contourType,
+  //       type: 'raster',
+  //       source: contourType,
+  //       paint: {
+  //         'raster-fade-duration': 0,
+  //         'raster-opacity': 0,
+  //       },
+  //     });
 
-      combineLatest([
-        this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
-        this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
-      ])
-        .pipe(
-          takeUntil(this._unsub),
-          takeUntil(this._changeStyle),
-          map(([groupShown, selectedContourMap]) => {
-            return +(groupShown && selectedContourMap === contourType);
-          })
-        )
-        .subscribe((opacity: number) => {
-          this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
-        });
-    });
-  }
+  //     combineLatest([
+  //       this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
+  //       this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
+  //     ])
+  //       .pipe(
+  //         takeUntil(this._unsub),
+  //         takeUntil(this._changeStyle),
+  //         map(([groupShown, selectedContourMap]) => {
+  //           return +(groupShown && selectedContourMap === contourType);
+  //         })
+  //       )
+  //       .subscribe((opacity: number) => {
+  //         this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+  //       });
+  //   });
+  // }
 
   switchMapStyle(style: MapStyle) {
     if (this.mapStyle === style) return;
