@@ -287,7 +287,7 @@
             </div>
           </ng-container>
           <ng-template #dataAvailable>
-            <tbody>
+            <tbody class="h-96 overflow-y-auto">
               <tr
                 *ngFor="
                   let data of affectedData
@@ -297,6 +297,9 @@
                 class="
                   bg-white
                   border-b
+                  transition
+                  duration-300
+                  ease-in-out
                   dark:bg-gray-800 dark:border-gray-700
                   hover:bg-gray-50
                   dark:hover:bg-gray-600
@@ -304,13 +307,40 @@
                   md:text-base
                 "
               >
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.brgy }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.muni }}
                 </td>
-                <td class="p-1">
+                <td
+                  class="
+                    p-1
+                    text-sm text-gray-900
+                    font-light
+                    px-6
+                    py-4
+                    whitespace-nowrap
+                  "
+                >
                   {{ data.prov }}
                 </td>
                 <td class="p-3">
@@ -441,6 +471,7 @@
           class="
             lg:text-base
             text-sm
+            py-4
             italic
             leading-none
             whitespace-pre-line
