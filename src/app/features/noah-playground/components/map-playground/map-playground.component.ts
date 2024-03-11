@@ -14,6 +14,8 @@ import mapboxgl, {
   Map,
   Marker,
 } from 'mapbox-gl';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
+import * as turf from '@turf/turf';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
@@ -161,8 +163,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
+  private draw: MapboxDraw;
+  private distanceContainer: any;
+  private geojson: any;
+  private linestring: any;
+  private measurementActive: boolean = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
+  @ViewChild('distanceButton') distanceButton: ElementRef;
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
@@ -202,6 +210,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initBarangayBoundary();
         this.initAffectedExposure();
         this.initRainForcast();
+        this.initArea();
+        //this.initDistance();
       });
   }
 
@@ -1841,6 +1851,39 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next();
+    }
+  }
+
+  private initArea() {
+    this.map.on('load', () => {
+      this.draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true,
+        },
+      });
+
+      this.map.addControl(this.draw);
+      this.map.on('draw.create', this.updateArea.bind(this));
+      this.map.on('draw.delete', this.updateArea.bind(this));
+      this.map.on('draw.update', this.updateArea.bind(this));
+    });
+  }
+
+  private updateArea(event) {
+    const data = this.draw.getAll();
+    const answer = document.getElementById('area');
+
+    if (data.features.length > 0) {
+      const area = turf.area(data);
+      const rounded_area = Math.round(area * 100) / 100;
+      answer.innerHTML = `<p>Total Area: ${rounded_area.toLocaleString()} square meters</p>`;
+    } else {
+      answer.innerHTML = '';
+      if (event.type !== 'draw.delete') {
+        console.log('computation for area: ');
+      }
     }
   }
 
