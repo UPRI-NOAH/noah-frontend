@@ -169,8 +169,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private linestring: any;
   private measurementActive: boolean = false;
 
-  @ViewChild('selectQc') selectQc: ElementRef;
   @ViewChild('distanceButton') distanceButton: ElementRef;
+  @ViewChild('selectQc') selectQc: ElementRef;
+
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
@@ -211,7 +212,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initAffectedExposure();
         this.initRainForcast();
         this.initArea();
-        //this.initDistance();
+        this.initDistance();
       });
   }
 
@@ -1884,6 +1885,163 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       if (event.type !== 'draw.delete') {
         console.log('computation for area: ');
       }
+    }
+  }
+
+  initDistance() {
+    this.distanceContainer = document.getElementById('distance');
+    this.geojson = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    this.linestring = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [],
+      },
+    };
+    this.map.on('load', () => {
+      this.map.addSource('geojson', {
+        type: 'geojson',
+        data: this.geojson,
+      });
+
+      this.map.addLayer({
+        id: 'measure-points',
+        type: 'circle',
+        source: 'geojson',
+        paint: {
+          'circle-radius': 5,
+          'circle-color': '#000',
+        },
+        filter: ['in', '$type', 'Point'],
+      });
+
+      this.map.addLayer({
+        id: 'measure-lines',
+        type: 'line',
+        source: 'geojson',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round',
+        },
+        paint: {
+          'line-color': '#000',
+          'line-width': 2.5,
+        },
+        filter: ['in', '$type', 'LineString'],
+      });
+
+      this.map.on('click', (e) => this.onClick(e));
+      this.map.on('touchstart', (e) => this.onTouchStart(e));
+      this.map.on('mousemove', (e) => this.onMouseMove(e));
+      this.map.on('touchmove', (e) => this.onTouchMove(e));
+    });
+
+    this.map.on('mousemove', (e) => this.onMouseMove(e));
+    this.map.on('touchmove', (e) => this.onTouchMove(e));
+  }
+
+  onTouchStart(e) {
+    if (this.measurementActive) {
+      this.onClick(e);
+    }
+  }
+
+  onTouchMove(e) {
+    if (this.measurementActive) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const point = this.map.unproject([touch.clientX, touch.clientY]);
+      this.onClick({ point, lngLat: point });
+    }
+  }
+
+  onClick(e: any) {
+    if (this.measurementActive) {
+      const features = this.map.queryRenderedFeatures(e.point, {
+        layers: ['measure-points'],
+      });
+
+      if (this.geojson.features.length > 1) {
+        this.geojson.features.pop();
+      }
+
+      this.distanceContainer.innerHTML = '';
+
+      if (features.length) {
+        const id = features[0].properties.id;
+        this.geojson.features = this.geojson.features.filter(
+          (point: any) => point.properties.id !== id
+        );
+      } else {
+        const point = this.createPointFeature(e);
+        this.geojson.features.push(point);
+      }
+
+      if (this.geojson.features.length > 1) {
+        this.updateLineString();
+        this.populateDistanceContainer();
+      }
+
+      (this.map.getSource('geojson') as any).setData(this.geojson);
+    }
+  }
+
+  createPointFeature(e: any) {
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [e.lngLat.lng, e.lngLat.lat],
+      },
+      properties: {
+        id: String(new Date().getTime()),
+      },
+    };
+  }
+
+  updateLineString() {
+    this.linestring.geometry.coordinates = this.geojson.features.map(
+      (point: any) => point.geometry.coordinates
+    );
+
+    this.geojson.features.push(this.linestring);
+  }
+
+  populateDistanceContainer() {
+    const value = document.createElement('pre');
+    const distance = turf.length(this.linestring);
+    value.textContent = `Total distance: ${distance.toLocaleString()}km`;
+    this.distanceContainer.appendChild(value);
+  }
+
+  onMouseMove(e: any) {
+    if (!this.measurementActive) {
+      return;
+    }
+
+    const features = this.map.queryRenderedFeatures(e.point, {
+      layers: ['measure-points'],
+    });
+
+    this.map.getCanvas().style.cursor = features.length
+      ? 'pointer'
+      : 'crosshair';
+  }
+
+  calculateDistance() {
+    this.measurementActive = !this.measurementActive;
+
+    if (this.measurementActive) {
+      this.distanceButton.nativeElement.textContent;
+    } else {
+      // Reset the measurement when stopping
+      this.map.getCanvas().style.cursor = 'grab';
+      this.geojson.features = [];
+      this.distanceContainer.innerHTML = '';
+      (this.map.getSource('geojson') as any).setData(this.geojson);
     }
   }
 
