@@ -16,56 +16,51 @@
   "
 ></div>
 
-<div class="top-48 absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-4">
+<div
+  class="top-48 absolute z-10 right-0 mt-2 pl-2 h-14 w-14 flex flex-row py-2"
+>
   <div class="p-2">
     <div class="inline-block relative group">
-      <button
-        #distanceButton
-        class="
-          bg-white
-          text-gray-800
-          font-semibold
-          py-1
-          px-1
-          ml-2
-          rounded
-          inline-flex
-          items-center
-          hover:bg-gray-200
-          focus:outline-none
-          focus:ring-2
-          focus:ring-gray-600
-          focus:ring-opacity-50
-        "
-        (click)="calculateDistance()"
-      >
-        <img class="w-44 inline-block" src="assets/icons/distance.svg" />
-      </button>
-      <span
-        class="
-          hidden
-          md:inline-block
-          group-hover:opacity-100
-          transition-opacity
-          bg-gray-800
-          px-1
-          text-xs text-gray-100
-          rounded-md
-          absolute
-          left-1/2
-          -translate-x-1/2
-          translate-y-full
-          opacity-0
-          m-4
-          mx-auto
-        "
-        >Distance</span
-      >
+      <div class="border bg-white text-gray-500 shadow rounded flex flex-col">
+        <button
+          class="
+            py-1
+            px-1
+            flex
+            items-center
+            justify-center
+            focus:outline-none
+            border-b
+            hover:bg-gray-300
+          "
+          (click)="calculateDistance()"
+        >
+          <img class="w-44 inline-block" src="assets/icons/distance.svg" />
+        </button>
+        <button
+          class="
+            py-1
+            px-1
+            flex
+            items-center
+            justify-center
+            focus:outline-none
+            border-b border-indigo-100
+            hover:bg-gray-300
+          "
+        >
+          <img
+            class="w-44 inline-block"
+            src="assets/icons/delete-distance.svg"
+            (click)="clearDistance()"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="top-60 absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-4">
+<div class="top-72 absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-4">
   <div class="p-2">
     <div class="dropdown inline-block relative">
       <button
