@@ -28,6 +28,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   mobileDisclaimer: boolean = false;
   btnReadMore: boolean = true;
   dateDataText: string;
+  showSelect: boolean = false;
 
   archieveDateTime: string;
   archieveDownload: string;
@@ -79,27 +80,37 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.archiveData();
   }
 
-  async downloadData(selectedDate: string) {
-    const response: any = await this.riskAssessment
-      .archiveData()
-      .pipe(first())
-      .toPromise();
-    if (response && response.results) {
-      const selectedResult = response.results.find(
-        (result: any) => result.datetime === selectedDate
-      );
+  showSelectDate() {
+    this.showSelect = !this.showSelect;
+  }
 
-      if (selectedResult && selectedResult.s3_link) {
-        window.open(selectedResult.s3_link, '_blank');
-      } else {
-        console.error('Selected date not found or missing s3_link');
+  async downloadData(selectedDate: string) {
+    try {
+      const response: any = await this.riskAssessment
+        .archiveData()
+        .pipe(first())
+        .toPromise();
+      if (response && response.results) {
+        const selectedResult = response.results.find(
+          (result: any) => result.datetime === selectedDate
+        );
+
+        if (selectedResult && selectedResult.s3_link) {
+          window.open(selectedResult.s3_link, '_blank');
+        } else {
+          console.error('Selected date not found or missing s3_link');
+        }
       }
+    } catch (error) {
+      console.error('Error fetching archive data:', error);
     }
   }
 
   onDateSelected(selectedDate: string) {
     if (selectedDate !== 'select-date') {
-      this.downloadData(selectedDate);
+      this.downloadData(selectedDate).then(() => {
+        this.showSelect = false;
+      });
     }
   }
 
