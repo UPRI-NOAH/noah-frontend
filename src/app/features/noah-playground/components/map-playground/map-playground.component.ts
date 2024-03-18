@@ -14,6 +14,8 @@ import mapboxgl, {
   Map,
   Marker,
 } from 'mapbox-gl';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
+import * as turf from '@turf/turf';
 import { environment } from '@env/environment';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
@@ -161,8 +163,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
+  private draw: MapboxDraw;
+  distanceContainer: any;
+  geojson: any;
+  linestring: any;
+  private measurementActive: boolean = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
+
   constructor(
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
@@ -190,18 +198,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
-        this.initSensors();
+        //this.initSensors();
         this.initQuezonCitySensors();
         this.initQCCritFac();
         this.initQCMunicipalBoundary();
         this.initVolcanoes();
         this.initWeatherSatelliteLayers();
-        this.showContourMaps();
+        //this.showContourMaps();
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
         this.initAffectedExposure();
         this.initRainForcast();
+        this.initArea();
+        this.initDistance();
+        this.clearDistance();
       });
   }
 
@@ -1097,53 +1108,53 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   // END OF QC IOT
-  initSensors() {
-    SENSORS.forEach((sensorType) => {
-      this.sensorService
-        .getSensors(sensorType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          // add layer to map
-          this.map.addLayer({
-            id: sensorType,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'circle-color': SENSOR_COLORS[sensorType],
-              'circle-radius': 5,
-              'circle-opacity': 0,
-            },
-          });
+  // initSensors() {
+  //   SENSORS.forEach((sensorType) => {
+  //     this.sensorService
+  //       .getSensors(sensorType)
+  //       .pipe(first())
+  //       .toPromise()
+  //       .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+  //         // add layer to map
+  //         this.map.addLayer({
+  //           id: sensorType,
+  //           type: 'circle',
+  //           source: {
+  //             type: 'geojson',
+  //             data,
+  //           },
+  //           paint: {
+  //             'circle-color': SENSOR_COLORS[sensorType],
+  //             'circle-radius': 5,
+  //             'circle-opacity': 0,
+  //           },
+  //         });
 
-          // add show/hide listeners
-          combineLatest([
-            this.pgService.sensorsGroupShown$,
-            this.pgService.getSensorTypeShown$(sensorType),
-          ])
-            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-            .subscribe(([groupShown, soloShown]) => {
-              this.map.setPaintProperty(
-                sensorType,
-                'circle-opacity',
-                +(groupShown && soloShown)
-              );
-            });
+  //         // add show/hide listeners
+  //         combineLatest([
+  //           this.pgService.sensorsGroupShown$,
+  //           this.pgService.getSensorTypeShown$(sensorType),
+  //         ])
+  //           .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+  //           .subscribe(([groupShown, soloShown]) => {
+  //             this.map.setPaintProperty(
+  //               sensorType,
+  //               'circle-opacity',
+  //               +(groupShown && soloShown)
+  //             );
+  //           });
 
-          this.pgService.setSensorTypeFetched(sensorType, true);
-          // show mouse event listeners
-          this.showDataPoints(sensorType);
-        })
-        .catch(() =>
-          console.error(
-            `Unable to fetch data from DOST for sensors of type "${sensorType}"`
-          )
-        );
-    });
-  }
+  //         this.pgService.setSensorTypeFetched(sensorType, true);
+  //         // show mouse event listeners
+  //         this.showDataPoints(sensorType);
+  //       })
+  //       .catch(() =>
+  //         console.error(
+  //           `Unable to fetch data from DOST for sensors of type "${sensorType}"`
+  //         )
+  //       );
+  //   });
+  // }
 
   initVolcanoes() {
     // 0 - declare the source json files
@@ -1742,97 +1753,97 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     );
   }
 
-  showContourMaps() {
-    const contourMapImages = {
-      '1hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '3hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '6hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '12hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '24hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
-        type: 'image',
-      },
-      '24hr-lapse': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
-        type: 'video',
-      },
-    };
+  // showContourMaps() {
+  //   const contourMapImages = {
+  //     '1hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '3hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '6hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '12hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '24hr': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+  //       type: 'image',
+  //     },
+  //     '24hr-lapse': {
+  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+  //       type: 'video',
+  //     },
+  //   };
 
-    const getContourMapSource = (contourMapDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (contourMapDetails.type) {
-        case 'image':
-          return {
-            type: 'image',
-            url: contourMapDetails.url,
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
-          };
-        case 'video':
-          return {
-            type: 'video',
-            urls: [contourMapDetails.url],
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
-          };
-        default:
-          throw new Error('[MapPlayground] Unable to get contour map source');
-      }
-    };
+  //   const getContourMapSource = (contourMapDetails: {
+  //     url: string;
+  //     type: string;
+  //   }): AnySourceData => {
+  //     switch (contourMapDetails.type) {
+  //       case 'image':
+  //         return {
+  //           type: 'image',
+  //           url: contourMapDetails.url,
+  //           coordinates: [
+  //             [115.35, 21.55], // top-left
+  //             [128.25, 21.55], // top-right
+  //             [128.25, 3.85], // bottom-right
+  //             [115.35, 3.85], // bottom-left
+  //           ],
+  //         };
+  //       case 'video':
+  //         return {
+  //           type: 'video',
+  //           urls: [contourMapDetails.url],
+  //           coordinates: [
+  //             [115.35, 21.55], // top-left
+  //             [128.25, 21.55], // top-right
+  //             [128.25, 3.85], // bottom-right
+  //             [115.35, 3.85], // bottom-left
+  //           ],
+  //         };
+  //       default:
+  //         throw new Error('[MapPlayground] Unable to get contour map source');
+  //     }
+  //   };
 
-    Object.keys(contourMapImages).forEach((contourType) => {
-      const contourMapDetails = contourMapImages[contourType];
+  //   Object.keys(contourMapImages).forEach((contourType) => {
+  //     const contourMapDetails = contourMapImages[contourType];
 
-      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
+  //     this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
-      this.map.addLayer({
-        id: contourType,
-        type: 'raster',
-        source: contourType,
-        paint: {
-          'raster-fade-duration': 0,
-          'raster-opacity': 0,
-        },
-      });
+  //     this.map.addLayer({
+  //       id: contourType,
+  //       type: 'raster',
+  //       source: contourType,
+  //       paint: {
+  //         'raster-fade-duration': 0,
+  //         'raster-opacity': 0,
+  //       },
+  //     });
 
-      combineLatest([
-        this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
-        this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
-      ])
-        .pipe(
-          takeUntil(this._unsub),
-          takeUntil(this._changeStyle),
-          map(([groupShown, selectedContourMap]) => {
-            return +(groupShown && selectedContourMap === contourType);
-          })
-        )
-        .subscribe((opacity: number) => {
-          this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
-        });
-    });
-  }
+  //     combineLatest([
+  //       this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
+  //       this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
+  //     ])
+  //       .pipe(
+  //         takeUntil(this._unsub),
+  //         takeUntil(this._changeStyle),
+  //         map(([groupShown, selectedContourMap]) => {
+  //           return +(groupShown && selectedContourMap === contourType);
+  //         })
+  //       )
+  //       .subscribe((opacity: number) => {
+  //         this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+  //       });
+  //   });
+  // }
 
   switchMapStyle(style: MapStyle) {
     if (this.mapStyle === style) return;
@@ -1842,6 +1853,170 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next();
     }
+  }
+
+  private initArea() {
+    this.map.on('load', () => {
+      this.draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true,
+        },
+      });
+
+      this.map.addControl(this.draw);
+      this.map.on('draw.create', this.updateArea.bind(this));
+      this.map.on('draw.delete', this.updateArea.bind(this));
+      this.map.on('draw.update', this.updateArea.bind(this));
+      this.map.on('draw.delete', this.clearDistance.bind(this));
+    });
+  }
+
+  private updateArea(event) {
+    const data = this.draw.getAll();
+    const answer = document.getElementById('area');
+
+    if (data.features.length > 0) {
+      const area = turf.area(data);
+      const rounded_area = Math.round(area * 100) / 100;
+      answer.innerHTML = `<p>Total Area: ${rounded_area.toLocaleString()} sqm</p>`;
+    } else {
+      answer.innerHTML = '';
+      if (event.type !== 'draw.delete') {
+        console.log('computation for area: ');
+      }
+    }
+  }
+
+  initDistance() {
+    this.distanceContainer = document.getElementById('distance');
+    this.geojson = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    this.linestring = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [],
+      },
+    };
+
+    this.map.on('load', () => {
+      this.map.addSource('geojson', {
+        type: 'geojson',
+        data: this.geojson,
+      });
+
+      this.map.addLayer({
+        id: 'measure-points',
+        type: 'circle',
+        source: 'geojson',
+        paint: {
+          'circle-radius': 5,
+          'circle-color': '#000',
+        },
+        filter: ['in', '$type', 'Point'],
+      });
+
+      this.map.addLayer({
+        id: 'measure-lines',
+        type: 'line',
+        source: 'geojson',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round',
+        },
+        paint: {
+          'line-color': '#000',
+          'line-width': 2.5,
+        },
+        filter: ['in', '$type', 'LineString'],
+      });
+
+      const handleClickOrTouch = (e) => {
+        if (this.measurementActive) {
+          const features = this.map.queryRenderedFeatures(e.point, {
+            layers: ['measure-points'],
+          });
+
+          if (this.geojson.features.length > 1) this.geojson.features.pop();
+
+          this.distanceContainer.innerHTML = '';
+
+          if (features.length) {
+            const id = features[0].properties.id;
+            this.geojson.features = this.geojson.features.filter(
+              (point) => point.properties.id !== id
+            );
+          } else {
+            const point = {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [e.lngLat.lng, e.lngLat.lat],
+              },
+              properties: {
+                id: String(new Date().getTime()),
+              },
+            };
+
+            this.geojson.features.push(point);
+          }
+
+          if (this.geojson.features.length > 1) {
+            this.linestring.geometry.coordinates = this.geojson.features.map(
+              (point) => point.geometry.coordinates
+            );
+
+            this.geojson.features.push(this.linestring);
+
+            const value = document.createElement('pre');
+            const distance = turf.length(this.linestring);
+            value.textContent = `Total distance: ${distance.toLocaleString()}km`;
+            this.distanceContainer.appendChild(value);
+          }
+
+          (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
+            this.geojson
+          );
+        }
+      };
+
+      this.map.on('click', handleClickOrTouch);
+      this.map.on('touchend', handleClickOrTouch);
+
+      this.map.on('mousemove', (e) => {
+        if (!this.measurementActive) {
+          return;
+        }
+        const features = this.map.queryRenderedFeatures(e.point, {
+          layers: ['measure-points'],
+        });
+        this.map.getCanvas().style.cursor = features.length
+          ? 'pointer'
+          : 'crosshair';
+      });
+    });
+  }
+
+  calculateDistance(): void {
+    this.measurementActive = true;
+    this.geojson.features = [];
+    this.distanceContainer.innerHTML = '';
+    (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
+      this.geojson
+    );
+  }
+
+  clearDistance() {
+    this.measurementActive = false;
+    this.geojson.features = [];
+    this.distanceContainer.innerHTML = '';
+    (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
+      this.geojson
+    );
   }
 
   /**

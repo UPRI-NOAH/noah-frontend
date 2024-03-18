@@ -1,30 +1,9 @@
-<!-- <div
-  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 lg:p-10 p-5'"
-  *ngIf="riskModal"
-> -->
 <div
-  class="
-    min-w-screen
-    h-screen
-    animated
-    fadeIn
-    faster
-    fixed
-    left-0
-    top-0
-    flex
-    justify-center
-    items-center
-    inset-0
-    z-50
-    outline-none
-    focus:outline-none
-    bg-no-repeat bg-center bg-cover
-  "
+  [ngClass]="'z-50 fixed w-full flex justify-center inset-0 lg:p-10 p-5'"
   *ngIf="riskModal"
 >
   <!-- *ngIf="riskModal" -->
-  <div class="opacity-80 bg-black z-0 absolute inset-0"></div>
+  <div class="w-full h-full opacity-80 bg-black z-0 absolute inset-0"></div>
   <!-- modal -->
   <div
     class="
@@ -154,7 +133,7 @@
 
       <!-- ... Your existing header content ... -->
     </div>
-    <div class="flex-auto p-2">
+    <div class="flex-auto p-2 overflow-y-auto">
       <div class="mb-2 bg-white">
         <label for="table-search" class="sr-only">Search</label>
         <div class="relative mt-1">
@@ -211,7 +190,7 @@
         </div>
       </div>
       <!-- Modal Content -->
-      <div class="table-wrp block flex-grow max-h-full" style="height: 58vh">
+      <div class="flex-grow overflow-auto h-auto">
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
@@ -294,7 +273,7 @@
                         px-4
                         pb-10
                         text-base
-                        md:text-xl
+                        md:text-2xl
                         leading-none
                         text-center text-gray-600
                       "
@@ -307,7 +286,7 @@
               </div>
             </div>
           </ng-container>
-          <ng-template #dataAvailable && #dataNoResult>
+          <ng-template #dataAvailable>
             <tbody class="h-96 overflow-y-auto">
               <tr
                 *ngFor="
@@ -503,17 +482,19 @@
           forecast data.
         </p>
 
-        <div class="dropdown inline-block relative">
+        <div class="inline-block relative">
           <button
             class="
               border border-blue-200
               font-semibold
-              py-2
-              px-4
+              lg:py-2 lg:px-4
+              px-2
+              py-1
               rounded
               inline-flex
               items-center
             "
+            (click)="showSelectDate()"
           >
             <span class="mr-1 text-xs lg:text-base"> Select Date: </span>
             <svg
@@ -528,9 +509,7 @@
           </button>
           <ul
             class="
-              dropdown-menu
               absolute
-              hidden
               border-blue-200
               h-36
               overflow-y-auto
@@ -538,6 +517,7 @@
               bottom-full
               top-auto
             "
+            *ngIf="showSelect"
           >
             <li
               class="w-32 lg:w-60"
