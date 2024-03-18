@@ -1870,13 +1870,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       this.map.on('draw.delete', this.updateArea.bind(this));
       this.map.on('draw.update', this.updateArea.bind(this));
       this.map.on('draw.delete', this.clearDistance.bind(this));
+
+      this.map.on('draw.modechange', (event) => {
+        if (event.mode === 'draw_polygon') {
+          // Add event listener for start of drawing
+          this.clearDistance();
+        }
+      });
     });
   }
 
   private updateArea(event) {
     const data = this.draw.getAll();
     const answer = document.getElementById('area');
-
     if (data.features.length > 0) {
       const area = turf.area(data);
       const rounded_area = Math.round(area * 100) / 100;
