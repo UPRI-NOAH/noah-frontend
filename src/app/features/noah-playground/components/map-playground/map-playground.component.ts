@@ -94,6 +94,7 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
+  BoundariesType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -203,6 +204,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQCCritFac();
         this.initQCMunicipalBoundary();
         this.initVolcanoes();
+        this.initBoundaries();
         this.initWeatherSatelliteLayers();
         //this.showContourMaps();
         this.initQcCenterListener();
@@ -1261,6 +1263,62 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     });
   }
+
+  // start of boundaries
+  initBoundaries() {
+    // 0 - declare the source json files
+    const boundariesSourceFiles: Record<BoundariesType, { url: string }> = {
+      'barangay-boundary': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Brgys.geojson',
+      },
+    };
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(boundariesSourceFiles).forEach(
+      (boundariesType: BoundariesType) => {
+        const boundariesObjData = boundariesSourceFiles[boundariesType];
+
+        const boundariesMapSource = `${boundariesType}-map-source`;
+        // 2 - add source
+        this.map.addSource(boundariesMapSource, {
+          type: 'geojson',
+          data: boundariesObjData.url,
+        });
+        // 3 - add layer
+        const layerID = `${boundariesType}-map-layer`;
+        this.map.addLayer({
+          id: layerID,
+          type: 'line',
+          source: boundariesMapSource,
+          paint: {
+            'line-color': '#7e22ce', // purple 700
+            'line-width': 3,
+            'line-opacity': 0.75,
+            'line-dasharray': [1, 2],
+          },
+        });
+        // 4 - listen to the values from the store (group and individual)
+        const allShown$ = this.pgService.boundariesGroupShown$.pipe(
+          distinctUntilChanged()
+        );
+        const boundaries$ = this.pgService
+          .getBoundaries$(boundariesType)
+          .pipe(shareReplay(1));
+
+        combineLatest([allShown$, boundaries$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, boundaries]) => {
+            let newOpacity = 0;
+            if (boundaries.shown && allShown) {
+              newOpacity = boundaries.opacity / 100;
+            }
+            this.map.setPaintProperty(layerID, 'line-opacity', newOpacity);
+          });
+      }
+    );
+  }
+
+  // end of boundaries
 
   showDataPoints(sensorType: SensorType) {
     const graphDiv = document.getElementById('graph-dom');
