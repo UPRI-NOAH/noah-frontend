@@ -148,6 +148,7 @@ Accessbility(Highcharts);
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
+
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   pgLocation: string = '';
@@ -163,7 +164,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
-  private draw: MapboxDraw;
+  draw: any;
   distanceContainer: any;
   geojson: any;
   linestring: any;
@@ -266,8 +267,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQcCenterListener() {
-    const centerQC = localStorage.getItem('loginStatus');
-    if (centerQC == '1') {
+    if (sessionStorage.getItem('loggedIn') === 'true') {
       this.map.flyTo({
         center: QC_DEFAULT_CENTER,
         zoom: 12,
@@ -1856,27 +1856,27 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   private initArea() {
-    this.map.on('load', () => {
-      this.draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          polygon: true,
-          trash: true,
-        },
-      });
+    this.draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    });
 
-      this.map.addControl(this.draw);
-      this.map.on('draw.create', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.updateArea.bind(this));
-      this.map.on('draw.update', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.clearDistance.bind(this));
+    this.map.addControl(this.draw);
 
-      this.map.on('draw.modechange', (event) => {
-        if (event.mode === 'draw_polygon') {
-          // Add event listener for start of drawing
-          this.clearDistance();
-        }
-      });
+    this.map.on('draw.create', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.updateArea.bind(this));
+    this.map.on('draw.update', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.clearDistance.bind(this));
+
+    // Event listener for drawing end
+    this.map.on('draw.modechange', (event) => {
+      if (event.mode === 'draw_polygon') {
+        // Add event listener for start of drawing
+        this.clearDistance();
+      }
     });
   }
 
