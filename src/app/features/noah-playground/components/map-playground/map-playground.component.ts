@@ -1267,9 +1267,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   // start of boundaries
   initBoundaries() {
     // 0 - declare the source json files
-    const boundariesSourceFiles: Record<BoundariesType, { url: string }> = {
+    const boundariesSourceFiles: Record<
+      BoundariesType,
+      { url: string; type: string }
+    > = {
       'barangay-boundary': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/IoT_Brgys.geojson',
+        url: 'mapbox://upri-noah.ph_brgy_tls',
+        type: 'vector',
       },
     };
 
@@ -1281,23 +1285,39 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         const boundariesMapSource = `${boundariesType}-map-source`;
         // 2 - add source
         this.map.addSource(boundariesMapSource, {
-          type: 'geojson',
-          data: boundariesObjData.url,
+          type: 'vector',
+          url: boundariesObjData.url,
         });
         // 3 - add layer
         const layerID = `${boundariesType}-map-layer`;
         this.map.addLayer({
           id: layerID,
+          type: 'fill',
+          source: boundariesMapSource,
+          'source-layer': 'ph_brgy_pop', //tileset
+          paint: {
+            'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
+          },
+          // Enable interactivity for click events
+          interactive: true,
+        });
+        // 4 - Add line layer
+        const lineLayerID = `${boundariesType}-line-layer`;
+        this.map.addLayer({
+          id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
+          'source-layer': 'ph_brgy_pop', //tileset
           paint: {
             'line-color': '#7e22ce', // purple 700
             'line-width': 3,
             'line-opacity': 0.75,
             'line-dasharray': [1, 2],
           },
+          // Disable interactivity for the line layer
+          interactive: true,
         });
-        // 4 - listen to the values from the store (group and individual)
+        // 5 - listen to the values from the store (group and individual)
         const allShown$ = this.pgService.boundariesGroupShown$.pipe(
           distinctUntilChanged()
         );
@@ -1312,8 +1332,31 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             if (boundaries.shown && allShown) {
               newOpacity = boundaries.opacity / 100;
             }
-            this.map.setPaintProperty(layerID, 'line-opacity', newOpacity);
+            this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
+            this.map.setPaintProperty(lineLayerID, 'line-opacity', newOpacity);
           });
+
+        // 6 - Add click event listener for popup
+        this.map.on('click', layerID, (e) => {
+          const features = this.map.queryRenderedFeatures(e.point, {
+            layers: [layerID],
+          });
+
+          if (!features.length) {
+            return;
+          }
+
+          const feature = features[0];
+          const popupContent = `
+          <h3><strong>Barangay:</strong> ${feature.properties.Bgy_Name}</h3>
+          <p><strong>Municipality:</strong> ${feature.properties.Mun_Name}</p>
+          <p><strong>Province:</strong> ${feature.properties.Pro_Name}</p>
+        `;
+          new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupContent)
+            .addTo(this.map);
+        });
       }
     );
   }
