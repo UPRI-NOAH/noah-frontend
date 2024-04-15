@@ -1265,7 +1265,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   // start of boundaries
-  // start of boundaries
   initBoundaries() {
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
@@ -1295,7 +1294,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop', // Replace 'your-source-layer-name' with the correct source layer name from your tileset
+          'source-layer': 'ph_brgy_pop',
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
@@ -1308,7 +1307,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop', // Replace 'your-source-layer-name' with the correct source layer name from your tileset
+          'source-layer': 'ph_brgy_pop',
           paint: {
             'line-color': '#7e22ce', // purple 700
             'line-width': 3,
@@ -1371,7 +1370,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             .addTo(this.map);
         });
 
-        // 7 - Add mouseenter and mouseleave event listeners to change cursor style only if layer is visible
+        // 7 - Add mouseenter and mouseleave event listeners
         this.map.on('mouseenter', layerID, () => {
           if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
             this.map.getCanvas().style.cursor = 'pointer';
@@ -1386,7 +1385,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   // end of boundaries
 
   showDataPoints(sensorType: SensorType) {
