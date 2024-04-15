@@ -1266,6 +1266,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   // start of boundaries
   initBoundaries() {
+    // Define variables to hold popup and layer IDs
+    let popup;
+    let layerID;
+
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
       BoundariesType,
@@ -1289,7 +1293,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           url: boundariesObjData.url,
         });
         // 3 - add layer
-        const layerID = `${boundariesType}-map-layer`;
+        layerID = `${boundariesType}-map-layer`;
         this.map.addLayer({
           id: layerID,
           type: 'fill',
@@ -1298,7 +1302,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
-          // Enable interactivity for click events
           interactive: true,
         });
         // 4 - Add line layer
@@ -1314,7 +1317,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'line-opacity': 0.75,
             'line-dasharray': [1, 2],
           },
-          // Disable interactivity for the line layer
           interactive: false,
         });
         // 5 - listen to the values from the store (group and individual)
@@ -1344,6 +1346,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.setLayoutProperty(layerID, 'visibility', 'none');
               this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
               this.map.setLayerZoomRange(layerID, 0, 24);
+              // Close popup if layer is hidden
+              if (popup) {
+                popup.remove();
+              }
             }
           });
 
@@ -1363,8 +1369,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           <p><strong>Municipality:</strong> ${feature.properties.Mun_Name}</p>
           <p><strong>Province:</strong> ${feature.properties.Pro_Name}</p>
         `;
+          // Remove existing popup if any
+          if (popup) {
+            popup.remove();
+          }
 
-          new mapboxgl.Popup()
+          // Create new popup
+          popup = new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(popupContent)
             .addTo(this.map);
