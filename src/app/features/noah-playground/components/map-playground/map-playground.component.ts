@@ -1265,6 +1265,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   // start of boundaries
+  // start of boundaries
   initBoundaries() {
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
@@ -1294,7 +1295,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop', //tileset
+          'source-layer': 'ph_brgy_pop', // Replace 'your-source-layer-name' with the correct source layer name from your tileset
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
@@ -1307,7 +1308,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop', //tileset
+          'source-layer': 'ph_brgy_pop', // Replace 'your-source-layer-name' with the correct source layer name from your tileset
           paint: {
             'line-color': '#7e22ce', // purple 700
             'line-width': 3,
@@ -1315,7 +1316,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'line-dasharray': [1, 2],
           },
           // Disable interactivity for the line layer
-          interactive: true,
+          interactive: false,
         });
         // 5 - listen to the values from the store (group and individual)
         const allShown$ = this.pgService.boundariesGroupShown$.pipe(
@@ -1331,12 +1332,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             let newOpacity = 0;
             if (boundaries.shown && allShown) {
               newOpacity = boundaries.opacity / 100;
+              // Enable interactivity when shown
+              this.map.setLayoutProperty(layerID, 'visibility', 'visible');
+              this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
+              this.map.setPaintProperty(
+                lineLayerID,
+                'line-opacity',
+                newOpacity
+              );
+            } else {
+              // Disable interactivity when hidden
+              this.map.setLayoutProperty(layerID, 'visibility', 'none');
+              this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
+              this.map.setLayerZoomRange(layerID, 0, 24);
             }
-            this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
-            this.map.setPaintProperty(lineLayerID, 'line-opacity', newOpacity);
           });
 
-        // 6 - Add click event listener for popup
+        // 6 - Add click event listener for popup if layer is visible
         this.map.on('click', layerID, (e) => {
           const features = this.map.queryRenderedFeatures(e.point, {
             layers: [layerID],
@@ -1352,10 +1364,24 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           <p><strong>Municipality:</strong> ${feature.properties.Mun_Name}</p>
           <p><strong>Province:</strong> ${feature.properties.Pro_Name}</p>
         `;
+
           new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(popupContent)
             .addTo(this.map);
+        });
+
+        // 7 - Add mouseenter and mouseleave event listeners to change cursor style only if layer is visible
+        this.map.on('mouseenter', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = 'pointer';
+          }
+        });
+
+        this.map.on('mouseleave', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = '';
+          }
         });
       }
     );
