@@ -33,6 +33,8 @@ export type QuezonCityMunicipalBoundary = 'qc-municipal-boundary';
 
 export type BarangayBoundary = 'brgy-boundary';
 
+export type SeismicSensorType = 'seismic-sensor';
+
 export type RiskAssessmentRainType = 'rain-forecast';
 
 export type RiskAssessmentExposureType = 'population';
@@ -204,6 +206,19 @@ export type QuezonCityCriticalFacilitiesState = {
   types: QuezonCityCriticalFacilitiesTypesState;
 };
 
+export type SeismicSensorTypeState = {
+  shown: boolean;
+};
+
+export type SeismicSensorTypesState = {
+  'seismic-sensor': SeismicSensorTypeState;
+};
+
+export type SeismicSensorState = {
+  seismicshown: boolean;
+  types: SeismicSensorTypesState;
+};
+
 export type QuezonCityMunicipalBoundaryTypeState = {
   shown: boolean;
 };
@@ -257,6 +272,7 @@ type NoahPlaygroundState = {
   lagunaCenter: LagunaState;
   qcZoomCenter: QuezonCityZoomState;
   qcCriticalfacilities: QuezonCityCriticalFacilitiesState;
+  seismicSensor: SeismicSensorState;
   qcMunicipalboundary: QuezonCityMunicipalBoundaryState;
   barangayBoundary: BarangayBoundaryState;
   contourMaps: {
@@ -476,6 +492,14 @@ const createInitialValue = (): NoahPlaygroundState => ({
     qcexpanded: false,
     types: {
       'qc-critical-facilities': {
+        shown: true,
+      },
+    },
+  },
+  seismicSensor: {
+    seismicshown: false,
+    types: {
+      'seismic-sensor': {
         shown: true,
       },
     },
