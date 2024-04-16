@@ -29,6 +29,8 @@ import {
   RiskAssessmentState,
   RiskAssessmentGroupState,
   CalculateRiskButton,
+  SeismicSensorState,
+  SeismicSensorType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -117,6 +119,12 @@ export class NoahPlaygroundService {
   get qcCriticalFacilitiesExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcCriticalfacilities.qcexpanded)
+    );
+  }
+
+  get seismicSensorShown$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.seismicSensor.seismicshown)
     );
   }
 
@@ -282,6 +290,10 @@ export class NoahPlaygroundService {
     return this.store.state.qcCriticalfacilities;
   }
 
+  getSeismicSensor(): SeismicSensorState {
+    return this.store.state.seismicSensor;
+  }
+
   getQcMunicipalBoundary(): QuezonCityMunicipalBoundaryState {
     return this.store.state.qcMunicipalboundary;
   }
@@ -375,6 +387,14 @@ export class NoahPlaygroundService {
       map(
         (state) => state.qcCriticalfacilities.types[qcCriticalFacilities].shown
       )
+    );
+  }
+
+  getSeismicSensorShown$(
+    seismicSensor: SeismicSensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.seismicSensor.types[seismicSensor].shown)
     );
   }
 
@@ -682,6 +702,9 @@ export class NoahPlaygroundService {
     const qcCriticalfacilities = {
       ...this.store.state.qcCriticalfacilities,
     };
+    const seismicSensor = {
+      ...this.store.state.seismicSensor,
+    };
     const qcMunicipalboundary = {
       ...this.store.state.qcMunicipalboundary,
     };
@@ -691,18 +714,20 @@ export class NoahPlaygroundService {
 
     const { expanded } = qcSensors;
     const { qcexpanded } = qcCriticalfacilities;
+    const { seismicexpanded } = seismicSensor;
     const { qcbexpanded } = qcMunicipalboundary;
     const { brgyExpanded } = barangayBoundary;
 
     qcSensors.expanded = !expanded;
     qcCriticalfacilities.qcexpanded = !qcexpanded;
+    seismicSensor.seismicexpanded = !seismicexpanded;
     qcMunicipalboundary.qcbexpanded = !qcbexpanded;
     barangayBoundary.brgyExpanded = !brgyExpanded;
 
     this.store.patch(
-      { qcSensors, qcCriticalfacilities, qcMunicipalboundary },
+      { qcSensors, qcCriticalfacilities, seismicSensor, qcMunicipalboundary },
       `update quezon city iot group state expanded to 
-      ${!expanded} ${!qcexpanded} ${!qcbexpanded} ${!brgyExpanded}`
+      ${!expanded} ${!seismicexpanded} ${!qcexpanded} ${!qcbexpanded} ${!brgyExpanded}`
     );
   }
 
@@ -713,6 +738,9 @@ export class NoahPlaygroundService {
     const qcCriticalfacilities = {
       ...this.store.state.qcCriticalfacilities,
     };
+    const seismicSensor = {
+      ...this.store.state.seismicSensor,
+    };
     const qcMunicipalboundary = {
       ...this.store.state.qcMunicipalboundary,
     };
@@ -722,11 +750,13 @@ export class NoahPlaygroundService {
 
     const { shown } = qcSensors;
     const { qcshown } = qcCriticalfacilities;
+    const { seismicshown } = seismicSensor;
     const { qcbshown } = qcMunicipalboundary;
     const { brgyShown } = barangayBoundary;
 
     qcSensors.shown = !qcSensors.shown;
     qcCriticalfacilities.qcshown = !qcCriticalfacilities.qcshown;
+    seismicSensor.seismicshown = !seismicshown;
     qcMunicipalboundary.qcbshown = !qcMunicipalboundary.qcbshown;
     barangayBoundary.brgyShown = !barangayBoundary.brgyShown;
 
@@ -734,11 +764,12 @@ export class NoahPlaygroundService {
       {
         qcSensors,
         qcCriticalfacilities,
+        seismicSensor,
         qcMunicipalboundary,
         barangayBoundary,
       },
       `update quezon city iot group state shown to 
-      ${shown}, ${qcshown}, ${qcbshown}, Barangay boundary ${brgyShown}`
+      ${shown}, ${seismicshown}, ${qcshown}, ${qcbshown}, Barangay boundary ${brgyShown}`
     );
   }
 
@@ -765,6 +796,19 @@ export class NoahPlaygroundService {
     this.store.patch(
       { qcCriticalfacilities },
       `change quezon city critical facilities ${type}'visibility to ${!shown}`
+    );
+  }
+
+  setSeismicSensorShown(type: SeismicSensorType): void {
+    const seismicSensor = {
+      ...this.store.state.seismicSensor,
+    };
+
+    const { shown } = seismicSensor.types[type];
+    seismicSensor.types[type].shown = !shown;
+    this.store.patch(
+      { seismicSensor },
+      `change seismic sensor ${type}'visibility to ${!shown}`
     );
   }
 

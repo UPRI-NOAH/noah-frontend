@@ -216,6 +216,7 @@ export type SeismicSensorTypesState = {
 
 export type SeismicSensorState = {
   seismicshown: boolean;
+  seismicexpanded: boolean;
   types: SeismicSensorTypesState;
 };
 
@@ -498,6 +499,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   seismicSensor: {
     seismicshown: false,
+    seismicexpanded: false,
     types: {
       'seismic-sensor': {
         shown: true,
