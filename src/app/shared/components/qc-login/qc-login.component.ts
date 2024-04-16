@@ -109,14 +109,23 @@ export class QcLoginComponent implements OnInit {
 
     this.qcLoginService.loginUser(this.email, this.password).subscribe(
       (response) => {
-        // handle successful login response
-        console.log('Login successful:', response);
         this.invalidLogin = false;
         console.log(this.returnUrl);
         this.router.navigateByUrl(this.returnUrl);
         this.qcLoginModal = false;
         this.loadingNoah = false;
+        sessionStorage.setItem('loggedIn', 'true');
+        if (this.email === 'upri.webgis@up.edu.ph') {
+          sessionStorage.setItem('name', 'devs');
+          localStorage.setItem('loginStatus', '1');
+        } else if (this.email === 'jccarpo@up.edu.ph') {
+          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('loginStatus', '2');
+        } else {
+          console.log('Invalid Credentials');
+        }
         this.closeModals();
+
         this.router.navigateByUrl('/noah-playground');
         setTimeout(() => {
           //SESSION EXPIRATION

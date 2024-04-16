@@ -83,8 +83,6 @@ export class LoginComponent implements OnInit {
 
     this.qcLoginService.loginUser(this.email, this.password).subscribe(
       (response) => {
-        // handle successful login response
-        console.log('Login successful:', response);
         // Store the login state in sessionStorage
         this.invalidLogin = false;
         console.log(this.returnUrl);
@@ -92,8 +90,16 @@ export class LoginComponent implements OnInit {
         this.isLoginModal = false;
         this.loadingNoah = true;
         sessionStorage.setItem('loggedIn', 'true');
-        sessionStorage.setItem('name', 'dev');
-        localStorage.setItem('loginStatus', '1');
+
+        if (this.email === 'upri.webgis@up.edu.ph') {
+          sessionStorage.setItem('name', 'devs');
+          localStorage.setItem('loginStatus', '1');
+        } else if (this.email === 'jccarpo@up.edu.ph') {
+          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('loginStatus', '2');
+        } else {
+          console.log('Invalid Credentials');
+        }
         this.pgService.toggleQuezonCityIOTGroupShown();
         this.pgService.toggleQuezonCityIOTGroupExpanded();
         this.router.navigateByUrl('/noah-playground');
