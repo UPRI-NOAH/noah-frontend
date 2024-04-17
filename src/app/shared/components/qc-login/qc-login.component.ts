@@ -49,6 +49,8 @@ export class QcLoginComponent implements OnInit {
   LoginStatus$: Observable<boolean>;
   UserName$: Observable<string>;
   ButtonShow$: Observable<boolean>;
+  username: string = '';
+  password: string = '';
 
   loginForm = new FormGroup({
     userNameValidation: new FormControl('', Validators.required),
@@ -70,7 +72,6 @@ export class QcLoginComponent implements OnInit {
     });
 
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
-    this.UserName$ = this.qcLoginService.currentUserName;
     this.alertError = false;
     this.loadingNoah = false;
 
@@ -99,46 +100,58 @@ export class QcLoginComponent implements OnInit {
   }
 
   onSubmit() {
-    const userLogin = this.insertForm.value;
-    this.loadingNoah = true;
-    this.qcLoginService
-      .loginUser(userLogin.Username, userLogin.Password)
-      .subscribe(
-        (response) => {
-          const auth_token = (<any>response).auth_token;
-          this.invalidLogin = false;
-          console.log(this.returnUrl);
-          this.router.navigateByUrl(this.returnUrl);
-          this.qcLoginModal = false;
-          this.loadingNoah = false;
-          this.closeModals();
-          this.router.navigateByUrl('/noah-playground');
-          setTimeout(() => {
-            //SESSION EXPIRATION
-            localStorage.removeItem('token');
-            alert('Your Session expired');
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            localStorage.setItem('loginStatus', '0');
-            this.router
-              .navigateByUrl('/logout', { skipLocationChange: true })
-              .then(() => {
-                this.router.navigate([decodeURI(this._location.path())]);
-                window.location.reload();
-              });
-          }, 86400000); //1 day
-        },
-        (error) => {
-          this.loadingNoah = false;
-          this.invalidLogin = true;
-          this.ErrorMessage = error.error.loginError;
-          console.log(this.ErrorMessage);
-          this.alertError = true;
-          setTimeout(() => {
-            this.alertError = false;
-          }, 2000); //3secs
+    // Check if the user is already logged in before attempting to login again
+    if (sessionStorage.getItem('loggedIn') === 'true') {
+      console.log('Already logged in');
+      return;
+    }
+
+    this.qcLoginService.loginUser(this.username, this.password).subscribe(
+      (response) => {
+        this.invalidLogin = false;
+        console.log(this.returnUrl);
+        this.router.navigateByUrl(this.returnUrl);
+        this.qcLoginModal = false;
+        this.loadingNoah = false;
+        sessionStorage.setItem('loggedIn', 'true');
+        if (this.username === 'upri.webgis@up.edu.ph') {
+          sessionStorage.setItem('name', 'devs');
+          localStorage.setItem('loginStatus', '1');
+        } else if (this.username === 'jccarpo@up.edu.ph') {
+          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('loginStatus', '2');
+        } else {
+          console.log('Invalid Credentials');
         }
-      );
+        this.closeModals();
+
+        this.router.navigateByUrl('/noah-playground');
+        setTimeout(() => {
+          //SESSION EXPIRATION
+          localStorage.removeItem('token');
+          alert('Your Session expired');
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          localStorage.setItem('loginStatus', '0');
+          this.router
+            .navigateByUrl('/logout', { skipLocationChange: true })
+            .then(() => {
+              this.router.navigate([decodeURI(this._location.path())]);
+              window.location.reload();
+            });
+        }, 86400000); //1 day
+      },
+      (error) => {
+        this.loadingNoah = false;
+        this.invalidLogin = true;
+        this.ErrorMessage = error.error.loginError;
+        console.log(this.ErrorMessage);
+        this.alertError = true;
+        setTimeout(() => {
+          this.alertError = false;
+        }, 2000); //3secs
+      }
+    );
   }
 
   onLogout() {

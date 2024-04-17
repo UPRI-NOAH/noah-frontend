@@ -35,6 +35,12 @@ export class LoginComponent implements OnInit {
   alertError: boolean = false;
   loadingNoah: boolean = false;
   logoutAlert: boolean = false;
+  userName: string;
+  isList;
+
+  username: string = '';
+  password: string = '';
+
   constructor(
     private qcLoginService: QcLoginService,
     private router: Router,
@@ -49,35 +55,15 @@ export class LoginComponent implements OnInit {
   UserName$: Observable<string>;
   ButtonShow$: Observable<boolean>;
 
-  loginForm = new FormGroup({
-    userNameValidation: new FormControl('', Validators.required),
-    passwordValidation: new FormControl('', Validators.required),
-  });
-
   ngOnInit(): void {
-    // Initialize Form Controls
-    this.Username = new FormControl('', [Validators.required]);
-    this.Password = new FormControl('', [Validators.required]);
-
+    this.userName = sessionStorage.getItem('name');
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    // Initialize FormGroup using FormBuilder
-    this.insertForm = this.fb.group({
-      Username: this.Username,
-      Password: this.Password,
-    });
-
-    this.LoginStatus$ = this.qcLoginService.isLoggesIn;
-    this.UserName$ = this.qcLoginService.currentUserName;
-    this.alertError = false;
-    this.loadingNoah = false;
-
-    //Pop up login directly in url
-    const loggedIn = localStorage.getItem('loginStatus');
-    if (loggedIn == '1') {
+    if (sessionStorage.getItem('loggedIn') === 'true') {
       this.router.navigate([this.returnUrl]);
     }
+
     if (window.location.href.indexOf('login') != -1) {
       this.isLoginModal = true;
     }
@@ -88,47 +74,49 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    const userLogin = this.insertForm.value;
-    this.loadingNoah = true;
-    this.qcLoginService
-      .loginUser(userLogin.Username, userLogin.Password)
-      .subscribe(
-        (response) => {
-          const auth_token = (<any>response).auth_token;
-          this.invalidLogin = false;
-          console.log(this.returnUrl);
-          this.router.navigateByUrl(this.returnUrl);
-          this.isLoginModal = false;
-          this.pgService.toggleQuezonCityIOTGroupShown();
-          this.pgService.toggleQuezonCityIOTGroupExpanded();
-          this.router.navigateByUrl('/noah-playground');
-          setTimeout(() => {
-            //SESSION EXPIRATION
-            localStorage.removeItem('token');
-            alert('Your Session expired');
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            localStorage.setItem('loginStatus', '0');
-            this.router
-              .navigateByUrl('/logout', { skipLocationChange: true })
-              .then(() => {
-                this.router.navigate([decodeURI(this._location.path())]);
-                window.location.reload();
-              });
-          }, 86400000); //1 day
-        },
-        (error) => {
-          this.loadingNoah = false;
-          this.invalidLogin = true;
-          this.ErrorMessage = error.error.loginError;
-          console.log(this.ErrorMessage);
-          this.alertError = true;
-          setTimeout(() => {
-            this.alertError = false;
-          }, 2000); //3secs
+  onSubmit(): void {
+    // Check if the user is already logged in before attempting to login again
+    if (sessionStorage.getItem('loggedIn') === 'true') {
+      console.log('Already logged in');
+      return;
+    }
+
+    this.qcLoginService.loginUser(this.username, this.password).subscribe(
+      (response) => {
+        // Store the login state in sessionStorage
+        this.invalidLogin = false;
+        console.log(this.returnUrl);
+        this.router.navigateByUrl(this.returnUrl);
+        this.isLoginModal = false;
+        this.loadingNoah = true;
+        sessionStorage.setItem('loggedIn', 'true');
+
+        if (this.username === 'qc_admin') {
+          sessionStorage.setItem('name', 'qc admin');
+          localStorage.setItem('loginStatus', '1');
+        } else if (this.username === 'laguna_admin') {
+          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('loginStatus', '2');
+        } else {
+          console.log('Invalid Credentials');
         }
-      );
+        this.pgService.toggleQuezonCityIOTGroupShown();
+        this.pgService.toggleQuezonCityIOTGroupExpanded();
+        this.router.navigateByUrl('/noah-playground');
+      },
+      (error) => {
+        // handle login error
+        console.error('Login error:', error);
+        this.alertError = true;
+        setTimeout(() => {
+          this.alertError = false;
+        }, 2000); //3secs
+      }
+    );
+  }
+
+  isLoggedIn(): boolean {
+    return sessionStorage.getItem('loggedIn') === 'true';
   }
 
   logoutModal() {
@@ -147,10 +135,9 @@ export class LoginComponent implements OnInit {
     this.qcLoginService.showLoginModal();
   }
 
-  clearForm(form: FormGroup) {
+  clearForm() {
     this.isLoginModal = false;
     this.qcLoginModal = false;
-    form.reset();
     this.router.navigate([''], {
       relativeTo: this.route,
     });
@@ -165,5 +152,9 @@ export class LoginComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy.next();
+  }
+
+  logout(): void {
+    this.qcLoginService.logout();
   }
 }
