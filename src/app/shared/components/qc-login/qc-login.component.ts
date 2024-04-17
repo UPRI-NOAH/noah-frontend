@@ -109,29 +109,27 @@ export class QcLoginComponent implements OnInit {
     this.qcLoginService.loginUser(this.username, this.password).subscribe(
       (response) => {
         this.invalidLogin = false;
-        console.log(this.returnUrl);
         this.router.navigateByUrl(this.returnUrl);
         this.qcLoginModal = false;
         this.loadingNoah = false;
         sessionStorage.setItem('loggedIn', 'true');
-        if (this.username === 'upri.webgis@up.edu.ph') {
-          sessionStorage.setItem('name', 'devs');
+
+        if (this.username === 'qc_admin') {
+          sessionStorage.setItem('name', 'qc admin');
           localStorage.setItem('loginStatus', '1');
-        } else if (this.username === 'jccarpo@up.edu.ph') {
+        } else if (this.username === 'laguna_admin') {
           sessionStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
+        } else if (this.username === 'noah_dev') {
+          sessionStorage.setItem('name', 'Devs');
+          sessionStorage.setItem('loginStatus', 'devs');
         } else {
           console.log('Invalid Credentials');
         }
         this.closeModals();
-
         this.router.navigateByUrl('/noah-playground');
         setTimeout(() => {
           //SESSION EXPIRATION
-          localStorage.removeItem('token');
-          alert('Your Session expired');
-          localStorage.removeItem('token');
-          localStorage.removeItem('username');
           localStorage.setItem('loginStatus', '0');
           this.router
             .navigateByUrl('/logout', { skipLocationChange: true })

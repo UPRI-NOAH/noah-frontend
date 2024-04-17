@@ -32,6 +32,7 @@ export class NoahPlaygroundComponent implements OnInit {
   iotModalOpen = false;
   raBtnPopu = false;
   userName: string;
+  hideBoundaries = sessionStorage.getItem('loggedIn');
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
