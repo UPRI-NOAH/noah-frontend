@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
   userName: string;
   isList;
 
-  email: string = '';
+  username: string = '';
   password: string = '';
 
   constructor(
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.qcLoginService.loginUser(this.email, this.password).subscribe(
+    this.qcLoginService.loginUser(this.username, this.password).subscribe(
       (response) => {
         // Store the login state in sessionStorage
         this.invalidLogin = false;
@@ -91,10 +91,10 @@ export class LoginComponent implements OnInit {
         this.loadingNoah = true;
         sessionStorage.setItem('loggedIn', 'true');
 
-        if (this.email === 'upri.webgis@up.edu.ph') {
-          sessionStorage.setItem('name', 'devs');
+        if (this.username === 'qc_admin') {
+          sessionStorage.setItem('name', 'qc admin');
           localStorage.setItem('loginStatus', '1');
-        } else if (this.email === 'jccarpo@up.edu.ph') {
+        } else if (this.username === 'laguna_admin') {
           sessionStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
         } else {

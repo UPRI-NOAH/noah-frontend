@@ -49,7 +49,7 @@ export class QcLoginComponent implements OnInit {
   LoginStatus$: Observable<boolean>;
   UserName$: Observable<string>;
   ButtonShow$: Observable<boolean>;
-  email: string = '';
+  username: string = '';
   password: string = '';
 
   loginForm = new FormGroup({
@@ -72,7 +72,6 @@ export class QcLoginComponent implements OnInit {
     });
 
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
-    this.UserName$ = this.qcLoginService.currentUserName;
     this.alertError = false;
     this.loadingNoah = false;
 
@@ -107,7 +106,7 @@ export class QcLoginComponent implements OnInit {
       return;
     }
 
-    this.qcLoginService.loginUser(this.email, this.password).subscribe(
+    this.qcLoginService.loginUser(this.username, this.password).subscribe(
       (response) => {
         this.invalidLogin = false;
         console.log(this.returnUrl);
@@ -115,10 +114,10 @@ export class QcLoginComponent implements OnInit {
         this.qcLoginModal = false;
         this.loadingNoah = false;
         sessionStorage.setItem('loggedIn', 'true');
-        if (this.email === 'upri.webgis@up.edu.ph') {
+        if (this.username === 'upri.webgis@up.edu.ph') {
           sessionStorage.setItem('name', 'devs');
           localStorage.setItem('loginStatus', '1');
-        } else if (this.email === 'jccarpo@up.edu.ph') {
+        } else if (this.username === 'jccarpo@up.edu.ph') {
           sessionStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
         } else {

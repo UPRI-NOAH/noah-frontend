@@ -23,9 +23,6 @@ export class QcLoginService {
   private disclaimerStatus = new BehaviorSubject<boolean>(
     this.checkDisclaimerStatus()
   );
-  private UserName = new BehaviorSubject<string>(
-    localStorage.getItem('username')
-  );
 
   constructor(
     private http: HttpClient,
@@ -35,9 +32,9 @@ export class QcLoginService {
     private qcSensorService: QcSensorService
   ) {}
 
-  loginUser(email: string, password: string) {
+  loginUser(username: string, password: string) {
     const loginData = {
-      email: email,
+      username: username,
       password: password,
     };
 
@@ -93,10 +90,6 @@ export class QcLoginService {
 
   get isDisclaimerStatus() {
     return this.disclaimerStatus.asObservable();
-  }
-
-  get currentUserName() {
-    return this.UserName.asObservable();
   }
 
   showAdmin(): void {
