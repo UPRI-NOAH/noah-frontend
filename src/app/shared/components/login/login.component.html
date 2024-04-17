@@ -1,5 +1,5 @@
 <div class="px-6 justify-center items-center">
-  <div *ngIf="!(LoginStatus$ | async) as LoginStatus">
+  <div>
     <button
       type="button"
       class="
@@ -23,61 +23,72 @@
         focus:ring-opacity-50
         border-primary border-2
       "
+      *ngIf="!isLoggedIn()"
       (click)="popUpLogin()"
-      *ngIf="LoginStatus"
       routerLink="login"
     >
-      LOGIN
+      <span>LOGIN</span>
     </button>
-  </div>
-  <div
-    class="dropdown inline-block relative"
-    *ngIf="LoginStatus$ | async as LoginStatus"
-  >
+
     <button
-      class="ml-2 text-base whitespace-nowrap font-bold"
-      *ngIf="UserName$ | async as UserName"
-    >
-      {{ UserName | uppercase }}
-    </button>
-    <ul
+      type="button"
       class="
-        z-50
-        dropdown-menu
-        rounded-lg
-        shadow-2xl
-        drop-shadow-xl
-        bg-white
-        right-0
-        top-6
-        absolute
-        hidden
-        text-sm text-gray-700
+        text-xs
+        uppercase
+        font-bold
+        px-10
+        py-2
+        my-4
+        inline-flex
+        items-center
+        justify-center
+        focus:outline-none
+        mx-auto
+        lg:mx-0
+        tracking-widest
+        focus:ring-opacity-50
       "
+      *ngIf="isLoggedIn()"
     >
-      <li class="" *ngIf="LoginStatus.valueOf()">
-        <a
+      <div
+        class="cursor-pointer relative"
+        (click)="isList ? (isList = false) : (isList = true)"
+      >
+        <span>{{ userName }}</span>
+        <ul
+          *ngIf="isList"
           class="
-            rounded-lg
-            block
-            px-4
-            py-2
-            text-sm
-            leading-5
-            text-gray-700
-            transition
-            duration-150
-            ease-in-out
-            hover:bg-gray-100
-            focus:outline-none focus:bg-gray-100
+            bg-white
+            shadow
+            rounded
+            z-40
+            py-1
+            w-20
+            left-0
+            mt-8
+            -ml-4
+            absolute
+            top-0
           "
-          role="button"
-          (click)="logoutModal()"
-          *ngIf="LoginStatus"
-          >Logout</a
         >
-      </li>
-    </ul>
+          <li
+            class="
+              cursor-pointer
+              text-gray-600 text-xs
+              leading-3
+              tracking-normal
+              py-3
+              hover:bg-indigo-700 hover:text-white
+              px-3
+              font-normal
+            "
+            (click)="logout()"
+          >
+            Logout
+          </li>
+        </ul>
+      </div>
+    </button>
   </div>
 </div>
 
@@ -119,10 +130,8 @@
       px-5
       py-5
     "
-    *ngIf="!(LoginStatus$ | async) as LoginStatus"
   >
     <div
-      *ngIf="LoginStatus"
       class="bg-gray-100 rounded-3xl shadow-xl w-full lg:w-136 overflow-hidden"
       style="max-width: 1000px"
     >
@@ -139,11 +148,7 @@
             <p>Enter your information to login</p>
           </div>
 
-          <form
-            [formGroup]="insertForm"
-            (ngSubmit)="onSubmit()"
-            (keydown.enter)="onSubmit()"
-          >
+          <form (ngSubmit)="onSubmit()" (keydown.enter)="onSubmit()">
             <div class="flex -mx-3">
               <div class="w-full px-3 mb-5">
                 <label for="" class="text-s font-semibold px-1">Username</label>
@@ -176,19 +181,9 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    formControlName="Username"
+                    [(ngModel)]="username"
                     placeholder="Username"
                   />
-                </div>
-                <div
-                  *ngIf="Username.touched && Username.errors"
-                  class="errorMessage"
-                >
-                  <span
-                    class="text-red-600"
-                    *ngIf="Username.hasError('required')"
-                    >Username is required.</span
-                  >
                 </div>
               </div>
             </div>
@@ -225,19 +220,9 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    formControlName="Password"
+                    [(ngModel)]="password"
                     placeholder="************"
                   />
-                </div>
-                <div
-                  *ngIf="Password.touched && Password.errors"
-                  class="errorMessage"
-                >
-                  <span
-                    class="text-red-600"
-                    *ngIf="Password.hasError('required')"
-                    >Password is required.</span
-                  >
                 </div>
               </div>
             </div>
@@ -258,7 +243,7 @@
                   py-3
                   font-semibold
                 "
-                (click)="clearForm(insertForm)"
+                (click)="clearForm()"
               >
                 Cancel
               </button>
@@ -281,7 +266,6 @@
                 "
                 type="submit"
                 (click)="onSubmit()"
-                [disabled]="insertForm.invalid"
               >
                 Login
               </button>
@@ -405,10 +389,8 @@
       px-5
       py-5
     "
-    *ngIf="!(LoginStatus$ | async) as LoginStatus"
   >
     <div
-      *ngIf="LoginStatus"
       class="bg-gray-100 rounded-3xl shadow-xl w-full overflow-hidden"
       style="max-width: 1000px"
     >
@@ -435,11 +417,7 @@
             <p>Enter your information to login</p>
           </div>
 
-          <form
-            [formGroup]="insertForm"
-            (ngSubmit)="onSubmit()"
-            (keydown.enter)="onSubmit()"
-          >
+          <form (ngSubmit)="onSubmit()" (keydown.enter)="onSubmit()">
             <div class="flex -mx-3">
               <div class="w-full px-3 mb-5">
                 <label for="" class="text-s font-semibold px-1">Username</label>
@@ -472,19 +450,9 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    formControlName="Username"
+                    [(ngModel)]="username"
                     placeholder="Username"
                   />
-                </div>
-                <div
-                  *ngIf="Username.touched && Username.errors"
-                  class="errorMessage"
-                >
-                  <span
-                    class="text-red-600"
-                    *ngIf="Username.hasError('required')"
-                    >Username is required.</span
-                  >
                 </div>
               </div>
             </div>
@@ -521,19 +489,9 @@
                       outline-none
                       focus:border-indigo-500
                     "
-                    formControlName="Password"
+                    [(ngModel)]="password"
                     placeholder="************"
                   />
-                </div>
-                <div
-                  *ngIf="Password.touched && Password.errors"
-                  class="errorMessage"
-                >
-                  <span
-                    class="text-red-600"
-                    *ngIf="Password.hasError('required')"
-                    >Password is required.</span
-                  >
                 </div>
               </div>
             </div>
@@ -554,7 +512,7 @@
                   py-3
                   font-semibold
                 "
-                (click)="clearForm(insertForm)"
+                (click)="clearForm()"
               >
                 Cancel
               </button>
@@ -576,7 +534,6 @@
                   font-semibold
                 "
                 type="submit"
-                [disabled]="insertForm.invalid"
                 (click)="onSubmit()"
               >
                 Login

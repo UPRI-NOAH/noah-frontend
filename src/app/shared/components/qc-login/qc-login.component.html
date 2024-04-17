@@ -101,11 +101,7 @@
                 <p>Enter your information to login</p>
               </div>
 
-              <form
-                [formGroup]="insertForm"
-                (ngSubmit)="onSubmit()"
-                (keydown.enter)="onSubmit()"
-              >
+              <form (ngSubmit)="onSubmit()" (keydown.enter)="onSubmit()">
                 <div class="flex -mx-3">
                   <div class="w-full px-3 mb-5">
                     <label for="" class="text-s font-semibold px-1"
@@ -142,7 +138,7 @@
                           outline-none
                           focus:border-indigo-500
                         "
-                        formControlName="Username"
+                        [(ngModel)]="username"
                         placeholder="Username"
                       />
                     </div>
@@ -195,7 +191,7 @@
                           outline-none
                           focus:border-indigo-500
                         "
-                        formControlName="Password"
+                        [(ngModel)]="password"
                         placeholder="************"
                       />
                     </div>
@@ -335,11 +331,7 @@
                 <p>Enter your information to login</p>
               </div>
 
-              <form
-                [formGroup]="insertForm"
-                (ngSubmit)="onSubmit()"
-                (keydown.enter)="onSubmit()"
-              >
+              <form (ngSubmit)="onSubmit()" (keydown.enter)="onSubmit()">
                 <div class="flex -mx-3">
                   <div class="w-full px-3 mb-5">
                     <label for="" class="text-s font-semibold px-1"
@@ -376,7 +368,7 @@
                           outline-none
                           focus:border-indigo-500
                         "
-                        formControlName="Username"
+                        [(ngModel)]="username"
                         placeholder="Username"
                       />
                     </div>
@@ -429,7 +421,7 @@
                           outline-none
                           focus:border-indigo-500
                         "
-                        formControlName="Password"
+                        [(ngModel)]="password"
                         placeholder="************"
                       />
                     </div>
