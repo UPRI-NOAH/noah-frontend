@@ -10,7 +10,11 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./boundaries-group.component.scss'],
 })
 export class BoundariesGroupComponent implements OnInit {
-  boundariesTypeList: BoundariesType[] = ['barangay-boundary'];
+  boundariesTypeList: BoundariesType[] = [
+    'barangay-boundary',
+    'municipal',
+    'provincial',
+  ];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
