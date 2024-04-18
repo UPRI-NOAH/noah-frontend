@@ -1292,6 +1292,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     };
 
+    const boundaryColors = {
+      'barangay-boundary': '#7e22ce',
+      municipal: '#7e22ce',
+      provincial: '#0C0C0C',
+    };
+
     // 1 - load the geojson files (add sources/layers)
     Object.keys(boundariesSourceFiles).forEach(
       (boundariesType: BoundariesType) => {
@@ -1310,27 +1316,37 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
-          'source-layer': 'ph_prov_bound',
+          'source-layer': boundariesObjData.sourceLayer,
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
           interactive: true,
         });
-        // 4 - Add line layer
+
+        // Add line layer
         const lineLayerID = `${boundariesType}-line-layer`;
+        const linePaint = {
+          'line-color': boundaryColors[boundariesType], // Use color based on boundary type
+          'line-width': 3,
+          'line-opacity': 0.75,
+        };
+
+        // Apply different line style for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          linePaint['line-dasharray'] = [1, 0]; // No dash
+        } else {
+          linePaint['line-dasharray'] = [1, 1]; // Dashed
+        }
+
         this.map.addLayer({
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
-          'source-layer': 'ph_prov_bound',
-          paint: {
-            'line-color': '#7e22ce', // purple 700
-            'line-width': 3,
-            'line-opacity': 0.75,
-            'line-dasharray': [1, 2],
-          },
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: linePaint,
           interactive: false,
         });
+
         // 5 - listen to the values from the store (group and individual)
         const allShown$ = this.pgService.boundariesGroupShown$.pipe(
           distinctUntilChanged()
