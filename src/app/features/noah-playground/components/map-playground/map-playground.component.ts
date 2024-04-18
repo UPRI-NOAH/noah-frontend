@@ -1273,11 +1273,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
       BoundariesType,
-      { url: string; type: string }
+      { url: string; type: string; sourceLayer: string }
     > = {
       'barangay-boundary': {
         url: 'mapbox://upri-noah.ph_brgy_tls',
         type: 'vector',
+        sourceLayer: 'ph_brgy_pop',
+      },
+      municipal: {
+        url: 'mapbox://upri-noah.ph_muni_tls',
+        type: 'vector',
+        sourceLayer: 'ph_muni_bound',
+      },
+      provincial: {
+        url: 'mapbox://upri-noah.ph_prov_tls',
+        type: 'vector',
+        sourceLayer: 'ph_prov_bound',
       },
     };
 
@@ -1294,11 +1305,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
         // 3 - add layer
         layerID = `${boundariesType}-map-layer`;
+
         this.map.addLayer({
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop',
+          'source-layer': 'ph_prov_bound',
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
@@ -1310,7 +1322,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop',
+          'source-layer': 'ph_prov_bound',
           paint: {
             'line-color': '#7e22ce', // purple 700
             'line-width': 3,
