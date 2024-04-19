@@ -42,14 +42,10 @@ export class QcLoginService {
   }
 
   logout() {
-    // Clear the login state from sessionStorage
     sessionStorage.removeItem('loggedIn');
     localStorage.removeItem('loginStatus');
-    // Optionally, you may want to also clear any user-related data stored in sessionStorage
     sessionStorage.removeItem('userData');
-    // Optionally, you can also redirect the user to the login page or any other desired page
-    // For example, if you have a router, you can navigate to the login page
-    // this.router.navigate(['/login']);
+    sessionStorage.removeItem('loginStatus');
     console.log('Logged out successfully');
     this.router
       .navigateByUrl('/logout', { skipLocationChange: true })

@@ -269,7 +269,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQcCenterListener() {
-    if (sessionStorage.getItem('loggedIn') === 'true') {
+    const centerQc = localStorage.getItem('loginStatus');
+    if (centerQc == '1') {
       this.map.flyTo({
         center: QC_DEFAULT_CENTER,
         zoom: 12,
@@ -563,6 +564,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -580,6 +582,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -591,6 +597,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -608,6 +615,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -619,6 +630,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -635,6 +647,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.print({
                       type: 'print',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -647,6 +663,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -663,6 +680,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.exportChart({
                       type: 'image/jpeg',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
