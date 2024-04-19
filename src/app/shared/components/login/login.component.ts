@@ -85,7 +85,6 @@ export class LoginComponent implements OnInit {
       (response) => {
         // Store the login state in sessionStorage
         this.invalidLogin = false;
-        console.log(this.returnUrl);
         this.router.navigateByUrl(this.returnUrl);
         this.isLoginModal = false;
         this.loadingNoah = true;
@@ -97,6 +96,9 @@ export class LoginComponent implements OnInit {
         } else if (this.username === 'laguna_admin') {
           sessionStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
+        } else if (this.username === 'noah_dev') {
+          sessionStorage.setItem('name', 'Devs');
+          sessionStorage.setItem('loginStatus', 'devs');
         } else {
           console.log('Invalid Credentials');
         }

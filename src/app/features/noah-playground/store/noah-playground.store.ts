@@ -238,7 +238,7 @@ export type QuezonCitySensorsState = {
   types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
 };
 
-export type BoundariesType = 'barangay-boundary';
+export type BoundariesType = 'barangay-boundary' | 'municipal' | 'provincial';
 
 export type BoundariesGroupState = {
   shown: boolean;
@@ -451,6 +451,14 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       'barangay-boundary': {
+        shown: true,
+        opacity: 80,
+      },
+      municipal: {
+        shown: true,
+        opacity: 80,
+      },
+      provincial: {
         shown: true,
         opacity: 80,
       },
