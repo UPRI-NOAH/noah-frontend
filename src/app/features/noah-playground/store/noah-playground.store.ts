@@ -451,11 +451,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       'barangay-boundary': {
-        shown: true,
+        shown: false,
         opacity: 80,
       },
       municipal: {
-        shown: true,
+        shown: false,
         opacity: 80,
       },
       provincial: {

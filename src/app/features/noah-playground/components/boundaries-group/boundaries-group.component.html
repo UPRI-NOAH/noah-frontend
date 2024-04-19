@@ -9,8 +9,9 @@
       />
     </label>
     <div class="ml-3 text-xl leading-none font-bold flex items-center">
-      Boundaries
+      Administrative Boundaries
     </div>
+
     <div class="ml-auto">
       <button
         class="
@@ -52,6 +53,12 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
+    <div class="pl-2 pb-2">
+      <p class="text-sm italic">
+        DISCLAIMER: Administrative boundaries are not authoritative
+      </p>
+      <p class="text-sm italic">SOURCE: Philippine Statistics Authority</p>
+    </div>
     <div class="pl-6">
       <div class="items-center">
         <noah-boundaries-solo
