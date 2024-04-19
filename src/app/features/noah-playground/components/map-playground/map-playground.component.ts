@@ -1294,12 +1294,29 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
       BoundariesType,
-      { url: string; type: string }
+      { url: string; type: string; sourceLayer: string }
     > = {
       'barangay-boundary': {
         url: 'mapbox://upri-noah.ph_brgy_tls',
         type: 'vector',
+        sourceLayer: 'ph_brgy_pop',
       },
+      municipal: {
+        url: 'mapbox://upri-noah.ph_muni_tls',
+        type: 'vector',
+        sourceLayer: 'ph_muni_bound',
+      },
+      provincial: {
+        url: 'mapbox://upri-noah.ph_prov_tls',
+        type: 'vector',
+        sourceLayer: 'ph_prov_bound',
+      },
+    };
+
+    const boundaryColors = {
+      'barangay-boundary': '#7e22ce',
+      municipal: '#7e22ce',
+      provincial: '#0C0C0C',
     };
 
     // 1 - load the geojson files (add sources/layers)
@@ -1315,31 +1332,42 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
         // 3 - add layer
         layerID = `${boundariesType}-map-layer`;
+
         this.map.addLayer({
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop',
+          'source-layer': boundariesObjData.sourceLayer,
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
           interactive: true,
         });
-        // 4 - Add line layer
+
+        // Add line layer
         const lineLayerID = `${boundariesType}-line-layer`;
+        const linePaint = {
+          'line-color': boundaryColors[boundariesType], // Use color based on boundary type
+          'line-width': 3,
+          'line-opacity': 0.75,
+        };
+
+        // Apply different line style for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          linePaint['line-dasharray'] = [1, 0]; // No dash
+        } else {
+          linePaint['line-dasharray'] = [1, 1]; // Dashed
+        }
+
         this.map.addLayer({
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
-          'source-layer': 'ph_brgy_pop',
-          paint: {
-            'line-color': '#7e22ce', // purple 700
-            'line-width': 3,
-            'line-opacity': 0.75,
-            'line-dasharray': [1, 2],
-          },
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: linePaint,
           interactive: false,
         });
+
         // 5 - listen to the values from the store (group and individual)
         const allShown$ = this.pgService.boundariesGroupShown$.pipe(
           distinctUntilChanged()
