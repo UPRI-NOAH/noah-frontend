@@ -1457,6 +1457,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.setLayoutProperty(layerID, 'visibility', 'none');
               this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
               this.map.setLayerZoomRange(layerID, 0, 24);
+              // Close popup if layer is hidden
+              if (popup) {
+                popup.remove();
+              }
 
               // Hide text layers
               if (municipalTextLayerID) {
