@@ -29,6 +29,7 @@ import {
   RiskAssessmentState,
   RiskAssessmentGroupState,
   CalculateRiskButton,
+  EarthquakeSensorType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -72,6 +73,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.iotMunicipalities.shown)
     );
+  }
+
+  get earthquakeGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.shown));
+  }
+
+  get earthquakeGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.expanded));
   }
 
   get volcanoGroupShown$(): Observable<boolean> {
@@ -963,5 +972,64 @@ export class NoahPlaygroundService {
     };
     riskAssessment.populationtypes.population.shown = false;
     this.store.patch({ riskAssessment }, `Hide Affected Population`);
+  }
+
+  getEarthquakeSensorTypeShown$(
+    earthquakeSensorType: EarthquakeSensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.earthquake.types[earthquakeSensorType].shown)
+    );
+  }
+
+  getEarthquakeSensorTypeFetched$(
+    earthquakeSensorType: EarthquakeSensorType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.earthquake.types[earthquakeSensorType].fetched)
+    );
+  }
+
+  toggleEarthquakeGroupExpanded(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { expanded } = earthquake;
+    earthquake.expanded = !expanded;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleEarthquakeGroupShown(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { shown } = earthquake;
+    earthquake.shown = !shown;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake group state shown to ${!shown}`
+    );
+  }
+
+  setEarthquakeSensorTypeShown(
+    earthquakeSensorType: EarthquakeSensorType
+  ): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { shown } = earthquake.types[earthquakeSensorType];
+    earthquake.types[earthquakeSensorType].shown = !shown;
+    this.store.patch(
+      { earthquake },
+      `change seismic sensor ${earthquakeSensorType}'visibility to ${!shown}`
+    );
   }
 }
