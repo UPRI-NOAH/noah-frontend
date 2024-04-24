@@ -37,6 +37,8 @@ export type RiskAssessmentRainType = 'rain-forecast';
 
 export type RiskAssessmentExposureType = 'population';
 
+export type EarthquakeSensorType = 'seismic-sensor';
+
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
   | 'flood-return-period-25'
@@ -135,6 +137,17 @@ export type RiskAssessmentGroupState = {
   raintypes: Record<RiskAssessmentRainType, RiskAssessmentState>;
   exposuretypes: RiskAssessmentState;
   populationtypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
+};
+
+export type EarthquakeGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<EarthquakeSensorType, EarthquakeSensorState>;
+};
+
+export type EarthquakeSensorState = {
+  fetched: boolean;
+  shown: boolean;
 };
 
 export type VolcanoGroupState = {
@@ -243,6 +256,7 @@ type NoahPlaygroundState = {
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
+  earthquake: EarthquakeGroupState;
   volcanoes: VolcanoGroupState;
   riskAssessment: RiskAssessmentGroupState;
   criticalFacilities: CriticalFacilitiesState;
@@ -353,6 +367,16 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 85,
         color: 'noah-red',
         shown: true,
+      },
+    },
+  },
+  earthquake: {
+    shown: false,
+    expanded: false,
+    types: {
+      'seismic-sensor': {
+        shown: true,
+        fetched: false,
       },
     },
   },
