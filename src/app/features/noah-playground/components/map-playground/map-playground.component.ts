@@ -1296,11 +1296,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       BoundariesType,
       { url: string; type: string; sourceLayer: string }
     > = {
-      'barangay-boundary': {
-        url: 'mapbox://upri-noah.ph_brgy_tls',
-        type: 'vector',
-        sourceLayer: 'ph_brgy_pop',
-      },
       municipal: {
         url: 'mapbox://upri-noah.ph_muni_tls',
         type: 'vector',
@@ -1310,6 +1305,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         url: 'mapbox://upri-noah.ph_prov_tls',
         type: 'vector',
         sourceLayer: 'ph_prov_bound',
+      },
+      'barangay-boundary': {
+        url: 'mapbox://upri-noah.ph_brgy_tls',
+        type: 'vector',
+        sourceLayer: 'ph_brgy_pop',
       },
     };
 
@@ -1348,14 +1348,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         const lineLayerID = `${boundariesType}-line-layer`;
         const linePaint = {
           'line-color': boundaryColors[boundariesType], // Use color based on boundary type
-          'line-width': 3,
           'line-opacity': 0.75,
         };
 
+        const lineLayerName = ``;
+
         // Apply different line style for municipal and provincial boundaries
         if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          linePaint['line-width'] = 5; // Adjust line width for municipal and provincial boundaries
           linePaint['line-dasharray'] = [1, 0]; // No dash
         } else {
+          linePaint['line-width'] = 3; // Adjust line width Barangay
           linePaint['line-dasharray'] = [1, 1]; // Dashed
         }
 
@@ -1368,6 +1371,48 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           interactive: false,
         });
 
+        // Inside the initBoundaries() method, before the forEach loop
+        // Define variables to hold text layer IDs
+        let municipalTextLayerID;
+        let provincialTextLayerID;
+
+        // Inside the forEach loop where boundaries are defined
+        // Add text layer for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          const textLayerID = `${boundariesType}-text-layer`;
+
+          this.map.addLayer({
+            id: textLayerID,
+            type: 'symbol',
+            source: boundariesMapSource,
+            'source-layer': boundariesObjData.sourceLayer,
+            layout: {
+              'text-field': [
+                'get',
+                boundariesType === 'municipal' ? 'Mun_Name' : 'Pro_Name',
+              ],
+              'text-font': ['Open Sans Regular'],
+              'text-size': 15,
+              'text-offset': [0, 0.5],
+              'text-anchor': 'center',
+              'text-allow-overlap': false, // Allow text to overlap
+            },
+            paint: {
+              'text-color': '#FF0000', // Adjust text color
+              'text-halo-color': '#fff', // Add text border color
+              'text-halo-width': 1, // text border width
+            },
+            filter: ['==', '$type', 'Polygon'], // Only show text for polygons
+          });
+
+          // Assign text layer ID to corresponding variable
+          if (boundariesType === 'municipal') {
+            municipalTextLayerID = textLayerID;
+          } else if (boundariesType === 'provincial') {
+            provincialTextLayerID = textLayerID;
+          }
+        }
+
         // 5 - listen to the values from the store (group and individual)
         const allShown$ = this.pgService.boundariesGroupShown$.pipe(
           distinctUntilChanged()
@@ -1376,6 +1421,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           .getBoundaries$(boundariesType)
           .pipe(shareReplay(1));
 
+        // Inside the visibility subscription after the map layers are added
         combineLatest([allShown$, boundaries$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(([allShown, boundaries]) => {
@@ -1390,14 +1436,42 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 'line-opacity',
                 newOpacity
               );
+
+              // Show text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
             } else {
               // Disable interactivity when hidden
               this.map.setLayoutProperty(layerID, 'visibility', 'none');
               this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
               this.map.setLayerZoomRange(layerID, 0, 24);
-              // Close popup if layer is hidden
-              if (popup) {
-                popup.remove();
+
+              // Hide text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'none'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'none'
+                );
               }
             }
           });

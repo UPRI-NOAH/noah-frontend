@@ -37,9 +37,17 @@
                 w-12
                 h-5
                 dark:bg-gray-800
-                border-2 border-dashed
+                border-2 
+                {{
+                boundariesType === 'barangay-boundary'
+                  ? 'border-dashed border-purple-700'
+                  : boundariesType === 'municipal'
+                  ? 'border-solid border-purple-700'
+                  : boundariesType === 'provincial'
+                  ? 'border-solid border-black'
+                  : ''
+              }}
                 rounded
-                border-purple-700
               "
             ></div>
           </div>
