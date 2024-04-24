@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import { EarthquakeSensorType } from '@features/noah-playground/store/noah-playground.store';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-earthquake-solo',
@@ -6,7 +10,38 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./earthquake-solo.component.scss'],
 })
 export class EarthquakeSoloComponent implements OnInit {
-  constructor() {}
+  @Input() earthquakeSensorType: EarthquakeSensorType;
 
-  ngOnInit(): void {}
+  shown$: Observable<boolean>;
+  fetchFailed: boolean;
+
+  private _unsub = new Subject();
+
+  get displayName(): string {
+    return this.earthquakeSensorType.replace('-', ' ');
+  }
+
+  constructor(private pgService: NoahPlaygroundService) {}
+
+  ngOnInit(): void {
+    this.shown$ = this.pgService.getEarthquakeSensorTypeShown$(
+      this.earthquakeSensorType
+    );
+    this.pgService
+      .getEarthquakeSensorTypeFetched$(this.earthquakeSensorType)
+      .pipe(takeUntil(this._unsub))
+      .subscribe((fetched) => {
+        this.fetchFailed = !fetched;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._unsub.next();
+    this._unsub.complete();
+  }
+
+  toggleShown() {
+    if (this.fetchFailed) return;
+    this.pgService.setEarthquakeSensorTypeShown(this.earthquakeSensorType);
+  }
 }
