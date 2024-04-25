@@ -8,8 +8,8 @@
         (click)="toggleShown($event)"
       />
     </label>
-    <div class="ml-3 text-xl leading-none font-bold flex items-center">
-      Boundaries
+    <div class="ml-3 text-lg leading-none font-bold flex items-center">
+      Administrative Boundaries
     </div>
     <div class="ml-auto">
       <button
@@ -54,6 +54,17 @@
     <hr class="pb-4" />
     <div class="pl-6">
       <div class="items-center">
+        <div>
+          <p class="text-xs italic ml-4">
+            Disclaimer: Calibration and validation of sensor datasets are still
+            in progress
+          </p>
+        </div>
+        <div>
+          <p class="text-xs italic mt-4 ml-4">
+            Source: Philippine Statistics Authority
+          </p>
+        </div>
         <noah-boundaries-solo
           *ngFor="let boundariesType of boundariesTypeList"
           [boundariesType]="boundariesType"
