@@ -11,7 +11,7 @@ import { shareReplay } from 'rxjs/operators';
 })
 export class BoundariesGroupComponent implements OnInit {
   boundariesTypeList: BoundariesType[] = [
-    'barangay-boundary',
+    'barangay',
     'municipal',
     'provincial',
   ];

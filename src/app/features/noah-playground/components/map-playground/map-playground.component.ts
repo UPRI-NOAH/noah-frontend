@@ -1306,7 +1306,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         type: 'vector',
         sourceLayer: 'ph_prov_bound',
       },
-      'barangay-boundary': {
+      barangay: {
         url: 'mapbox://upri-noah.ph_brgy_tls',
         type: 'vector',
         sourceLayer: 'ph_brgy_pop',
@@ -1314,7 +1314,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     };
 
     const boundaryColors = {
-      'barangay-boundary': '#7e22ce',
+      barangay: '#7e22ce',
       municipal: '#7e22ce',
       provincial: '#0C0C0C',
     };
