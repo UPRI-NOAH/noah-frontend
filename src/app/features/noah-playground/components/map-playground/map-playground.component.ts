@@ -106,6 +106,12 @@ import {
 } from '@shared/mocks/noah-colors';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
+import {
+  EARTHQUAKE,
+  EarthquakeDataService,
+  EarthquakeItem,
+  EarthquakeType,
+} from '@features/noah-playground/services/earthquake-data.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -168,6 +174,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   geojson: any;
   linestring: any;
   private measurementActive: boolean = false;
+  floorNum: string = '';
+  alertValue: number;
+  eqDatas: any[] = []; //displaying earthquake data in table
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -178,7 +187,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private earthService: EarthquakeDataService
   ) {}
 
   ngOnInit(): void {
@@ -196,6 +206,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.addExaggerationControl();
+        this.initEarthquakeSensor();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
         //this.initSensors();
@@ -1041,6 +1052,216 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           )
         );
     });
+  }
+
+  initEarthquakeSensor() {
+    const ALERT_COLORS = {
+      0: NOAH_COLORS['noah-green'].high,
+      1: NOAH_COLORS['noah-red'].medium,
+      2: NOAH_COLORS['noah-red'].high,
+    };
+
+    // Dummy function to generate random alerts
+    function generateRandomAlert(): number {
+      return Math.floor(Math.random() * 3); // Generates values between 0 and 2
+    }
+
+    const updateCircleColor = (layerId: string, color: string) => {
+      this.map.setPaintProperty(layerId, 'circle-color', color);
+    };
+
+    const updateBackgroundColor = (color: string) => {
+      const element = document.getElementById('earthquakeAlert');
+      if (element) {
+        element.style.backgroundColor = color;
+      }
+    };
+
+    setInterval(() => {
+      const randomNumber = generateRandomAlert();
+
+      console.log(randomNumber); // You can replace console.log with your desired method to post data
+      EARTHQUAKE.forEach((earthquakeType) => {
+        updateCircleColor(earthquakeType, ALERT_COLORS[randomNumber]);
+        updateBackgroundColor(ALERT_COLORS[randomNumber]);
+        this.alertValue = randomNumber;
+      });
+    }, 3000); // 30 seconds
+
+    EARTHQUAKE.forEach((earthquakeType) => {
+      this.earthService
+        .getEarthquakeSensor(earthquakeType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          this.map.addLayer({
+            id: earthquakeType,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            paint: {
+              'circle-radius': 10, // You can adjust the radius of the circle
+              'circle-color': ALERT_COLORS[0], // You can change the color of the circle
+              'circle-opacity': 0, // You can adjust the opacity of the circle
+            },
+          });
+        });
+      combineLatest([
+        this.pgService.earthquakeGroupShown$,
+        this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+      ])
+        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+        .subscribe(([groupShown, soloShown]) => {
+          this.map.setPaintProperty(
+            earthquakeType,
+            'circle-opacity',
+            +(groupShown && soloShown)
+          );
+        });
+      this.pgService.setEarthquakeFetched(earthquakeType, true);
+      this.showEarthquakeData(earthquakeType);
+    });
+  }
+
+  showEarthquakeData(earthquakeType: EarthquakeType) {
+    const earthquakeDiv = document.getElementById('earthquake-dom');
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const smallPopUp = new mapboxgl.Popup({
+      closeButton: false, // Disable close button for small popup
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const _this = this;
+    combineLatest([
+      this.pgService.earthquakeGroupShown$,
+      this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        if (groupShown && soloShown) {
+          this.map.on('mouseenter', earthquakeType, (e) => {
+            const coordinates = (
+              e.features[0].geometry as any
+            ).coordinates.slice();
+            const rshake_station = e.features[0].properties.rshake_station;
+            const floorNum = e.features[0].properties.floor_num;
+            this.floorNum = floorNum;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            _this.map.getCanvas().style.cursor = 'pointer';
+            smallPopUp
+              .setLngLat(coordinates)
+              .setHTML(
+                `
+          <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+            <div>RShake Station: ${rshake_station}</div>
+            <div>Floor Num: ${floorNum}</div>
+          </div>
+        `
+              )
+              .addTo(_this.map);
+          });
+
+          this.map.on('mouseleave', earthquakeType, () => {
+            // Close the small popup when mouse leaves
+            smallPopUp.remove();
+          });
+
+          this.map.on('click', earthquakeType, function (e) {
+            earthquakeDiv.hidden = false;
+            _this.map.flyTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+              zoom: 16,
+              essential: true,
+            });
+            const floorNum = e.features[0].properties.floor_num;
+            const rshake_station = e.features[0].properties.rshake_station;
+            const elevation = e.features[0].properties.elevation;
+            const pk = e.features[0].properties.pk;
+            popUp
+              .setLngLat((e.features[0].geometry as any).coordinates.slice())
+              .setDOMContent(earthquakeDiv)
+              .setMaxWidth('800px')
+              .addTo(_this.map);
+            _this.showEarthData(+pk, rshake_station, earthquakeType);
+          });
+        } else {
+          // Cleanup if conditions not met
+          popUp.remove();
+          smallPopUp.remove();
+          this.map.on('mouseover', earthquakeType, (e) => {
+            _this._graphShown = false;
+            _this.map.getCanvas().style.cursor = '';
+          });
+          this.map.on('click', earthquakeType, function (e) {
+            _this.map.flyTo({});
+            _this._graphShown = false;
+          });
+        }
+      });
+
+    popUp.on('close', () => (_this._graphShown = false));
+  }
+
+  async showEarthData(
+    pk: number,
+    rshake_station: string,
+    earthquakeType: EarthquakeType
+  ) {
+    const response: any = await this.earthService
+      .getEarthquakeData(pk)
+      .pipe(first())
+      .toPromise();
+
+    const latestData = response.results
+      .filter((a) => a.station_id === rshake_station)
+      .reduce((latest, current) => {
+        if (
+          !latest ||
+          new Date(current.timestamp) > new Date(latest.timestamp)
+        ) {
+          return current;
+        } else {
+          return latest;
+        }
+      }, null);
+
+    const eqData = latestData
+      ? [
+          {
+            direction: 'X - Axis (ENE)', // Assuming direction for X-axis
+            displacement: latestData.displacement_x,
+            acceleration: latestData.acceleration_x,
+            drift: latestData.drift_x,
+          },
+          {
+            direction: 'Y - Axis (ENN)', // Assuming direction for Y-axis
+            displacement: latestData.displacement_y,
+            acceleration: latestData.acceleration_y,
+            drift: latestData.drift_y,
+          },
+          {
+            direction: 'Z - Axis (ENZ)', // Assuming direction for Z-axis
+            displacement: latestData.displacement_z,
+            acceleration: latestData.acceleration_z,
+            drift: latestData.drift_z,
+          },
+        ]
+      : [];
+
+    // Assign eqData to earthquakeData
+    this.eqDatas = eqData;
   }
 
   initBarangayBoundary() {

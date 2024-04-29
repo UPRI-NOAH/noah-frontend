@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
+import { EarthquakeType } from '../services/earthquake-data.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -137,6 +138,17 @@ export type RiskAssessmentGroupState = {
   populationtypes: Record<RiskAssessmentExposureType, RiskAssessmentState>;
 };
 
+export type EarthquakeGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<EarthquakeType, EarthquakeSensorState>;
+};
+
+export type EarthquakeSensorState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
 export type VolcanoGroupState = {
   shown: boolean;
   expanded: boolean;
@@ -243,6 +255,7 @@ type NoahPlaygroundState = {
   flood: FloodState;
   landslide: LandslideState;
   'storm-surge': StormSurgeState;
+  earthquake: EarthquakeGroupState;
   volcanoes: VolcanoGroupState;
   riskAssessment: RiskAssessmentGroupState;
   criticalFacilities: CriticalFacilitiesState;
@@ -353,6 +366,16 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 85,
         color: 'noah-red',
         shown: true,
+      },
+    },
+  },
+  earthquake: {
+    shown: false,
+    expanded: false,
+    types: {
+      'seismic-sensor': {
+        shown: true,
+        fetched: false,
       },
     },
   },
