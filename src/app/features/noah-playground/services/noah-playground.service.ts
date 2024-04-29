@@ -29,7 +29,6 @@ import {
   RiskAssessmentState,
   RiskAssessmentGroupState,
   CalculateRiskButton,
-  EarthquakeSensorType,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -39,6 +38,7 @@ import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
+import { EarthquakeType } from './earthquake-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -975,7 +975,7 @@ export class NoahPlaygroundService {
   }
 
   getEarthquakeSensorTypeShown$(
-    earthquakeSensorType: EarthquakeSensorType
+    earthquakeSensorType: EarthquakeType
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.earthquake.types[earthquakeSensorType].shown)
@@ -983,7 +983,7 @@ export class NoahPlaygroundService {
   }
 
   getEarthquakeSensorTypeFetched$(
-    earthquakeSensorType: EarthquakeSensorType
+    earthquakeSensorType: EarthquakeType
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.earthquake.types[earthquakeSensorType].fetched)
@@ -1018,9 +1018,7 @@ export class NoahPlaygroundService {
     );
   }
 
-  setEarthquakeSensorTypeShown(
-    earthquakeSensorType: EarthquakeSensorType
-  ): void {
+  setEarthquakeSensorTypeShown(earthquakeSensorType: EarthquakeType): void {
     const earthquake = {
       ...this.store.state.earthquake,
     };
@@ -1030,6 +1028,21 @@ export class NoahPlaygroundService {
     this.store.patch(
       { earthquake },
       `change seismic sensor ${earthquakeSensorType}'visibility to ${!shown}`
+    );
+  }
+
+  setEarthquakeFetched(
+    earthquakeSensorType: EarthquakeType,
+    fetched = true
+  ): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    earthquake.types[earthquakeSensorType].fetched = fetched;
+    this.store.patch(
+      { earthquake },
+      `change earthquake fetched status ${earthquakeSensorType}' to ${!fetched}`
     );
   }
 }

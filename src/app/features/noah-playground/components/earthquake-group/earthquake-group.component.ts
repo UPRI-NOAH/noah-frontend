@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { EarthquakeType } from '@features/noah-playground/services/earthquake-data.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { EarthquakeSensorType } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./earthquake-group.component.scss'],
 })
 export class EarthquakeGroupComponent implements OnInit {
-  seismicTypeList: EarthquakeSensorType[] = ['seismic-sensor'];
+  seismicTypeList: EarthquakeType[] = ['seismic-sensor'];
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;

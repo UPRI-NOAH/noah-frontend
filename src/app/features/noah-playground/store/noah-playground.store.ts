@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
+import { EarthquakeType } from '../services/earthquake-data.service';
 
 /**
  * Official geographic center of the Philippines.
@@ -36,8 +37,6 @@ export type BarangayBoundary = 'brgy-boundary';
 export type RiskAssessmentRainType = 'rain-forecast';
 
 export type RiskAssessmentExposureType = 'population';
-
-export type EarthquakeSensorType = 'seismic-sensor';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -142,7 +141,7 @@ export type RiskAssessmentGroupState = {
 export type EarthquakeGroupState = {
   shown: boolean;
   expanded: boolean;
-  types: Record<EarthquakeSensorType, EarthquakeSensorState>;
+  types: Record<EarthquakeType, EarthquakeSensorState>;
 };
 
 export type EarthquakeSensorState = {

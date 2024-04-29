@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { EarthquakeType } from '@features/noah-playground/services/earthquake-data.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { EarthquakeSensorType } from '@features/noah-playground/store/noah-playground.store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./earthquake-solo.component.scss'],
 })
 export class EarthquakeSoloComponent implements OnInit {
-  @Input() earthquakeSensorType: EarthquakeSensorType;
+  @Input() earthquakeSensorType: EarthquakeType;
 
   shown$: Observable<boolean>;
   fetchFailed: boolean;
