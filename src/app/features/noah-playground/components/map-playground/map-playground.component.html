@@ -15,6 +15,142 @@
     user-select: none;
   "
 ></div>
+<div
+  id="earthquake-dom"
+  hidden
+  class="relative overflow-hidden z-0 text-left lh"
+  style="
+    line-height: normal;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    user-select: none;
+  "
+>
+  <div class="w-auto">
+    <div class="justify-center items-center">
+      <div
+        id="earthquakeAlert"
+        class="flex items-center border-b justify-center px-6 py-3"
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-white">
+          Earthquake Alert
+        </p>
+      </div>
+      <div
+        class="
+          flex
+          items-center
+          border-b border-gray-200
+          justify-center
+          px-6
+          py-3
+        "
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          RShake Station: {{ rshakeName }}
+        </p>
+      </div>
+      <div
+        class="
+          flex
+          items-center
+          border-b border-gray-200
+          justify-center
+          px-6
+          py-3
+        "
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          Floor {{ floorNum }}
+        </p>
+      </div>
+
+      <!-- Table -->
+      <div class="w-full max-w-2xl mx-auto">
+        <div class="p-0">
+          <div class="overflow-x-auto">
+            <table class="table-auto w-full">
+              <thead
+                class="text-xs font-semibold uppercase text-black bg-gray-50"
+              >
+                <tr>
+                  <th class="p-2 whitespace-nowrap">
+                    <div class="font-semibold text-left">Direction</div>
+                  </th>
+                  <th class="p-2 whitespace-nowrap">
+                    <div class="font-semibold text-left">Displacement</div>
+                  </th>
+                  <th class="p-2 whitespace-nowrap">
+                    <div class="font-semibold text-left">Acceleration</div>
+                  </th>
+                  <th class="p-2 whitespace-nowrap">
+                    <div class="font-semibold text-center">% Drift</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100">
+                <tr
+                  *ngFor="let data of eqDatas"
+                  [ngClass]="{
+                    'bg-noah-green-high':
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 0,
+                    'bg-noah-red-medium':
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 1,
+                    'bg-noah-red-high':
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 2
+                  }"
+                >
+                  <td class="p-2 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="font-medium text-gray-800">
+                        {{ data.direction }}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-2 whitespace-nowrap">
+                    <div class="text-left">
+                      {{ data.displacement.toFixed(4) }}cm
+                    </div>
+                  </td>
+                  <td class="p-2 whitespace-nowrap">
+                    <div class="text-left font-medium">
+                      {{ data.acceleration.toFixed(4) }}cm/s
+                    </div>
+                  </td>
+                  <td class="p-2 whitespace-nowrap">
+                    <div class="font-medium text-center">
+                      {{ data.drift.toFixed(4) }}%
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="grid-cols-2 border border-black text-center px-6 py-3 mt-5">
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          Relay Status: ERROR
+        </p>
+        <p class="text-xs text-black">Unable to contact Arduino unit.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div
   class="top-48 absolute z-10 right-0 mt-2 pl-2 h-14 w-14 flex flex-row py-2"
