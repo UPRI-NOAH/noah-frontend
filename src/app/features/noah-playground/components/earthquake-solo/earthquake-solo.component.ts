@@ -35,6 +35,10 @@ export class EarthquakeSoloComponent implements OnInit {
       });
   }
 
+  simulateData() {
+    this.pgService.setEarthquakeSimulate();
+  }
+
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
