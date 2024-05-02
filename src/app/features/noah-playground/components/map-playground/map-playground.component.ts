@@ -1342,6 +1342,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(first())
       .toPromise();
 
+    const simulateRes: any = await this.earthService
+      .getSimulatedata()
+      .pipe(first()).toPromise;
+
     const latestData = response.results
       .filter((a) => a.station_id === rshake_station)
       .reduce((latest, current) => {

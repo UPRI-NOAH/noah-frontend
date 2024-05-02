@@ -32,7 +32,7 @@ export class EarthquakeDataService {
 
   getSimulatedata() {
     return this.http.get(
-      `${this.NOAH_S3_LINK}/api/seismic-test-data/?format=json`
+      `${this.NOAH_S3_LINK}/api/seismic-data/seismic-test-data/?format=json`
     );
   }
 }
