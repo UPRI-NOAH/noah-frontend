@@ -112,7 +112,7 @@ export class SummaryEarthquakeComponent implements OnInit {
     const newArr = []; //all summary data
     for (let i = 0; i < locationArr.length; i++) {
       for (let j = 0; j < dataArr.length; j++) {
-        if (locationArr[i].pk == dataArr[j].iot_sensor) {
+        if (locationArr[i].bldg_name == dataArr[j].drift) {
           newArr.push({ ...locationArr[i], ...dataArr[j] });
           break;
         }
@@ -121,7 +121,7 @@ export class SummaryEarthquakeComponent implements OnInit {
 
     const allDataWith = []; //disply all data without null value
     for (let i = 0; i < newArr.length; i++) {
-      if (newArr[i].latest_date) {
+      if (newArr[i].bldg_name) {
         allDataWith.push({ ...newArr[i] });
       }
     }

@@ -40,12 +40,12 @@ export class EarthquakeDataService {
   }
 
   getLocationData() {
-    return this.http.get(
-      `${this.NOAH_S3_LINK}/api/seismic-test-data/?alert_level=1`
-    );
+    return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-sensors/`);
   }
 
   getEarthquakeSummaryData() {
-    return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-test-data/`);
+    return this.http.get(
+      `${this.NOAH_S3_LINK}/api/seismic-test-data/?alert_level`
+    );
   }
 }
