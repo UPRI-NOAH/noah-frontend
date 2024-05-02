@@ -12,6 +12,15 @@ export type EarthquakeItem = {
   acceleration: number;
   drift: number;
 };
+export type SummaryItem = {
+  bldg_name: string;
+  rshake_station: string;
+  floor_num: string;
+  drift: string;
+  acceleration: string;
+  displacement: string;
+  intensity: string;
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -28,5 +37,15 @@ export class EarthquakeDataService {
   getEarthquakeSensor(type: EarthquakeType) {
     const param = type ? `?floor_num=${type}` : '';
     return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-sensors/${param}`);
+  }
+
+  getLocationData() {
+    return this.http.get(
+      `${this.NOAH_S3_LINK}/api/seismic-test-data/?alert_level=1`
+    );
+  }
+
+  getEarthquakeSummaryData() {
+    return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-test-data/`);
   }
 }

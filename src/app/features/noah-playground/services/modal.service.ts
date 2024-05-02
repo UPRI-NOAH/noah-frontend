@@ -32,6 +32,9 @@ export class ModalService {
   private iotSummaryModal = new Subject<boolean>();
   iotSummaryModal$ = this.iotSummaryModal.asObservable();
 
+  private earthquakeSummaryModal = new Subject<boolean>();
+  earthquakeSummaryModal$ = this.earthquakeSummaryModal.asObservable();
+
   private legendHide = new Subject<boolean>();
   legendHide$ = this.legendHide.asObservable();
 
@@ -110,6 +113,14 @@ export class ModalService {
 
   iotSummaryModalClose() {
     this.iotSummaryModal.next(false);
+  }
+
+  earthquakeSummaryModalOpen() {
+    this.earthquakeSummaryModal.next(true);
+  }
+
+  earthquakeSummaryModalClose() {
+    this.earthquakeSummaryModal.next(false);
   }
 
   lagunaLoginPopup() {
