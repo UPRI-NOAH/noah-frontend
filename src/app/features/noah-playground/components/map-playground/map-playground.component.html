@@ -92,21 +92,24 @@
                   *ngFor="let data of eqDatas"
                   [ngClass]="{
                     'bg-noah-green-high':
-                      (data.direction === 'Z - Axis (ENZ)' ||
+                      ((data.direction === 'Z - Axis (ENZ)' &&
+                        data.axis_with_max_drift === 'z') ||
                         (data.direction === 'X - Axis (ENE)' &&
                           data.axis_with_max_drift === 'x') ||
                         (data.direction === 'Y - Axis (ENN)' &&
                           data.axis_with_max_drift === 'y')) &&
                       data.alert_level === 0,
                     'bg-noah-red-medium':
-                      (data.direction === 'Z - Axis (ENZ)' ||
+                      ((data.direction === 'Z - Axis (ENZ)' &&
+                        data.axis_with_max_drift === 'z') ||
                         (data.direction === 'X - Axis (ENE)' &&
                           data.axis_with_max_drift === 'x') ||
                         (data.direction === 'Y - Axis (ENN)' &&
                           data.axis_with_max_drift === 'y')) &&
                       data.alert_level === 1,
                     'bg-noah-red-high':
-                      (data.direction === 'Z - Axis (ENZ)' ||
+                      ((data.direction === 'Z - Axis (ENZ)' &&
+                        data.axis_with_max_drift === 'z') ||
                         (data.direction === 'X - Axis (ENE)' &&
                           data.axis_with_max_drift === 'x') ||
                         (data.direction === 'Y - Axis (ENN)' &&

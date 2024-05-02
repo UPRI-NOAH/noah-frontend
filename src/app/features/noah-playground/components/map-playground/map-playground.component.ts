@@ -1063,33 +1063,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       2: NOAH_COLORS['noah-red'].high,
     };
 
-    // Dummy function to generate random alerts
-    function generateRandomAlert(): number {
-      return Math.floor(Math.random() * 3); // Generates values between 0 and 2
-    }
-
-    const updateCircleColor = (layerId: string, color: string) => {
-      this.map.setPaintProperty(layerId, 'circle-color', color);
-    };
-
-    const updateBackgroundColor = (color: string) => {
-      const element = document.getElementById('earthquakeAlert');
-      if (element) {
-        element.style.backgroundColor = color;
-      }
-    };
-
-    // setInterval(() => {
-    //   const randomNumber = generateRandomAlert();
-
-    //   console.log(randomNumber); // You can replace console.log with your desired method to post data
-    //   EARTHQUAKE.forEach((earthquakeType) => {
-    //     updateCircleColor(earthquakeType, ALERT_COLORS[randomNumber]);
-    //     updateBackgroundColor(ALERT_COLORS[randomNumber]);
-    //     this.alertValue = randomNumber;
-    //   });
-    // }, 3000); // 30 seconds
-
     EARTHQUAKE.forEach((earthquakeType) => {
       this.earthService
         .getEarthquakeSensor(earthquakeType)
@@ -1149,14 +1122,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       const increment = 0.00005;
       const horizontalOffset = 0.0003;
 
-      // Static mapping of alert levels for rshake_station: to be deleted
-      const alertLevels = {
-        RE722: 2,
-        RE725: 1,
-        RBC04: 2,
-        RBC07: 1,
-      };
-
       const ALERT_COLORS = {
         0: NOAH_COLORS['noah-green'].high,
         1: NOAH_COLORS['noah-red'].medium,
@@ -1179,7 +1144,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           properties: {
             floorNumber: floorNumbers[i], // Add floor number to properties
             rshake_station: rshake_stations[i], // Add rshake_station to properties
-            alertLevel: alertLevels[rshake_stations[i]], // Set alert level based on rshake_station
+            alertLevel: alertLevel[i], // Set alert level based on rshake_station
           },
         });
 
@@ -1301,7 +1266,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
-            const rshake_station = e.features[0].properties.rshake_station;
             const bldgName = e.features[0].properties.bldg_name;
             const floorNum = e.features[0].properties.data[0].floor_num;
             this.floorNum = floorNum;
@@ -1316,7 +1280,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setHTML(
                 `
           <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-            <div>RShake Station: ${bldgName}</div>
+            <div>Bldg Name: ${bldgName}</div>
           </div>
         `
               )
@@ -1358,7 +1322,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     rshake_station: string,
     earthquakeType: EarthquakeType
   ) {
-    const simulate = this.pgService.eartquakeSimulate$;
     const ALERT_COLORS = {
       0: NOAH_COLORS['noah-green'].high,
       1: NOAH_COLORS['noah-red'].medium,
@@ -1368,7 +1331,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     const updateCircleColor = (layerId: string, color: string) => {
       this.map.setPaintProperty(layerId, 'circle-color', color);
     };
-
     const updateBackgroundColor = (color: string) => {
       const element = document.getElementById('earthquakeAlert');
       if (element) {
@@ -1379,10 +1341,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .getEarthquakeData(pk)
       .pipe(first())
       .toPromise();
-
-    const simulateRes: any = await this.earthService
-      .getSimulatedata()
-      .pipe(first()).toPromise;
 
     const latestData = response.results
       .filter((a) => a.station_id === rshake_station)
@@ -1429,6 +1387,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
+    this.initSimulateEarthquakeData();
+  }
+
+  initSimulateEarthquakeData() {
+    combineLatest([this.pgService.eartquakeSimulate$])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([simulateShown]) => {
+        console.log('simulate', simulateShown);
+      });
   }
 
   initBarangayBoundary() {
