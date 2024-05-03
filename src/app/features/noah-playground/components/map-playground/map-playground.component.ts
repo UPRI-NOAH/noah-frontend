@@ -124,6 +124,13 @@ type LayerSettingsParam = {
   hazardLevel: HazardLevel;
 };
 
+type EarthquakeSettingsParam = {
+  pk: number;
+  rshake_station: string;
+  alertLevel: number;
+  earthquakeType: EarthquakeType;
+};
+
 type RawHazardType = 'lh' | 'fh' | 'ssh';
 type RawHazardLevel =
   | RawFloodReturnPeriod
@@ -210,6 +217,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.addExaggerationControl();
+        this.initSimulateData();
         this.initEarthquakeSensor();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
@@ -1080,87 +1088,24 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initEarthquakeSensor() {
-    const ALERT_COLORS = {
-      0: NOAH_COLORS['noah-green'].high,
-      1: NOAH_COLORS['noah-red'].medium,
-      2: NOAH_COLORS['noah-red'].high,
-    };
+    const ALERT_COLORS = this.getAlertColors();
 
-    // Dummy function to generate random alerts
-    function generateRandomAlert(): number {
-      return Math.floor(Math.random() * 3); // Generates values between 0 and 2
-    }
-
-    const updateCircleColor = (layerId: string, color: string) => {
-      this.map.setPaintProperty(layerId, 'circle-color', color);
-    };
-
-    const updateBackgroundColor = (color: string) => {
-      const element = document.getElementById('earthquakeAlert');
-      if (element) {
-        element.style.backgroundColor = color;
-      }
-    };
-
-    // setInterval(() => {
-    //   const randomNumber = generateRandomAlert();
-
-    //   console.log(randomNumber); // You can replace console.log with your desired method to post data
-    //   EARTHQUAKE.forEach((earthquakeType) => {
-    //     updateCircleColor(earthquakeType, ALERT_COLORS[randomNumber]);
-    //     updateBackgroundColor(ALERT_COLORS[randomNumber]);
-    //     this.alertValue = randomNumber;
-    //   });
-    // }, 3000); // 30 seconds
-
-    EARTHQUAKE.forEach((earthquakeType) => {
-      this.earthService
-        .getEarthquakeSensor(earthquakeType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          this.map.addLayer({
-            id: earthquakeType,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'circle-radius': 10,
-              'circle-color': ALERT_COLORS[0],
-              'circle-opacity': 0,
-            },
-          });
-        });
-
-      combineLatest([
-        this.pgService.earthquakeGroupShown$,
-        this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
-      ])
-        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-        .subscribe(([groupShown, soloShown]) => {
-          this.map.setPaintProperty(
-            earthquakeType,
-            'circle-opacity',
-            +(groupShown && soloShown)
-          );
-        });
-
+    EARTHQUAKE.forEach((earthquakeType, alertLevel: number) => {
+      this.fetchEarthquakeData(earthquakeType, ALERT_COLORS);
+      this.setupEarthquakeListeners(earthquakeType);
       this.pgService.setEarthquakeFetched(earthquakeType, true);
-      this.showEarthquakeData(earthquakeType);
+      this.showEarthquakeData(earthquakeType, alertLevel);
     });
   }
 
-  extendEarthquakeCircle(earthquakeType: EarthquakeType) {
-    // Add click event listener using arrow function to maintain `this` context
+  extendEarthquakeCircle(earthquakeType: EarthquakeType, alertLevel: number) {
+    const ALERT_COLORS = this.getAlertColors();
     const earthquakeDiv = document.getElementById('earthquake-dom');
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
       maxWidth: 'auto',
     });
-
     this.map.on('click', earthquakeType, (e) => {
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
       const responseData = e.features[0].properties.data;
@@ -1171,20 +1116,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       const newPoints = [];
       const increment = 0.00005;
       const horizontalOffset = 0.0003;
-
-      // Static mapping of alert levels for rshake_station: to be deleted
-      const alertLevels = {
-        RE722: 2,
-        RE725: 1,
-        RBC04: 2,
-        RBC07: 1,
-      };
-
-      const ALERT_COLORS = {
-        0: NOAH_COLORS['noah-green'].high,
-        1: NOAH_COLORS['noah-red'].medium,
-        2: NOAH_COLORS['noah-red'].high,
-      };
 
       const mainLong = coordinates[0] + horizontalOffset;
       const mainLat = coordinates[1];
@@ -1202,7 +1133,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           properties: {
             floorNumber: floorNumbers[i], // Add floor number to properties
             rshake_station: rshake_stations[i], // Add rshake_station to properties
-            alertLevel: alertLevels[rshake_stations[i]], // Set alert level based on rshake_station
+            alertLevel: alertLevel[i], // Set alert level based on rshake_station
           },
         });
 
@@ -1299,7 +1230,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  showEarthquakeData(earthquakeType: EarthquakeType) {
+  showEarthquakeData(earthquakeType: EarthquakeType, alertLevel: number) {
+    // Function content remains as it is
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -1324,7 +1256,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
-            const rshake_station = e.features[0].properties.rshake_station;
             const bldgName = e.features[0].properties.bldg_name;
             const floorNum = e.features[0].properties.data[0].floor_num;
             this.floorNum = floorNum;
@@ -1338,10 +1269,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-          <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-            <div>RShake Station: ${bldgName}</div>
-          </div>
-        `
+        <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+          <div>Bldg Name: ${bldgName}</div>
+        </div>
+      `
               )
               .addTo(_this.map);
           });
@@ -1351,13 +1282,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             smallPopUp.remove();
           });
 
-          this.extendEarthquakeCircle(earthquakeType);
-          // popUp
-          //   .setLngLat((e.features[0].geometry as any).coordinates.slice())
-          //   .setDOMContent(earthquakeDiv)
-          //   .setMaxWidth('800px')
-          //   .addTo(_this.map);
-          // _this.showEarthData(+pk, rshake_station, earthquakeType);
+          this.extendEarthquakeCircle(earthquakeType, alertLevel);
         } else {
           // Cleanup if conditions not met
           popUp.remove();
@@ -1381,17 +1306,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     rshake_station: string,
     earthquakeType: EarthquakeType
   ) {
-    const simulate = this.pgService.eartquakeSimulate$;
-    const ALERT_COLORS = {
-      0: NOAH_COLORS['noah-green'].high,
-      1: NOAH_COLORS['noah-red'].medium,
-      2: NOAH_COLORS['noah-red'].high,
-    };
-
-    const updateCircleColor = (layerId: string, color: string) => {
-      this.map.setPaintProperty(layerId, 'circle-color', color);
-    };
-
+    const ALERT_COLORS = this.getAlertColors();
     const updateBackgroundColor = (color: string) => {
       const element = document.getElementById('earthquakeAlert');
       if (element) {
@@ -1402,10 +1317,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .getEarthquakeData(pk)
       .pipe(first())
       .toPromise();
-
-    const simulateRes: any = await this.earthService
-      .getSimulatedata()
-      .pipe(first()).toPromise;
 
     const latestData = response.results
       .filter((a) => a.station_id === rshake_station)
@@ -1452,6 +1363,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
+  }
+
+  initSimulateData() {
+    const updateCircleColor = (layerId: string, color: string) => {
+      this.map.setPaintProperty(layerId, 'circle-color', color);
+    };
+    combineLatest([this.pgService.eartquakeSimulate$])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((e) => {
+        console.log('simulate', e);
+      });
   }
 
   initBarangayBoundary() {
@@ -3039,6 +2961,67 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
     });
   }
+
+  // EARTHQUAKE
+
+  private getAlertColors() {
+    return {
+      0: NOAH_COLORS['noah-green'].high,
+      1: NOAH_COLORS['noah-red'].medium,
+      2: NOAH_COLORS['noah-red'].high,
+    };
+  }
+
+  private fetchEarthquakeData(
+    earthquakeType: EarthquakeType,
+    ALERT_COLORS: any
+  ) {
+    this.earthService
+      .getEarthquakeSensor(earthquakeType)
+      .pipe(first())
+      .toPromise()
+      .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+        this.addEarthquakeLayer(earthquakeType, data, ALERT_COLORS);
+      });
+  }
+
+  private addEarthquakeLayer(
+    earthquakeType: EarthquakeType,
+    data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
+    ALERT_COLORS: any
+  ) {
+    this.map.addLayer({
+      id: earthquakeType,
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data,
+      },
+      paint: {
+        'circle-radius': 10,
+        'circle-color': ALERT_COLORS[0],
+        'circle-opacity': 0,
+      },
+    });
+  }
+
+  private setupEarthquakeListeners(earthquakeType: EarthquakeType) {
+    combineLatest([
+      this.pgService.earthquakeGroupShown$,
+      this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+      this.pgService.eartquakeSimulate$,
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown, simulate]) => {
+        this.map.setPaintProperty(
+          earthquakeType,
+          'circle-opacity',
+          +(groupShown && soloShown && simulate)
+        );
+      });
+  }
+
+  // END EARTHQUAKE
 }
 
 function getHazardType(rawHazardType: RawHazardType): HazardType {

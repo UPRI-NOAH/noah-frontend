@@ -30,7 +30,7 @@ export class EarthquakeDataService {
 
   getEarthquakeData(pk: number) {
     return this.http.get(
-      `${this.NOAH_S3_LINK}/api/seismic-data/?station_id=${pk}`
+      `${this.NOAH_S3_LINK}/api/seismic-test-data/?station_id=${pk}`
     );
   }
 
