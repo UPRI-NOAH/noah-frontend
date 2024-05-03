@@ -15,10 +15,10 @@ export type EarthquakeItem = {
 export type SummaryItem = {
   bldg_name: string;
   rshake_station: string;
-  floor_num: string;
-  drift: string;
-  acceleration: string;
-  displacement: string;
+  floor_num: number;
+  drift: number;
+  acceleration: number;
+  displacement: number;
   intensity: string;
 };
 @Injectable({
