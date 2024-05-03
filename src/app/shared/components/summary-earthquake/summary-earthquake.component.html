@@ -285,24 +285,24 @@
                   </li>
                 </ul>
               </nav>
-              <section>
-                <!-- TAB SECTION FOR RED -->
-                <article class="tab-all">
-                  <input
-                    type="radio"
-                    name="tab-indicator"
-                    id="select-red"
-                    class="tab-indicator"
-                    checked="checked"
-                  />
-                  <div class="tab-content">
-                    <ng-container dataSummaryRed>
-                      <div tabindex="0" class="justify-center">
-                        <div
-                          class="shadow-xl w-full z-10 overflow-hidden"
-                          style="max-width: 1000px"
-                        >
-                          <div class="md:flex w-full">
+              <!-- <section> -->
+              <!-- TAB SECTION FOR RED -->
+              <div class="tab-all">
+                <input
+                  type="radio"
+                  name="tab-indicator"
+                  id="select-red"
+                  class="tab-indicator"
+                  checked="checked"
+                />
+                <div class="tab-content">
+                  <!-- <ng-container dataSummaryRed> -->
+                  <div tabindex="0" class="justify-center">
+                    <div
+                      class="shadow-xl w-full z-10 overflow-hidden"
+                      style="max-width: 1000px"
+                    >
+                      <!-- <div class="md:flex w-full">
                             <div class="w-full py-10 px-5 md:px-10">
                               <div class="flex justify-center gap-x-4 mb-4">
                                 <div
@@ -315,154 +315,160 @@
                                 ></div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                    <ng-template #dataSummaryRed>
-                      <div class="mt-0">
-                        <div
-                          class="
-                            overflow-auto
-                            rounded-tr-lg rounded-b-lg
-                            shadow
-                            hidden
-                            lg:block
-                            overflow-y-auto
-                          "
-                          style="height: 405px"
-                        >
-                          <table class="w-full">
-                            <thead class="bg-blue-200">
-                              <tr class="text-left">
-                                <th
-                                  class="
-                                    top-0
-                                    border-b border-gray-200
-                                    bg-blue-200
-                                    p-2
-                                    text-xs
-                                    tracking-wide
-                                    text-left
-                                    font-extrabold
-                                    sticky
-                                    whitespace-nowrap
-                                  "
-                                  *ngFor="let col of columns"
-                                >
-                                  <div class="cursor-pointer inline-flex">
-                                    {{ col.header }}
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                              <tr
-                                class="
-                                  hover:bg-gray-100
-                                  bg-white
-                                  even:bg-gray-50
-                                "
-                                *ngFor="let data of summaryRedAlertData"
-                              >
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }} Floor Number
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                  "
-                                >
-                                  {{ data.bldg_name }} Rshake Station
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    text-center
-                                    justify-center
-                                  "
-                                >
-                                  {{ data.drift }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.acceleration }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.displacement }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.intensity }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </ng-template>
+                          </div> -->
+                    </div>
                   </div>
-                </article>
+                  <!-- </ng-container> -->
+                  <!-- <ng-template #dataSummaryRed> -->
+                  <div class="mt-0">
+                    <div
+                      class="
+                        overflow-auto
+                        rounded-tr-lg rounded-b-lg
+                        shadow
+                        hidden
+                        lg:block
+                        overflow-y-auto
+                      "
+                      style="height: 405px"
+                    >
+                      <table class="w-full">
+                        <thead class="bg-blue-200">
+                          <tr class="text-left">
+                            <th
+                              class="
+                                top-0
+                                border-b border-gray-200
+                                bg-blue-200
+                                p-2
+                                text-xs
+                                tracking-wide
+                                text-left
+                                font-extrabold
+                                sticky
+                                whitespace-nowrap
+                              "
+                              *ngFor="let col of columns"
+                            >
+                              <div class="cursor-pointer inline-flex">
+                                {{ col.header }}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  class="mr-1 h-4 w-4 text-left"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                  />
+                                </svg>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                          <tr
+                            class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                            *ngFor="let data of summaryRedAlertData"
+                          >
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.bldg_name }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.bldg_name }} Floor Number
+                            </td>
 
-                <!-- TAB SECTION FOR ORANGE -->
-                <article class="tab-orange">
-                  <input
-                    type="radio"
-                    name="tab-indicator"
-                    id="select-orange"
-                    class="tab-indicator"
-                    checked="checked"
-                  />
-                  <div class="tab-content">
-                    <ng-container dataSummaryOrange>
-                      <div tabindex="0" class="justify-center">
-                        <div
-                          class="shadow-xl w-full z-10 overflow-hidden"
-                          style="max-width: 1000px"
-                        >
-                          <div class="md:flex w-full">
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                              "
+                            >
+                              {{ data.bldg_name }} Rshake Station
+                            </td>
+
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                text-center
+                                justify-center
+                              "
+                            >
+                              {{ data.drift }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.acceleration }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.displacement }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.intensity }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- </ng-template> -->
+                </div>
+              </div>
+
+              <!-- TAB SECTION FOR ORANGE -->
+              <div class="tab-orange">
+                <input
+                  type="radio"
+                  name="tab-indicator"
+                  id="select-orange"
+                  class="tab-indicator"
+                  checked="checked"
+                />
+                <div class="tab-content">
+                  <!-- <ng-container dataSummaryOrange> -->
+                  <div tabindex="0" class="justify-center">
+                    <div
+                      class="shadow-xl w-full z-10 overflow-hidden"
+                      style="max-width: 1000px"
+                    >
+                      <!-- <div class="md:flex w-full">
                             <div class="w-full py-10 px-5 md:px-10">
                               <div class="flex justify-center gap-x-4 mb-4">
                                 <div
@@ -475,164 +481,160 @@
                                 ></div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                    <ng-template #dataSummaryOrange>
-                      <div class="mt-0">
-                        <div
-                          class="
-                            overflow-auto
-                            rounded-tr-lg rounded-b-lg
-                            shadow
-                            hidden
-                            lg:block
-                            overflow-y-auto
-                          "
-                          style="height: 405px"
-                        >
-                          <table class="w-full">
-                            <thead class="bg-blue-200">
-                              <tr class="text-left">
-                                <th
-                                  class="
-                                    top-0
-                                    border-b border-gray-200
-                                    bg-blue-200
-                                    p-2
-                                    text-xs
-                                    tracking-wide
-                                    text-left
-                                    font-extrabold
-                                    sticky
-                                    whitespace-nowrap
-                                  "
-                                  *ngFor="let col of columns"
-                                >
-                                  <div class="cursor-pointer inline-flex">
-                                    {{ col.header }}
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      class="mr-1 h-4 w-4 text-left"
-                                      viewBox="0 0 20 20"
-                                      fill="currentColor"
-                                    >
-                                      <path
-                                        d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
-                                      />
-                                    </svg>
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                              <tr
-                                class="
-                                  hover:bg-gray-100
-                                  bg-white
-                                  even:bg-gray-50
-                                "
-                                *ngFor="let data of summaryRedAlertData"
-                              >
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }} Floor Number
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                  "
-                                >
-                                  {{ data.bldg_name }} Rshake Station
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    text-center
-                                    justify-center
-                                  "
-                                >
-                                  {{ data.drift }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.acceleration }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.displacement }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.intensity }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </ng-template>
+                          </div> -->
+                    </div>
                   </div>
-                </article>
+                  <!-- </ng-container> -->
+                  <!-- <ng-template #dataSummaryOrange> -->
+                  <div class="mt-0">
+                    <div
+                      class="
+                        overflow-auto
+                        rounded-tr-lg rounded-b-lg
+                        shadow
+                        hidden
+                        lg:block
+                        overflow-y-auto
+                      "
+                      style="height: 405px"
+                    >
+                      <table class="w-full">
+                        <thead class="bg-blue-200">
+                          <tr class="text-left">
+                            <th
+                              class="
+                                top-0
+                                border-b border-gray-200
+                                bg-blue-200
+                                p-2
+                                text-xs
+                                tracking-wide
+                                text-left
+                                font-extrabold
+                                sticky
+                                whitespace-nowrap
+                              "
+                              *ngFor="let col of columns"
+                            >
+                              <div class="cursor-pointer inline-flex">
+                                {{ col.header }}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  class="mr-1 h-4 w-4 text-left"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                  />
+                                </svg>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                          <tr
+                            class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                            *ngFor="let data of summaryRedAlertData"
+                          >
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.bldg_name }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.rshake_station }}
+                            </td>
 
-                <!-- TAB SECTION FOR YELLOW -->
-                <article class="tab-yellow">
-                  <input
-                    type="radio"
-                    name="tab-indicator"
-                    id="select-yellow"
-                    class="tab-indicator"
-                    checked="checked"
-                  />
-                  <div class="tab-content">
-                    <ng-container dataSummaryYellow>
-                      <div tabindex="0" class="justify-center">
-                        <div
-                          class="shadow-xl w-full z-10 overflow-hidden"
-                          style="max-width: 1000px"
-                        >
-                          <div class="md:flex w-full">
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                              "
+                            >
+                              {{ data.floor_num }}
+                            </td>
+
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                text-center
+                                justify-center
+                              "
+                            >
+                              {{ data.drift }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.acceleration }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.displacement }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.intensity }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- </ng-template> -->
+                </div>
+              </div>
+
+              <!-- TAB SECTION FOR YELLOW -->
+              <div class="tab-yellow">
+                <input
+                  type="radio"
+                  name="tab-indicator"
+                  id="select-yellow"
+                  class="tab-indicator"
+                  checked="checked"
+                />
+                <div class="tab-content">
+                  <!-- <ng-container dataSummaryYellow> -->
+                  <div tabindex="0" class="justify-center">
+                    <div
+                      class="shadow-xl w-full z-10 overflow-hidden"
+                      style="max-width: 1000px"
+                    >
+                      <!-- <div class="md:flex w-full">
                             <div class="w-full py-10 px-5 md:px-10">
                               <div class="flex justify-center gap-x-4 mb-4">
                                 <div
@@ -645,147 +647,143 @@
                                 ></div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                    <ng-template #dataSummaryYellow>
-                      <div class="mt-0">
-                        <div
-                          class="
-                            overflow-auto
-                            rounded-tr-lg rounded-b-lg
-                            shadow
-                            hidden
-                            lg:block
-                            overflow-y-auto
-                          "
-                          style="height: 405px"
-                        >
-                          <table class="w-full">
-                            <thead class="bg-blue-200">
-                              <tr class="text-left">
-                                <th
-                                  class="
-                                    top-0
-                                    border-b border-gray-200
-                                    bg-blue-200
-                                    p-2
-                                    text-xs
-                                    tracking-wide
-                                    text-left
-                                    font-extrabold
-                                    sticky
-                                    whitespace-nowrap
-                                  "
-                                  *ngFor="let col of columns"
-                                >
-                                  <div class="cursor-pointer inline-flex">
-                                    {{ col.header }}
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      class="mr-1 h-4 w-4 text-left"
-                                      viewBox="0 0 20 20"
-                                      fill="currentColor"
-                                    >
-                                      <path
-                                        d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
-                                      />
-                                    </svg>
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                              <tr
-                                class="
-                                  hover:bg-gray-100
-                                  bg-white
-                                  even:bg-gray-50
-                                "
-                                *ngFor="let data of summaryRedAlertData"
-                              >
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.bldg_name }} Floor Number
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                  "
-                                >
-                                  {{ data.bldg_name }} Rshake Station
-                                </td>
-
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    text-center
-                                    justify-center
-                                  "
-                                >
-                                  {{ data.drift }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.acceleration }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.displacement }}
-                                </td>
-                                <td
-                                  class="
-                                    p-2
-                                    text-sm text-gray-700
-                                    whitespace-nowrap
-                                    first-letter:capitalize
-                                  "
-                                >
-                                  {{ data.intensity }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </ng-template>
+                          </div> -->
+                    </div>
                   </div>
-                </article>
-              </section>
+                  <!-- </ng-container> -->
+                  <!-- <ng-template #dataSummaryYellow> -->
+                  <div class="mt-0">
+                    <div
+                      class="
+                        overflow-auto
+                        rounded-tr-lg rounded-b-lg
+                        shadow
+                        hidden
+                        lg:block
+                        overflow-y-auto
+                      "
+                      style="height: 405px"
+                    >
+                      <table class="w-full">
+                        <thead class="bg-blue-200">
+                          <tr class="text-left">
+                            <th
+                              class="
+                                top-0
+                                border-b border-gray-200
+                                bg-blue-200
+                                p-2
+                                text-xs
+                                tracking-wide
+                                text-left
+                                font-extrabold
+                                sticky
+                                whitespace-nowrap
+                              "
+                              *ngFor="let col of columns"
+                            >
+                              <div class="cursor-pointer inline-flex">
+                                {{ col.header }}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  class="mr-1 h-4 w-4 text-left"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                  />
+                                </svg>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                          <tr
+                            class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                            *ngFor="let data of summaryRedAlertData"
+                          >
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.bldg_name }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.bldg_name }} Floor Number
+                            </td>
+
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                              "
+                            >
+                              {{ data.bldg_name }} Rshake Station
+                            </td>
+
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                text-center
+                                justify-center
+                              "
+                            >
+                              {{ data.drift }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.acceleration }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.displacement }}
+                            </td>
+                            <td
+                              class="
+                                p-2
+                                text-sm text-gray-700
+                                whitespace-nowrap
+                                first-letter:capitalize
+                              "
+                            >
+                              {{ data.intensity }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- </ng-template> -->
+                </div>
+              </div>
+              <!-- </section> -->
             </div>
           </div>
         </div>

@@ -48,4 +48,8 @@ export class EarthquakeDataService {
       `${this.NOAH_S3_LINK}/api/seismic-test-data/?alert_level`
     );
   }
+
+  getSimulatedata() {
+    return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-test-data/`);
+  }
 }

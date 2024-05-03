@@ -29,18 +29,24 @@
     <div class="justify-center items-center">
       <div
         id="earthquakeAlert"
+        class="flex items-center border-b justify-center px-6 py-3"
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-white">
+          Earthquake Alert
+        </p>
+      </div>
+      <div
         class="
-          bg-noah-green-high
           flex
           items-center
-          border-b
+          border-b border-gray-200
           justify-center
           px-6
           py-3
         "
       >
-        <p class="text-sm lg:text-xl font-semibold leading-tight text-white">
-          Earthquake Alert
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          RShake Station: {{ rshakeName }}
         </p>
       </div>
       <div
@@ -86,11 +92,26 @@
                   *ngFor="let data of eqDatas"
                   [ngClass]="{
                     'bg-noah-green-high':
-                      data.direction === 'Z - Axis (ENZ)' && alertValue === 0,
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 0,
                     'bg-noah-red-medium':
-                      data.direction === 'Z - Axis (ENZ)' && alertValue === 1,
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 1,
                     'bg-noah-red-high':
-                      data.direction === 'Z - Axis (ENZ)' && alertValue === 2
+                      (data.direction === 'Z - Axis (ENZ)' ||
+                        (data.direction === 'X - Axis (ENE)' &&
+                          data.axis_with_max_drift === 'x') ||
+                        (data.direction === 'Y - Axis (ENN)' &&
+                          data.axis_with_max_drift === 'y')) &&
+                      data.alert_level === 2
                   }"
                 >
                   <td class="p-2 whitespace-nowrap">
@@ -101,15 +122,19 @@
                     </div>
                   </td>
                   <td class="p-2 whitespace-nowrap">
-                    <div class="text-left">{{ data.displacement }}cm</div>
-                  </td>
-                  <td class="p-2 whitespace-nowrap">
-                    <div class="text-left font-medium">
-                      {{ data.acceleration }}cm/s
+                    <div class="text-left">
+                      {{ data.displacement.toFixed(4) }}cm
                     </div>
                   </td>
                   <td class="p-2 whitespace-nowrap">
-                    <div class="font-medium text-center">{{ data.drift }}%</div>
+                    <div class="text-left font-medium">
+                      {{ data.acceleration.toFixed(4) }}cm/s
+                    </div>
+                  </td>
+                  <td class="p-2 whitespace-nowrap">
+                    <div class="font-medium text-center">
+                      {{ data.drift.toFixed(4) }}%
+                    </div>
                   </td>
                 </tr>
               </tbody>

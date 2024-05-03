@@ -31,8 +31,8 @@ export class SummaryEarthquakeComponent implements OnInit {
   columns = [
     {
       key: 'bldg_name',
-      header: 'BUILDING',
-      mobileHeader: 'Building',
+      header: 'BUILDING NAME',
+      mobileHeader: 'Building Name',
     },
     {
       key: 'rshake_station',
@@ -85,15 +85,19 @@ export class SummaryEarthquakeComponent implements OnInit {
           bldg_name: a.properties.bldg_name,
         };
       });
+    // const responseData = response.features[0].properties.data;
+    // const data = JSON.parse(responseData);
+    // const rshake_station = data.rshake_station;
+    // const floor_num = data.floor_num;
 
-    // const dataArr = response.features
-    // .filter((a) => a.properties.data)
-    // .map((a) => {
-    //   return {
-    //     rshake_station: a.properties.data.rshake_station,
-    //     floor_num: a.properties.data.floor_num,
-    //   };
-    // });
+    const data = response.features
+      .filter((a) => a.properties.data)
+      .map((a) => {
+        return {
+          rshake_station: a.properties.data.rshake_station,
+          floor_num: a.properties.data.floor_num,
+        };
+      });
 
     const res: any = await this.earthquakeService
       .getEarthquakeSummaryData()
@@ -106,15 +110,21 @@ export class SummaryEarthquakeComponent implements OnInit {
         displacement: a.displacement,
         drift: a.drift,
         intensity: a.intensity,
+        station_id: a.station_id,
       };
     });
 
     const newArr = []; //all summary data
-    for (let i = 0; i < locationArr.length; i++) {
-      for (let j = 0; j < dataArr.length; j++) {
-        if (locationArr[i].bldg_name == dataArr[j].drift) {
-          newArr.push({ ...locationArr[i], ...dataArr[j] });
-          break;
+    for (let k = 0; k < locationArr.length; k++) {
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < dataArr.length; j++) {
+          if (
+            (locationArr[k].bldg_name == data[i].rshake_station) ==
+            dataArr[j].station_id
+          ) {
+            newArr.push({ ...locationArr[k], ...data[i], ...dataArr[j] });
+            break;
+          }
         }
       }
     }
@@ -131,7 +141,7 @@ export class SummaryEarthquakeComponent implements OnInit {
         sortName.push({ ...newArr[i] });
       }
     }
-    this.fetchedRedAlertData = allDataWith.concat(sortName);
+    this.summaryRedAlertData = allDataWith.concat(sortName);
   }
 
   closeModal() {
