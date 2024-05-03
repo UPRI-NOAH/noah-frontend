@@ -225,7 +225,7 @@ export class NoahPlaygroundService {
   }
 
   get eartquakeSimulate$(): Observable<boolean> {
-    return this.store.state$.pipe(map((state) => state.earthquake.simulate));
+    return this.store.state$.pipe(map((state) => state.earthquake.shown));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {

@@ -3009,14 +3009,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     combineLatest([
       this.pgService.earthquakeGroupShown$,
       this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
-      this.pgService.eartquakeSimulate$,
+      // this.pgService.eartquakeSimulate$,
     ])
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe(([groupShown, soloShown, simulate]) => {
+      .subscribe(([groupShown, soloShown]) => {
         this.map.setPaintProperty(
           earthquakeType,
           'circle-opacity',
-          +(groupShown && soloShown && simulate)
+          +(groupShown && soloShown)
         );
       });
   }

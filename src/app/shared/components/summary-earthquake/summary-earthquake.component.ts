@@ -15,8 +15,9 @@ export class SummaryEarthquakeComponent implements OnInit {
   earthquakeSummaryModal = false;
   todayString: string = new Date().toDateString();
   loading = false;
+  earthquakeData: any[] = [];
 
-  summaryRedAlertData: SummaryItem[] = [];
+  summaryRedAlertData: any[] = [];
   fetchedRedAlertData: SummaryItem[] = [];
   summaryOrangeAlertData: SummaryItem[] = [];
   fetchedOrangeAlertData: SummaryItem[] = [];
