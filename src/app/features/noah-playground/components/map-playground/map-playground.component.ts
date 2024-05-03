@@ -201,6 +201,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.modalService.onSimulateClick().subscribe(() => {
+      this.initSimulateData();
+    });
     this.initMap();
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
@@ -215,7 +218,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
         this.addExaggerationControl();
-        this.initSimulateData();
         this.initEarthquakeSensor();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
@@ -1342,16 +1344,98 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
   }
 
-  initSimulateData() {
-    const updateCircleColor = (layerId: string, color: string) => {
-      this.map.setPaintProperty(layerId, 'circle-color', color);
+  initSimulateData(): void {
+    // Simulate data update here
+    // Assuming data gets updated and then the color changes
+    this.changeCircleColor();
+  }
+
+  // EARTHQUAKE
+  private getAlertColors() {
+    return {
+      0: NOAH_COLORS['noah-green'].high,
+      1: NOAH_COLORS['noah-red'].medium,
+      2: NOAH_COLORS['noah-red'].high,
     };
-    combineLatest([this.pgService.eartquakeSimulate$])
-      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((e) => {
-        console.log('simulate', e);
+  }
+
+  private fetchEarthquakeData(
+    earthquakeType: EarthquakeType,
+    ALERT_COLORS: any
+  ) {
+    this.earthService
+      .getEarthquakeSensor(earthquakeType)
+      .pipe(first())
+      .toPromise()
+      .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+        this.addEarthquakeLayer(earthquakeType, data, ALERT_COLORS);
       });
   }
+
+  private addEarthquakeLayer(
+    earthquakeType: EarthquakeType,
+    data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
+    ALERT_COLORS: any
+  ) {
+    this.map.addLayer({
+      id: earthquakeType,
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data,
+      },
+      paint: {
+        'circle-radius': 10,
+        'circle-color': ALERT_COLORS[0],
+        'circle-opacity': 0,
+      },
+    });
+  }
+
+  private changeCircleColor(): void {
+    const earthquakeType = 'seismic-sensor'; // Replace with your earthquake type
+    const ALERT_COLORS = this.getAlertColors(); // Retrieve colors dynamically
+
+    // Call addEarthquakeLayer() to add the earthquake layer if it doesn't exist
+    if (!this.map.getLayer(earthquakeType)) {
+      this.addEarthquakeLayer(earthquakeType, null, ALERT_COLORS);
+    }
+
+    // Update the circle color property
+    this.map.setPaintProperty(earthquakeType, 'circle-color', [
+      'case',
+      ['has', 'alert_level'],
+      [
+        'interpolate',
+        ['linear'],
+        ['get', 'alert_level'],
+        0,
+        ALERT_COLORS[0], // Color for alert level 0
+        1,
+        ALERT_COLORS[1], // Color for alert level 1
+        2,
+        ALERT_COLORS[2], // Color for alert level 2
+      ],
+      'gray', // Default color if alert_level is not available
+    ]);
+  }
+
+  private setupEarthquakeListeners(earthquakeType: EarthquakeType) {
+    combineLatest([
+      this.pgService.earthquakeGroupShown$,
+      this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        this.map.setPaintProperty(
+          earthquakeType,
+          'circle-opacity',
+          +(groupShown && soloShown)
+        );
+      });
+  }
+
+  // END EARTHQUAKE
 
   initBarangayBoundary() {
     BARANGAYBOUNDARY.forEach((barangayBoundary: BarangayBoundary) => {
@@ -2698,67 +2782,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
     });
   }
-
-  // EARTHQUAKE
-
-  private getAlertColors() {
-    return {
-      0: NOAH_COLORS['noah-green'].high,
-      1: NOAH_COLORS['noah-red'].medium,
-      2: NOAH_COLORS['noah-red'].high,
-    };
-  }
-
-  private fetchEarthquakeData(
-    earthquakeType: EarthquakeType,
-    ALERT_COLORS: any
-  ) {
-    this.earthService
-      .getEarthquakeSensor(earthquakeType)
-      .pipe(first())
-      .toPromise()
-      .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-        this.addEarthquakeLayer(earthquakeType, data, ALERT_COLORS);
-      });
-  }
-
-  private addEarthquakeLayer(
-    earthquakeType: EarthquakeType,
-    data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
-    ALERT_COLORS: any
-  ) {
-    this.map.addLayer({
-      id: earthquakeType,
-      type: 'circle',
-      source: {
-        type: 'geojson',
-        data,
-      },
-      paint: {
-        'circle-radius': 10,
-        'circle-color': ALERT_COLORS[0],
-        'circle-opacity': 0,
-      },
-    });
-  }
-
-  private setupEarthquakeListeners(earthquakeType: EarthquakeType) {
-    combineLatest([
-      this.pgService.earthquakeGroupShown$,
-      this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
-      this.pgService.eartquakeSimulate$,
-    ])
-      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe(([groupShown, soloShown, simulate]) => {
-        this.map.setPaintProperty(
-          earthquakeType,
-          'circle-opacity',
-          +(groupShown && soloShown && simulate)
-        );
-      });
-  }
-
-  // END EARTHQUAKE
 }
 
 function getHazardType(rawHazardType: RawHazardType): HazardType {

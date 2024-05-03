@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EarthquakeType } from '@features/noah-playground/services/earthquake-data.service';
+import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -21,7 +22,10 @@ export class EarthquakeSoloComponent implements OnInit {
     return this.earthquakeSensorType.replace('-', ' ');
   }
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit(): void {
     this.shown$ = this.pgService.getEarthquakeSensorTypeShown$(
@@ -36,7 +40,7 @@ export class EarthquakeSoloComponent implements OnInit {
   }
 
   simulateData() {
-    this.pgService.setEarthquakeSimulate();
+    this.modalService.simulateBtnClick();
   }
 
   ngOnDestroy(): void {
