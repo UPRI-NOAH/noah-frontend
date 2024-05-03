@@ -1085,24 +1085,38 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       closeOnClick: false,
       maxWidth: 'auto',
     });
+
     this.map.on('click', earthquakeType, (e) => {
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
       const responseData = e.features[0].properties.data;
       const data = JSON.parse(responseData);
       const floorNumbers = data.map((item) => item.floor_num);
       const rshake_stations = data.map((item) => item.rshake_station); // Changed variable name to plural
-      const alertLevel = data.map((item) => item.alert_level);
+      const alertLevels = data.map((item) => item.alert_level);
+
+      // Remove existing sources and layers with IDs starting with 'connecting-line-'
+      for (let i = 0; i < floorNumbers.length; i++) {
+        const sourceId = 'connecting-line-' + i;
+        if (this.map.getSource(sourceId)) {
+          this.map.removeLayer(sourceId);
+          this.map.removeSource(sourceId);
+        }
+      }
+      // Remove existing source and layers for 'new-points'
+      if (this.map.getSource('new-points')) {
+        this.map.removeLayer('new-points');
+        this.map.removeLayer('new-points-labels');
+        this.map.removeSource('new-points');
+      }
       const newPoints = [];
       const increment = 0.00005;
       const horizontalOffset = 0.0003;
 
-      const mainLong = coordinates[0] + horizontalOffset;
-      const mainLat = coordinates[1];
-
       for (let i = 0; i < floorNumbers.length; i++) {
-        const newLat = mainLat + i * increment;
-        const newLong = mainLong;
+        const newLat = coordinates[1] + i * increment;
+        const newLong = coordinates[0] + horizontalOffset;
         const newCoords = [newLong, newLat];
+
         newPoints.push({
           type: 'Feature',
           geometry: {
@@ -1112,13 +1126,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           properties: {
             floorNumber: floorNumbers[i], // Add floor number to properties
             rshake_station: rshake_stations[i], // Add rshake_station to properties
-            alertLevel: alertLevel[i], // Set alert level based on rshake_station
+            alertLevel: alertLevels[i], // Set alert level based on rshake_station
           },
         });
 
         const lineCoordinates = [coordinates, newCoords];
+        const sourceId = 'connecting-line-' + i;
 
-        this.map.addSource('connecting-line-' + i, {
+        this.map.addSource(sourceId, {
           type: 'geojson',
           data: {
             type: 'FeatureCollection',
@@ -1136,9 +1151,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
 
         this.map.addLayer({
-          id: 'connecting-line-' + i,
+          id: sourceId,
           type: 'line',
-          source: 'connecting-line-' + i,
+          source: sourceId,
           layout: {
             'line-join': 'round',
             'line-cap': 'round',
@@ -1210,13 +1225,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   showEarthquakeData(earthquakeType: EarthquakeType, alertLevel: number) {
-    // Function content remains as it is
-    const popUp = new mapboxgl.Popup({
-      closeButton: true,
-      closeOnClick: false,
-      maxWidth: 'auto',
-    });
-
     const smallPopUp = new mapboxgl.Popup({
       closeButton: false, // Disable close button for small popup
       closeOnClick: false,
@@ -1264,7 +1272,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.extendEarthquakeCircle(earthquakeType, alertLevel);
         } else {
           // Cleanup if conditions not met
-          popUp.remove();
           smallPopUp.remove();
           this.map.on('mouseover', earthquakeType, (e) => {
             _this._graphShown = false;
@@ -1276,8 +1283,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           });
         }
       });
-
-    popUp.on('close', () => (_this._graphShown = false));
   }
 
   async showEarthData(
