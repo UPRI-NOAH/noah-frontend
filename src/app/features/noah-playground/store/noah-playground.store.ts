@@ -251,6 +251,19 @@ export type QuezonCitySensorsState = {
   types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
 };
 
+export type BoundariesType = 'barangay' | 'municipal' | 'provincial';
+
+export type BoundariesGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<BoundariesType, BoundariesState>;
+};
+
+export type BoundariesState = {
+  shown: boolean;
+  opacity: number;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -279,6 +292,7 @@ type NoahPlaygroundState = {
     selectedType: ContourMapType;
   };
   iotMunicipalities: IotMunicipalitiesState;
+  boundaries: BoundariesGroupState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -453,6 +467,24 @@ const createInitialValue = (): NoahPlaygroundState => ({
         opacity: 80,
       },
       'himawari-GSMAP': {
+        opacity: 80,
+      },
+    },
+  },
+  boundaries: {
+    shown: false,
+    expanded: false,
+    types: {
+      barangay: {
+        shown: true,
+        opacity: 80,
+      },
+      municipal: {
+        shown: false,
+        opacity: 80,
+      },
+      provincial: {
+        shown: false,
         opacity: 80,
       },
     },

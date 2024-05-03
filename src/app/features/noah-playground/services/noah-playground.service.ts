@@ -29,6 +29,9 @@ import {
   RiskAssessmentState,
   RiskAssessmentGroupState,
   CalculateRiskButton,
+  BoundariesGroupState,
+  BoundariesType,
+  BoundariesState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -89,6 +92,14 @@ export class NoahPlaygroundService {
 
   get volcanoGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.volcanoes.expanded));
+  }
+
+  get boundariesGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.boundaries.shown));
+  }
+
+  get boundariesGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.boundaries.expanded));
   }
 
   get riskAssessmentGroupShown$(): Observable<boolean> {
@@ -256,6 +267,12 @@ export class NoahPlaygroundService {
   getVolcano$(volcanoType: VolcanoType): Observable<VolcanoState> {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
+    );
+  }
+
+  getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
+    return this.store.state$.pipe(
+      map((state) => state.boundaries.types[boundariesType])
     );
   }
 
@@ -1057,5 +1074,41 @@ export class NoahPlaygroundService {
     const { simulate } = earthquake;
     earthquake.simulate = !simulate;
     this.store.patch({ earthquake }, `click simulate data`);
+  }
+  toggleBoundariesGroupProperty(property: 'expanded' | 'shown') {
+    const boundaries: BoundariesGroupState = {
+      ...this.store.state.boundaries,
+    };
+
+    const currentValue = boundaries[property];
+    boundaries[property] = !currentValue;
+    this.store.patch(
+      { boundaries },
+      `Boundaries ${property}, ${!currentValue}`
+    );
+  }
+
+  setBoundariesSoloOpacity(value: number, type: BoundariesType) {
+    const boundaries: BoundariesGroupState = {
+      ...this.store.state.boundaries,
+    };
+
+    boundaries.types[type].opacity = value;
+    this.store.patch(
+      { boundaries },
+      `Boundaries - update ${type}'s opacity to ${value}`
+    );
+  }
+
+  setBoundariesSoloShown(value: boolean, type: BoundariesType) {
+    const boundaries: BoundariesGroupState = {
+      ...this.store.state.boundaries,
+    };
+
+    boundaries.types[type].shown = value;
+    this.store.patch(
+      { boundaries },
+      `Boundaries - update ${type}'s shown to ${value}`
+    );
   }
 }

@@ -97,6 +97,7 @@ export class ModalService {
 
   disclaimerModalClose() {
     this.disclaimerModal.next(false);
+    console.log('open');
   }
 
   openRiskModal() {
