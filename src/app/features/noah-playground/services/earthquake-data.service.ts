@@ -29,10 +29,4 @@ export class EarthquakeDataService {
     const param = type ? `?floor_num=${type}` : '';
     return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-sensors/${param}`);
   }
-
-  getSimulatedata() {
-    return this.http.get(
-      `${this.NOAH_S3_LINK}/api/seismic-data/seismic-test-data/?format=json`
-    );
-  }
 }

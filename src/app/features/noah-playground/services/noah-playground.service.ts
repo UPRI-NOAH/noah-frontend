@@ -213,10 +213,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
   }
 
-  get eartquakeSimulate$(): Observable<boolean> {
-    return this.store.state$.pipe(map((state) => state.earthquake.simulate));
-  }
-
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
@@ -1048,14 +1044,5 @@ export class NoahPlaygroundService {
       { earthquake },
       `change earthquake fetched status ${earthquakeSensorType}' to ${!fetched}`
     );
-  }
-
-  setEarthquakeSimulate(): void {
-    const earthquake = {
-      ...this.store.state.earthquake,
-    };
-    const { simulate } = earthquake;
-    earthquake.simulate = !simulate;
-    this.store.patch({ earthquake }, `click simulate data`);
   }
 }

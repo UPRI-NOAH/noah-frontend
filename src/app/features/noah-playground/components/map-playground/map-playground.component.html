@@ -30,25 +30,8 @@
       <div
         id="earthquakeAlert"
         class="flex items-center border-b justify-center px-6 py-3"
-      >
-        <p class="text-sm lg:text-xl font-semibold leading-tight text-white">
-          Earthquake Alert
-        </p>
-      </div>
-      <div
-        class="
-          flex
-          items-center
-          border-b border-gray-200
-          justify-center
-          px-6
-          py-3
-        "
-      >
-        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
-          RShake Station: {{ rshakeName }}
-        </p>
-      </div>
+      ></div>
+
       <div
         class="
           flex
@@ -145,11 +128,25 @@
           </div>
         </div>
       </div>
-      <div class="grid-cols-2 border border-black text-center px-6 py-3 mt-5">
+      <!-- <div class="grid-cols-2 border border-black text-center px-6 py-3 mt-5">
         <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
           Relay Status: ERROR
         </p>
         <p class="text-xs text-black">Unable to contact Arduino unit.</p>
+      </div> -->
+      <div
+        class="
+          flex
+          items-center
+          border-b border-gray-200
+          justify-center
+          px-6
+          py-3
+        "
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          RShake Station: {{ rshakeName }}
+        </p>
       </div>
     </div>
   </div>

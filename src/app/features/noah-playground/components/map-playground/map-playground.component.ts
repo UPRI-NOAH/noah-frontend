@@ -183,6 +183,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private measurementActive: boolean = false;
   floorNum: string = '';
   rshakeName: string = '';
+  intensity: string = '';
   alertValue: number;
   burstDisplayed: boolean = false;
   eqDatas: any[] = []; //displaying earthquake data in table
@@ -1069,15 +1070,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initEarthquakeSensor() {
     const ALERT_COLORS = this.getAlertColors();
 
-    EARTHQUAKE.forEach((earthquakeType, alertLevel: number) => {
+    EARTHQUAKE.forEach((earthquakeType) => {
       this.fetchEarthquakeData(earthquakeType, ALERT_COLORS);
       this.setupEarthquakeListeners(earthquakeType);
       this.pgService.setEarthquakeFetched(earthquakeType, true);
-      this.showEarthquakeData(earthquakeType, alertLevel);
+      this.showEarthquakePoint(earthquakeType);
     });
   }
 
-  extendEarthquakeCircle(earthquakeType: EarthquakeType, alertLevel: number) {
+  extendEarthquakeCircle(earthquakeType: EarthquakeType) {
     const ALERT_COLORS = this.getAlertColors();
     const earthquakeDiv = document.getElementById('earthquake-dom');
     const popUp = new mapboxgl.Popup({
@@ -1085,6 +1086,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       closeOnClick: false,
       maxWidth: 'auto',
     });
+
+    const _this = this;
 
     this.map.on('click', earthquakeType, (e) => {
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
@@ -1110,7 +1113,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
       const newPoints = [];
       const increment = 0.00005;
-      const horizontalOffset = 0.0003;
+      const horizontalOffset = 0.00002;
 
       for (let i = 0; i < floorNumbers.length; i++) {
         const newLat = coordinates[1] + i * increment;
@@ -1159,8 +1162,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'line-cap': 'round',
           },
           paint: {
-            'line-color': '#007cbf', // Blue color
-            'line-width': 2,
+            'line-color': '#00215E', // Blue color
+            'line-width': 4,
           },
         });
       }
@@ -1193,7 +1196,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         type: 'circle',
         source: 'new-points',
         paint: {
-          'circle-radius': 10,
+          'circle-radius': 12,
           'circle-color': [
             'case',
             ['==', ['get', 'alertLevel'], 0],
@@ -1219,12 +1222,43 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           .setMaxWidth('900px')
           .setLngLat(e.lngLat)
           .addTo(this.map);
-        this.showEarthData(+pk, rshake_station, earthquakeType);
+        this.showEarthquakeData(+pk, rshake_station, earthquakeType);
       });
+      this.map.on('mouseleave', earthquakeType, function () {
+        popUp.remove();
+      });
+      popUp.on('close', () => {
+        this._graphShown = false;
+      });
+      this.map.on('mouseleave', earthquakeType, function () {
+        if (this._graphShown) return;
+        _this.map.getCanvas().style.cursor = '';
+        popUp.remove();
+      });
+      //event listener hide and show new points and linestring
+      combineLatest([
+        this.pgService.earthquakeGroupShown$,
+        this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+      ])
+        .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+        .subscribe(([groupShown, soloShown]) => {
+          if (!soloShown && !groupShown) {
+            // Remove existing sources and layers with IDs starting with 'connecting-line-'
+            for (let i = 0; i < floorNumbers.length; i++) {
+              popUp.remove();
+              const sourceId = 'connecting-line-' + i;
+              this.map.removeLayer(sourceId);
+              this.map.removeSource(sourceId);
+              this.map.removeLayer('new-points');
+              this.map.removeLayer('new-points-labels');
+              this.map.removeSource('new-points');
+            }
+          }
+        });
     });
   }
 
-  showEarthquakeData(earthquakeType: EarthquakeType, alertLevel: number) {
+  showEarthquakePoint(earthquakeType: EarthquakeType) {
     const smallPopUp = new mapboxgl.Popup({
       closeButton: false, // Disable close button for small popup
       closeOnClick: false,
@@ -1257,19 +1291,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setHTML(
                 `
         <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-          <div>Bldg Name: ${bldgName}</div>
+          <div>${bldgName}</div>
         </div>
       `
               )
               .addTo(_this.map);
+          });
+          this.map.on('click', earthquakeType, function (e) {
+            _this.map.flyTo({
+              center: (e.features[0].geometry as any).coordinates.slice(),
+              zoom: 19,
+              essential: true,
+            });
+
+            _this.extendEarthquakeCircle(earthquakeType);
           });
 
           this.map.on('mouseleave', earthquakeType, () => {
             // Close the small popup when mouse leaves
             smallPopUp.remove();
           });
-
-          this.extendEarthquakeCircle(earthquakeType, alertLevel);
         } else {
           // Cleanup if conditions not met
           smallPopUp.remove();
@@ -1285,7 +1326,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
   }
 
-  async showEarthData(
+  async showEarthquakeData(
     pk: number,
     rshake_station: string,
     earthquakeType: EarthquakeType
@@ -1324,6 +1365,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_x,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity_x: latestData.intensity_x,
           },
           {
             direction: 'Y - Axis (ENN)', // Assuming direction for Y-axis
@@ -1332,6 +1374,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_y,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity_y: latestData.intensity_y,
           },
           {
             direction: 'Z - Axis (ENZ)', // Assuming direction for Z-axis
@@ -1340,6 +1383,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_z,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity_z: latestData.intensity_z,
           },
         ]
       : [];
@@ -1347,6 +1391,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
+    if (latestData.alert_level === 2) {
+      document.getElementById('earthquakeAlert').innerHTML =
+        '<p class="text-sm lg:text-xl font-semibold leading-tight text-white">!!! Earthquake Alert !!!</p>';
+    } else {
+      document.getElementById('earthquakeAlert').innerHTML =
+        '<p class="text-sm lg:text-xl font-semibold leading-tight text-white">Earthquake Alert</p>';
+    }
   }
 
   initSimulateData(): void {
@@ -1390,7 +1441,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         data,
       },
       paint: {
-        'circle-radius': 10,
+        'circle-radius': 12,
         'circle-color': ALERT_COLORS[0],
         'circle-opacity': 0,
       },
@@ -1423,6 +1474,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       ],
       'gray', // Default color if alert_level is not available
     ]);
+  }
+
+  private changeBurstCircleColor(): void {
+    const earthquakeType = 'seismic-sensor';
+    const ALERT_COLORS = this.getAlertColors();
   }
 
   private setupEarthquakeListeners(earthquakeType: EarthquakeType) {

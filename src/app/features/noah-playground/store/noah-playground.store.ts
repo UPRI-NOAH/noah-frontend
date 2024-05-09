@@ -140,7 +140,6 @@ export type RiskAssessmentGroupState = {
 
 export type EarthquakeGroupState = {
   shown: boolean;
-  simulate: boolean;
   expanded: boolean;
   types: Record<EarthquakeType, EarthquakeSensorState>;
 };
@@ -372,7 +371,6 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   earthquake: {
     shown: false,
-    simulate: false,
     expanded: false,
     types: {
       'seismic-sensor': {
