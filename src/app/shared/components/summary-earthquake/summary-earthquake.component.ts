@@ -28,6 +28,7 @@ export class SummaryEarthquakeComponent implements OnInit {
   fetchedOrangeAlertData: any[] = [];
   // summaryYellowAlertData: SummaryItem[] = [];
   // fetchedYellowAlertData: SummaryItem[] = [];
+  searchValue: string;
 
   constructor(
     private earthquakeService: EarthquakeDataService,
@@ -126,6 +127,18 @@ export class SummaryEarthquakeComponent implements OnInit {
 
     for (const feature of response.features) {
       for (const data of feature.properties.data) {
+        const rowData = {
+          bldg_name: feature.properties.bldg_name,
+          rshake_station: data.rshake_station,
+          floor_num: data.floor_num,
+          alert_level: data.alert_level,
+        };
+        this.summaryAllData.push(rowData);
+      }
+    }
+
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
         if (data.alert_level == 2) {
           const rowRedData = {
             bldg_name: feature.properties.bldg_name,
@@ -149,18 +162,6 @@ export class SummaryEarthquakeComponent implements OnInit {
           };
           this.summaryOrangeAlertData.push(rowOrangeData);
         }
-      }
-    }
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        const rowData = {
-          bldg_name: feature.properties.bldg_name,
-          rshake_station: data.rshake_station,
-          floor_num: data.floor_num,
-          alert_level: data.alert_level,
-        };
-        this.summaryAllData.push(rowData);
       }
     }
 

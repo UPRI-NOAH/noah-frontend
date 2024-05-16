@@ -16,6 +16,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 import { SummaryEarthquakeComponent } from './components/summary-earthquake/summary-earthquake.component';
+import { SearchEqLocationPipe } from './pipes/search-eq-location.pipe';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -31,7 +32,13 @@ const components = [
   SummaryEarthquakeComponent,
 ];
 const directives = [];
-const pipes = [ReplacePipe, SortPipe, SearchfilterPipe, SearchRiskAffectedPipe];
+const pipes = [
+  ReplacePipe,
+  SortPipe,
+  SearchfilterPipe,
+  SearchRiskAffectedPipe,
+  SearchEqLocationPipe,
+];
 @NgModule({
   declarations: [...components, ...directives, ...pipes],
   imports: [...modules],

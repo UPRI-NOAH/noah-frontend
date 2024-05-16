@@ -198,6 +198,7 @@
           <div class="md:flex w-full">
             <div class="w-full">
               <input
+                [(ngModel)]="searchValue"
                 type="search"
                 placeholder="Search Station"
                 autocomplete="off"
@@ -372,7 +373,10 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryAllData"
+                              *ngFor="
+                                let data of summaryAllData
+                                  | searchEqLocation: searchValue
+                              "
                             >
                               <td
                                 class="
