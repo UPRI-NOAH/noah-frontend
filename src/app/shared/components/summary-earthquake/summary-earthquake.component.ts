@@ -15,6 +15,10 @@ export class SummaryEarthquakeComponent implements OnInit {
   earthquakeSummaryModal = false;
   todayString: string = new Date().toDateString();
   loading = false;
+  totalBuildings: number;
+  totalStations: number;
+  redAlertData: number;
+  orangeAlertData: number;
 
   summaryData: any[] = [];
   summaryRedAlertData: SummaryItem[] = [];
@@ -44,6 +48,11 @@ export class SummaryEarthquakeComponent implements OnInit {
       key: 'floor_num',
       header: 'FLOOR',
       mobileHeader: 'Floor',
+    },
+    {
+      key: 'alert_level',
+      header: 'ALERT LEVEL',
+      mobileHeader: 'Alert Level',
     },
     {
       key: 'drift',
@@ -79,34 +88,52 @@ export class SummaryEarthquakeComponent implements OnInit {
       .pipe(first())
       .toPromise();
 
-    // const locationArr = response.features
-    //   .filter((a) => a.properties.bldg_name)
-    //   .map((a) => {
-    //     return {
-    //       bldg_name: a.properties.bldg_name,
-    //     };
-    //   });
+    // for (const feature of response.features) {
+    //   for (const data of feature.properties.data) {
+    //     const rowData = {
+    //       bldg_name: feature.properties.bldg_name,
+    //       rshake_station: data.rshake_station,
+    //       floor_num: data.floor_num
+    //     }
+    //     this.summaryData.push(rowData);
+    //   }
+    // }
 
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        const rowData = {
-          bldg_name: feature.properties.bldg_name,
-          rshake_station: data.rshake_station,
-          floor_num: data.floor_num,
+    const locationArr = response.features
+      .filter((a) => a.properties.bldg_name)
+      .map((a) => {
+        return {
+          bldg_name: a.properties.bldg_name,
         };
-        this.summaryData.push(rowData);
+      });
+    const dataRes = response.features.properties.data
+      .filter((a) => a.features.properties.data.alert_level)
+      .map((a) => {
+        return {
+          rshake_station: a.features.properties.data.rshake_station,
+          floor_num: a.features.properties.data.floor_num,
+          alert_level: a.features.properties.data.alert_level,
+        };
+      });
+    const newArr = [];
+    for (let i = 0; i < locationArr.length; i++) {
+      for (let j = 0; j < dataRes.length; j++) {
+        if (locationArr[i].bldg_name) {
+          newArr.push({ ...locationArr[i], ...dataRes[j] });
+          break;
+        }
       }
     }
-  }
+    this.summaryData.push(newArr);
 
-  // const dataArr = response.features
-  // .filter((a) => a.properties.data)
-  // .map((a) => {
-  //   return {
-  //     rshake_station: a.properties.data.rshake_station,
-  //     floor_num: a.properties.data.floor_num,
-  //   };
-  // });
+    // const allDataWith = [];
+    // for (let i = 0; i < newArr.length; i++) {
+    //   if (newArr[i].alert_level) {
+    //     allDataWith.push({ ...newArr[i] });
+    //   }
+    // }
+    // this.summaryData.push(allDataWith);
+  }
 
   // const res: any = await this.earthquakeService
   //   .getEarthquakeSummaryData()
@@ -119,8 +146,12 @@ export class SummaryEarthquakeComponent implements OnInit {
   //     displacement: a.displacement,
   //     drift: a.drift,
   //     intensity: a.intensity,
+  //     alert_level: a.alert_level,
   //   };
   // });
+
+  // const redAlertData = response.features.properties.data
+  //   .map()
 
   // const newArr = []; //all summary data
   // for (let i = 0; i < locationArr.length; i++) {
