@@ -187,6 +187,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   alertValue: number;
   burstDisplayed: boolean = false;
   eqDatas: any[] = []; //displaying earthquake data in table
+  private alertLevelData: number;
+  private colorToggle: boolean = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -1086,10 +1088,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       closeOnClick: false,
       maxWidth: 'auto',
     });
+    const smallPopUp = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
 
     const _this = this;
 
     this.map.on('click', earthquakeType, (e) => {
+      const bldgName = e.features[0].properties.bldg_name;
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
       const responseData = e.features[0].properties.data;
       const data = JSON.parse(responseData);
@@ -1097,6 +1105,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       const rshake_stations = data.map((item) => item.rshake_station); // Changed variable name to plural
       const alertLevels = data.map((item) => item.alert_level);
 
+      this.alertLevelData = alertLevels;
       // Remove existing sources and layers with IDs starting with 'connecting-line-'
       for (let i = 0; i < floorNumbers.length; i++) {
         const sourceId = 'connecting-line-' + i;
@@ -1111,6 +1120,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.map.removeLayer('new-points-labels');
         this.map.removeSource('new-points');
       }
+
       const newPoints = [];
       const increment = 0.00005;
       const horizontalOffset = 0.00002;
@@ -1196,17 +1206,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         type: 'circle',
         source: 'new-points',
         paint: {
-          'circle-radius': 12,
-          'circle-color': [
-            'case',
-            ['==', ['get', 'alertLevel'], 0],
-            ALERT_COLORS[0],
-            ['==', ['get', 'alertLevel'], 1],
-            ALERT_COLORS[1],
-            ALERT_COLORS[2],
-          ],
+          'circle-radius': 10,
+          'circle-color': ALERT_COLORS[0],
         },
       });
+
+      this.changeBurstCircleColor();
 
       this.map.on('click', 'new-points', (e) => {
         const floorNumber = e.features[0].properties.floorNumber;
@@ -1224,43 +1229,40 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           .addTo(this.map);
         this.showEarthquakeData(+pk, rshake_station, earthquakeType);
       });
-      this.map.on('mouseleave', earthquakeType, function () {
-        popUp.remove();
-      });
-      popUp.on('close', () => {
-        this._graphShown = false;
-      });
-      this.map.on('mouseleave', earthquakeType, function () {
-        if (this._graphShown) return;
-        _this.map.getCanvas().style.cursor = '';
-        popUp.remove();
-      });
-      //event listener hide and show new points and linestring
       combineLatest([
         this.pgService.earthquakeGroupShown$,
         this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
       ])
         .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
         .subscribe(([groupShown, soloShown]) => {
-          if (!soloShown && !groupShown) {
+          if (!soloShown || !groupShown) {
             // Remove existing sources and layers with IDs starting with 'connecting-line-'
             for (let i = 0; i < floorNumbers.length; i++) {
               popUp.remove();
-              const sourceId = 'connecting-line-' + i;
-              this.map.removeLayer(sourceId);
-              this.map.removeSource(sourceId);
+              this.map.removeLayer('connecting-line-' + i);
               this.map.removeLayer('new-points');
               this.map.removeLayer('new-points-labels');
-              this.map.removeSource('new-points');
             }
           }
         });
+
+      this.map.on('mouseenter', earthquakeType, function () {
+        popUp.remove();
+      });
+      popUp.on('close', () => {
+        this._graphShown = false;
+      });
+      this.map.on('mouseenter', earthquakeType, function () {
+        _this.map.getCanvas().style.cursor = '';
+        popUp.remove();
+      });
+      popUp.remove();
     });
   }
 
   showEarthquakePoint(earthquakeType: EarthquakeType) {
     const smallPopUp = new mapboxgl.Popup({
-      closeButton: false, // Disable close button for small popup
+      closeButton: false,
       closeOnClick: false,
       maxWidth: 'auto',
     });
@@ -1278,8 +1280,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               e.features[0].geometry as any
             ).coordinates.slice();
             const bldgName = e.features[0].properties.bldg_name;
-            const floorNum = e.features[0].properties.data[0].floor_num;
-            this.floorNum = floorNum;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
               coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -1303,24 +1303,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               zoom: 19,
               essential: true,
             });
-
             _this.extendEarthquakeCircle(earthquakeType);
           });
-
           this.map.on('mouseleave', earthquakeType, () => {
-            // Close the small popup when mouse leaves
             smallPopUp.remove();
-          });
-        } else {
-          // Cleanup if conditions not met
-          smallPopUp.remove();
-          this.map.on('mouseover', earthquakeType, (e) => {
-            _this._graphShown = false;
-            _this.map.getCanvas().style.cursor = '';
-          });
-          this.map.on('click', earthquakeType, function (e) {
-            _this.map.flyTo({});
-            _this._graphShown = false;
           });
         }
       });
@@ -1401,9 +1387,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initSimulateData(): void {
-    // Simulate data update here
-    // Assuming data gets updated and then the color changes
     this.changeCircleColor();
+    this.changeBurstCircleColor();
   }
 
   // EARTHQUAKE
@@ -1448,37 +1433,90 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  private changeCircleColor(): void {
-    const earthquakeType = 'seismic-sensor'; // Replace with your earthquake type
-    const ALERT_COLORS = this.getAlertColors(); // Retrieve colors dynamically
+  public changeCircleColor(): void {
+    const earthquakeType = 'seismic-sensor';
+    const ALERT_COLORS = this.getAlertColors();
 
-    // Call addEarthquakeLayer() to add the earthquake layer if it doesn't exist
-    if (!this.map.getLayer(earthquakeType)) {
-      this.addEarthquakeLayer(earthquakeType, null, ALERT_COLORS);
+    if (this.colorToggle) {
+      this.resetCircleColor();
+    } else {
+      // Update the circle color property
+      this.map.setPaintProperty(earthquakeType, 'circle-color', [
+        'case',
+        ['has', 'alert_level'],
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'alert_level'],
+          0,
+          ALERT_COLORS[0], // Color for alert level 0
+          1,
+          ALERT_COLORS[1], // Color for alert level 1
+          2,
+          ALERT_COLORS[2], // Color for alert level 2
+        ],
+        'gray', // Default color if alert_level is not available
+      ]);
     }
 
-    // Update the circle color property
-    this.map.setPaintProperty(earthquakeType, 'circle-color', [
-      'case',
-      ['has', 'alert_level'],
-      [
-        'interpolate',
-        ['linear'],
-        ['get', 'alert_level'],
-        0,
-        ALERT_COLORS[0], // Color for alert level 0
-        1,
-        ALERT_COLORS[1], // Color for alert level 1
-        2,
-        ALERT_COLORS[2], // Color for alert level 2
-      ],
-      'gray', // Default color if alert_level is not available
-    ]);
+    // Toggle the color state
+    this.colorToggle = !this.colorToggle;
+  }
+
+  private resetCircleColor(): void {
+    const earthquakeType = 'seismic-sensor';
+    const ALERT_COLORS = this.getAlertColors();
+    this.map.setPaintProperty(earthquakeType, 'circle-color', ALERT_COLORS[0]);
   }
 
   private changeBurstCircleColor(): void {
     const earthquakeType = 'seismic-sensor';
     const ALERT_COLORS = this.getAlertColors();
+
+    if (!this.map.getLayer('new-points')) {
+      this.map.addLayer({
+        id: 'new-points',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: [],
+          },
+        },
+        paint: {
+          'circle-radius': 5, // Default circle radius
+          'circle-color': 'gray', // Default circle color
+        },
+      });
+    }
+    // Check if the earthquakeType layer exists and extend it if necessary
+    if (!this.map.getLayer(earthquakeType)) {
+      this.extendEarthquakeCircle(earthquakeType);
+    }
+
+    this.map.setPaintProperty(
+      'new-points',
+      'circle-color',
+      this.colorToggle
+        ? [
+            'case',
+            ['has', 'alertLevel'],
+            [
+              'interpolate',
+              ['linear'],
+              ['get', 'alertLevel'],
+              0,
+              ALERT_COLORS[0], // Color for alert level 0
+              1,
+              ALERT_COLORS[1], // Color for alert level 1
+              2,
+              ALERT_COLORS[2], // Color for alert level 2
+            ],
+            'gray', // Default color if alert level is not available
+          ]
+        : ALERT_COLORS[0]
+    );
   }
 
   private setupEarthquakeListeners(earthquakeType: EarthquakeType) {

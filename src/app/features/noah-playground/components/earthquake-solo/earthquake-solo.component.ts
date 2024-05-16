@@ -12,8 +12,10 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class EarthquakeSoloComponent implements OnInit {
   @Input() earthquakeSensorType: EarthquakeType;
+  isSimulating: boolean = false;
 
   shown$: Observable<boolean>;
+  simulateDisable$: Observable<boolean>;
   fetchFailed: boolean;
 
   private _unsub = new Subject();
@@ -22,6 +24,9 @@ export class EarthquakeSoloComponent implements OnInit {
     return this.earthquakeSensorType.replace('-', ' ');
   }
 
+  get buttonText() {
+    return this.isSimulating ? 'Reset Simulate Data' : 'Simulate Data';
+  }
   constructor(
     private pgService: NoahPlaygroundService,
     private modalService: ModalService
@@ -37,10 +42,12 @@ export class EarthquakeSoloComponent implements OnInit {
       .subscribe((fetched) => {
         this.fetchFailed = !fetched;
       });
+    this.simulateDisable$ = this.pgService.earthquakeGroupShown$.pipe();
   }
 
   simulateData() {
     this.modalService.simulateBtnClick();
+    this.isSimulating = !this.isSimulating;
   }
 
   ngOnDestroy(): void {

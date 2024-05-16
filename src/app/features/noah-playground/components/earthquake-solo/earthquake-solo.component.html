@@ -12,14 +12,14 @@
     <label
       [class.line-through]="fetchFailed"
       [class.text-gray-400]="fetchFailed"
-      class="ml-3"
+      class="ml-3 normal-case"
       for="input-{{ earthquakeSensorType }}"
     >
       {{ displayName }}
     </label>
   </div>
 
-  <div class="px-6 justify-center items-center">
+  <div class="justify-center items-center">
     <button
       class="
         text-xs
@@ -41,10 +41,14 @@
         focus:ring-opacity-50
         border-2
         whitespace-nowrap
+        disabled:opacity-25
+        disabled:cursor-not-allowed
+        disabled:hover:bg-green-600
       "
       (click)="simulateData()"
+      [disabled]="!(this.simulateDisable$ | async) ? 'disabled' : null"
     >
-      Simulate Data
+      {{ buttonText }}
     </button>
   </div>
 
