@@ -85,6 +85,7 @@
               whitespace-nowrap
             "
             (click)="earthquakeModalOpen()"
+            [disabled]="!(shown$ | async)"
           >
             View Data Summary
           </button>

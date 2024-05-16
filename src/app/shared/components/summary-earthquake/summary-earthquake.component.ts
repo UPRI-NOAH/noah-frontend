@@ -20,13 +20,14 @@ export class SummaryEarthquakeComponent implements OnInit {
   redAlertData: number;
   orangeAlertData: number;
 
-  summaryData: any[] = [];
-  summaryRedAlertData: SummaryItem[] = [];
-  fetchedRedAlertData: SummaryItem[] = [];
-  summaryOrangeAlertData: SummaryItem[] = [];
-  fetchedOrangeAlertData: SummaryItem[] = [];
-  summaryYellowAlertData: SummaryItem[] = [];
-  fetchedYellowAlertData: SummaryItem[] = [];
+  summaryAllData: any[] = [];
+  fetchedAllData: any[] = [];
+  summaryRedAlertData: any[] = [];
+  fetchedRedAlertData: any[] = [];
+  summaryOrangeAlertData: any[] = [];
+  fetchedOrangeAlertData: any[] = [];
+  // summaryYellowAlertData: SummaryItem[] = [];
+  // fetchedYellowAlertData: SummaryItem[] = [];
 
   constructor(
     private earthquakeService: EarthquakeDataService,
@@ -54,26 +55,26 @@ export class SummaryEarthquakeComponent implements OnInit {
       header: 'ALERT LEVEL',
       mobileHeader: 'Alert Level',
     },
-    {
-      key: 'drift',
-      header: 'DRIFT',
-      mobileHeader: 'Drift',
-    },
-    {
-      key: 'acceleration',
-      header: 'ACCELERATION',
-      mobileHeader: 'Acceleration',
-    },
-    {
-      key: 'displacement',
-      header: 'DISPLACEMENT',
-      mobileHeader: 'Displacement',
-    },
-    {
-      key: 'intensity',
-      header: 'INTENSITY',
-      mobileHeader: 'Intensity',
-    },
+    // {
+    //   key: 'drift',
+    //   header: 'DRIFT',
+    //   mobileHeader: 'Drift',
+    // },
+    // {
+    //   key: 'acceleration',
+    //   header: 'ACCELERATION',
+    //   mobileHeader: 'Acceleration',
+    // },
+    // {
+    //   key: 'displacement',
+    //   header: 'DISPLACEMENT',
+    //   mobileHeader: 'Displacement',
+    // },
+    // {
+    //   key: 'intensity',
+    //   header: 'INTENSITY',
+    //   mobileHeader: 'Intensity',
+    // },
   ];
 
   ngOnInit(): void {
@@ -88,94 +89,118 @@ export class SummaryEarthquakeComponent implements OnInit {
       .pipe(first())
       .toPromise();
 
-    // for (const feature of response.features) {
-    //   for (const data of feature.properties.data) {
-    //     const rowData = {
-    //       bldg_name: feature.properties.bldg_name,
-    //       rshake_station: data.rshake_station,
-    //       floor_num: data.floor_num
-    //     }
-    //     this.summaryData.push(rowData);
-    //   }
-    // }
-
-    const locationArr = response.features
-      .filter((a) => a.properties.bldg_name)
+    const totalBuilding = response.features
+      .filter((a) => a.properties.bldg_name !== '')
       .map((a) => {
         return {
           bldg_name: a.properties.bldg_name,
         };
       });
-    const dataRes = response.features.properties.data
-      .filter((a) => a.features.properties.data.alert_level)
-      .map((a) => {
-        return {
-          rshake_station: a.features.properties.data.rshake_station,
-          floor_num: a.features.properties.data.floor_num,
-          alert_level: a.features.properties.data.alert_level,
-        };
-      });
-    const newArr = [];
-    for (let i = 0; i < locationArr.length; i++) {
-      for (let j = 0; j < dataRes.length; j++) {
-        if (locationArr[i].bldg_name) {
-          newArr.push({ ...locationArr[i], ...dataRes[j] });
-          break;
+
+    // const totalStat = response.features
+    // .map((a) => {
+    //   if (a.properties.data.rshake_station !== null) {
+    //     return {
+    //       rshake_station: a.properties.data.rshake_station,
+    //       alert_level: a.properties.data.alert_level
+    //     };
+    //   }
+    //   return null;
+    // })
+    // .filter((a) => a !== null);
+
+    // const redAlert = []; //active rain sensor data
+    //   for (let i = 0; i < totalStat.length; i++) {
+    //     if (totalStat[i].alert_level == 2) {
+    //       redAlert.push({ ...totalStat[i] });
+    //     }
+    // }
+
+    // const totalStation = response.features.properties
+    // .filter((a) => a.data.rshake_station !== '')
+    // .map((a) => {
+    //   return {
+    //     rshake_station: a.data.rshake_station,
+    //   };
+    // });
+
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        if (data.alert_level == 2) {
+          const rowRedData = {
+            bldg_name: feature.properties.bldg_name,
+            rshake_station: data.rshake_station,
+            floor_num: data.floor_num,
+            alert_level: data.alert_level,
+          };
+          this.summaryRedAlertData.push(rowRedData);
         }
       }
     }
-    this.summaryData.push(newArr);
 
-    // const allDataWith = [];
-    // for (let i = 0; i < newArr.length; i++) {
-    //   if (newArr[i].alert_level) {
-    //     allDataWith.push({ ...newArr[i] });
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        if (data.alert_level == 1) {
+          const rowOrangeData = {
+            bldg_name: feature.properties.bldg_name,
+            rshake_station: data.rshake_station,
+            floor_num: data.floor_num,
+            alert_level: data.alert_level,
+          };
+          this.summaryOrangeAlertData.push(rowOrangeData);
+        }
+      }
+    }
+
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        const rowData = {
+          bldg_name: feature.properties.bldg_name,
+          rshake_station: data.rshake_station,
+          floor_num: data.floor_num,
+          alert_level: data.alert_level,
+        };
+        this.summaryAllData.push(rowData);
+      }
+    }
+
+    // const res: any = await this.earthquakeService
+    // .getEarthquakeSummaryData()
+    // .pipe(first())
+    // .toPromise();
+
+    // const dataArr = res.results.map((a) => {
+    //   return {
+    //     acceleration: a.acceleration,
+    //     displacement: a.displacement,
+    //     drift: a.drift,
+    //     intensity: a.intensity,
+    //     station_id: a.station_id,
+    //     alert_level: a.alert_level,
+    //   };
+
+    // });
+
+    // const dataRedArray =[];
+    // for (let k = 0; k < totalBuilding.length; k++) {
+    //   for (let i = 0; i < totalStation.length; i++) {
+    //     for (let j = 0; j < dataArr.length; j++) {
+    //       if (totalStation[i].rshake_station == dataArr[j].station_id) {
+    //         if (dataArr[i].alert_level == 2){
+    //           dataRedArray.push({ ...totalStation[i], ...dataArr[j] });
+    //           break;
+    //         }
+    //       }
+
+    //     }
     //   }
     // }
-    // this.summaryData.push(allDataWith);
+
+    // this.summaryRedAlertData.push(dataRedArray);
+    this.totalBuildings = totalBuilding.length;
+    // this.totalStations = totalStation.length;
+    // this.redAlertData = redAlert.length;
   }
-
-  // const res: any = await this.earthquakeService
-  //   .getEarthquakeSummaryData()
-  //   .pipe(first())
-  //   .toPromise();
-
-  // const dataArr = res.results.map((a) => {
-  //   return {
-  //     acceleration: a.acceleration,
-  //     displacement: a.displacement,
-  //     drift: a.drift,
-  //     intensity: a.intensity,
-  //     alert_level: a.alert_level,
-  //   };
-  // });
-
-  // const redAlertData = response.features.properties.data
-  //   .map()
-
-  // const newArr = []; //all summary data
-  // for (let i = 0; i < locationArr.length; i++) {
-  //   for (let j = 0; j < dataArr.length; j++) {
-  //     if (locationArr[i].bldg_name == dataArr[j].drift) {
-  //       newArr.push({ ...locationArr[i], ...dataArr[j] });
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // const allDataWith = []; //disply all data without null value
-  // for (let i = 0; i < newArr.length; i++) {
-  //   if (newArr[i].bldg_name) {
-  //     allDataWith.push({ ...newArr[i] });
-  //   }
-  // }
-  // const sortName = []; //seperate null value
-  // for (let i = 0; i < newArr.length; i++) {
-  //   if (newArr[i].bldg_name == null) {
-  //     sortName.push({ ...newArr[i] });
-  //   }
-  // }
-  // this.fetchedRedAlertData = allDataWith.concat(sortName);
 
   closeModal() {
     this.modalService.earthquakeSummaryModalClose();

@@ -154,7 +154,7 @@
                             md:mt-1
                           "
                         >
-                          2
+                          {{ totalBuildings }}
                         </p>
                       </div>
                       <div class="w-full">
@@ -183,7 +183,7 @@
                             md:mt-1
                           "
                         >
-                          4
+                          70
                         </p>
                       </div>
                     </div>
@@ -236,7 +236,7 @@
                 >
                   <li class="mr-2">
                     <label
-                      for="select-red"
+                      for="select-all"
                       tabindex="1"
                       class="
                         inline-block
@@ -244,6 +244,7 @@
                         active
                         bg-blue-200
                         rounded-t-lg
+                        text-black
                         hover:text-gray-600 hover:bg-blue-100
                         dark:hover:bg-gray-800
                         dark:hover:text-gray-300
@@ -255,27 +256,29 @@
                   </li>
                   <li class="mr-2">
                     <label
+                      for="select-red"
+                      tabindex="1"
+                      class="
+                        inline-block
+                        p-2
+                        rounded-t-lg
+                        text-black
+                        bg-noah-red-high
+                        hover:text-gray-600 hover:bg-blue-100
+                        dark:hover:bg-gray-800 dark:hover:text-gray-300
+                      "
+                      >ALERT RED
+                    </label>
+                  </li>
+                  <li class="mr-2">
+                    <label
                       for="select-orange"
                       tabindex="1"
                       class="
                         inline-block
                         p-2
                         rounded-t-lg
-                        bg-noah-red-high
-                        hover:text-gray-600 hover:bg-blue-100
-                        dark:hover:bg-gray-800 dark:hover:text-gray-300
-                      "
-                      >ALERT RED</label
-                    >
-                  </li>
-                  <li class="mr-2">
-                    <label
-                      for="select-yellow"
-                      tabindex="1"
-                      class="
-                        inline-block
-                        p-2
-                        rounded-t-lg
+                        text-black
                         bg-noah-red-medium
                         hover:text-gray-600 hover:bg-blue-100
                         dark:hover:bg-gray-800 dark:hover:text-gray-300
@@ -291,7 +294,7 @@
                   <input
                     type="radio"
                     name="tab-indicator"
-                    id="select-red"
+                    id="select-all"
                     class="tab-indicator"
                     checked="checked"
                   />
@@ -352,6 +355,16 @@
                               >
                                 <div class="cursor-pointer inline-flex">
                                   {{ col.header }}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-1 h-4 w-4 text-left"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path
+                                      d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z"
+                                    />
+                                  </svg>
                                 </div>
                               </th>
                             </tr>
@@ -359,12 +372,12 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryData"
+                              *ngFor="let data of summaryAllData"
                             >
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -374,7 +387,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -385,7 +398,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -394,17 +407,17 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
                                 {{ data.alert_level }}
                               </td>
 
-                              <td
+                              <!-- <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
                                   justify-center
@@ -415,7 +428,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -425,7 +438,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -435,13 +448,13 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
                               >
                                 {{ data.intensity }}
-                              </td>
+                              </td> -->
                             </tr>
                           </tbody>
                         </table>
@@ -452,13 +465,12 @@
                 </div>
 
                 <!-- TAB SECTION FOR ORANGE -->
-                <div class="tab-orange">
+                <div class="tab-red">
                   <input
                     type="radio"
                     name="tab-indicator"
-                    id="select-orange"
+                    id="select-red"
                     class="tab-indicator"
-                    checked="checked"
                   />
                   <div class="tab-content">
                     <!-- <ng-container dataSummaryOrange>
@@ -534,12 +546,12 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryData"
+                              *ngFor="let data of summaryRedAlertData"
                             >
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -549,7 +561,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -560,7 +572,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -570,7 +582,17 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
+                                  whitespace-nowrap
+                                "
+                              >
+                                {{ data.alert_level }}
+                              </td>
+
+                              <!-- <td
+                                class="
+                                  p-2
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
                                   justify-center
@@ -581,7 +603,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -591,7 +613,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -601,13 +623,13 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
                               >
                                 {{ data.intensity }}
-                              </td>
+                              </td> -->
                             </tr>
                           </tbody>
                         </table>
@@ -618,13 +640,12 @@
                 </div>
 
                 <!-- TAB SECTION FOR YELLOW -->
-                <div class="tab-yellow">
+                <div class="tab-orange">
                   <input
                     type="radio"
                     name="tab-indicator"
-                    id="select-yellow"
+                    id="select-orange"
                     class="tab-indicator"
-                    checked="checked"
                   />
                   <div class="tab-content">
                     <!-- <ng-container dataSummaryYellow>
@@ -700,12 +721,12 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryRedAlertData"
+                              *ngFor="let data of summaryOrangeAlertData"
                             >
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -715,7 +736,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -726,7 +747,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -736,7 +757,17 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
+                                  whitespace-nowrap
+                                "
+                              >
+                                {{ data.alert_level }}
+                              </td>
+
+                              <!-- <td
+                                class="
+                                  p-2
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
                                   justify-center
@@ -747,7 +778,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -757,7 +788,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -767,13 +798,13 @@
                               <td
                                 class="
                                   p-2
-                                  text-sm text-gray-700
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
                               >
                                 {{ data.intensity }}
-                              </td>
+                              </td> -->
                             </tr>
                           </tbody>
                         </table>
