@@ -354,7 +354,10 @@
                                 "
                                 *ngFor="let col of columns"
                               >
-                                <div class="cursor-pointer inline-flex">
+                                <div
+                                  (click)="onHeaderColumnClick(col.key)"
+                                  class="cursor-pointer inline-flex"
+                                >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -375,6 +378,7 @@
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
                               *ngFor="
                                 let data of summaryAllData
+                                  | sort: sortField:sortDirection
                                   | searchEqLocation: searchValue
                               "
                             >
@@ -531,7 +535,10 @@
                                 "
                                 *ngFor="let col of columns"
                               >
-                                <div class="cursor-pointer inline-flex">
+                                <div
+                                  (click)="onHeaderColumnClick(col.key)"
+                                  class="cursor-pointer inline-flex"
+                                >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -550,7 +557,11 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryRedAlertData"
+                              *ngFor="
+                                let data of summaryRedAlertData
+                                  | sort: sortField:sortDirection
+                                  | searchEqLocation: searchValue
+                              "
                             >
                               <td
                                 class="
@@ -706,7 +717,10 @@
                                 "
                                 *ngFor="let col of columns"
                               >
-                                <div class="cursor-pointer inline-flex">
+                                <div
+                                  (click)="onHeaderColumnClick(col.key)"
+                                  class="cursor-pointer inline-flex"
+                                >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -725,7 +739,11 @@
                           <tbody class="divide-y divide-gray-100">
                             <tr
                               class="hover:bg-gray-100 bg-white even:bg-gray-50"
-                              *ngFor="let data of summaryOrangeAlertData"
+                              *ngFor="
+                                let data of summaryOrangeAlertData
+                                  | sort: sortField:sortDirection
+                                  | searchEqLocation: searchValue
+                              "
                             >
                               <td
                                 class="

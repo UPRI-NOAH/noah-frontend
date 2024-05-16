@@ -30,6 +30,9 @@ export class SummaryEarthquakeComponent implements OnInit {
   // fetchedYellowAlertData: SummaryItem[] = [];
   searchValue: string;
 
+  sortField = 'bldg_name';
+  sortDirection = 'ascending';
+
   constructor(
     private earthquakeService: EarthquakeDataService,
     private modalService: ModalService
@@ -205,5 +208,15 @@ export class SummaryEarthquakeComponent implements OnInit {
 
   closeModal() {
     this.modalService.earthquakeSummaryModalClose();
+  }
+
+  onHeaderColumnClick(field: string) {
+    if (this.sortField === field) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'ascending';
+    }
   }
 }
