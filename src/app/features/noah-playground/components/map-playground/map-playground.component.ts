@@ -94,6 +94,7 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
+  BoundariesType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -161,6 +162,7 @@ Accessbility(Highcharts);
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
+
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   pgLocation: string = '';
@@ -176,7 +178,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
-  private draw: MapboxDraw;
+  draw: any;
   distanceContainer: any;
   geojson: any;
   linestring: any;
@@ -229,6 +231,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQCCritFac();
         this.initQCMunicipalBoundary();
         this.initVolcanoes();
+        this.initBoundaries();
         this.initWeatherSatelliteLayers();
         //this.showContourMaps();
         this.initQcCenterListener();
@@ -292,8 +295,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQcCenterListener() {
-    const centerQC = localStorage.getItem('loginStatus');
-    if (centerQC == '1') {
+    const centerQc = localStorage.getItem('loginStatus');
+    if (centerQc == '1') {
       this.map.flyTo({
         center: QC_DEFAULT_CENTER,
         zoom: 12,
@@ -587,6 +590,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -604,6 +608,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -615,6 +623,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -632,6 +641,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -643,6 +656,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -659,6 +673,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.print({
                       type: 'print',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -671,6 +689,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -687,6 +706,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.exportChart({
                       type: 'image/jpeg',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -1755,6 +1778,246 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  // start of boundaries
+  initBoundaries() {
+    // Define variables to hold popup and layer IDs
+    let popup;
+    let layerID;
+
+    // 0 - declare the source json files
+    const boundariesSourceFiles: Record<
+      BoundariesType,
+      { url: string; type: string; sourceLayer: string }
+    > = {
+      municipal: {
+        url: 'mapbox://upri-noah.ph_muni_tls',
+        type: 'vector',
+        sourceLayer: 'ph_muni_bound',
+      },
+      provincial: {
+        url: 'mapbox://upri-noah.ph_prov_tls',
+        type: 'vector',
+        sourceLayer: 'ph_prov_bound',
+      },
+      barangay: {
+        url: 'mapbox://upri-noah.ph_brgy_tls',
+        type: 'vector',
+        sourceLayer: 'ph_brgy_pop',
+      },
+    };
+
+    const boundaryColors = {
+      barangay: '#7e22ce',
+      municipal: '#7e22ce',
+      provincial: '#0C0C0C',
+    };
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(boundariesSourceFiles).forEach(
+      (boundariesType: BoundariesType) => {
+        const boundariesObjData = boundariesSourceFiles[boundariesType];
+
+        const boundariesMapSource = `${boundariesType}-map-source`;
+        // 2 - add source
+        this.map.addSource(boundariesMapSource, {
+          type: 'vector',
+          url: boundariesObjData.url,
+        });
+        // 3 - add layer
+        layerID = `${boundariesType}-map-layer`;
+
+        this.map.addLayer({
+          id: layerID,
+          type: 'fill',
+          source: boundariesMapSource,
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: {
+            'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
+          },
+          interactive: true,
+        });
+
+        // Add line layer
+        const lineLayerID = `${boundariesType}-line-layer`;
+        const linePaint = {
+          'line-color': boundaryColors[boundariesType], // Use color based on boundary type
+          'line-opacity': 0.75,
+        };
+
+        const lineLayerName = ``;
+
+        // Apply different line style for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          linePaint['line-width'] = 5; // Adjust line width for municipal and provincial boundaries
+          linePaint['line-dasharray'] = [1, 0]; // No dash
+        } else {
+          linePaint['line-width'] = 3; // Adjust line width Barangay
+          linePaint['line-dasharray'] = [1, 1]; // Dashed
+        }
+
+        this.map.addLayer({
+          id: lineLayerID,
+          type: 'line',
+          source: boundariesMapSource,
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: linePaint,
+          interactive: false,
+        });
+
+        // Inside the initBoundaries() method, before the forEach loop
+        // Define variables to hold text layer IDs
+        let municipalTextLayerID;
+        let provincialTextLayerID;
+
+        // Inside the forEach loop where boundaries are defined
+        // Add text layer for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          const textLayerID = `${boundariesType}-text-layer`;
+
+          this.map.addLayer({
+            id: textLayerID,
+            type: 'symbol',
+            source: boundariesMapSource,
+            'source-layer': boundariesObjData.sourceLayer,
+            layout: {
+              'text-field': [
+                'get',
+                boundariesType === 'municipal' ? 'Mun_Name' : 'Pro_Name',
+              ],
+              'text-font': ['Open Sans Regular'],
+              'text-size': 15,
+              'text-offset': [0, 0.5],
+              'text-anchor': 'center',
+              'text-allow-overlap': false, // Allow text to overlap
+            },
+            paint: {
+              'text-color': '#FF0000', // Adjust text color
+              'text-halo-color': '#fff', // Add text border color
+              'text-halo-width': 1, // text border width
+            },
+            filter: ['==', '$type', 'Polygon'], // Only show text for polygons
+          });
+
+          // Assign text layer ID to corresponding variable
+          if (boundariesType === 'municipal') {
+            municipalTextLayerID = textLayerID;
+          } else if (boundariesType === 'provincial') {
+            provincialTextLayerID = textLayerID;
+          }
+        }
+
+        // 5 - listen to the values from the store (group and individual)
+        const allShown$ = this.pgService.boundariesGroupShown$.pipe(
+          distinctUntilChanged()
+        );
+        const boundaries$ = this.pgService
+          .getBoundaries$(boundariesType)
+          .pipe(shareReplay(1));
+
+        // Inside the visibility subscription after the map layers are added
+        combineLatest([allShown$, boundaries$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, boundaries]) => {
+            let newOpacity = 0;
+            if (boundaries.shown && allShown) {
+              newOpacity = boundaries.opacity / 100;
+              // Enable interactivity when shown
+              this.map.setLayoutProperty(layerID, 'visibility', 'visible');
+              this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
+              this.map.setPaintProperty(
+                lineLayerID,
+                'line-opacity',
+                newOpacity
+              );
+
+              // Show text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
+            } else {
+              // Disable interactivity when hidden
+              this.map.setLayoutProperty(layerID, 'visibility', 'none');
+              this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
+              this.map.setLayerZoomRange(layerID, 0, 24);
+              // Close popup if layer is hidden
+              if (popup) {
+                popup.remove();
+              }
+
+              // Hide text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'none'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'none'
+                );
+              }
+            }
+          });
+
+        // 6 - Add click event listener for popup if layer is visible
+        this.map.on('click', layerID, (e) => {
+          const features = this.map.queryRenderedFeatures(e.point, {
+            layers: [layerID],
+          });
+
+          if (!features.length) {
+            return;
+          }
+
+          const feature = features[0];
+          const popupContent = `
+          <h3><strong>Barangay:</strong> ${feature.properties.Bgy_Name}</h3>
+          <p><strong>Municipality:</strong> ${feature.properties.Mun_Name}</p>
+          <p><strong>Province:</strong> ${feature.properties.Pro_Name}</p>
+        `;
+          // Remove existing popup if any
+          if (popup) {
+            popup.remove();
+          }
+
+          // Create new popup
+          popup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupContent)
+            .addTo(this.map);
+        });
+
+        // 7 - Add mouseenter and mouseleave event listeners
+        this.map.on('mouseenter', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = 'pointer';
+          }
+        });
+
+        this.map.on('mouseleave', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = '';
+          }
+        });
+      }
+    );
+  }
+  // end of boundaries
+
   showDataPoints(sensorType: SensorType) {
     const graphDiv = document.getElementById('graph-dom');
     const popUp = new mapboxgl.Popup({
@@ -2349,27 +2612,27 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   private initArea() {
-    this.map.on('load', () => {
-      this.draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          polygon: true,
-          trash: true,
-        },
-      });
+    this.draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    });
 
-      this.map.addControl(this.draw);
-      this.map.on('draw.create', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.updateArea.bind(this));
-      this.map.on('draw.update', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.clearDistance.bind(this));
+    this.map.addControl(this.draw);
 
-      this.map.on('draw.modechange', (event) => {
-        if (event.mode === 'draw_polygon') {
-          // Add event listener for start of drawing
-          this.clearDistance();
-        }
-      });
+    this.map.on('draw.create', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.updateArea.bind(this));
+    this.map.on('draw.update', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.clearDistance.bind(this));
+
+    // Event listener for drawing end
+    this.map.on('draw.modechange', (event) => {
+      if (event.mode === 'draw_polygon') {
+        // Add event listener for start of drawing
+        this.clearDistance();
+      }
     });
   }
 
