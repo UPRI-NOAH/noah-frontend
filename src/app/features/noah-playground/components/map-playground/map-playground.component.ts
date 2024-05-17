@@ -1105,7 +1105,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   extendEarthquakeCircle(earthquakeType: EarthquakeType) {
     const ALERT_COLORS = this.getAlertColors();
-    const earthquakeDiv = document.getElementById('earthquake-dom');
+
     const popUp = new mapboxgl.Popup({
       closeButton: true,
       closeOnClick: false,
@@ -1146,7 +1146,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       const newPoints = [];
       const increment = 0.00005;
-      const horizontalOffset = 0.00002;
+      const horizontalOffset = 0.0002;
+
+      // const increment = 0.0005;
+      // const horizontalOffset = 0.0002;
 
       for (let i = 0; i < floorNumbers.length; i++) {
         const newLat = coordinates[1] + i * increment;
@@ -1234,24 +1237,31 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         },
       });
 
-      this.changeBurstCircleColor();
-
-      this.map.on('click', 'new-points', (e) => {
+      this.map.on('mouseenter', 'new-points', (e) => {
         const floorNumber = e.features[0].properties.floorNumber;
-        const rshake_station = e.features[0].properties.rshake_station; // Retrieve rshake_station from clicked feature
-        const pk = e.features[0].properties.pk;
+        const rshake_station = e.features[0].properties.rshake_station;
+        const coordinates = (e.features[0].geometry as any).coordinates.slice();
 
-        this.floorNum = floorNumber;
-        this.rshakeName = rshake_station;
-        // Set content of popup to earthquakeDiv and open it at the clicked coordinates
-        earthquakeDiv.hidden = false;
-        popUp
-          .setDOMContent(earthquakeDiv)
-          .setMaxWidth('900px')
-          .setLngLat(e.lngLat)
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        this.map.getCanvas().style.cursor = 'pointer';
+        smallPopUp
+          .setLngLat(coordinates)
+          .setHTML(
+            `
+    <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+    <div><b>${bldgName}</b></div>
+    <div>RShake Station: ${rshake_station}</div>
+    <div>Floor Number: ${floorNumber} </div>
+    </div>
+  `
+          )
           .addTo(this.map);
-        this.showEarthquakeData(+pk, rshake_station, earthquakeType);
       });
+
+      this.changeBurstCircleColor();
       combineLatest([
         this.pgService.earthquakeGroupShown$,
         this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
@@ -1269,7 +1279,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           }
         });
 
-      this.map.on('mouseenter', earthquakeType, function () {
+      this.map.on('mouseleave', 'new-points', function () {
+        smallPopUp.remove();
+      });
+
+      this.map.on('mouseenter', 'new-points', function () {
         popUp.remove();
       });
       popUp.on('close', () => {
@@ -1374,7 +1388,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_x,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
-            intensity_x: latestData.intensity_x,
+            intensity: latestData.intensity,
           },
           {
             direction: 'Y - Axis (ENN)', // Assuming direction for Y-axis
@@ -1383,7 +1397,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_y,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
-            intensity_y: latestData.intensity_y,
           },
           {
             direction: 'Z - Axis (ENZ)', // Assuming direction for Z-axis
@@ -1392,13 +1405,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_z,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
-            intensity_z: latestData.intensity_z,
           },
         ]
       : [];
 
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
+    console.log('intensty', latestData.intensity);
+    console.log('intensty 121212', this.intensity);
+
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
     if (latestData.alert_level === 2) {
       document.getElementById('earthquakeAlert').innerHTML =
@@ -1493,34 +1508,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   private changeBurstCircleColor(): void {
-    const earthquakeType = 'seismic-sensor';
     const ALERT_COLORS = this.getAlertColors();
+    const setCircleColor = (color: any) => {
+      this.map.setPaintProperty('new-points', 'circle-color', color);
+    };
 
-    if (!this.map.getLayer('new-points')) {
-      this.map.addLayer({
-        id: 'new-points',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: [],
-          },
-        },
-        paint: {
-          'circle-radius': 5, // Default circle radius
-          'circle-color': 'gray', // Default circle color
-        },
-      });
-    }
-    // Check if the earthquakeType layer exists and extend it if necessary
-    if (!this.map.getLayer(earthquakeType)) {
-      this.extendEarthquakeCircle(earthquakeType);
-    }
-
-    this.map.setPaintProperty(
-      'new-points',
-      'circle-color',
+    setCircleColor(
       this.colorToggle
         ? [
             'case',
@@ -1540,6 +1533,39 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ]
         : ALERT_COLORS[0]
     );
+
+    if (this.colorToggle) {
+      this.clickShowEarthquakeData();
+    } else {
+      this.map.off('click', 'new-points', this.clickShowEarthquakeData);
+    }
+  }
+
+  private clickShowEarthquakeData(): void {
+    const earthquakeType = 'seismic-sensor';
+    const earthquakeDiv = document.getElementById('earthquake-dom');
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+    this.map.on('click', 'new-points', (e) => {
+      if (!this.colorToggle) return;
+      const floorNumber = e.features[0].properties.floorNumber;
+      const rshake_station = e.features[0].properties.rshake_station; // Retrieve rshake_station from clicked feature
+      const pk = e.features[0].properties.pk;
+
+      this.floorNum = floorNumber;
+      this.rshakeName = rshake_station;
+      // Set content of popup to earthquakeDiv and open it at the clicked coordinates
+      earthquakeDiv.hidden = false;
+      popUp
+        .setDOMContent(earthquakeDiv)
+        .setMaxWidth('900px')
+        .setLngLat(e.lngLat)
+        .addTo(this.map);
+      this.showEarthquakeData(+pk, rshake_station, earthquakeType);
+    });
   }
 
   private setupEarthquakeListeners(earthquakeType: EarthquakeType) {
