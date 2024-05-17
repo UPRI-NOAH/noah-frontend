@@ -94,6 +94,7 @@ import {
   QuezonCityMunicipalBoundary,
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
+  BoundariesType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -121,6 +122,13 @@ type LayerSettingsParam = {
   sourceLayer: string;
   hazardType: HazardType;
   hazardLevel: HazardLevel;
+};
+
+type EarthquakeSettingsParam = {
+  pk: number;
+  rshake_station: string;
+  alertLevel: number;
+  earthquakeType: EarthquakeType;
 };
 
 type RawHazardType = 'lh' | 'fh' | 'ssh';
@@ -154,6 +162,7 @@ Accessbility(Highcharts);
 })
 export class MapPlaygroundComponent implements OnInit, OnDestroy {
   map!: Map;
+
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   pgLocation: string = '';
@@ -169,14 +178,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   isWarningAlert: boolean = true;
   municity = [];
-  private draw: MapboxDraw;
+  draw: any;
   distanceContainer: any;
   geojson: any;
   linestring: any;
   private measurementActive: boolean = false;
   floorNum: string = '';
+  rshakeName: string = '';
+  intensity: string = '';
   alertValue: number;
+  burstDisplayed: boolean = false;
   eqDatas: any[] = []; //displaying earthquake data in table
+  private alertLevelData: number;
+  private colorToggle: boolean = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -192,6 +206,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.modalService.onSimulateClick().subscribe(() => {
+      this.initSimulateData();
+    });
     this.initMap();
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
@@ -214,6 +231,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initQCCritFac();
         this.initQCMunicipalBoundary();
         this.initVolcanoes();
+        this.initBoundaries();
         this.initWeatherSatelliteLayers();
         //this.showContourMaps();
         this.initQcCenterListener();
@@ -277,8 +295,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initQcCenterListener() {
-    const centerQC = localStorage.getItem('loginStatus');
-    if (centerQC == '1') {
+    const centerQc = localStorage.getItem('loginStatus');
+    if (centerQc == '1') {
       this.map.flyTo({
         center: QC_DEFAULT_CENTER,
         zoom: 12,
@@ -572,6 +590,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -589,6 +608,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.exportChart({
                       type: 'application/pdf',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -600,6 +623,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -617,6 +641,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     this.downloadCSV({
                       type: 'application/csv',
                     });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
                   } else {
@@ -628,6 +656,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -644,6 +673,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.print({
                       type: 'print',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -656,6 +689,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -672,6 +706,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ) {
                     this.exportChart({
                       type: 'image/jpeg',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -1055,86 +1093,213 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   initEarthquakeSensor() {
-    const ALERT_COLORS = {
-      0: NOAH_COLORS['noah-green'].high,
-      1: NOAH_COLORS['noah-red'].medium,
-      2: NOAH_COLORS['noah-red'].high,
-    };
-
-    // Dummy function to generate random alerts
-    function generateRandomAlert(): number {
-      return Math.floor(Math.random() * 3); // Generates values between 0 and 2
-    }
-
-    const updateCircleColor = (layerId: string, color: string) => {
-      this.map.setPaintProperty(layerId, 'circle-color', color);
-    };
-
-    const updateBackgroundColor = (color: string) => {
-      const element = document.getElementById('earthquakeAlert');
-      if (element) {
-        element.style.backgroundColor = color;
-      }
-    };
-
-    setInterval(() => {
-      const randomNumber = generateRandomAlert();
-
-      console.log(randomNumber); // You can replace console.log with your desired method to post data
-      EARTHQUAKE.forEach((earthquakeType) => {
-        updateCircleColor(earthquakeType, ALERT_COLORS[randomNumber]);
-        updateBackgroundColor(ALERT_COLORS[randomNumber]);
-        this.alertValue = randomNumber;
-      });
-    }, 3000); // 30 seconds
+    const ALERT_COLORS = this.getAlertColors();
 
     EARTHQUAKE.forEach((earthquakeType) => {
-      this.earthService
-        .getEarthquakeSensor(earthquakeType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          this.map.addLayer({
-            id: earthquakeType,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'circle-radius': 10, // You can adjust the radius of the circle
-              'circle-color': ALERT_COLORS[0], // You can change the color of the circle
-              'circle-opacity': 0, // You can adjust the opacity of the circle
-            },
-          });
+      this.fetchEarthquakeData(earthquakeType, ALERT_COLORS);
+      this.setupEarthquakeListeners(earthquakeType);
+      this.pgService.setEarthquakeFetched(earthquakeType, true);
+      this.showEarthquakePoint(earthquakeType);
+    });
+  }
+
+  extendEarthquakeCircle(earthquakeType: EarthquakeType) {
+    const ALERT_COLORS = this.getAlertColors();
+
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+    const smallPopUp = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const _this = this;
+
+    this.map.on('click', earthquakeType, (e) => {
+      const bldgName = e.features[0].properties.bldg_name;
+      const coordinates = (e.features[0].geometry as any).coordinates.slice();
+      const responseData = e.features[0].properties.data;
+      const data = JSON.parse(responseData);
+      const floorNumbers = data.map((item) => item.floor_num);
+      const rshake_stations = data.map((item) => item.rshake_station); // Changed variable name to plural
+      const alertLevels = data.map((item) => item.alert_level);
+
+      this.alertLevelData = alertLevels;
+      // Remove existing sources and layers with IDs starting with 'connecting-line-'
+      for (let i = 0; i < floorNumbers.length; i++) {
+        const sourceId = 'connecting-line-' + i;
+        if (this.map.getSource(sourceId)) {
+          this.map.removeLayer(sourceId);
+          this.map.removeSource(sourceId);
+        }
+      }
+      // Remove existing source and layers for 'new-points'
+      if (this.map.getSource('new-points')) {
+        this.map.removeLayer('new-points');
+        this.map.removeLayer('new-points-labels');
+        this.map.removeSource('new-points');
+      }
+
+      const newPoints = [];
+      const increment = 0.00005;
+      const horizontalOffset = 0.0002;
+
+      // const increment = 0.0005;
+      // const horizontalOffset = 0.0002;
+
+      for (let i = 0; i < floorNumbers.length; i++) {
+        const newLat = coordinates[1] + i * increment;
+        const newLong = coordinates[0] + horizontalOffset;
+        const newCoords = [newLong, newLat];
+
+        newPoints.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: newCoords,
+          },
+          properties: {
+            floorNumber: floorNumbers[i], // Add floor number to properties
+            rshake_station: rshake_stations[i], // Add rshake_station to properties
+            alertLevel: alertLevels[i], // Set alert level based on rshake_station
+          },
         });
+
+        const lineCoordinates = [coordinates, newCoords];
+        const sourceId = 'connecting-line-' + i;
+
+        this.map.addSource(sourceId, {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                geometry: {
+                  type: 'LineString',
+                  coordinates: lineCoordinates,
+                },
+                properties: {},
+              },
+            ],
+          },
+        });
+
+        this.map.addLayer({
+          id: sourceId,
+          type: 'line',
+          source: sourceId,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#00215E', // Blue color
+            'line-width': 4,
+          },
+        });
+      }
+
+      this.map.addSource('new-points', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: newPoints,
+        },
+      });
+
+      this.map.addLayer({
+        id: 'new-points-labels',
+        type: 'symbol',
+        source: 'new-points',
+        layout: {
+          'text-field': ['concat', 'Floor ', ['get', 'floorNumber']], // Concatenate 'Floor ' with floorNumber
+          'text-size': 12,
+          'text-offset': [0, 1.25],
+          'text-anchor': 'top',
+        },
+        paint: {
+          'text-color': '#000000', // Black color
+        },
+      });
+
+      this.map.addLayer({
+        id: 'new-points',
+        type: 'circle',
+        source: 'new-points',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': ALERT_COLORS[0],
+        },
+      });
+
+      this.map.on('mouseenter', 'new-points', (e) => {
+        const floorNumber = e.features[0].properties.floorNumber;
+        const rshake_station = e.features[0].properties.rshake_station;
+        const coordinates = (e.features[0].geometry as any).coordinates.slice();
+
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        this.map.getCanvas().style.cursor = 'pointer';
+        smallPopUp
+          .setLngLat(coordinates)
+          .setHTML(
+            `
+    <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+    <div><b>${bldgName}</b></div>
+    <div>RShake Station: ${rshake_station}</div>
+    <div>Floor Number: ${floorNumber} </div>
+    </div>
+  `
+          )
+          .addTo(this.map);
+      });
+
+      this.changeBurstCircleColor();
       combineLatest([
         this.pgService.earthquakeGroupShown$,
         this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
       ])
         .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
         .subscribe(([groupShown, soloShown]) => {
-          this.map.setPaintProperty(
-            earthquakeType,
-            'circle-opacity',
-            +(groupShown && soloShown)
-          );
+          if (!soloShown || !groupShown) {
+            // Remove existing sources and layers with IDs starting with 'connecting-line-'
+            for (let i = 0; i < floorNumbers.length; i++) {
+              popUp.remove();
+              this.map.removeLayer('connecting-line-' + i);
+              this.map.removeLayer('new-points');
+              this.map.removeLayer('new-points-labels');
+            }
+          }
         });
-      this.pgService.setEarthquakeFetched(earthquakeType, true);
-      this.showEarthquakeData(earthquakeType);
+
+      this.map.on('mouseleave', 'new-points', function () {
+        smallPopUp.remove();
+      });
+
+      this.map.on('mouseenter', 'new-points', function () {
+        popUp.remove();
+      });
+      popUp.on('close', () => {
+        this._graphShown = false;
+      });
+      this.map.on('mouseenter', earthquakeType, function () {
+        _this.map.getCanvas().style.cursor = '';
+        popUp.remove();
+      });
+      popUp.remove();
     });
   }
 
-  showEarthquakeData(earthquakeType: EarthquakeType) {
-    const earthquakeDiv = document.getElementById('earthquake-dom');
-    const popUp = new mapboxgl.Popup({
-      closeButton: true,
-      closeOnClick: false,
-      maxWidth: 'auto',
-    });
-
+  showEarthquakePoint(earthquakeType: EarthquakeType) {
     const smallPopUp = new mapboxgl.Popup({
-      closeButton: false, // Disable close button for small popup
+      closeButton: false,
       closeOnClick: false,
       maxWidth: 'auto',
     });
@@ -1151,9 +1316,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
-            const rshake_station = e.features[0].properties.rshake_station;
-            const floorNum = e.features[0].properties.floor_num;
-            this.floorNum = floorNum;
+            const bldgName = e.features[0].properties.bldg_name;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
               coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -1164,61 +1327,40 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-          <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-            <div>RShake Station: ${rshake_station}</div>
-            <div>Floor Num: ${floorNum}</div>
-          </div>
-        `
+        <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+          <div>${bldgName}</div>
+        </div>
+      `
               )
               .addTo(_this.map);
           });
-
-          this.map.on('mouseleave', earthquakeType, () => {
-            // Close the small popup when mouse leaves
-            smallPopUp.remove();
-          });
-
           this.map.on('click', earthquakeType, function (e) {
-            earthquakeDiv.hidden = false;
             _this.map.flyTo({
               center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 16,
+              zoom: 19,
               essential: true,
             });
-            const floorNum = e.features[0].properties.floor_num;
-            const rshake_station = e.features[0].properties.rshake_station;
-            const elevation = e.features[0].properties.elevation;
-            const pk = e.features[0].properties.pk;
-            popUp
-              .setLngLat((e.features[0].geometry as any).coordinates.slice())
-              .setDOMContent(earthquakeDiv)
-              .setMaxWidth('800px')
-              .addTo(_this.map);
-            _this.showEarthData(+pk, rshake_station, earthquakeType);
+            _this.extendEarthquakeCircle(earthquakeType);
           });
-        } else {
-          // Cleanup if conditions not met
-          popUp.remove();
-          smallPopUp.remove();
-          this.map.on('mouseover', earthquakeType, (e) => {
-            _this._graphShown = false;
-            _this.map.getCanvas().style.cursor = '';
-          });
-          this.map.on('click', earthquakeType, function (e) {
-            _this.map.flyTo({});
-            _this._graphShown = false;
+          this.map.on('mouseleave', earthquakeType, () => {
+            smallPopUp.remove();
           });
         }
       });
-
-    popUp.on('close', () => (_this._graphShown = false));
   }
 
-  async showEarthData(
+  async showEarthquakeData(
     pk: number,
     rshake_station: string,
     earthquakeType: EarthquakeType
   ) {
+    const ALERT_COLORS = this.getAlertColors();
+    const updateBackgroundColor = (color: string) => {
+      const element = document.getElementById('earthquakeAlert');
+      if (element) {
+        element.style.backgroundColor = color;
+      }
+    };
     const response: any = await this.earthService
       .getEarthquakeData(pk)
       .pipe(first())
@@ -1244,25 +1386,204 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             displacement: latestData.displacement_x,
             acceleration: latestData.acceleration_x,
             drift: latestData.drift_x,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity,
           },
           {
             direction: 'Y - Axis (ENN)', // Assuming direction for Y-axis
             displacement: latestData.displacement_y,
             acceleration: latestData.acceleration_y,
             drift: latestData.drift_y,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
           },
           {
             direction: 'Z - Axis (ENZ)', // Assuming direction for Z-axis
             displacement: latestData.displacement_z,
             acceleration: latestData.acceleration_z,
             drift: latestData.drift_z,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
           },
         ]
       : [];
 
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
+    console.log('intensty', latestData.intensity);
+    console.log('intensty 121212', this.intensity);
+
+    updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
+    if (latestData.alert_level === 2) {
+      document.getElementById('earthquakeAlert').innerHTML =
+        '<p class="text-sm lg:text-xl font-semibold leading-tight text-white">!!! Earthquake Alert !!!</p>';
+    } else {
+      document.getElementById('earthquakeAlert').innerHTML =
+        '<p class="text-sm lg:text-xl font-semibold leading-tight text-white">Earthquake Alert</p>';
+    }
   }
+
+  initSimulateData(): void {
+    this.changeCircleColor();
+    this.changeBurstCircleColor();
+  }
+
+  // EARTHQUAKE
+  private getAlertColors() {
+    return {
+      0: NOAH_COLORS['noah-green'].high,
+      1: NOAH_COLORS['noah-red'].medium,
+      2: NOAH_COLORS['noah-red'].high,
+    };
+  }
+
+  private fetchEarthquakeData(
+    earthquakeType: EarthquakeType,
+    ALERT_COLORS: any
+  ) {
+    this.earthService
+      .getEarthquakeSensor(earthquakeType)
+      .pipe(first())
+      .toPromise()
+      .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+        this.addEarthquakeLayer(earthquakeType, data, ALERT_COLORS);
+      });
+  }
+
+  private addEarthquakeLayer(
+    earthquakeType: EarthquakeType,
+    data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
+    ALERT_COLORS: any
+  ) {
+    this.map.addLayer({
+      id: earthquakeType,
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data,
+      },
+      paint: {
+        'circle-radius': 12,
+        'circle-color': ALERT_COLORS[0],
+        'circle-opacity': 0,
+      },
+    });
+  }
+
+  public changeCircleColor(): void {
+    const earthquakeType = 'seismic-sensor';
+    const ALERT_COLORS = this.getAlertColors();
+
+    if (this.colorToggle) {
+      this.resetCircleColor();
+    } else {
+      // Update the circle color property
+      this.map.setPaintProperty(earthquakeType, 'circle-color', [
+        'case',
+        ['has', 'alert_level'],
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'alert_level'],
+          0,
+          ALERT_COLORS[0], // Color for alert level 0
+          1,
+          ALERT_COLORS[1], // Color for alert level 1
+          2,
+          ALERT_COLORS[2], // Color for alert level 2
+        ],
+        'gray', // Default color if alert_level is not available
+      ]);
+    }
+
+    // Toggle the color state
+    this.colorToggle = !this.colorToggle;
+  }
+
+  private resetCircleColor(): void {
+    const earthquakeType = 'seismic-sensor';
+    const ALERT_COLORS = this.getAlertColors();
+    this.map.setPaintProperty(earthquakeType, 'circle-color', ALERT_COLORS[0]);
+  }
+
+  private changeBurstCircleColor(): void {
+    const ALERT_COLORS = this.getAlertColors();
+    const setCircleColor = (color: any) => {
+      this.map.setPaintProperty('new-points', 'circle-color', color);
+    };
+
+    setCircleColor(
+      this.colorToggle
+        ? [
+            'case',
+            ['has', 'alertLevel'],
+            [
+              'interpolate',
+              ['linear'],
+              ['get', 'alertLevel'],
+              0,
+              ALERT_COLORS[0], // Color for alert level 0
+              1,
+              ALERT_COLORS[1], // Color for alert level 1
+              2,
+              ALERT_COLORS[2], // Color for alert level 2
+            ],
+            'gray', // Default color if alert level is not available
+          ]
+        : ALERT_COLORS[0]
+    );
+
+    if (this.colorToggle) {
+      this.clickShowEarthquakeData();
+    } else {
+      this.map.off('click', 'new-points', this.clickShowEarthquakeData);
+    }
+  }
+
+  private clickShowEarthquakeData(): void {
+    const earthquakeType = 'seismic-sensor';
+    const earthquakeDiv = document.getElementById('earthquake-dom');
+    const popUp = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: 'auto',
+    });
+    this.map.on('click', 'new-points', (e) => {
+      if (!this.colorToggle) return;
+      const floorNumber = e.features[0].properties.floorNumber;
+      const rshake_station = e.features[0].properties.rshake_station; // Retrieve rshake_station from clicked feature
+      const pk = e.features[0].properties.pk;
+
+      this.floorNum = floorNumber;
+      this.rshakeName = rshake_station;
+      // Set content of popup to earthquakeDiv and open it at the clicked coordinates
+      earthquakeDiv.hidden = false;
+      popUp
+        .setDOMContent(earthquakeDiv)
+        .setMaxWidth('900px')
+        .setLngLat(e.lngLat)
+        .addTo(this.map);
+      this.showEarthquakeData(+pk, rshake_station, earthquakeType);
+    });
+  }
+
+  private setupEarthquakeListeners(earthquakeType: EarthquakeType) {
+    combineLatest([
+      this.pgService.earthquakeGroupShown$,
+      this.pgService.getEarthquakeSensorTypeShown$(earthquakeType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        this.map.setPaintProperty(
+          earthquakeType,
+          'circle-opacity',
+          +(groupShown && soloShown)
+        );
+      });
+  }
+
+  // END EARTHQUAKE
 
   initBarangayBoundary() {
     BARANGAYBOUNDARY.forEach((barangayBoundary: BarangayBoundary) => {
@@ -1482,6 +1803,246 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     });
   }
+
+  // start of boundaries
+  initBoundaries() {
+    // Define variables to hold popup and layer IDs
+    let popup;
+    let layerID;
+
+    // 0 - declare the source json files
+    const boundariesSourceFiles: Record<
+      BoundariesType,
+      { url: string; type: string; sourceLayer: string }
+    > = {
+      municipal: {
+        url: 'mapbox://upri-noah.ph_muni_tls',
+        type: 'vector',
+        sourceLayer: 'ph_muni_bound',
+      },
+      provincial: {
+        url: 'mapbox://upri-noah.ph_prov_tls',
+        type: 'vector',
+        sourceLayer: 'ph_prov_bound',
+      },
+      barangay: {
+        url: 'mapbox://upri-noah.ph_brgy_tls',
+        type: 'vector',
+        sourceLayer: 'ph_brgy_pop',
+      },
+    };
+
+    const boundaryColors = {
+      barangay: '#7e22ce',
+      municipal: '#7e22ce',
+      provincial: '#0C0C0C',
+    };
+
+    // 1 - load the geojson files (add sources/layers)
+    Object.keys(boundariesSourceFiles).forEach(
+      (boundariesType: BoundariesType) => {
+        const boundariesObjData = boundariesSourceFiles[boundariesType];
+
+        const boundariesMapSource = `${boundariesType}-map-source`;
+        // 2 - add source
+        this.map.addSource(boundariesMapSource, {
+          type: 'vector',
+          url: boundariesObjData.url,
+        });
+        // 3 - add layer
+        layerID = `${boundariesType}-map-layer`;
+
+        this.map.addLayer({
+          id: layerID,
+          type: 'fill',
+          source: boundariesMapSource,
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: {
+            'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
+          },
+          interactive: true,
+        });
+
+        // Add line layer
+        const lineLayerID = `${boundariesType}-line-layer`;
+        const linePaint = {
+          'line-color': boundaryColors[boundariesType], // Use color based on boundary type
+          'line-opacity': 0.75,
+        };
+
+        const lineLayerName = ``;
+
+        // Apply different line style for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          linePaint['line-width'] = 5; // Adjust line width for municipal and provincial boundaries
+          linePaint['line-dasharray'] = [1, 0]; // No dash
+        } else {
+          linePaint['line-width'] = 3; // Adjust line width Barangay
+          linePaint['line-dasharray'] = [1, 1]; // Dashed
+        }
+
+        this.map.addLayer({
+          id: lineLayerID,
+          type: 'line',
+          source: boundariesMapSource,
+          'source-layer': boundariesObjData.sourceLayer,
+          paint: linePaint,
+          interactive: false,
+        });
+
+        // Inside the initBoundaries() method, before the forEach loop
+        // Define variables to hold text layer IDs
+        let municipalTextLayerID;
+        let provincialTextLayerID;
+
+        // Inside the forEach loop where boundaries are defined
+        // Add text layer for municipal and provincial boundaries
+        if (boundariesType === 'municipal' || boundariesType === 'provincial') {
+          const textLayerID = `${boundariesType}-text-layer`;
+
+          this.map.addLayer({
+            id: textLayerID,
+            type: 'symbol',
+            source: boundariesMapSource,
+            'source-layer': boundariesObjData.sourceLayer,
+            layout: {
+              'text-field': [
+                'get',
+                boundariesType === 'municipal' ? 'Mun_Name' : 'Pro_Name',
+              ],
+              'text-font': ['Open Sans Regular'],
+              'text-size': 15,
+              'text-offset': [0, 0.5],
+              'text-anchor': 'center',
+              'text-allow-overlap': false, // Allow text to overlap
+            },
+            paint: {
+              'text-color': '#FF0000', // Adjust text color
+              'text-halo-color': '#fff', // Add text border color
+              'text-halo-width': 1, // text border width
+            },
+            filter: ['==', '$type', 'Polygon'], // Only show text for polygons
+          });
+
+          // Assign text layer ID to corresponding variable
+          if (boundariesType === 'municipal') {
+            municipalTextLayerID = textLayerID;
+          } else if (boundariesType === 'provincial') {
+            provincialTextLayerID = textLayerID;
+          }
+        }
+
+        // 5 - listen to the values from the store (group and individual)
+        const allShown$ = this.pgService.boundariesGroupShown$.pipe(
+          distinctUntilChanged()
+        );
+        const boundaries$ = this.pgService
+          .getBoundaries$(boundariesType)
+          .pipe(shareReplay(1));
+
+        // Inside the visibility subscription after the map layers are added
+        combineLatest([allShown$, boundaries$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, boundaries]) => {
+            let newOpacity = 0;
+            if (boundaries.shown && allShown) {
+              newOpacity = boundaries.opacity / 100;
+              // Enable interactivity when shown
+              this.map.setLayoutProperty(layerID, 'visibility', 'visible');
+              this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
+              this.map.setPaintProperty(
+                lineLayerID,
+                'line-opacity',
+                newOpacity
+              );
+
+              // Show text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'visible'
+                );
+              }
+            } else {
+              // Disable interactivity when hidden
+              this.map.setLayoutProperty(layerID, 'visibility', 'none');
+              this.map.setPaintProperty(lineLayerID, 'line-opacity', 0);
+              this.map.setLayerZoomRange(layerID, 0, 24);
+              // Close popup if layer is hidden
+              if (popup) {
+                popup.remove();
+              }
+
+              // Hide text layers
+              if (municipalTextLayerID) {
+                this.map.setLayoutProperty(
+                  municipalTextLayerID,
+                  'visibility',
+                  'none'
+                );
+              }
+              if (provincialTextLayerID) {
+                this.map.setLayoutProperty(
+                  provincialTextLayerID,
+                  'visibility',
+                  'none'
+                );
+              }
+            }
+          });
+
+        // 6 - Add click event listener for popup if layer is visible
+        this.map.on('click', layerID, (e) => {
+          const features = this.map.queryRenderedFeatures(e.point, {
+            layers: [layerID],
+          });
+
+          if (!features.length) {
+            return;
+          }
+
+          const feature = features[0];
+          const popupContent = `
+          <h3><strong>Barangay:</strong> ${feature.properties.Bgy_Name}</h3>
+          <p><strong>Municipality:</strong> ${feature.properties.Mun_Name}</p>
+          <p><strong>Province:</strong> ${feature.properties.Pro_Name}</p>
+        `;
+          // Remove existing popup if any
+          if (popup) {
+            popup.remove();
+          }
+
+          // Create new popup
+          popup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupContent)
+            .addTo(this.map);
+        });
+
+        // 7 - Add mouseenter and mouseleave event listeners
+        this.map.on('mouseenter', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = 'pointer';
+          }
+        });
+
+        this.map.on('mouseleave', layerID, () => {
+          if (this.map.getLayoutProperty(layerID, 'visibility') === 'visible') {
+            this.map.getCanvas().style.cursor = '';
+          }
+        });
+      }
+    );
+  }
+  // end of boundaries
 
   showDataPoints(sensorType: SensorType) {
     const graphDiv = document.getElementById('graph-dom');
@@ -2077,27 +2638,27 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   private initArea() {
-    this.map.on('load', () => {
-      this.draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          polygon: true,
-          trash: true,
-        },
-      });
+    this.draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    });
 
-      this.map.addControl(this.draw);
-      this.map.on('draw.create', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.updateArea.bind(this));
-      this.map.on('draw.update', this.updateArea.bind(this));
-      this.map.on('draw.delete', this.clearDistance.bind(this));
+    this.map.addControl(this.draw);
 
-      this.map.on('draw.modechange', (event) => {
-        if (event.mode === 'draw_polygon') {
-          // Add event listener for start of drawing
-          this.clearDistance();
-        }
-      });
+    this.map.on('draw.create', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.updateArea.bind(this));
+    this.map.on('draw.update', this.updateArea.bind(this));
+    this.map.on('draw.delete', this.clearDistance.bind(this));
+
+    // Event listener for drawing end
+    this.map.on('draw.modechange', (event) => {
+      if (event.mode === 'draw_polygon') {
+        // Add event listener for start of drawing
+        this.clearDistance();
+      }
     });
   }
 

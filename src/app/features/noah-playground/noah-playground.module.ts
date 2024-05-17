@@ -33,6 +33,8 @@ import { RiskAssessmentRainComponent } from './components/risk-assessment-rain/r
 import { RiskAssessmentExposureComponent } from './components/risk-assessment-exposure/risk-assessment-exposure.component';
 import { EarthquakeGroupComponent } from './components/earthquake-group/earthquake-group.component';
 import { EarthquakeSoloComponent } from './components/earthquake-solo/earthquake-solo.component';
+import { BoundariesGroupComponent } from './components/boundaries-group/boundaries-group.component';
+import { BoundariesSoloComponent } from './components/boundaries-solo/boundaries-solo.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { EarthquakeSoloComponent } from './components/earthquake-solo/earthquake
     RiskAssessmentExposureComponent,
     EarthquakeGroupComponent,
     EarthquakeSoloComponent,
+    BoundariesGroupComponent,
+    BoundariesSoloComponent,
   ],
   imports: [
     CommonModule,

@@ -19,6 +19,39 @@
     </label>
   </div>
 
+  <div class="justify-center items-center">
+    <button
+      class="
+        text-xs
+        font-bold
+        bg-noah-green-high
+        rounded-full
+        px-10
+        py-2
+        my-4
+        inline-flex
+        items-center
+        justify-center
+        text-white
+        focus:outline-none
+        mx-auto
+        lg:mx-0
+        tracking-widest
+        hover:bg-green-700
+        focus:ring-opacity-50
+        border-2
+        whitespace-nowrap
+        disabled:opacity-25
+        disabled:cursor-not-allowed
+        disabled:hover:bg-green-600
+      "
+      (click)="simulateData()"
+      [disabled]="!(this.simulateDisable$ | async) ? 'disabled' : null"
+    >
+      {{ buttonText }}
+    </button>
+  </div>
+
   <div
     class="absolute left-0 bottom-0 text-xs italic pl-16 ml-2 text-gray-400"
     *ngIf="fetchFailed"

@@ -250,6 +250,19 @@ export type QuezonCitySensorsState = {
   types: Record<QuezonCitySensorType, QuezonCitySensorTypeState>;
 };
 
+export type BoundariesType = 'barangay' | 'municipal' | 'provincial';
+
+export type BoundariesGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<BoundariesType, BoundariesState>;
+};
+
+export type BoundariesState = {
+  shown: boolean;
+  opacity: number;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -278,6 +291,7 @@ type NoahPlaygroundState = {
     selectedType: ContourMapType;
   };
   iotMunicipalities: IotMunicipalitiesState;
+  boundaries: BoundariesGroupState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -455,6 +469,24 @@ const createInitialValue = (): NoahPlaygroundState => ({
       },
     },
   },
+  boundaries: {
+    shown: false,
+    expanded: false,
+    types: {
+      barangay: {
+        shown: true,
+        opacity: 80,
+      },
+      municipal: {
+        shown: false,
+        opacity: 80,
+      },
+      provincial: {
+        shown: false,
+        opacity: 80,
+      },
+    },
+  },
   center: null,
   qcCenter: QC_DEFAULT_CENTER,
   currentLocation: '-----',
@@ -485,11 +517,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
     expanded: false,
     types: {
       rain: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
       flood: {
-        shown: true,
+        shown: false,
         fetched: false,
       },
     },
@@ -499,7 +531,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     qcexpanded: false,
     types: {
       'qc-critical-facilities': {
-        shown: true,
+        shown: false,
       },
     },
   },

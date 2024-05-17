@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +42,17 @@ export class ModalService {
   private popupShown = false;
   eaPopup$ = this.eaPopup.asObservable();
 
+  private simulateData = new Subject<void>();
+
   constructor() {}
+
+  simulateBtnClick(): void {
+    this.simulateData.next();
+  }
+
+  onSimulateClick(): Observable<void> {
+    return this.simulateData.asObservable();
+  }
 
   hideEaPopup() {
     this.eaPopup.next(false);
@@ -97,6 +107,7 @@ export class ModalService {
 
   disclaimerModalClose() {
     this.disclaimerModal.next(false);
+    console.log('open');
   }
 
   openRiskModal() {
