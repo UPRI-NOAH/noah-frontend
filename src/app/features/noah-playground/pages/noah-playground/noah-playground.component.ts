@@ -31,6 +31,8 @@ export class NoahPlaygroundComponent implements OnInit {
   disclaimerModalOpen = false;
   iotModalOpen = false;
   raBtnPopu = false;
+  userName: string;
+  hideBoundaries = sessionStorage.getItem('loggedIn');
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -42,7 +44,7 @@ export class NoahPlaygroundComponent implements OnInit {
     this.currentLocationPg$ = this.pgService.currentLocation$;
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
-    this.UserName$ = this.qcLoginService.currentUserName;
+    this.userName = sessionStorage.getItem('name');
 
     this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
       this.raBtnPopu = raBtnPopu;
@@ -90,6 +92,10 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.setCenter({ lat, lng });
   }
 
+  isLoggedIn(): boolean {
+    return sessionStorage.getItem('loggedIn') === 'true';
+  }
+
   processLogout() {
     this.qcLoginService.logout();
   }
@@ -114,5 +120,9 @@ export class NoahPlaygroundComponent implements OnInit {
 
   closeWarning() {
     this.modalService.warningClose();
+  }
+
+  logout(): void {
+    this.qcLoginService.logout();
   }
 }
