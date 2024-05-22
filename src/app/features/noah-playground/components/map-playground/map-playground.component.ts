@@ -189,6 +189,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   alertValue: number;
   burstDisplayed: boolean = false;
   eqDatas: any[] = []; //displaying earthquake data in table
+  intensityShow: boolean = false;
   private alertLevelData: number;
   private colorToggle: boolean = false;
 
@@ -1388,7 +1389,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_x,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
-            intensity: latestData.intensity,
+            intensity: latestData.intensity_x,
           },
           {
             direction: 'Y - Axis (ENN)', // Assuming direction for Y-axis
@@ -1397,6 +1398,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_y,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity_y,
           },
           {
             direction: 'Z - Axis (ENZ)', // Assuming direction for Z-axis
@@ -1405,14 +1407,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             drift: latestData.drift_z,
             alert_level: latestData.alert_level,
             axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity_z,
           },
         ]
       : [];
 
     // Assign eqData to earthquakeData
     this.eqDatas = eqData;
-    console.log('intensty', latestData.intensity);
-    console.log('intensty 121212', this.intensity);
+    if (latestData.axis_with_max_drift === 'x') {
+      this.intensity = latestData.intensity_x;
+    } else if (latestData.axis_with_max_drift === 'y') {
+      this.intensity = latestData.intensity_y;
+    } else if (latestData.axis_with_max_drift === 'z') {
+      this.intensity = latestData.intensity_z;
+    }
 
     updateBackgroundColor(ALERT_COLORS[latestData.alert_level]);
     if (latestData.alert_level === 2) {
@@ -1549,6 +1557,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       closeOnClick: false,
       maxWidth: 'auto',
     });
+
     this.map.on('click', 'new-points', (e) => {
       if (!this.colorToggle) return;
       const floorNumber = e.features[0].properties.floorNumber;
@@ -1557,6 +1566,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       this.floorNum = floorNumber;
       this.rshakeName = rshake_station;
+      // Check if floorNumber is 1 to display intensity
+      if (floorNumber === 1) {
+        this.intensityShow = true;
+      } else {
+        this.intensityShow = false;
+      }
       // Set content of popup to earthquakeDiv and open it at the clicked coordinates
       earthquakeDiv.hidden = false;
       popUp
@@ -1564,7 +1579,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .setMaxWidth('900px')
         .setLngLat(e.lngLat)
         .addTo(this.map);
+
       this.showEarthquakeData(+pk, rshake_station, earthquakeType);
+    });
+
+    this.map.on('mouseenter', 'new-points', function () {
+      popUp.remove();
     });
   }
 

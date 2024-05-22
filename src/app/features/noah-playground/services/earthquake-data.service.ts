@@ -41,7 +41,9 @@ export class EarthquakeDataService {
   }
 
   getLocationData() {
-    return this.http.get(`${this.NOAH_S3_LINK}/api/seismic-sensors/`);
+    return this.http.get(
+      `${this.NOAH_S3_LINK}api/seismic-sensors/?format=json`
+    );
   }
 
   getEarthquakeSummaryData() {

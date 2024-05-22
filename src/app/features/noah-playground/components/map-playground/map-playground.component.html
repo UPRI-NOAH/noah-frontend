@@ -46,6 +46,21 @@
           Floor {{ floorNum }}
         </p>
       </div>
+      <div
+        class="
+          flex
+          items-center
+          border-b border-gray-200
+          justify-center
+          px-6
+          py-3
+        "
+        *ngIf="intensityShow"
+      >
+        <p class="text-sm lg:text-xl font-semibold leading-tight text-gray-700">
+          Intensity: {{ intensity }}
+        </p>
+      </div>
 
       <!-- Table -->
       <div class="w-full max-w-2xl mx-auto">
@@ -67,6 +82,9 @@
                   </th>
                   <th class="p-2 whitespace-nowrap">
                     <div class="font-semibold text-center">% Drift</div>
+                  </th>
+                  <th *ngIf="intensityShow" class="p-2 whitespace-nowrap">
+                    <div class="font-semibold text-center">Intensity</div>
                   </th>
                 </tr>
               </thead>
@@ -114,10 +132,9 @@
                       {{ data.drift.toFixed(4) }}%
                     </div>
                   </td>
-                  <!-- Conditionally display intensity for floor number 1 -->
-                  <td class="p-2 whitespace-nowrap" *ngIf="data.floor === 1">
+                  <td *ngIf="intensityShow" class="p-2 whitespace-nowrap">
                     <div class="font-medium text-center">
-                      {{ data.intensity_x }}
+                      {{ data.intensity }}
                     </div>
                   </td>
                 </tr>
