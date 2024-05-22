@@ -190,7 +190,7 @@
         </div>
       </div>
       <!-- Modal Content -->
-      <div class="table-wrp block flex-grow max-h-full" style="height: 58vh">
+      <div class="table-wrp block flex-grow max-h-full">
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
@@ -287,7 +287,7 @@
             </div>
           </ng-container>
           <ng-template #dataAvailable>
-            <tbody class="h-96 overflow-scroll">
+            <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
               <tr
                 *ngFor="
                   let data of affectedData

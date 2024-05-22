@@ -11,7 +11,7 @@ import { QcSensorService } from './qc-sensor.service';
   providedIn: 'root',
 })
 export class QcLoginService {
-  private QCBASE_URL = 'https://noah-api.up.edu.ph';
+  private QCBASE_URL = 'https://iot-noah.up.edu.ph';
   loginModal: boolean;
   isLoginModal: boolean = false;
   @Input() qcLoginModal: boolean;
@@ -23,9 +23,6 @@ export class QcLoginService {
   private disclaimerStatus = new BehaviorSubject<boolean>(
     this.checkDisclaimerStatus()
   );
-  private UserName = new BehaviorSubject<string>(
-    localStorage.getItem('username')
-  );
 
   constructor(
     private http: HttpClient,
@@ -36,45 +33,20 @@ export class QcLoginService {
   ) {}
 
   loginUser(username: string, password: string) {
-    return this.http
-      .post<any>(`${this.QCBASE_URL}/api/auth/token/login/`, {
-        username,
-        password,
-      })
-      .pipe(
-        map((response) => {
-          if (response && response.auth_token) {
-            this.loginStatus.next(true);
-            this.disclaimerStatus.next(true);
+    const loginData = {
+      username: username,
+      password: password,
+    };
 
-            if (username == 'laguna_admin') {
-              this.adminStatus = '2';
-              this.adminName = 'Laguna Admin';
-            } else {
-              this.adminStatus = '1';
-              this.adminName = 'Qc Admin';
-            }
-
-            localStorage.setItem('loginStatus', this.adminStatus);
-            localStorage.setItem('token', response.auth_token);
-
-            localStorage.setItem('username', this.adminName);
-            this.qcSensorService.loadOnceDisclaimer$.subscribe((load) =>
-              console.log(load)
-            );
-            this.UserName.next(localStorage.getItem('username'));
-          }
-          return response;
-        })
-      );
+    return this.http.post<any>(`${this.QCBASE_URL}/login/`, loginData);
   }
 
   logout() {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('loggedIn');
     localStorage.removeItem('loginStatus');
-    localStorage.removeItem('username');
-    localStorage.setItem('disclaimerStatus', 'false');
-    localStorage.setItem('loginStatus', '0');
+    sessionStorage.removeItem('userData');
+    sessionStorage.removeItem('loginStatus');
+    console.log('Logged out successfully');
     this.router
       .navigateByUrl('/logout', { skipLocationChange: true })
       .then(() => {
@@ -114,10 +86,6 @@ export class QcLoginService {
 
   get isDisclaimerStatus() {
     return this.disclaimerStatus.asObservable();
-  }
-
-  get currentUserName() {
-    return this.UserName.asObservable();
   }
 
   showAdmin(): void {

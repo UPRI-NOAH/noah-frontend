@@ -287,49 +287,64 @@
 
       <div class="dropdown inline-block relative">
         <button
-          class="ml-2 text-base whitespace-nowrap font-bold"
-          *ngIf="UserName$ | async as UserName"
-        >
-          {{ UserName | uppercase }}
-        </button>
-        <ul
+          type="button"
           class="
-            z-50
-            dropdown-menu
-            rounded-lg
-            shadow-2xl
-            drop-shadow-xl
-            bg-white
-            right-0
-            top-6
-            absolute
-            hidden
-            text-sm text-gray-700
+            text-xs
+            uppercase
+            font-bold
+            px-2
+            py-2
+            my-4
+            inline-flex
+            items-center
+            justify-center
+            focus:outline-none
+            mx-auto
+            lg:mx-0
+            tracking-widest
+            focus:ring-opacity-50
           "
+          *ngIf="isLoggedIn()"
         >
-          <li class="" *ngIf="LoginStatus$ | async as LoginStatus">
-            <a
+          <div
+            class="cursor-pointer relative"
+            (click)="isList ? (isList = false) : (isList = true)"
+          >
+            <span>{{ userName }}</span>
+            <ul
+              *ngIf="isList"
               class="
-                rounded-lg
-                block
-                px-4
-                py-2
-                text-sm
-                leading-5
-                text-gray-700
-                transition
-                duration-150
-                ease-in-out
-                hover:bg-gray-100
-                focus:outline-none focus:bg-gray-100
+                bg-white
+                shadow
+                rounded
+                z-40
+                py-1
+                w-20
+                left-0
+                mt-8
+                -ml-4
+                absolute
+                top-0
               "
-              role="button"
-              (click)="openLogoutModal()"
-              *ngIf="LoginStatus"
-              >Logout</a
             >
-          </li>
-        </ul>
+              <li
+                class="
+                  cursor-pointer
+                  text-gray-600 text-xs
+                  leading-3
+                  tracking-normal
+                  py-3
+                  hover:bg-indigo-700 hover:text-white
+                  px-3
+                  font-normal
+                "
+                (click)="logout()"
+              >
+                Logout
+              </li>
+            </ul>
+          </div>
+        </button>
       </div>
       <!-- QC IOT ACCOUNT LOCAL -->
 
@@ -402,6 +417,10 @@
       <noah-sensors-group></noah-sensors-group> -->
       <noah-qc-sensors-group></noah-qc-sensors-group>
       <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+      <noah-boundaries-group
+        *ngIf="hideBoundaries"
+        class="w-full"
+      ></noah-boundaries-group>
     </div>
   </nav>
   <!-- //Customizing Mapbox attribution -->
