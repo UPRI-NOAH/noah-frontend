@@ -18,6 +18,7 @@
       rounded-md
       outline-none
       text-xl
+      overflow-y-auto overflow-x-hidden
     "
   >
     <div
@@ -190,7 +191,7 @@
         </div>
       </div>
       <!-- Modal Content -->
-      <div class="table-wrp block flex-grow max-h-full">
+      <div class="table-wrp block flex-grow max-h-full" style="height: 50vh">
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
@@ -360,7 +361,7 @@
       </div>
       <!-- ... Your existing content ... -->
     </div>
-    <div class="flex-shrink- p-1 md:p-4 border-t border-gray-200 rounded-b-md">
+    <div class="flex-shrink-0 p-1 md:p-4 border-t border-gray-200 rounded-b-md">
       <!-- Modal Footer -->
       <div class="flex items-center pb-2 justify-center">
         <div class="lg:w-3/5 w-full flex items-center justify-between">
@@ -511,11 +512,11 @@
             class="
               absolute
               border-blue-200
-              h-36
               overflow-y-auto
               pt-1
               bottom-full
               top-auto
+              max-h-36
             "
             *ngIf="showSelect"
           >
