@@ -19,6 +19,9 @@ export class SummaryEarthquakeComponent implements OnInit {
   totalStations: number;
   redAlertData: number;
   orangeAlertData: number;
+  pk: number;
+  rshake_station: string = '';
+  intensity: string = '';
 
   summaryAllData: any[] = [];
   fetchedAllData: any[] = [];
@@ -59,33 +62,33 @@ export class SummaryEarthquakeComponent implements OnInit {
       header: 'ALERT LEVEL',
       mobileHeader: 'Alert Level',
     },
-    // {
-    //   key: 'drift',
-    //   header: 'DRIFT',
-    //   mobileHeader: 'Drift',
-    // },
-    // {
-    //   key: 'acceleration',
-    //   header: 'ACCELERATION',
-    //   mobileHeader: 'Acceleration',
-    // },
-    // {
-    //   key: 'displacement',
-    //   header: 'DISPLACEMENT',
-    //   mobileHeader: 'Displacement',
-    // },
-    // {
-    //   key: 'intensity',
-    //   header: 'INTENSITY',
-    //   mobileHeader: 'Intensity',
-    // },
+    {
+      key: 'drift',
+      header: 'DRIFT',
+      mobileHeader: 'Drift',
+    },
+    {
+      key: 'acceleration',
+      header: 'ACCELERATION',
+      mobileHeader: 'Acceleration',
+    },
+    {
+      key: 'displacement',
+      header: 'DISPLACEMENT',
+      mobileHeader: 'Displacement',
+    },
+    {
+      key: 'intensity',
+      header: 'INTENSITY',
+      mobileHeader: 'Intensity',
+    },
   ];
 
   ngOnInit(): void {
-    this.viewSummary();
+    // this.viewSummary();
   }
 
-  async viewSummary() {
+  async viewSummary(pk: number, rshake_station: string) {
     this.earthquakeSummaryModal = true;
 
     const response: any = await this.earthquakeService
@@ -100,33 +103,6 @@ export class SummaryEarthquakeComponent implements OnInit {
           bldg_name: a.properties.bldg_name,
         };
       });
-
-    // const totalStat = response.features
-    // .map((a) => {
-    //   if (a.properties.data.rshake_station !== null) {
-    //     return {
-    //       rshake_station: a.properties.data.rshake_station,
-    //       alert_level: a.properties.data.alert_level
-    //     };
-    //   }
-    //   return null;
-    // })
-    // .filter((a) => a !== null);
-
-    // const redAlert = []; //active rain sensor data
-    //   for (let i = 0; i < totalStat.length; i++) {
-    //     if (totalStat[i].alert_level == 2) {
-    //       redAlert.push({ ...totalStat[i] });
-    //     }
-    // }
-
-    // const totalStation = response.features.properties
-    // .filter((a) => a.data.rshake_station !== '')
-    // .map((a) => {
-    //   return {
-    //     rshake_station: a.data.rshake_station,
-    //   };
-    // });
 
     for (const feature of response.features) {
       for (const data of feature.properties.data) {
@@ -168,42 +144,67 @@ export class SummaryEarthquakeComponent implements OnInit {
       }
     }
 
-    // const res: any = await this.earthquakeService
-    // .getEarthquakeSummaryData()
-    // .pipe(first())
-    // .toPromise();
+    const res: any = await this.earthquakeService
+      .getEarthquakeData(pk)
+      .pipe(first())
+      .toPromise();
 
-    // const dataArr = res.results.map((a) => {
-    //   return {
-    //     acceleration: a.acceleration,
-    //     displacement: a.displacement,
-    //     drift: a.drift,
-    //     intensity: a.intensity,
-    //     station_id: a.station_id,
-    //     alert_level: a.alert_level,
-    //   };
+    const latestData = res.results
+      .filter((a) => a.station_id === rshake_station)
+      .reduce((latest, current) => {
+        if (
+          !latest ||
+          new Date(current.timestamp) > new Date(latest.timestamp)
+        ) {
+          return current;
+        } else {
+          return latest;
+        }
+      }, null);
 
-    // });
+    const eqData = latestData
+      ? [
+          {
+            // Assuming direction for X-axis
+            displacement: latestData.displacement_x,
+            acceleration: latestData.acceleration_x,
+            drift: latestData.drift_x,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity_x,
+          },
+          {
+            // Assuming direction for Y-axis
+            displacement: latestData.displacement_y,
+            acceleration: latestData.acceleration_y,
+            drift: latestData.drift_y,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity_y,
+          },
+          {
+            // Assuming direction for Z-axis
+            displacement: latestData.displacement_z,
+            acceleration: latestData.acceleration_z,
+            drift: latestData.drift_z,
+            alert_level: latestData.alert_level,
+            axis_with_max_drift: latestData.axis_with_max_drift,
+            intensity: latestData.intensity_z,
+          },
+        ]
+      : [];
 
-    // const dataRedArray =[];
-    // for (let k = 0; k < totalBuilding.length; k++) {
-    //   for (let i = 0; i < totalStation.length; i++) {
-    //     for (let j = 0; j < dataArr.length; j++) {
-    //       if (totalStation[i].rshake_station == dataArr[j].station_id) {
-    //         if (dataArr[i].alert_level == 2){
-    //           dataRedArray.push({ ...totalStation[i], ...dataArr[j] });
-    //           break;
-    //         }
-    //       }
+    // Assign eqData to earthquakeData
+    this.fetchedAllData = eqData;
+    if (latestData.axis_with_max_drift === 'x') {
+      this.intensity = latestData.intensity_x;
+    } else if (latestData.axis_with_max_drift === 'y') {
+      this.intensity = latestData.intensity_y;
+    } else if (latestData.axis_with_max_drift === 'z') {
+      this.intensity = latestData.intensity_z;
+    }
 
-    //     }
-    //   }
-    // }
-
-    // this.summaryRedAlertData.push(dataRedArray);
     this.totalBuildings = totalBuilding.length;
-    // this.totalStations = totalStation.length;
-    // this.redAlertData = redAlert.length;
   }
 
   closeModal() {

@@ -74,48 +74,6 @@
                   <div
                     class="py-2 sm:py-4 md:py-2 bg-blue-50 shadow rounded-lg"
                   >
-                    <!-- <div
-                        class="
-                          grid grid-cols-1
-                          md:grid-cols-1
-                          lg:grid-cols-1
-                          px-4
-                          xl:px-10
-                          gap-y-8 gap-x-12
-                          2xl:gap-x-28
-                          items-center
-                        "
-                      >
-                        <div class="w-full">
-                          <p
-                            class="
-                              text-[8px]
-                              md:text-xs
-                              leading-none
-                              text-black
-                              uppercase
-                              font-bold
-                            "
-                          >
-                            Total Buildings
-                          </p>
-                          <p
-                            class="
-                              text-lg
-                              sm:text-xl
-                              md:text-2xl
-                              lg:text-3xl
-                              font-bold
-                              leading-3
-                              text-blue-700
-                              mt-1
-                              md:mt-1
-                            "
-                          >
-                            2
-                          </p>
-                        </div>
-                      </div> -->
                     <div
                       class="
                         grid grid-cols-2
@@ -183,7 +141,7 @@
                             md:mt-1
                           "
                         >
-                          70
+                          {{ totalStations }}
                         </p>
                       </div>
                     </div>
@@ -290,7 +248,7 @@
                 </ul>
               </nav>
               <section>
-                <!-- TAB SECTION FOR RED -->
+                <!-- TAB SECTION FOR ALL -->
                 <div class="tab-all">
                   <input
                     type="radio"
@@ -300,7 +258,7 @@
                     checked="checked"
                   />
                   <div class="tab-content">
-                    <!-- <ng-container dataSummaryRed> -->
+                    <!-- <ng-container dataSummaryAll> -->
                     <!-- <div tabindex="0" class="justify-center">
                         <div
                           class="shadow-xl w-full z-10 overflow-hidden"
@@ -323,7 +281,7 @@
                         </div>
                       </div> -->
                     <!-- </ng-container> -->
-                    <!-- <ng-template #dataSummaryRed> -->
+                    <!-- <ng-template #dataSummaryAll> -->
                     <div class="mt-0">
                       <div
                         class="
@@ -422,7 +380,7 @@
                                 {{ data.alert_level }}
                               </td>
 
-                              <!-- <td
+                              <td
                                 class="
                                   p-2
                                   text-base text-gray-700
@@ -462,7 +420,7 @@
                                 "
                               >
                                 {{ data.intensity }}
-                              </td> -->
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -472,7 +430,7 @@
                   </div>
                 </div>
 
-                <!-- TAB SECTION FOR ORANGE -->
+                <!-- TAB SECTION FOR RED -->
                 <div class="tab-red">
                   <input
                     type="radio"
@@ -481,7 +439,7 @@
                     class="tab-indicator"
                   />
                   <div class="tab-content">
-                    <!-- <ng-container dataSummaryOrange>
+                    <!-- <ng-container dataSummaryRed>
                       <div tabindex="0" class="justify-center">
                         <div
                           class="shadow-xl w-full z-10 overflow-hidden"
@@ -504,7 +462,7 @@
                         </div>
                       </div>
                     </ng-container> -->
-                    <!-- <ng-template #dataSummaryOrange> -->
+                    <!-- <ng-template #dataSummaryRed> -->
                     <div class="mt-0">
                       <div
                         class="
@@ -604,7 +562,7 @@
                                 {{ data.alert_level }}
                               </td>
 
-                              <!-- <td
+                              <td
                                 class="
                                   p-2
                                   text-base text-gray-700
@@ -644,7 +602,7 @@
                                 "
                               >
                                 {{ data.intensity }}
-                              </td> -->
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -654,7 +612,7 @@
                   </div>
                 </div>
 
-                <!-- TAB SECTION FOR YELLOW -->
+                <!-- TAB SECTION FOR ORANGE -->
                 <div class="tab-orange">
                   <input
                     type="radio"
@@ -663,7 +621,7 @@
                     class="tab-indicator"
                   />
                   <div class="tab-content">
-                    <!-- <ng-container dataSummaryYellow>
+                    <!-- <ng-container dataSummaryOrange>
                       <div tabindex="0" class="justify-center">
                         <div
                           class="shadow-xl w-full z-10 overflow-hidden"
@@ -686,7 +644,7 @@
                         </div>
                       </div>
                     </ng-container> -->
-                    <!-- <ng-template #dataSummaryYellow> -->
+                    <!-- <ng-template #dataSummaryOrange> -->
                     <div class="mt-0">
                       <div
                         class="
@@ -786,7 +744,7 @@
                                 {{ data.alert_level }}
                               </td>
 
-                              <!-- <td
+                              <td
                                 class="
                                   p-2
                                   text-base text-gray-700
@@ -826,7 +784,7 @@
                                 "
                               >
                                 {{ data.intensity }}
-                              </td> -->
+                              </td>
                             </tr>
                           </tbody>
                         </table>
