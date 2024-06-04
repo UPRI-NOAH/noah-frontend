@@ -224,6 +224,7 @@
                         text-black
                         bg-noah-red-high
                         hover:text-gray-600 hover:bg-blue-100
+                        active:bg-noah-red-high
                         dark:hover:bg-gray-800 dark:hover:text-gray-300
                       "
                       >ALERT RED
@@ -240,6 +241,7 @@
                         text-black
                         bg-noah-red-medium
                         hover:text-gray-600 hover:bg-blue-100
+                        active:bg-noah-red-medium
                         dark:hover:bg-gray-800 dark:hover:text-gray-300
                       "
                       >ALERT ORANGE</label
@@ -303,7 +305,7 @@
                                   border-b border-gray-200
                                   bg-blue-200
                                   p-2
-                                  text-xs
+                                  text-sm
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -319,7 +321,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-4 w-4 text-left"
+                                    class="mr-1 h-5 w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -353,7 +355,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -364,22 +366,104 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
                                 {{ data.floor_num }}
                               </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
+                              <ng-container
+                                *ngIf="
+                                  data.alert_level == 8;
+                                  else displayAlertLevel
                                 "
                               >
-                                {{ data.alert_level }}
-                              </td>
+                                <td
+                                  class="
+                                    p-1.5
+                                    text-base text-white
+                                    whitespace-nowrap
+                                    rounded-lg
+                                    text-center
+                                    bg-gray-900
+                                  "
+                                >
+                                  Offline
+                                </td>
+                              </ng-container>
 
+                              <ng-template #displayAlertLevel>
+                                <td
+                                  *ngIf="data.alert_level == 2"
+                                  class="
+                                    p-1
+                                    text-base text-white
+                                    whitespace-nowrap
+                                    rounded-lg
+                                    text-center
+                                    bg-noah-red-high
+                                  "
+                                >
+                                  {{ data.alert_level }}
+                                </td>
+
+                                <td
+                                  *ngIf="data.alert_level == 1"
+                                  class="
+                                    p-1
+                                    text-base text-white
+                                    whitespace-nowrap
+                                    rounded-lg
+                                    text-center
+                                    bg-noah-red-medium
+                                  "
+                                >
+                                  {{ data.alert_level }}
+                                </td>
+
+                                <td
+                                  *ngIf="data.alert_level == 0"
+                                  class="
+                                    p-1
+                                    text-base text-white
+                                    whitespace-nowrap
+                                    rounded-lg
+                                    text-center
+                                    bg-noah-green-high
+                                  "
+                                >
+                                  {{ data.alert_level }}
+                                </td>
+                              </ng-template>
+                              <ng-container
+                                *ngIf="
+                                  data.floor_num == 1;
+                                  else displayNoIntensity
+                                "
+                              >
+                                <td
+                                  class="
+                                    p-2
+                                    text-base text-gray-700 text-center
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.intensity }}
+                                </td>
+                              </ng-container>
+                              <ng-template #displayNoIntensity>
+                                <td
+                                  class="
+                                    p-2
+                                    text-base text-gray-700 text-center
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  -
+                                </td>
+                              </ng-template>
                               <td
                                 class="
                                   p-2
@@ -396,7 +480,8 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.acceleration }}
@@ -406,21 +491,13 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.displacement }}
                               </td>
-                              <!-- <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  first-letter:capitalize
-                                "
-                              >
-                                {{ data.intensity }}
-                              </td> -->
+
                               <td
                                 class="
                                   p-2
@@ -486,15 +563,15 @@
                         style="height: 405px"
                       >
                         <table class="w-full">
-                          <thead class="bg-blue-200">
+                          <thead class="bg-noah-red-high">
                             <tr class="text-left">
                               <th
                                 class="
                                   top-0
                                   border-b border-gray-200
-                                  bg-blue-200
+                                  bg-noah-red-high
                                   p-2
-                                  text-xs
+                                  text-sm
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -510,7 +587,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-4 w-4 text-left"
+                                    class="mr-1 h-5 w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -555,7 +632,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -565,13 +642,22 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
                                 {{ data.alert_level }}
                               </td>
-
+                              <td
+                                class="
+                                  p-2
+                                  text-base text-gray-700 text-center
+                                  whitespace-nowrap
+                                  first-letter:capitalize
+                                "
+                              >
+                                -
+                              </td>
                               <td
                                 class="
                                   p-2
@@ -588,7 +674,8 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.acceleration }}
@@ -598,21 +685,13 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.displacement }}
                               </td>
-                              <!-- <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  first-letter:capitalize
-                                "
-                              >
-                                {{ data.intensity }}
-                              </td> -->
+
                               <td
                                 class="
                                   p-2
@@ -678,15 +757,15 @@
                         style="height: 405px"
                       >
                         <table class="w-full">
-                          <thead class="bg-blue-200">
+                          <thead class="bg-noah-red-medium">
                             <tr class="text-left">
                               <th
                                 class="
                                   top-0
                                   border-b border-gray-200
-                                  bg-blue-200
+                                  bg-noah-red-medium
                                   p-2
-                                  text-xs
+                                  text-sm
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -702,7 +781,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-4 w-4 text-left"
+                                    class="mr-1 h-5 w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -747,7 +826,7 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -757,13 +836,41 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
                                 {{ data.alert_level }}
                               </td>
-
+                              <ng-container
+                                *ngIf="
+                                  data.floor_num == 1;
+                                  else displayNoIntensity
+                                "
+                              >
+                                <td
+                                  class="
+                                    p-2
+                                    text-base text-gray-700 text-center
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  {{ data.intensity }}
+                                </td>
+                              </ng-container>
+                              <ng-template #displayNoIntensity>
+                                <td
+                                  class="
+                                    p-2
+                                    text-base text-gray-700 text-center
+                                    whitespace-nowrap
+                                    first-letter:capitalize
+                                  "
+                                >
+                                  -
+                                </td>
+                              </ng-template>
                               <td
                                 class="
                                   p-2
@@ -780,7 +887,8 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.acceleration }}
@@ -790,21 +898,13 @@
                                   p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
+                                  text-center
+                                  justify-center
                                 "
                               >
                                 {{ data.displacement }}
                               </td>
-                              <!-- <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  first-letter:capitalize
-                                "
-                              >
-                                {{ data.intensity }}
-                              </td> -->
+
                               <td
                                 class="
                                   p-2

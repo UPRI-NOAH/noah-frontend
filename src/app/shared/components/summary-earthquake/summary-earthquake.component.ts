@@ -59,6 +59,11 @@ export class SummaryEarthquakeComponent implements OnInit {
       mobileHeader: 'Alert Level',
     },
     {
+      key: 'intensity',
+      header: 'INTENSITY',
+      mobileHeader: 'Intensity',
+    },
+    {
       key: 'drift',
       header: 'DRIFT',
       mobileHeader: 'Drift',
@@ -73,11 +78,6 @@ export class SummaryEarthquakeComponent implements OnInit {
       header: 'DISPLACEMENT',
       mobileHeader: 'Displacement',
     },
-    // {
-    //   key: 'intensity',
-    //   header: 'INTENSITY',
-    //   mobileHeader: 'Intensity',
-    // },
     {
       key: 'remarks',
       header: 'REMARKS',
@@ -89,7 +89,8 @@ export class SummaryEarthquakeComponent implements OnInit {
     this.viewSummary();
   }
 
-  async viewSummary() { // rshake_station: string // pk: number,
+  async viewSummary() {
+    // rshake_station: string // pk: number,
     this.earthquakeSummaryModal = true;
 
     const response: any = await this.earthquakeService
@@ -127,7 +128,6 @@ export class SummaryEarthquakeComponent implements OnInit {
               station_id: newRes.station_id,
             };
             this.summaryAllData.push(rowData);
-            // this.totalStations = rowData.station_id.length;
           }
         }
       }
