@@ -1318,22 +1318,45 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               e.features[0].geometry as any
             ).coordinates.slice();
             const bldgName = e.features[0].properties.bldg_name;
+            const responseData = e.features[0].properties.data;
+            const data = JSON.parse(responseData);
+            const alertLevel = data.map((item) => item.alert_level);
+            // Filter the alert levels to find the value 8
+            const alertLevel8 = alertLevel.filter((level) => level === 8);
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
               coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
 
-            _this.map.getCanvas().style.cursor = 'pointer';
-            smallPopUp
-              .setLngLat(coordinates)
-              .setHTML(
-                `
-        <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-          <div>${bldgName}</div>
-        </div>
-      `
-              )
-              .addTo(_this.map);
+            // Display the value of alertLevel 8
+            if (alertLevel8.length > 0) {
+              _this.map.getCanvas().style.cursor = 'pointer';
+
+              smallPopUp
+                .setLngLat(coordinates)
+                .setHTML(
+                  `
+    <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+      <div>${bldgName}</div>
+      <div><b>Seismic Offline</b></div>
+    </div>
+  `
+                )
+                .addTo(_this.map);
+            } else {
+              _this.map.getCanvas().style.cursor = 'pointer';
+
+              smallPopUp
+                .setLngLat(coordinates)
+                .setHTML(
+                  `
+    <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+      <div>${bldgName}</div>
+    </div>
+  `
+                )
+                .addTo(_this.map);
+            }
           });
           this.map.on('click', earthquakeType, function (e) {
             _this.map.flyTo({
@@ -1443,6 +1466,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       0: NOAH_COLORS['noah-green'].high,
       1: NOAH_COLORS['noah-red'].medium,
       2: NOAH_COLORS['noah-red'].high,
+      8: '#010100',
     };
   }
 
@@ -1500,6 +1524,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           ALERT_COLORS[1], // Color for alert level 1
           2,
           ALERT_COLORS[2], // Color for alert level 2
+          8,
+          ALERT_COLORS[8],
         ],
         'gray', // Default color if alert_level is not available
       ]);
@@ -1536,6 +1562,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               ALERT_COLORS[1], // Color for alert level 1
               2,
               ALERT_COLORS[2], // Color for alert level 2
+              8,
+              ALERT_COLORS[8],
             ],
             'gray', // Default color if alert level is not available
           ]
