@@ -19,20 +19,16 @@ export class SummaryEarthquakeComponent implements OnInit {
   totalStations: number;
   redAlertData: number;
   orangeAlertData: number;
-  pk: number;
+
   rshake_station: string = '';
+  station_id: string = '';
   intensity: string = '';
 
   summaryAllData: any[] = [];
-  fetchedAllData: any[] = [];
   summaryRedAlertData: any[] = [];
-  fetchedRedAlertData: any[] = [];
   summaryOrangeAlertData: any[] = [];
-  fetchedOrangeAlertData: any[] = [];
-  // summaryYellowAlertData: SummaryItem[] = [];
-  // fetchedYellowAlertData: SummaryItem[] = [];
-  searchValue: string;
 
+  searchValue: string;
   sortField = 'bldg_name';
   sortDirection = 'ascending';
 
@@ -77,10 +73,15 @@ export class SummaryEarthquakeComponent implements OnInit {
       header: 'DISPLACEMENT',
       mobileHeader: 'Displacement',
     },
+    // {
+    //   key: 'intensity',
+    //   header: 'INTENSITY',
+    //   mobileHeader: 'Intensity',
+    // },
     {
-      key: 'intensity',
-      header: 'INTENSITY',
-      mobileHeader: 'Intensity',
+      key: 'remarks',
+      header: 'REMARKS',
+      mobileHeader: 'Remarks',
     },
   ];
 
@@ -88,8 +89,7 @@ export class SummaryEarthquakeComponent implements OnInit {
     this.viewSummary();
   }
 
-  async viewSummary() // rshake_station: string // pk: number,
-  {
+  async viewSummary() { // rshake_station: string // pk: number,
     this.earthquakeSummaryModal = true;
 
     const response: any = await this.earthquakeService
@@ -104,70 +104,87 @@ export class SummaryEarthquakeComponent implements OnInit {
           bldg_name: a.properties.bldg_name,
         };
       });
-    const totalStation = response.features
-      .filter((a) => a.properties.rshake_station !== '')
+
+    const res: any = await this.earthquakeService
+      .getEarthquakeSummaryData()
+      .pipe(first())
+      .toPromise();
+
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        for (const newRes of res.results) {
+          if (data.rshake_station == newRes.station_id) {
+            const rowData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+              station_id: newRes.station_id,
+            };
+            this.summaryAllData.push(rowData);
+            // this.totalStations = rowData.station_id.length;
+          }
+        }
+      }
+    }
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        for (const newRes of res.results) {
+          if (
+            data.alert_level == 2 &&
+            data.rshake_station == newRes.station_id
+          ) {
+            const rowRedData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+            };
+            this.summaryRedAlertData.push(rowRedData);
+          }
+        }
+      }
+    }
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        for (const newRes of res.results) {
+          if (
+            data.alert_level == 1 &&
+            data.rshake_station == newRes.station_id
+          ) {
+            const rowOrangeData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+            };
+            this.summaryOrangeAlertData.push(rowOrangeData);
+          }
+        }
+      }
+    }
+    const totalStation = res.results
+      .filter((a) => a.station_id !== '')
       .map((a) => {
         return {
-          rshake_station: a.properties.rshake_station,
+          station_id: a.station_id,
         };
       });
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        const rowData = {
-          bldg_name: feature.properties.bldg_name,
-          rshake_station: data.rshake_station,
-          floor_num: data.floor_num,
-          alert_level: data.alert_level,
-        };
-        this.summaryAllData.push(rowData);
-      }
-    }
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        if (data.alert_level == 2) {
-          const rowRedData = {
-            bldg_name: feature.properties.bldg_name,
-            rshake_station: data.rshake_station,
-            floor_num: data.floor_num,
-            alert_level: data.alert_level,
-          };
-          this.summaryRedAlertData.push(rowRedData);
-        }
-      }
-    }
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        if (data.alert_level == 1) {
-          const rowOrangeData = {
-            bldg_name: feature.properties.bldg_name,
-            rshake_station: data.rshake_station,
-            floor_num: data.floor_num,
-            alert_level: data.alert_level,
-          };
-          this.summaryOrangeAlertData.push(rowOrangeData);
-        }
-      }
-    }
-
-    // const res: any = await this.earthquakeService
-    //   .getEarthquakeSummaryData()
-    //   .pipe(first())
-    //   .toPromise();
-
-    // const dataArr = res.results.map((a) => {
-    //   return {
-    //     drift: a.drift,
-    //     acceleration: a.acceleration,
-    //     displacement: a.displacement,
-    //     intensity: a.intensity,
-    //   };
-    // });
-
-    // const newArrayData = [];
-
     this.totalBuildings = totalBuilding.length;
     this.totalStations = totalStation.length;
   }
