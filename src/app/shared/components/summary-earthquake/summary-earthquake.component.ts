@@ -88,8 +88,7 @@ export class SummaryEarthquakeComponent implements OnInit {
     this.viewSummary();
   }
 
-  async viewSummary() // pk: number,
-  // rshake_station: string
+  async viewSummary() // rshake_station: string // pk: number,
   {
     this.earthquakeSummaryModal = true;
 
@@ -103,6 +102,13 @@ export class SummaryEarthquakeComponent implements OnInit {
       .map((a) => {
         return {
           bldg_name: a.properties.bldg_name,
+        };
+      });
+    const totalStation = response.features
+      .filter((a) => a.properties.rshake_station !== '')
+      .map((a) => {
+        return {
+          rshake_station: a.properties.rshake_station,
         };
       });
 
@@ -147,66 +153,23 @@ export class SummaryEarthquakeComponent implements OnInit {
     }
 
     // const res: any = await this.earthquakeService
-    // .getEarthquakeData(pk)
-    // .pipe(first())
-    // .toPromise();
+    //   .getEarthquakeSummaryData()
+    //   .pipe(first())
+    //   .toPromise();
 
-    // const latestData = res.results
-    //   .filter((a) => a.station_id === rshake_station)
-    //   .reduce((latest, current) => {
-    //     if (
-    //       !latest ||
-    //       new Date(current.timestamp) > new Date(latest.timestamp)
-    //     ) {
-    //       return current;
-    //     } else {
-    //       return latest;
-    //     }
-    //   }, null);
+    // const dataArr = res.results.map((a) => {
+    //   return {
+    //     drift: a.drift,
+    //     acceleration: a.acceleration,
+    //     displacement: a.displacement,
+    //     intensity: a.intensity,
+    //   };
+    // });
 
-    // const eqData = latestData
-    // ? [
-    //     {
-    //       // Data for X-axis
-    //       displacement: latestData.displacement_x,
-    //       acceleration: latestData.acceleration_x,
-    //       drift: latestData.drift_x,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_x,
-    //     },
-    //     {
-    //       // Data for Y-axis
-    //       displacement: latestData.displacement_y,
-    //       acceleration: latestData.acceleration_y,
-    //       drift: latestData.drift_y,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_y,
-    //     },
-    //     {
-    //       // Data for Z-axis
-    //       displacement: latestData.displacement_z,
-    //       acceleration: latestData.acceleration_z,
-    //       drift: latestData.drift_z,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_z,
-    //     },
-    //   ]
-    // : [];
-
-    // Assign eqData to earthquakeData
-    // this.fetchedAllData = eqData;
-    // if (latestData.axis_with_max_drift === 'x') {
-    //   this.intensity = latestData.intensity_x;
-    // } else if (latestData.axis_with_max_drift === 'y') {
-    //   this.intensity = latestData.intensity_y;
-    // } else if (latestData.axis_with_max_drift === 'z') {
-    //   this.intensity = latestData.intensity_z;
-    // }
+    // const newArrayData = [];
 
     this.totalBuildings = totalBuilding.length;
+    this.totalStations = totalStation.length;
   }
 
   closeModal() {
