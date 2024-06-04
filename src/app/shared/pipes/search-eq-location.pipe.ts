@@ -16,6 +16,9 @@ export class SearchEqLocationPipe implements PipeTransform {
           .includes(searchValue.toLocaleLowerCase()) ||
         data.rshake_station
           .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase()) ||
+        data.remarks
+          .toLocaleLowerCase()
           .includes(searchValue.toLocaleLowerCase())
     );
   }
