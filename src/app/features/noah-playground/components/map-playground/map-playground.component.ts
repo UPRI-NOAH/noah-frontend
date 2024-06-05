@@ -1337,8 +1337,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 .setHTML(
                   `
     <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-      <div>${bldgName}</div>
-      <div><b>Seismic Offline</b></div>
+      <div><b>${bldgName}</b></div>
+      <div><i>Seismometer is offline</i></div>
     </div>
   `
                 )
@@ -1351,7 +1351,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 .setHTML(
                   `
     <div style="color: #333333; font-size: 13px; padding-top: 4px;">
-      <div>${bldgName}</div>
+      <div><b>${bldgName}</b></div>
     </div>
   `
                 )
