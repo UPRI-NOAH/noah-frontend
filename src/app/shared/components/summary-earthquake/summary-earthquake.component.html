@@ -304,10 +304,9 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-blue-200
-                                  p-2
-                                  text-sm
+                                  py-2
+                                  text-base
                                   tracking-wide
-                                  text-left
                                   font-extrabold
                                   sticky
                                   whitespace-nowrap
@@ -316,7 +315,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -335,7 +334,12 @@
                           </thead>
                           <tbody class="divide-y divide-gray-100">
                             <tr
-                              class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                              class="
+                                hover:bg-gray-100
+                                bg-white
+                                even:bg-gray-50
+                                mx-2
+                              "
                               *ngFor="
                                 let data of summaryAllData
                                   | sort: sortField:sortDirection
@@ -354,10 +358,9 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -365,8 +368,8 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -380,7 +383,8 @@
                               >
                                 <td
                                   class="
-                                    p-1.5
+                                    mx-2
+                                    px-2
                                     text-base text-white
                                     whitespace-nowrap
                                     rounded-lg
@@ -396,7 +400,8 @@
                                 <td
                                   *ngIf="data.alert_level == 2"
                                   class="
-                                    p-1
+                                    mx-2
+                                    px-2
                                     text-base text-white
                                     whitespace-nowrap
                                     rounded-lg
@@ -410,7 +415,8 @@
                                 <td
                                   *ngIf="data.alert_level == 1"
                                   class="
-                                    p-1
+                                    mx-2
+                                    px-2
                                     text-base text-white
                                     whitespace-nowrap
                                     rounded-lg
@@ -424,7 +430,8 @@
                                 <td
                                   *ngIf="data.alert_level == 0"
                                   class="
-                                    p-1
+                                    mx-2
+                                    px-2
                                     text-base text-white
                                     whitespace-nowrap
                                     rounded-lg
@@ -443,10 +450,9 @@
                               >
                                 <td
                                   class="
-                                    p-2
-                                    text-base text-gray-700 text-center
+                                    pr-5
+                                    text-center text-base text-gray-700
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -455,10 +461,9 @@
                               <ng-template #displayNoIntensity>
                                 <td
                                   class="
-                                    p-2
+                                    pr-5
                                     text-base text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -466,36 +471,32 @@
                               </ng-template>
                               <td
                                 class="
-                                  p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
@@ -569,8 +570,8 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-noah-red-high
-                                  p-2
-                                  text-sm
+                                  py-2
+                                  text-base
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -581,7 +582,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -619,10 +620,9 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -630,8 +630,8 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -640,7 +640,7 @@
 
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
@@ -649,46 +649,41 @@
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 -
                               </td>
                               <td
                                 class="
-                                  p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
@@ -762,8 +757,8 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-noah-red-medium
-                                  p-2
-                                  text-sm
+                                  py-2
+                                  text-base
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -774,7 +769,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -812,10 +807,9 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -823,8 +817,8 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-center text-base text-gray-700
                                   whitespace-nowrap
                                 "
                               >
@@ -833,7 +827,7 @@
 
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700 text-center
                                   whitespace-nowrap
                                 "
@@ -848,10 +842,9 @@
                               >
                                 <td
                                   class="
-                                    p-2
+                                    pr-5
                                     text-base text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -860,10 +853,9 @@
                               <ng-template #displayNoIntensity>
                                 <td
                                   class="
-                                    p-2
+                                    pr-5
                                     text-base text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -871,36 +863,32 @@
                               </ng-template>
                               <td
                                 class="
-                                  p-2
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
-                                  p-2
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
