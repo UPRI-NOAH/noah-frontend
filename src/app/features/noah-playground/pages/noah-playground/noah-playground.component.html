@@ -406,6 +406,7 @@
         *ngFor="let hazard of hazardTypes"
         [hazard]="hazard"
       ></noah-hazard-type>
+      <noah-earthquake-group class="w-full"></noah-earthquake-group>
       <noah-volcano-group class="w-full"></noah-volcano-group>
       <noah-critical-facilities-playground
         class="w-full"
@@ -514,6 +515,7 @@
 </div>
 <noah-alert *ngIf="showAlert"></noah-alert>
 <noah-summary *ngIf="iotModalOpen"></noah-summary>
+<noah-summary-earthquake *ngIf="earthquakeModalOpen"></noah-summary-earthquake>
 <noah-qc-login *ngIf="modalAlert"></noah-qc-login>
 
 <!-- LOGOUT ALERT -->

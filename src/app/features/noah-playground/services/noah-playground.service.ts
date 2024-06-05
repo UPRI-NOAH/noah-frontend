@@ -41,6 +41,7 @@ import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
+import { EarthquakeType } from './earthquake-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +76,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.iotMunicipalities.shown)
     );
+  }
+
+  get earthquakeGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.shown));
+  }
+
+  get earthquakeGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.earthquake.expanded));
   }
 
   get volcanoGroupShown$(): Observable<boolean> {
@@ -980,6 +989,78 @@ export class NoahPlaygroundService {
     };
     riskAssessment.populationtypes.population.shown = false;
     this.store.patch({ riskAssessment }, `Hide Affected Population`);
+  }
+
+  getEarthquakeSensorTypeShown$(
+    earthquakeSensorType: EarthquakeType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.earthquake.types[earthquakeSensorType].shown)
+    );
+  }
+
+  getEarthquakeSensorTypeFetched$(
+    earthquakeSensorType: EarthquakeType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.earthquake.types[earthquakeSensorType].fetched)
+    );
+  }
+
+  toggleEarthquakeGroupExpanded(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { expanded } = earthquake;
+    earthquake.expanded = !expanded;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake group state expanded to ${!expanded}`
+    );
+  }
+
+  toggleEarthquakeGroupShown(): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { shown } = earthquake;
+    earthquake.shown = !shown;
+
+    this.store.patch(
+      { earthquake },
+      `update earthquake group state shown to ${!shown}`
+    );
+  }
+
+  setEarthquakeSensorTypeShown(earthquakeSensorType: EarthquakeType): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    const { shown } = earthquake.types[earthquakeSensorType];
+    earthquake.types[earthquakeSensorType].shown = !shown;
+    this.store.patch(
+      { earthquake },
+      `change seismic sensor ${earthquakeSensorType}'visibility to ${!shown}`
+    );
+  }
+
+  setEarthquakeFetched(
+    earthquakeSensorType: EarthquakeType,
+    fetched = true
+  ): void {
+    const earthquake = {
+      ...this.store.state.earthquake,
+    };
+
+    earthquake.types[earthquakeSensorType].fetched = fetched;
+    this.store.patch(
+      { earthquake },
+      `change earthquake fetched status ${earthquakeSensorType}' to ${!fetched}`
+    );
   }
 
   toggleBoundariesGroupProperty(property: 'expanded' | 'shown') {

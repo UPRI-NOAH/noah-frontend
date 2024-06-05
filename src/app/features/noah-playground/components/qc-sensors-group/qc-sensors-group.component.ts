@@ -53,7 +53,7 @@ export class QcSensorsGroupComponent implements OnInit {
     this.qcbexpanded$ = this.pgService.qcMunicipalBoundaryExpanded$;
     this.brgyShown$ = this.pgService.barangayBoundaryShown$;
     this.brgyExpanded$ = this.pgService.barangayExpanded$;
-    this.disclaimerLoginModal();
+    // this.disclaimerLoginModal();
   }
 
   toggleExpansion() {

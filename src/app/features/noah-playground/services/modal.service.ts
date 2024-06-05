@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +32,9 @@ export class ModalService {
   private iotSummaryModal = new Subject<boolean>();
   iotSummaryModal$ = this.iotSummaryModal.asObservable();
 
+  private earthquakeSummaryModal = new Subject<boolean>();
+  earthquakeSummaryModal$ = this.earthquakeSummaryModal.asObservable();
+
   private legendHide = new Subject<boolean>();
   legendHide$ = this.legendHide.asObservable();
 
@@ -39,7 +42,17 @@ export class ModalService {
   private popupShown = false;
   eaPopup$ = this.eaPopup.asObservable();
 
+  private simulateData = new Subject<void>();
+
   constructor() {}
+
+  simulateBtnClick(): void {
+    this.simulateData.next();
+  }
+
+  onSimulateClick(): Observable<void> {
+    return this.simulateData.asObservable();
+  }
 
   hideEaPopup() {
     this.eaPopup.next(false);
@@ -111,6 +124,14 @@ export class ModalService {
 
   iotSummaryModalClose() {
     this.iotSummaryModal.next(false);
+  }
+
+  earthquakeSummaryModalOpen() {
+    this.earthquakeSummaryModal.next(true);
+  }
+
+  earthquakeSummaryModalClose() {
+    this.earthquakeSummaryModal.next(false);
   }
 
   lagunaLoginPopup() {
