@@ -21,6 +21,8 @@ export type SummaryItem = {
   acceleration: number;
   displacement: number;
   intensity: string;
+  station_id: string;
+  remarks: string;
 };
 @Injectable({
   providedIn: 'root',

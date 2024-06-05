@@ -19,20 +19,16 @@ export class SummaryEarthquakeComponent implements OnInit {
   totalStations: number;
   redAlertData: number;
   orangeAlertData: number;
-  pk: number;
+
   rshake_station: string = '';
+  station_id: string = '';
   intensity: string = '';
 
   summaryAllData: any[] = [];
-  fetchedAllData: any[] = [];
   summaryRedAlertData: any[] = [];
-  fetchedRedAlertData: any[] = [];
   summaryOrangeAlertData: any[] = [];
-  fetchedOrangeAlertData: any[] = [];
-  // summaryYellowAlertData: SummaryItem[] = [];
-  // fetchedYellowAlertData: SummaryItem[] = [];
-  searchValue: string;
 
+  searchValue: string;
   sortField = 'bldg_name';
   sortDirection = 'ascending';
 
@@ -63,6 +59,11 @@ export class SummaryEarthquakeComponent implements OnInit {
       mobileHeader: 'Alert Level',
     },
     {
+      key: 'intensity',
+      header: 'INTENSITY',
+      mobileHeader: 'Intensity',
+    },
+    {
       key: 'drift',
       header: 'DRIFT',
       mobileHeader: 'Drift',
@@ -78,9 +79,9 @@ export class SummaryEarthquakeComponent implements OnInit {
       mobileHeader: 'Displacement',
     },
     {
-      key: 'intensity',
-      header: 'INTENSITY',
-      mobileHeader: 'Intensity',
+      key: 'remarks',
+      header: 'REMARKS',
+      mobileHeader: 'Remarks',
     },
   ];
 
@@ -88,9 +89,8 @@ export class SummaryEarthquakeComponent implements OnInit {
     this.viewSummary();
   }
 
-  async viewSummary() // pk: number,
-  // rshake_station: string
-  {
+  async viewSummary() {
+    // rshake_station: string // pk: number,
     this.earthquakeSummaryModal = true;
 
     const response: any = await this.earthquakeService
@@ -106,107 +106,87 @@ export class SummaryEarthquakeComponent implements OnInit {
         };
       });
 
+    const res: any = await this.earthquakeService
+      .getEarthquakeSummaryData()
+      .pipe(first())
+      .toPromise();
+
     for (const feature of response.features) {
       for (const data of feature.properties.data) {
-        const rowData = {
-          bldg_name: feature.properties.bldg_name,
-          rshake_station: data.rshake_station,
-          floor_num: data.floor_num,
-          alert_level: data.alert_level,
+        for (const newRes of res.results) {
+          if (data.rshake_station == newRes.station_id) {
+            const rowData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+              station_id: newRes.station_id,
+            };
+            this.summaryAllData.push(rowData);
+          }
+        }
+      }
+    }
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        for (const newRes of res.results) {
+          if (
+            data.alert_level == 2 &&
+            data.rshake_station == newRes.station_id
+          ) {
+            const rowRedData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+            };
+            this.summaryRedAlertData.push(rowRedData);
+          }
+        }
+      }
+    }
+    for (const feature of response.features) {
+      for (const data of feature.properties.data) {
+        for (const newRes of res.results) {
+          if (
+            data.alert_level == 1 &&
+            data.rshake_station == newRes.station_id
+          ) {
+            const rowOrangeData = {
+              bldg_name: feature.properties.bldg_name,
+              rshake_station: data.rshake_station,
+              floor_num: data.floor_num,
+              alert_level: data.alert_level,
+              drift: newRes.drift.toFixed(5),
+              displacement: newRes.displacement.toFixed(5),
+              acceleration: newRes.acceleration.toFixed(5),
+              intensity: newRes.intensity,
+              remarks: newRes.remarks,
+            };
+            this.summaryOrangeAlertData.push(rowOrangeData);
+          }
+        }
+      }
+    }
+    const totalStation = res.results
+      .filter((a) => a.station_id !== '')
+      .map((a) => {
+        return {
+          station_id: a.station_id,
         };
-        this.summaryAllData.push(rowData);
-      }
-    }
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        if (data.alert_level == 2) {
-          const rowRedData = {
-            bldg_name: feature.properties.bldg_name,
-            rshake_station: data.rshake_station,
-            floor_num: data.floor_num,
-            alert_level: data.alert_level,
-          };
-          this.summaryRedAlertData.push(rowRedData);
-        }
-      }
-    }
-
-    for (const feature of response.features) {
-      for (const data of feature.properties.data) {
-        if (data.alert_level == 1) {
-          const rowOrangeData = {
-            bldg_name: feature.properties.bldg_name,
-            rshake_station: data.rshake_station,
-            floor_num: data.floor_num,
-            alert_level: data.alert_level,
-          };
-          this.summaryOrangeAlertData.push(rowOrangeData);
-        }
-      }
-    }
-
-    // const res: any = await this.earthquakeService
-    // .getEarthquakeData(pk)
-    // .pipe(first())
-    // .toPromise();
-
-    // const latestData = res.results
-    //   .filter((a) => a.station_id === rshake_station)
-    //   .reduce((latest, current) => {
-    //     if (
-    //       !latest ||
-    //       new Date(current.timestamp) > new Date(latest.timestamp)
-    //     ) {
-    //       return current;
-    //     } else {
-    //       return latest;
-    //     }
-    //   }, null);
-
-    // const eqData = latestData
-    // ? [
-    //     {
-    //       // Data for X-axis
-    //       displacement: latestData.displacement_x,
-    //       acceleration: latestData.acceleration_x,
-    //       drift: latestData.drift_x,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_x,
-    //     },
-    //     {
-    //       // Data for Y-axis
-    //       displacement: latestData.displacement_y,
-    //       acceleration: latestData.acceleration_y,
-    //       drift: latestData.drift_y,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_y,
-    //     },
-    //     {
-    //       // Data for Z-axis
-    //       displacement: latestData.displacement_z,
-    //       acceleration: latestData.acceleration_z,
-    //       drift: latestData.drift_z,
-    //       alert_level: latestData.alert_level,
-    //       axis_with_max_drift: latestData.axis_with_max_drift,
-    //       intensity: latestData.intensity_z,
-    //     },
-    //   ]
-    // : [];
-
-    // Assign eqData to earthquakeData
-    // this.fetchedAllData = eqData;
-    // if (latestData.axis_with_max_drift === 'x') {
-    //   this.intensity = latestData.intensity_x;
-    // } else if (latestData.axis_with_max_drift === 'y') {
-    //   this.intensity = latestData.intensity_y;
-    // } else if (latestData.axis_with_max_drift === 'z') {
-    //   this.intensity = latestData.intensity_z;
-    // }
-
+      });
     this.totalBuildings = totalBuilding.length;
+    this.totalStations = totalStation.length;
   }
 
   closeModal() {
