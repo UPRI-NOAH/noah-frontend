@@ -1242,24 +1242,42 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         const floorNumber = e.features[0].properties.floorNumber;
         const rshake_station = e.features[0].properties.rshake_station;
         const coordinates = (e.features[0].geometry as any).coordinates.slice();
+        const alertLevel8 = e.features[0].properties.alertLevel;
 
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
 
-        this.map.getCanvas().style.cursor = 'pointer';
-        smallPopUp
-          .setLngLat(coordinates)
-          .setHTML(
-            `
+        if (alertLevel8 == 8) {
+          this.map.getCanvas().style.cursor = 'pointer';
+          smallPopUp
+            .setLngLat(coordinates)
+            .setHTML(
+              `
     <div style="color: #333333; font-size: 13px; padding-top: 4px;">
     <div><b>${bldgName}</b></div>
     <div>RShake Station: ${rshake_station}</div>
     <div>Floor Number: ${floorNumber} </div>
+    <div><i>Seismometer is offline</i></div>
     </div>
   `
-          )
-          .addTo(this.map);
+            )
+            .addTo(this.map);
+        } else {
+          this.map.getCanvas().style.cursor = 'pointer';
+          smallPopUp
+            .setLngLat(coordinates)
+            .setHTML(
+              `
+      <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+      <div><b>${bldgName}</b></div>
+      <div>RShake Station: ${rshake_station}</div>
+      <div>Floor Number: ${floorNumber} </div>
+      </div>
+    `
+            )
+            .addTo(this.map);
+        }
       });
 
       this.changeBurstCircleColor();

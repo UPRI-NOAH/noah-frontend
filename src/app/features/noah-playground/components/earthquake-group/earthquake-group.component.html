@@ -131,6 +131,7 @@
               bg-noah-green-high
               rounded-full
               px-10
+              w-56
               py-2
               inline-flex
               items-center
@@ -149,7 +150,9 @@
               whitespace-nowrap
             "
             (click)="earthquakeModalOpen()"
-            [disabled]="!(shown$ | async)"
+            [disabled]="
+              !(modalService.simulateDatas$ | async) || !(shown$ | async)
+            "
           >
             View Data Summary
           </button>
