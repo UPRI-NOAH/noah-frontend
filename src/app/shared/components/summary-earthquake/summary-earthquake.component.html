@@ -307,7 +307,6 @@
                                   md:text-base
                                   text-xs
                                   tracking-wide
-                                  text-left
                                   font-extrabold
                                   sticky
                                   whitespace-nowrap
@@ -316,7 +315,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -335,7 +334,12 @@
                           </thead>
                           <tbody class="divide-y divide-gray-100">
                             <tr
-                              class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                              class="
+                                hover:bg-gray-100
+                                bg-white
+                                even:bg-gray-50
+                                mx-2
+                              "
                               *ngFor="
                                 let data of summaryAllData
                                   | sort: sortField:sortDirection
@@ -361,7 +365,6 @@
                                   md:text-base
                                   text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -462,7 +465,6 @@
                                     md:text-base
                                     text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -476,7 +478,6 @@
                                     md:text-base
                                     text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -490,10 +491,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
@@ -503,10 +503,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
@@ -516,10 +515,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
@@ -607,7 +605,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -652,7 +650,6 @@
                                   md:text-base
                                   text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -688,7 +685,6 @@
                                   md:text-base
                                   text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 -
@@ -701,10 +697,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
@@ -714,23 +709,19 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-xs
-                                  md:text-base
-                                  text-gray-700
+                                  pr-5
+                                  text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
@@ -818,7 +809,7 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
@@ -863,7 +854,6 @@
                                   md:text-base
                                   text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -905,7 +895,6 @@
                                     md:text-base
                                     text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -919,7 +908,6 @@
                                     md:text-base
                                     text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -933,10 +921,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
@@ -946,10 +933,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.acceleration }} cm/s
                               </td>
                               <td
                                 class="
@@ -959,10 +945,9 @@
                                   text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.displacement }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
