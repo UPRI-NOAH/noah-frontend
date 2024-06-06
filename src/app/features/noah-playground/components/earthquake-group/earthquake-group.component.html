@@ -12,7 +12,7 @@
       Earthquake
     </div>
 
-    <div class="ml-3 flex space-x-5 justify-center items-center">
+    <!-- <div class="ml-3 flex space-x-5 justify-center items-center">
       <div
         class="
           relative
@@ -74,7 +74,7 @@
           "
         ></div>
       </div>
-    </div>
+    </div> -->
 
     <div class="ml-auto">
       <button
@@ -128,9 +128,10 @@
             class="
               text-xs
               font-bold
-              bg-green-600
+              bg-noah-green-high
               rounded-full
               px-10
+              w-56
               py-2
               inline-flex
               items-center
@@ -149,7 +150,9 @@
               whitespace-nowrap
             "
             (click)="earthquakeModalOpen()"
-            [disabled]="!(shown$ | async)"
+            [disabled]="
+              !(modalService.simulateDatas$ | async) || !(shown$ | async)
+            "
           >
             View Data Summary
           </button>
