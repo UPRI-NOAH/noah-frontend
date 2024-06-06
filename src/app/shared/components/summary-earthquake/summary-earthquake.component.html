@@ -174,7 +174,15 @@
                 "
               />
               <h1
-                class="pt-2 my-2 font-bold text-base lg:text-2xl text-blue-600"
+                class="
+                  pt-2
+                  my-2
+                  font-bold
+                  text-sm
+                  md:text-base
+                  lg:text-2xl
+                  text-blue-600
+                "
               >
                 List of buildings that surpassed the following thresholds:
               </h1>
@@ -291,8 +299,9 @@
                           rounded-tr-lg rounded-b-lg
                           shadow
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-blue-200">
@@ -303,7 +312,8 @@
                                   border-b border-gray-200
                                   bg-blue-200
                                   py-2
-                                  text-base
+                                  md:text-base
+                                  text-sm
                                   tracking-wide
                                   font-extrabold
                                   sticky
@@ -318,7 +328,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -347,7 +357,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -357,7 +369,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -367,7 +381,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -381,9 +397,11 @@
                               >
                                 <td
                                   class="
-                                    mx-2
                                     px-2
-                                    text-base text-white
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -398,9 +416,11 @@
                                 <td
                                   *ngIf="data.alert_level == 2"
                                   class="
-                                    mx-2
                                     px-2
-                                    text-base text-white
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -413,9 +433,11 @@
                                 <td
                                   *ngIf="data.alert_level == 1"
                                   class="
-                                    mx-2
                                     px-2
-                                    text-base text-white
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -428,9 +450,11 @@
                                 <td
                                   *ngIf="data.alert_level == 0"
                                   class="
-                                    mx-2
                                     px-2
-                                    text-base text-white
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -449,7 +473,9 @@
                                 <td
                                   class="
                                     pr-5
-                                    text-center text-base text-gray-700
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
                                   "
                                 >
@@ -460,7 +486,9 @@
                                 <td
                                   class="
                                     pr-5
-                                    text-base text-gray-700 text-center
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
                                   "
                                 >
@@ -469,7 +497,9 @@
                               </ng-template>
                               <td
                                 class="
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -479,7 +509,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -489,7 +521,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -499,7 +533,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -555,8 +591,9 @@
                           rounded-tr-lg rounded-b-lg
                           shadow
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-noah-red-high">
@@ -567,7 +604,8 @@
                                   border-b border-gray-200
                                   bg-noah-red-high
                                   py-2
-                                  text-base
+                                  md:text-base
+                                  text-sm
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -583,7 +621,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -607,7 +645,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -617,7 +657,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -627,7 +669,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -637,7 +681,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700 text-center
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -646,7 +692,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700 text-center
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -654,7 +702,9 @@
                               </td>
                               <td
                                 class="
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -663,8 +713,10 @@
                               </td>
                               <td
                                 class="
-                                  pr-5
-                                  text-base text-gray-700
+                                  p-2
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -684,9 +736,10 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.remarks }}
@@ -740,8 +793,9 @@
                           rounded-tr-lg rounded-b-lg
                           shadow
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-noah-red-medium">
@@ -752,7 +806,8 @@
                                   border-b border-gray-200
                                   bg-noah-red-medium
                                   py-2
-                                  text-base
+                                  md:text-base
+                                  text-xs
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -768,7 +823,7 @@
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -792,7 +847,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -802,7 +859,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -812,7 +871,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-center text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -822,7 +883,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700 text-center
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -837,7 +900,9 @@
                                 <td
                                   class="
                                     pr-5
-                                    text-base text-gray-700 text-center
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
                                   "
                                 >
@@ -848,7 +913,9 @@
                                 <td
                                   class="
                                     pr-5
-                                    text-base text-gray-700 text-center
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
                                   "
                                 >
@@ -857,7 +924,9 @@
                               </ng-template>
                               <td
                                 class="
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -867,7 +936,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -877,7 +948,9 @@
                               <td
                                 class="
                                   pr-5
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
                                 "
@@ -887,9 +960,10 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.remarks }}
