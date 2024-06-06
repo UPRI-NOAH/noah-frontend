@@ -174,7 +174,15 @@
                 "
               />
               <h1
-                class="pt-2 my-2 font-bold text-base lg:text-2xl text-blue-600"
+                class="
+                  pt-2
+                  my-2
+                  font-bold
+                  text-sm
+                  md:text-base
+                  lg:text-2xl
+                  text-blue-600
+                "
               >
                 List of buildings that surpassed the following thresholds:
               </h1>
@@ -290,11 +298,10 @@
                           overflow-auto
                           rounded-tr-lg rounded-b-lg
                           shadow
-                          hidden
-                          lg:block
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-blue-200">
@@ -304,10 +311,10 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-blue-200
-                                  p-2
+                                  py-2
+                                  md:text-base
                                   text-sm
                                   tracking-wide
-                                  text-left
                                   font-extrabold
                                   sticky
                                   whitespace-nowrap
@@ -316,12 +323,12 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -335,7 +342,12 @@
                           </thead>
                           <tbody class="divide-y divide-gray-100">
                             <tr
-                              class="hover:bg-gray-100 bg-white even:bg-gray-50"
+                              class="
+                                hover:bg-gray-100
+                                bg-white
+                                even:bg-gray-50
+                                mx-2
+                              "
                               *ngFor="
                                 let data of summaryAllData
                                   | sort: sortField:sortDirection
@@ -345,7 +357,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -354,10 +368,11 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -365,8 +380,10 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -380,8 +397,11 @@
                               >
                                 <td
                                   class="
-                                    p-1.5
-                                    text-base text-white
+                                    px-2
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -396,8 +416,11 @@
                                 <td
                                   *ngIf="data.alert_level == 2"
                                   class="
-                                    p-1
-                                    text-base text-white
+                                    px-2
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -410,8 +433,11 @@
                                 <td
                                   *ngIf="data.alert_level == 1"
                                   class="
-                                    p-1
-                                    text-base text-white
+                                    px-2
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -424,8 +450,11 @@
                                 <td
                                   *ngIf="data.alert_level == 0"
                                   class="
-                                    p-1
-                                    text-base text-white
+                                    px-2
+                                    mx-2
+                                    text-xs
+                                    md:text-base
+                                    text-white
                                     whitespace-nowrap
                                     rounded-lg
                                     text-center
@@ -443,10 +472,11 @@
                               >
                                 <td
                                   class="
-                                    p-2
-                                    text-base text-gray-700 text-center
+                                    pr-5
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -455,10 +485,11 @@
                               <ng-template #displayNoIntensity>
                                 <td
                                   class="
-                                    p-2
-                                    text-base text-gray-700 text-center
+                                    pr-5
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -466,41 +497,45 @@
                               </ng-template>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
+                              </td>
+                              <td
+                                class="
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
+                                  whitespace-nowrap
+                                  text-center
+                                "
+                              >
+                                {{ data.acceleration }} cm/s
+                              </td>
+                              <td
+                                class="
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
+                                  whitespace-nowrap
+                                  text-center
+                                "
+                              >
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  text-center
-                                  justify-center
-                                "
-                              >
-                                {{ data.acceleration }}
-                              </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  text-center
-                                  justify-center
-                                "
-                              >
-                                {{ data.displacement }}
-                              </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -555,11 +590,10 @@
                           overflow-auto
                           rounded-tr-lg rounded-b-lg
                           shadow
-                          hidden
-                          lg:block
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-noah-red-high">
@@ -569,7 +603,8 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-noah-red-high
-                                  p-2
+                                  py-2
+                                  md:text-base
                                   text-sm
                                   tracking-wide
                                   text-left
@@ -581,12 +616,12 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -610,7 +645,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -619,10 +656,11 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -630,8 +668,10 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -640,8 +680,10 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -649,53 +691,55 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 -
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
                               </td>
                               <td
                                 class="
                                   p-2
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
+                                  whitespace-nowrap
+                                  text-center
+                                "
+                              >
+                                {{ data.acceleration }} cm/s
+                              </td>
+                              <td
+                                class="
+                                  pr-5
                                   text-base text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.acceleration }}
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
-                                  text-center
-                                  justify-center
-                                "
-                              >
-                                {{ data.displacement }}
-                              </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.remarks }}
@@ -748,11 +792,10 @@
                           overflow-auto
                           rounded-tr-lg rounded-b-lg
                           shadow
-                          hidden
-                          lg:block
                           overflow-y-auto
+                          md:h-96
+                          h-56
                         "
-                        style="height: 405px"
                       >
                         <table class="w-full">
                           <thead class="bg-noah-red-medium">
@@ -762,8 +805,9 @@
                                   top-0
                                   border-b border-gray-200
                                   bg-noah-red-medium
-                                  p-2
-                                  text-sm
+                                  py-2
+                                  md:text-base
+                                  text-xs
                                   tracking-wide
                                   text-left
                                   font-extrabold
@@ -774,12 +818,12 @@
                               >
                                 <div
                                   (click)="onHeaderColumnClick(col.key)"
-                                  class="cursor-pointer inline-flex"
+                                  class="cursor-pointer inline-flex mx-2"
                                 >
                                   {{ col.header }}
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-1 h-5 w-5 text-left"
+                                    class="mr-1 h-4 w-4 md:h-5 md:w-5 text-left"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
                                   >
@@ -803,7 +847,9 @@
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   first-letter:capitalize
                                 "
@@ -812,10 +858,11 @@
                               </td>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.rshake_station }}
@@ -823,8 +870,10 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -833,8 +882,10 @@
 
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700 text-center
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700 text-center
                                   whitespace-nowrap
                                 "
                               >
@@ -848,10 +899,11 @@
                               >
                                 <td
                                   class="
-                                    p-2
-                                    text-base text-gray-700 text-center
+                                    pr-5
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   {{ data.intensity }}
@@ -860,10 +912,11 @@
                               <ng-template #displayNoIntensity>
                                 <td
                                   class="
-                                    p-2
-                                    text-base text-gray-700 text-center
+                                    pr-5
+                                    text-xs
+                                    md:text-base
+                                    text-gray-700 text-center
                                     whitespace-nowrap
-                                    first-letter:capitalize
                                   "
                                 >
                                   -
@@ -871,43 +924,46 @@
                               </ng-template>
                               <td
                                 class="
-                                  p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
                                   text-center
-                                  justify-center
                                 "
                               >
-                                {{ data.drift }}
+                                {{ data.drift }} %
+                              </td>
+                              <td
+                                class="
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
+                                  whitespace-nowrap
+                                  text-center
+                                "
+                              >
+                                {{ data.acceleration }} cm/s
+                              </td>
+                              <td
+                                class="
+                                  pr-5
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
+                                  whitespace-nowrap
+                                  text-center
+                                "
+                              >
+                                {{ data.displacement }} cm
                               </td>
                               <td
                                 class="
                                   p-2
-                                  text-base text-gray-700
+                                  text-xs
+                                  md:text-base
+                                  text-gray-700
                                   whitespace-nowrap
-                                  text-center
-                                  justify-center
-                                "
-                              >
-                                {{ data.acceleration }}
-                              </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  text-center
-                                  justify-center
-                                "
-                              >
-                                {{ data.displacement }}
-                              </td>
-                              <td
-                                class="
-                                  p-2
-                                  text-base text-gray-700
-                                  whitespace-nowrap
-                                  first-letter:capitalize
                                 "
                               >
                                 {{ data.remarks }}

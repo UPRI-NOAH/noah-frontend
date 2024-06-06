@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +44,15 @@ export class ModalService {
 
   private simulateData = new Subject<void>();
 
+  private simulateDataSubject = new BehaviorSubject<boolean>(false);
+  simulateDatas$ = this.simulateDataSubject.asObservable();
+
   constructor() {}
+
+  updateSimulateDataStatus() {
+    const currentValue = this.simulateDataSubject.value;
+    this.simulateDataSubject.next(!currentValue);
+  }
 
   simulateBtnClick(): void {
     this.simulateData.next();

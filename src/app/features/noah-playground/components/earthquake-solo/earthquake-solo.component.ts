@@ -48,6 +48,7 @@ export class EarthquakeSoloComponent implements OnInit {
   simulateData() {
     this.modalService.simulateBtnClick();
     this.isSimulating = !this.isSimulating;
+    this.modalService.updateSimulateDataStatus();
   }
 
   ngOnDestroy(): void {

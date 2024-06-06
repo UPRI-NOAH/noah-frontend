@@ -18,7 +18,7 @@ export class EarthquakeGroupComponent implements OnInit {
 
   constructor(
     private pgService: NoahPlaygroundService,
-    private modalService: ModalService
+    public modalService: ModalService
   ) {}
 
   ngOnInit(): void {
