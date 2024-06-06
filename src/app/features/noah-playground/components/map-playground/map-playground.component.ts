@@ -1506,6 +1506,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
     ALERT_COLORS: any
   ) {
+    console.log('hello data', data);
     this.map.addLayer({
       id: earthquakeType,
       type: 'circle',
@@ -1515,7 +1516,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
       paint: {
         'circle-radius': 12,
-        'circle-color': ALERT_COLORS[0],
+        'circle-color': [
+          'case',
+          ['==', ['get', 'alert_level'], 8],
+          '#010100', // Black color for alert_level 8
+          ALERT_COLORS[0], // Default color
+        ],
         'circle-opacity': 0,
       },
     });
@@ -1556,7 +1562,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private resetCircleColor(): void {
     const earthquakeType = 'seismic-sensor';
     const ALERT_COLORS = this.getAlertColors();
-    this.map.setPaintProperty(earthquakeType, 'circle-color', ALERT_COLORS[0]);
+    this.map.setPaintProperty(earthquakeType, 'circle-color', [
+      'case',
+      ['==', ['get', 'alert_level'], 8],
+      '#010100', // Black color for alert_level 8
+      ALERT_COLORS[0], // Default color
+    ]);
   }
 
   private changeBurstCircleColor(): void {
@@ -1585,7 +1596,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             ],
             'gray', // Default color if alert level is not available
           ]
-        : ALERT_COLORS[0]
+        : [
+            'case',
+            ['==', ['get', 'alertLevel'], 8],
+            '#010100', // Black color for alert_level 8
+            ALERT_COLORS[0], // Default color
+          ]
     );
 
     if (this.colorToggle) {
@@ -1609,6 +1625,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       const floorNumber = e.features[0].properties.floorNumber;
       const rshake_station = e.features[0].properties.rshake_station; // Retrieve rshake_station from clicked feature
       const pk = e.features[0].properties.pk;
+      const alertLevel8 = e.features[0].properties.alertLevel;
 
       this.floorNum = floorNumber;
       this.rshakeName = rshake_station;
@@ -1627,6 +1644,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         .addTo(this.map);
 
       this.showEarthquakeData(+pk, rshake_station, earthquakeType);
+
+      if (alertLevel8 == 8) {
+        this.map.getCanvas().style.cursor = 'pointer';
+        popUp
+          .setLngLat(e.lngLat)
+          .setHTML(
+            `
+    <div style="color: #333333; font-size: 13px; padding-top: 4px;">
+    <div><i>Seismometer is offline</i></div>
+    </div>
+  `
+          )
+          .addTo(this.map);
+      }
     });
 
     this.map.on('mouseenter', 'new-points', function () {
