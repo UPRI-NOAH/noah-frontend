@@ -1506,7 +1506,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     data: GeoJSON.FeatureCollection<GeoJSON.Geometry>,
     ALERT_COLORS: any
   ) {
-    console.log('hello data', data);
+    const catImage = 'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png';
     this.map.addLayer({
       id: earthquakeType,
       type: 'circle',
