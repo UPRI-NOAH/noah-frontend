@@ -1370,17 +1370,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           paint: linePaint,
           interactive: false,
         });
-
-        // Inside the initBoundaries() method, before the forEach loop
-        // Define variables to hold text layer IDs
         let municipalTextLayerID;
         let provincialTextLayerID;
 
-        // Inside the forEach loop where boundaries are defined
-        // Add text layer for municipal and provincial boundaries
         if (boundariesType === 'municipal' || boundariesType === 'provincial') {
           const textLayerID = `${boundariesType}-text-layer`;
-
           this.map.addLayer({
             id: textLayerID,
             type: 'symbol',
@@ -1392,15 +1386,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 boundariesType === 'municipal' ? 'Mun_Name' : 'Pro_Name',
               ],
               'text-font': ['Open Sans Regular'],
-              'text-size': 15,
+              'text-size': boundariesType === 'municipal' ? 15 : 20, // Set text size based on boundary type
               'text-offset': [0, 0.5],
               'text-anchor': 'center',
-              'text-allow-overlap': false, // Allow text to overlap
+              'text-allow-overlap': false, // Prevent text from overlapping
+              'text-optional': true, // Hide labels that would overlap
             },
             paint: {
-              'text-color': '#FF0000', // Adjust text color
-              'text-halo-color': '#fff', // Add text border color
-              'text-halo-width': 1, // text border width
+              'text-color': '#010100', // Adjust text color
+              'text-halo-color': '#FFFFFF', // Add text border color
+              'text-halo-width': 1, // Text border width
             },
             filter: ['==', '$type', 'Polygon'], // Only show text for polygons
           });
