@@ -215,7 +215,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initRainForcast();
         this.initArea();
         this.initDistance();
-        this.clearDistance();
       });
   }
 
@@ -1393,7 +1392,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-optional': true, // Hide labels that would overlap
             },
             paint: {
-              'text-color': '#010100', // Adjust text color
+              'text-color':
+                boundariesType === 'municipal' ? '#7e22ce' : '#010100', // Adjust text color
               'text-halo-color': '#FFFFFF', // Add text border color
               'text-halo-width': 1, // Text border width
             },
