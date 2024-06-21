@@ -192,6 +192,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.addGeolocationControls();
         this.initCenterListener();
         this.initGeolocationListener();
+        this.initCalculation();
       });
 
     fromEvent(this.map, 'style.load')
@@ -213,8 +214,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initBarangayBoundary();
         this.initAffectedExposure();
         this.initRainForcast();
-        this.initArea();
-        this.initDistance();
       });
   }
 
@@ -2113,174 +2112,57 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     }
   }
 
-  private initArea() {
+  initCalculation() {
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
         polygon: true,
+        line_string: true,
         trash: true,
       },
     });
 
     this.map.addControl(this.draw);
 
-    this.map.on('draw.create', this.updateArea.bind(this));
-    this.map.on('draw.delete', this.updateArea.bind(this));
-    this.map.on('draw.update', this.updateArea.bind(this));
-    this.map.on('draw.delete', this.clearDistance.bind(this));
-
-    // Event listener for drawing end
-    this.map.on('draw.modechange', (event) => {
-      if (event.mode === 'draw_polygon') {
-        // Add event listener for start of drawing
-        this.clearDistance();
-      }
-    });
+    this.map.on('draw.create', this.updateCalculate.bind(this));
+    this.map.on('draw.delete', this.updateCalculate.bind(this));
+    this.map.on('draw.update', this.updateCalculate.bind(this));
   }
 
-  private updateArea(event) {
+  private updateCalculate(event) {
     const data = this.draw.getAll();
     const answer = document.getElementById('area');
+    let totalArea = 0;
+    let totalLength = 0;
+
     if (data.features.length > 0) {
-      const area = turf.area(data);
-      const rounded_area = Math.round(area * 100) / 100;
-      answer.innerHTML = `<p>Total Area: ${rounded_area.toLocaleString()} sqm</p>`;
+      data.features.forEach((feature) => {
+        if (feature.geometry.type === 'Polygon') {
+          const area = turf.area(feature);
+          totalArea += area;
+        } else if (feature.geometry.type === 'LineString') {
+          const length = turf.length(feature, { units: 'kilometers' });
+          totalLength += length;
+        }
+      });
+
+      let output = '';
+      if (totalArea > 0) {
+        const roundedArea = Math.round(totalArea * 100) / 100;
+        output += `<p>Total Area: ${roundedArea.toLocaleString()} sqm</p>`;
+      }
+      if (totalLength > 0) {
+        const roundedLength = Math.round(totalLength * 100) / 100;
+        output += `<p>Total Distance: ${roundedLength.toLocaleString()} km</p>`;
+      }
+
+      answer.innerHTML = output;
     } else {
       answer.innerHTML = '';
       if (event.type !== 'draw.delete') {
-        console.log('computation for area: ');
+        console.log('computation for area or distance: ');
       }
     }
-  }
-
-  initDistance() {
-    this.distanceContainer = document.getElementById('distance');
-    this.geojson = {
-      type: 'FeatureCollection',
-      features: [],
-    };
-    this.linestring = {
-      type: 'Feature',
-      geometry: {
-        type: 'LineString',
-        coordinates: [],
-      },
-    };
-
-    this.map.on('load', () => {
-      this.map.addSource('geojson', {
-        type: 'geojson',
-        data: this.geojson,
-      });
-
-      this.map.addLayer({
-        id: 'measure-points',
-        type: 'circle',
-        source: 'geojson',
-        paint: {
-          'circle-radius': 5,
-          'circle-color': '#000',
-        },
-        filter: ['in', '$type', 'Point'],
-      });
-
-      this.map.addLayer({
-        id: 'measure-lines',
-        type: 'line',
-        source: 'geojson',
-        layout: {
-          'line-cap': 'round',
-          'line-join': 'round',
-        },
-        paint: {
-          'line-color': '#000',
-          'line-width': 2.5,
-        },
-        filter: ['in', '$type', 'LineString'],
-      });
-
-      const handleClickOrTouch = (e) => {
-        if (this.measurementActive) {
-          const features = this.map.queryRenderedFeatures(e.point, {
-            layers: ['measure-points'],
-          });
-
-          if (this.geojson.features.length > 1) this.geojson.features.pop();
-
-          this.distanceContainer.innerHTML = '';
-
-          if (features.length) {
-            const id = features[0].properties.id;
-            this.geojson.features = this.geojson.features.filter(
-              (point) => point.properties.id !== id
-            );
-          } else {
-            const point = {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [e.lngLat.lng, e.lngLat.lat],
-              },
-              properties: {
-                id: String(new Date().getTime()),
-              },
-            };
-
-            this.geojson.features.push(point);
-          }
-
-          if (this.geojson.features.length > 1) {
-            this.linestring.geometry.coordinates = this.geojson.features.map(
-              (point) => point.geometry.coordinates
-            );
-
-            this.geojson.features.push(this.linestring);
-
-            const value = document.createElement('pre');
-            const distance = turf.length(this.linestring);
-            value.textContent = `Total distance: ${distance.toLocaleString()}km`;
-            this.distanceContainer.appendChild(value);
-          }
-
-          (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
-            this.geojson
-          );
-        }
-      };
-
-      this.map.on('click', handleClickOrTouch);
-      this.map.on('touchend', handleClickOrTouch);
-
-      this.map.on('mousemove', (e) => {
-        if (!this.measurementActive) {
-          return;
-        }
-        const features = this.map.queryRenderedFeatures(e.point, {
-          layers: ['measure-points'],
-        });
-        this.map.getCanvas().style.cursor = features.length
-          ? 'pointer'
-          : 'crosshair';
-      });
-    });
-  }
-
-  calculateDistance(): void {
-    this.measurementActive = true;
-    this.geojson.features = [];
-    this.distanceContainer.innerHTML = '';
-    (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
-      this.geojson
-    );
-  }
-
-  clearDistance() {
-    this.measurementActive = false;
-    this.geojson.features = [];
-    this.distanceContainer.innerHTML = '';
-    (this.map.getSource('geojson') as mapboxgl.GeoJSONSource).setData(
-      this.geojson
-    );
   }
 
   /**
