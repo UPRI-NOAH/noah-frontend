@@ -2147,13 +2147,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
 
       let output = '';
-      if (totalArea > 0) {
-        const roundedArea = Math.round(totalArea * 100) / 100;
-        output += `<p>Total Area: ${roundedArea.toLocaleString()} sqm</p>`;
-      }
+
       if (totalLength > 0) {
         const roundedLength = Math.round(totalLength * 100) / 100;
         output += `<p>Total Distance: ${roundedLength.toLocaleString()} km</p>`;
+      }
+      if (totalArea > 0) {
+        const roundedArea = Math.round(totalArea * 100) / 100;
+        output += `<p>Total Area: ${roundedArea.toLocaleString()} sqm</p>`;
       }
 
       answer.innerHTML = output;
