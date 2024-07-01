@@ -65,9 +65,20 @@ export class RiskAssessmentGroupComponent implements OnInit {
     this.pgService
       .getRainRiskAssessment$(this.rainForecast)
       .pipe(first())
-      .subscribe(({ opacity }) => {
-        this.initialRainOpacityValue = opacity;
-      });
+      .subscribe(
+        (result) => {
+          if (result && result.opacity !== undefined) {
+            this.initialRainOpacityValue = result.opacity;
+          } else {
+            // Handle the case where result or opacity is undefined
+            this.initialRainOpacityValue = 80; // or some default value
+          }
+        },
+        (error) => {
+          // Handle the error case
+          console.error('Error fetching rain risk assessment:', error);
+        }
+      );
 
     this.pgService
       .getPopulationExposure$(this.populationAffected)
