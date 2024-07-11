@@ -750,7 +750,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             filter: ['==', 'CF Type', 'Barangay'],
           });
           this.map.addLayer({
-            id: 'hospital',
+            id: 'qc_hospitals',
             type: 'fill',
             source: {
               type: 'geojson',
@@ -932,7 +932,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 +(groupShown && soloShown)
               );
               this.map.setPaintProperty(
-                'hospital',
+                'qc_hospitals',
                 'fill-opacity',
                 +(groupShown && soloShown)
               );
