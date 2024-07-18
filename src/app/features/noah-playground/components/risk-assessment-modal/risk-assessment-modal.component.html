@@ -785,8 +785,9 @@
                 pl-9
                 p-2.5
               "
+              type="button"
             >
-              Placeholder
+              Percentage
             </button>
           </div>
         </div>
@@ -797,52 +798,45 @@
 
     <!-- Start of Forecast List -->
     <div
-      class="
-        flex flex-col
-        text-center
-        align-middle
-        grid-auto-rows
-        grow
-        text-base
-        overflow-y-scroll
-      "
-      *ngIf="true"
+      class="grid-auto-rows grow align-top overflow-y-scroll"
+      *ngIf="!errorMsg"
     >
-      <div
-        class="
-          bg-white
-          border border-gray-300
-          rounded-lg
-          w-full
-          h-24
-          p-4
-          my-1
-          flex flex-row
-          place-content-between
-        "
-        *ngFor="let n of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"
-      >
-        <!--*ngFor="
-        let data of affectedData
-          | sort: sortField:sortDirection
-          | searchRiskAffected: searchValue"-->
-        <div class="text-left">
-          <div class="font-bold text-base">
-            <!--{{ data.brgy }}-->Brgy. Batian
+      <div class="flex flex-col">
+        <div
+          class="
+            bg-white
+            border border-gray-300
+            rounded-lg
+            w-full
+            h-auto
+            px-4
+            py-3
+            my-1
+            flex flex-row
+            place-content-between
+            overscroll-contain
+          "
+          *ngFor="
+            let data of affectedData
+              | sort: sortField:sortDirection
+              | searchRiskAffected: searchValue
+          "
+        >
+          <div class="text-left">
+            <div class="font-bold text-base">
+              {{ data.brgy }}
+            </div>
+            <div class="font-semibold text-sm">{{ data.muni }}</div>
+            <div class="text-xs">{{ data.prov }}</div>
           </div>
-          <div class="text-base"><!--{{ data.muni }}-->Matium</div>
-          <div class="text-sm"><!--{{ data.prov }}-->Sarangani</div>
-        </div>
-        <div class="text-right">
-          <div class="font-bold text-blue-500">
-            <!--{{ data.perc_aff_medhigh }}-->50% affected
-          </div>
-          <div class="font-semibold">
-            <!--{{ data.exposed_medhigh }}-->500 affected people
-          </div>
-          <div class="text-sm">
-            out of
-            <!--{{ data.total_pop }}-->1000
+          <div class="text-right">
+            <div class="font-bold text-blue-500 text-sm">
+              {{ data.perc_aff_medhigh }}% affected
+            </div>
+            <div class="font-semibold text-sm">
+              {{ data.exposed_medhigh }} affected people
+            </div>
+            <div class="text-xs">out of {{ data.total_pop }}</div>
           </div>
         </div>
       </div>
@@ -850,6 +844,7 @@
     <!-- End of Forecast List-->
 
     <!-- Start of No Forecast -->
+
     <div
       class="
         bg-gray-300
@@ -860,9 +855,20 @@
         grow
         overflow-y-hidden
       "
-      *ngIf="false"
+      *ngIf="errorMsg"
     >
-      <div class="pt-4 pb-4 flex text-center align-middle text-base">
+      <div
+        class="
+          p-8
+          flex
+          items-center
+          justify-center
+          text-center
+          align-middle
+          text-base
+          h-screen
+        "
+      >
         No forecast that meets pre-determined thresholds for large floods
       </div>
     </div>
@@ -927,6 +933,8 @@
               w-18
               h-9
             "
+            (click)="loadData(currentPage - 1)"
+            [disabled]="currentPage === 1"
           >
             Prev
           </button>
@@ -949,6 +957,8 @@
               w-18
               h-9
             "
+            (click)="loadData(currentPage + 1)"
+            [disabled]="currentPage * itemsPerPage >= totalDataCount"
           >
             Next
           </button>
