@@ -574,166 +574,168 @@
     outline-none
     text-xl
     opacity-100
-    overflow-y-auto overflow-x-hidden
+    overflow-y-scroll overflow-x-hidden
     lg:hidden
     p-6
   "
 >
-  <div class="relative w-full h-auto p-2 dark:bg-gray-800">
+  <div class="grid relative w-full min-h-full p-2 dark:bg-gray-800">
     <!-- Start of Header -->
-    <div>
-      <div class="flex flex-row pb-4">
-        <div class="w-1/4">
-          <img src="../../../../../assets/icons/logo-noah.svg" />
+    <header>
+      <div>
+        <div class="flex flex-row pb-4">
+          <div class="w-1/4">
+            <img src="../../../../../assets/icons/logo-noah.svg" />
+          </div>
+          <div class="font-bold text-lg">Exposure Assessment</div>
+          <div
+            class="
+              cursor-pointer
+              absolute
+              top-0
+              right-0
+              m-2
+              dark:text-gray-10
+              text-gray-600
+              transition
+              duration-150
+              ease-in-out
+            "
+          >
+            <button
+              class="
+                btn-mininmize
+                box-content
+                w-4
+                h-4
+                p-1
+                font-bold
+                rounded-none
+                mr-2
+                opacity-50
+                focus:shadow-none focus:outline-none focus:opacity-100
+                hover:text-black hover:opacity-75 hover:no-underline
+              "
+              (click)="hideModal()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                data-name="Layer 1"
+                viewBox="0 0 100 125"
+              >
+                <rect
+                  width="90"
+                  height="16.1"
+                  x="5"
+                  y="41.9"
+                  rx="5.7"
+                  ry="5.7"
+                  style="stroke-width: 0"
+                />
+              </svg>
+            </button>
+            <button
+              class="
+                btn-close
+                box-content
+                w-4
+                h-4
+                p-1
+                font-bold
+                rounded-none
+                opacity-50
+                focus:shadow-none focus:outline-none focus:opacity-100
+                hover:text-black hover:opacity-75 hover:no-underline
+              "
+              (click)="closeModal()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xml:space="preserve"
+                fill-rule="evenodd"
+                stroke-linejoin="round"
+                stroke-miterlimit="2"
+                clip-rule="evenodd"
+                viewBox="0 0 32 40"
+              >
+                <path
+                  d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div class="font-bold text-lg">Exposure Assessment</div>
-        <div
+      </div>
+      <hr />
+      <div class="bg-gray-100 mt-4 rounded-md">
+        <p
           class="
-            cursor-pointer
-            absolute
-            top-0
-            right-0
-            m-2
-            dark:text-gray-10
-            text-gray-600
-            transition
-            duration-150
-            ease-in-out
+            text-sm
+            font-semibold
+            leading-none
+            whitespace-pre-line
+            text-gray-800
+            dark:text-gray-100
+            p-4
           "
         >
-          <button
-            class="
-              btn-mininmize
-              box-content
-              w-4
-              h-4
-              p-1
-              font-bold
-              rounded-none
-              mr-2
-              opacity-50
-              focus:shadow-none focus:outline-none focus:opacity-100
-              hover:text-black hover:opacity-75 hover:no-underline
-            "
-            (click)="hideModal()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              data-name="Layer 1"
-              viewBox="0 0 100 125"
+          In a large flood event, how many people might be affected and would
+          need evacuation?
+        </p>
+      </div>
+      <div class="py-2">
+        <div class="flex flex-row place-content-between">
+          <div class="text-sm">Last updated</div>
+          <div class="font-bold text-sm">
+            <span>{{ dateDataText }}</span>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="pt-2 pb-2 w-full">
+        <div class="mt-1 flex flex-row w-fit place-content-between">
+          <div class="w-3/5 h-full">
+            <input
+              placeholder="Search Location"
+              class="
+                bg-gray-100
+                border border-gray-300
+                text-gray-900 text-sm
+                rounded-lg
+                focus:ring-blue-500 focus:border-blue-500
+                block
+                pl-10
+                p-2.5
+                dark:bg-gray-700
+                dark:border-gray-600
+                dark:placeholder-gray-400
+                dark:text-white
+                dark:focus:ring-blue-500
+                dark:focus:border-blue-500
+                disabled:cursor-not-allowed
+              "
+            />
+          </div>
+          <div class="w-1/5 h-full">
+            <button
+              class="
+                bg-white
+                border border-gray-300
+                text-gray-900 text-sm
+                rounded-lg
+                focus:ring-blue-500 focus:border-blue-500
+                block
+                right-0
+                p-2.5
+              "
             >
-              <rect
-                width="90"
-                height="16.1"
-                x="5"
-                y="41.9"
-                rx="5.7"
-                ry="5.7"
-                style="stroke-width: 0"
-              />
-            </svg>
-          </button>
-          <button
-            class="
-              btn-close
-              box-content
-              w-4
-              h-4
-              p-1
-              font-bold
-              rounded-none
-              opacity-50
-              focus:shadow-none focus:outline-none focus:opacity-100
-              hover:text-black hover:opacity-75 hover:no-underline
-            "
-            (click)="closeModal()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xml:space="preserve"
-              fill-rule="evenodd"
-              stroke-linejoin="round"
-              stroke-miterlimit="2"
-              clip-rule="evenodd"
-              viewBox="0 0 32 40"
-            >
-              <path
-                d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
-              />
-            </svg>
-          </button>
+              Placeholder
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <hr />
-    <div class="bg-gray-100 mt-4 rounded-md">
-      <p
-        class="
-          text-sm
-          font-semibold
-          leading-none
-          whitespace-pre-line
-          text-gray-800
-          dark:text-gray-100
-          p-4
-        "
-      >
-        In a large flood event, how many people might be affected and would need
-        evacuation?
-      </p>
-    </div>
-    <div class="py-2">
-      <div class="flex flex-row place-content-between">
-        <div class="text-sm">Last updated</div>
-        <div class="font-bold text-sm">
-          <span>{{ dateDataText }}</span>
-        </div>
-      </div>
-    </div>
-    <hr />
-    <div class="pt-2 pb-2 w-full">
-      <div class="mt-1 flex flex-row w-fit place-content-between">
-        <div class="w-3/5 h-full">
-          <input
-            placeholder="Search Location"
-            class="
-              bg-gray-100
-              border border-gray-300
-              text-gray-900 text-sm
-              rounded-lg
-              focus:ring-blue-500 focus:border-blue-500
-              block
-              pl-10
-              p-2.5
-              dark:bg-gray-700
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-white
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500
-              disabled:cursor-not-allowed
-            "
-          />
-        </div>
-        <div class="w-1/5 h-full">
-          <button
-            class="
-              bg-white
-              border border-gray-300
-              text-gray-900 text-sm
-              rounded-lg
-              focus:ring-blue-500 focus:border-blue-500
-              block
-              right-0
-              p-2.5
-            "
-          >
-            Placeholder
-          </button>
-        </div>
-      </div>
-    </div>
-    <hr />
+      <hr />
+    </header>
     <!-- End of Header -->
 
     <!-- Start of Forecast List -->
@@ -743,7 +745,8 @@
         flex flex-col
         text-center
         align-middle
-        h-screen
+        grid-auto-rows
+        grow
         text-base
         overflow-scroll
         pt-2
@@ -798,69 +801,71 @@
     <!-- End of No Forecast -->
 
     <!-- Start of Footer-->
-    <div class="flex flex-row pt-4 pb-2 place-content-center">
-      <button
-        class="
-          bg-white
-          border border-gray-300
-          text-gray-900 text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          right-0
-          p-2
-          pl-8
-          w-18
-          h-9
-        "
-      >
-        Prev
-      </button>
-      <p class="text-xs text-center align-middle justify-center p-2 pt-2.5">
-        21-40 of 344 results
-      </p>
-      <button
-        class="
-          bg-white
-          border border-gray-300
-          text-gray-900 text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          right-0
-          p-2
-          pr-8
-          w-18
-        "
-      >
-        Next
-      </button>
-    </div>
-    <hr />
-    <div class="flex flex-row py-2 place-content-between">
-      <div>
-        <div class="font-bold text-gray-900 text-lg">Access Data Archive</div>
-        <div class="-mt-2 text-gray-400 text-[10px]">
-          Click link to download previous forecast data.
-        </div>
+    <footer>
+      <div class="flex flex-row pt-4 pb-2 place-content-center">
+        <button
+          class="
+            bg-white
+            border border-gray-300
+            text-gray-900 text-sm
+            rounded-lg
+            focus:ring-blue-500 focus:border-blue-500
+            block
+            right-0
+            p-2
+            pl-8
+            w-18
+            h-9
+          "
+        >
+          Prev
+        </button>
+        <p class="text-xs text-center align-middle justify-center p-2 pt-2.5">
+          21-40 of 344 results
+        </p>
+        <button
+          class="
+            bg-white
+            border border-gray-300
+            text-gray-900 text-sm
+            rounded-lg
+            focus:ring-blue-500 focus:border-blue-500
+            block
+            right-0
+            p-2
+            pr-8
+            w-18
+          "
+        >
+          Next
+        </button>
       </div>
-      <button
-        class="
-          bg-white
-          border border-gray-300
-          text-gray-900 text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          right-0
-          p-2
-          pl-6
-          w-32
-        "
-      >
-        Select Date
-      </button>
-    </div>
+      <hr />
+      <div class="flex flex-row py-2 place-content-between">
+        <div>
+          <div class="font-bold text-gray-900 text-lg">Access Data Archive</div>
+          <div class="-mt-2 text-gray-400 text-[10px]">
+            Click link to download previous forecast data.
+          </div>
+        </div>
+        <button
+          class="
+            bg-white
+            border border-gray-300
+            text-gray-900 text-sm
+            rounded-lg
+            focus:ring-blue-500 focus:border-blue-500
+            block
+            right-0
+            p-2
+            pl-6
+            w-32
+          "
+        >
+          Select Date
+        </button>
+      </div>
+    </footer>
     <!-- End of Footer-->
   </div>
 </div>
