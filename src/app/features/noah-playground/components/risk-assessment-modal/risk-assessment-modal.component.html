@@ -940,7 +940,9 @@
           </button>
         </div>
         <p class="text-xs text-center align-middle justify-center p-2 pt-2.5">
-          1-20 of 344 results
+          {{ (currentPage - 1) * itemsPerPage + 1 }} -
+          {{ currentPage * itemsPerPage }} of
+          {{ totalDataCount }}
         </p>
         <div class="relative">
           <button
