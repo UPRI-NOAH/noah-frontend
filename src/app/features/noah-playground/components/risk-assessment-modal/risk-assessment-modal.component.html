@@ -579,9 +579,9 @@
     p-6
   "
 >
-  <div class="grid relative w-full min-h-full p-2 dark:bg-gray-800">
+  <div class="grid grid-cols-1 relative w-full min-h-full p-2 dark:bg-gray-800">
     <!-- Start of Header -->
-    <header>
+    <header class="grid grid-row flex-shrink-0">
       <div>
         <div class="flex flex-row pb-4">
           <div class="w-16 pr-2">
@@ -692,6 +692,11 @@
         </div>
       </div>
       <hr />
+    </header>
+    <!-- End of Header -->
+
+    <!-- Start of Search and Sort -->
+    <div class="sticky grid grid-row">
       <div class="pt-2 pb-2 w-full">
         <div class="mt-1 flex flex-row place-content-between">
           <div class="w-auto h-full">
@@ -749,25 +754,17 @@
           <div class="w-4"></div>
           <div class="w-auto h-full relative">
             <div
-              class="
-                absolute
-                inset-y-0
-                left-0
-                flex
-                items-center
-                pl-3
-                pointer-events-none
-              "
+              class="absolute inset-y-0 left-0 flex pl-3 pointer-events-none"
             >
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 mt-2.5"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
                   d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14"
-                  stroke="#000000"
+                  stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -786,15 +783,35 @@
                 p-2.5
               "
               type="button"
+              (click)="showSortDropdown()"
             >
               Percentage
             </button>
+            <ul
+              class="
+                bg-white
+                border border-gray-300
+                text-gray-900 text-sm
+                rounded-lg
+                absolute
+                w-full
+              "
+              *ngIf="showSort"
+            >
+              <li class="h-auto w-full p-2.5 border-b border-gray-300">
+                Percentage
+              </li>
+              <li class="h-auto w-full p-2.5 border-b border-gray-300">
+                Location
+              </li>
+              <li class="h-auto w-full p-2.5 border-gray-300">Population</li>
+            </ul>
           </div>
         </div>
       </div>
-      <hr class="pb-2" />
-    </header>
-    <!-- End of Header -->
+    </div>
+    <hr class="pb-2" />
+    <!-- End of Search and Sort -->
 
     <!-- Start of Forecast List -->
     <div
@@ -844,7 +861,6 @@
     <!-- End of Forecast List-->
 
     <!-- Start of No Forecast -->
-
     <div
       class="
         bg-gray-300
@@ -875,7 +891,7 @@
     <!-- End of No Forecast -->
 
     <!-- Start of Footer-->
-    <footer class="-mb-4">
+    <footer class="-mb-4 grid grid-row flex-shrink-0">
       <div class="flex flex-row py-2 place-content-center">
         <div class="relative">
           <div

@@ -29,6 +29,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   btnReadMore: boolean = true;
   dateDataText: string;
   showSelect: boolean = false;
+  showSort: boolean = false;
 
   archieveDateTime: string;
   archieveDownload: string;
@@ -82,6 +83,10 @@ export class RiskAssessmentModalComponent implements OnInit {
 
   showSelectDate() {
     this.showSelect = !this.showSelect;
+  }
+
+  showSortDropdown() {
+    this.showSort = !this.showSort;
   }
 
   async downloadData(selectedDate: string) {
