@@ -2195,18 +2195,18 @@
   <!-- TODO: fix search bar and sort button -->
   <div class="flex items-center">
     <input
-      type="text"
+      [(ngModel)]="searchValue"
+      type="search"
       placeholder="Search Location"
+      autocomplete="off"
       class="
         font-light
         text-sm
         px-9
         py-2
         rounded-lg
+        bg-white
         border border-gray-300
-        bg-gray-50 bg-[url('search-interface-symbol.png')] bg-no-repeat
-        bg-[length:14px]
-        bg-[position:12px_center]
         mr-1
         w-full
       "
@@ -2257,7 +2257,7 @@
     <button
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
-      All ({{ activeSensor }})
+      All
     </button>
     <button
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
@@ -2271,4 +2271,62 @@
     </button>
   </div>
   <div class="h-px bg-gray-200 mt-4 mb-2 w-full"></div>
+
+  <!-- scrollable cards -->
+  <div
+    class="
+      overflow-auto
+      border-b border-gray-200
+      h-[calc(100vh_-_393px_+_36px)]
+    "
+  >
+    <!-- sample card -->
+    <div
+      class="pb-2"
+      *ngFor="
+        let data of summaryData
+          | sort: sortField:sortDirection
+          | searchfilter: searchValue
+      "
+    >
+      <div class="bg-white border border-gray-300 rounded-lg p-4">
+        <div class="flex justify-between items-center">
+          <div class="text-lg font-bold mr-12">
+            {{ data.name }}
+          </div>
+          <div class="text-lg font-bold text-right">
+            <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
+              getFormattedCategory(data)
+            }}</span
+            ><br />
+            <span id="iotTypeLatestData">
+              {{ getFormattedLatestData(data) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-1">
+          <div class="text-sm" id="iotType">
+            <ng-container *ngIf="data.latest_date == null; else showDate">
+              <div>N/A</div>
+            </ng-container>
+            <ng-template #showDate>
+              <div *ngIf="data.latest_date == data.latest_date">
+                {{ data.latest_date | date: 'medium':'+0000' }}
+              </div>
+            </ng-template>
+          </div>
+          <div class="text-sm font-bold text-right">
+            <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+              data.status
+            }}</span>
+            •
+            <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+              getFormattedIoTtype(data)
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
