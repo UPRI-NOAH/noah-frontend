@@ -320,6 +320,25 @@ export class SummaryComponent implements OnInit {
   }
 
   // FUNCTIONS CREATED FOR MOBILE VIEW
+
+  filterData: SummaryItem[] = [...this.summaryData];
+
+  filterCategory(category: string): SummaryItem[] {
+    switch (category) {
+      case 'All':
+        this.filterData = [...this.summaryData];
+        return this.filterData;
+      case 'Rain':
+        this.filterData = [...this.rainSummaryData];
+        return this.filterData;
+      case 'Flood':
+        this.filterData = [...this.floodSummaryData];
+        return this.filterData;
+      default:
+        return (this.filterData = [...this.summaryData]);
+    }
+  }
+
   getFormattedLatestData(item: any): string {
     if (item.iot_type === null) {
       return 'N/A';

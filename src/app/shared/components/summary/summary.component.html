@@ -2250,7 +2250,7 @@
       </div>
     </div>
   </div>
-  <div class="h-4"></div>
+  <div class="h-2"></div>
 
   <!-- buttons for all, flood, rain sensors -->
   <div class="space-y-2">
@@ -2274,17 +2274,13 @@
 
   <!-- scrollable cards -->
   <div
-    class="
-      overflow-auto
-      border-b border-gray-200
-      h-[calc(100vh_-_393px_+_36px)]
-    "
+    class="overflow-auto border-b border-gray-200 h-[calc(100vh-393px+36px)]"
   >
     <!-- sample card -->
     <div
       class="pb-2"
       *ngFor="
-        let data of summaryData
+        let data of filterData
           | sort: sortField:sortDirection
           | searchfilter: searchValue
       "
