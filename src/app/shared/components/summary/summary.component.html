@@ -1,5 +1,5 @@
 <!-- MODAL -->
-<div class="relative z-50" *ngIf="iotSummaryModal">
+<div class="relative z-50 hidden lg:block" *ngIf="iotSummaryModal">
   <div
     class="fixed inset-0 bg-black opacity-80 transition-opacity"
     (click)="closeModal()"
@@ -2111,3 +2111,33 @@
   </div>
 </div>
 <!-- alert -->
+
+<!-- MOBILE VIEW -->
+<div
+  class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 z-50 lg:hidden"
+  *ngIf="iotSummaryModal"
+></div>
+<div
+  class="
+    max-h-auto
+    border-none
+    shadow-lg
+    relative
+    flex flex-col
+    h-[100vh]
+    w-[100vw]
+    pointer-events-auto
+    bg-gray-50 bg-clip-padding
+    rounded-md
+    outline-none
+    text-xl
+    opacity-100
+    overflow-y-scroll overflow-x-hidden
+    lg:hidden
+    pt-8
+    px-6
+    pb-0
+  "
+>
+  <!-- insert iot data summary here -->
+</div>
