@@ -2156,4 +2156,119 @@
     </button>
   </div>
   <div class="h-px bg-gray-200 mt-4 mb-4 w-full"></div>
+
+  <!-- date, no. of sensors, no. of active and inactive -->
+  <div class="flex justify-between">
+    <div class="w-px h-full bg-gray-100"></div>
+    <div>
+      <div class="font-bold text-xl">
+        {{ todayString | date: 'mediumDate' }}
+      </div>
+      <div class="text-sm font-light mt-1">Last updated</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ totalSensor }}</div>
+      <div class="text-sm font-light mt-1">Total Sensors</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ activeSensor }}</div>
+      <div class="text-sm font-light mt-1">Active</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ inactive }}</div>
+      <div class="text-sm font-light mt-1">Inactive</div>
+    </div>
+    <div class="w-px h-full bg-gray-100"></div>
+  </div>
+  <div class="h-px bg-gray-200 mt-3 mb-4 w-full"></div>
+
+  <!-- search and sort button -->
+  <!-- TODO: fix search bar and sort button -->
+  <div class="flex items-center">
+    <input
+      type="text"
+      placeholder="Search Location"
+      class="
+        font-light
+        text-sm
+        px-9
+        py-2
+        rounded-lg
+        border border-gray-300
+        bg-gray-50 bg-[url('search-interface-symbol.png')] bg-no-repeat
+        bg-[length:14px]
+        bg-[position:12px_center]
+        mr-1
+        w-full
+      "
+    />
+    <div class="relative">
+      <button
+        class="
+          text-sm
+          border border-gray-300
+          rounded-md
+          bg-white
+          px-8
+          py-2
+          bg-[url('sort.png')] bg-[url('down-arrow.png')] bg-no-repeat
+          bg-[length:14px]
+          bg-[position:12px_center]
+          bg-[right_8px_center]
+          w-[122px]
+        "
+      >
+        Date
+      </button>
+      <div
+        id="dropdown"
+        class="
+          hidden
+          absolute
+          text-sm
+          border border-gray-300
+          rounded-md
+          bg-white
+          px-4
+          py-3
+          w-[88px]
+          mt-1
+        "
+      >
+        <div>Location</div>
+        <div class="pt-4">Date</div>
+        <div class="pt-4">Status</div>
+      </div>
+    </div>
+  </div>
+  <div class="h-4"></div>
+
+  <!-- buttons for all, flood, rain sensors -->
+  <div class="space-y-2">
+    <button
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      All ({{ activeSensor }})
+    </button>
+    <button
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      Flood Sensors ({{ activeFloodSensor }})
+    </button>
+    <button
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      Rain Sensors ({{ activeRainSensor }})
+    </button>
+  </div>
+  <div class="h-px bg-gray-200 mt-4 mb-2 w-full"></div>
 </div>
