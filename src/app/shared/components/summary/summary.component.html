@@ -2255,16 +2255,19 @@
   <!-- buttons for all, flood, rain sensors -->
   <div class="space-y-2">
     <button
+      (click)="filterCategory('All')"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       All
     </button>
     <button
+      (click)="filterCategory('Flood')"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       Flood Sensors ({{ activeFloodSensor }})
     </button>
     <button
+      (click)="filterCategory('Rain')"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       Rain Sensors ({{ activeRainSensor }})
@@ -2324,5 +2327,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Scales -->
+  <div class="bg-gray-50 h-16 flex justify-around items-center">
+    <img src="assets/images/Flood Scale.svg" alt="" class="h-10" />
+    <img src="assets/images/Rain Scale.svg" alt="" class="h-10" />
   </div>
 </div>
