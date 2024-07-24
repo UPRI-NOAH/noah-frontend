@@ -2293,13 +2293,93 @@
   <div
     class="overflow-auto border-b border-gray-200 h-[calc(100vh-393px+36px)]"
   >
-    <ng-container *ngIf="!filterButtonPressed; else useFilterData">
-      <div>
-        <!-- sample card -->
+    <ng-container *ngIf="loading; else doneLoading">
+      <div tabindex="0" class="flex justify-center items-center">
+        <div class="w-full z-10 overflow-hidden" style="max-width: 1000px">
+          <div class="md:flex w-full">
+            <div class="w-full py-10 px-5 md:px-10">
+              <div class="flex justify-center gap-x-4 mb-4">
+                <div class="relative flex items-center justify-center">
+                  <div
+                    class="
+                      w-14
+                      h-14
+                      border-t-4 border-b-4 border-black
+                      rounded-full
+                      animate-spin
+                    "
+                  ></div>
+                  <img
+                    src="assets/icons/noah_logo.png"
+                    class="w-10 h-auto absolute animate-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #doneLoading>
+      <ng-container *ngIf="!filterButtonPressed; else useFilterData">
+        <div>
+          <!-- default data, user have yet to click filter buttons -->
+          <div
+            class="pb-2"
+            *ngFor="
+              let data of summaryData
+                | sort: sortField:sortDirection
+                | searchfilter: searchValue
+            "
+          >
+            <div class="bg-white border border-gray-300 rounded-lg p-4">
+              <div class="flex justify-between items-center">
+                <div class="text-lg font-bold mr-12">
+                  {{ data.name }}
+                </div>
+                <div class="text-lg font-bold text-right">
+                  <span
+                    id="category"
+                    [ngStyle]="getCategoryDynamicStyle(data)"
+                    >{{ getFormattedCategory(data) }}</span
+                  ><br />
+                  <span id="iotTypeLatestData">
+                    {{ getFormattedLatestData(data) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center mt-1">
+                <div class="text-sm" id="iotType">
+                  <ng-container *ngIf="data.latest_date == null; else showDate">
+                    <div>N/A</div>
+                  </ng-container>
+                  <ng-template #showDate>
+                    <div *ngIf="data.latest_date == data.latest_date">
+                      {{ data.latest_date | date: 'medium':'+0000' }}
+                    </div>
+                  </ng-template>
+                </div>
+                <div class="text-sm font-bold text-right">
+                  <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+                    data.status
+                  }}</span>
+                  •
+                  <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+                    getFormattedIoTtype(data)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #useFilterData>
+        <!-- data after using filter buttons -->
         <div
           class="pb-2"
           *ngFor="
-            let data of summaryData
+            let data of filterData
               | sort: sortField:sortDirection
               | searchfilter: searchValue
           "
@@ -2343,57 +2423,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </ng-container>
-    <ng-template #useFilterData>
-      <!-- sample card -->
-      <div
-        class="pb-2"
-        *ngFor="
-          let data of filterData
-            | sort: sortField:sortDirection
-            | searchfilter: searchValue
-        "
-      >
-        <div class="bg-white border border-gray-300 rounded-lg p-4">
-          <div class="flex justify-between items-center">
-            <div class="text-lg font-bold mr-12">
-              {{ data.name }}
-            </div>
-            <div class="text-lg font-bold text-right">
-              <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
-                getFormattedCategory(data)
-              }}</span
-              ><br />
-              <span id="iotTypeLatestData">
-                {{ getFormattedLatestData(data) }}
-              </span>
-            </div>
-          </div>
-
-          <div class="flex justify-between items-center mt-1">
-            <div class="text-sm" id="iotType">
-              <ng-container *ngIf="data.latest_date == null; else showDate">
-                <div>N/A</div>
-              </ng-container>
-              <ng-template #showDate>
-                <div *ngIf="data.latest_date == data.latest_date">
-                  {{ data.latest_date | date: 'medium':'+0000' }}
-                </div>
-              </ng-template>
-            </div>
-            <div class="text-sm font-bold text-right">
-              <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
-                data.status
-              }}</span>
-              •
-              <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
-                getFormattedIoTtype(data)
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      </ng-template>
     </ng-template>
   </div>
 

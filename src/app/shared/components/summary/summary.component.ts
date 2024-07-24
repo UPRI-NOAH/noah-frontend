@@ -321,7 +321,7 @@ export class SummaryComponent implements OnInit {
 
   // FUNCTIONS CREATED FOR MOBILE VIEW
 
-  filterData: SummaryItem[] = [...this.summaryData];
+  filterData: SummaryItem[] = [];
   dropdownList: string[] = [
     'Location',
     'Latest Date',
@@ -382,7 +382,7 @@ export class SummaryComponent implements OnInit {
         this.filterData = [...this.floodSummaryData];
         return this.filterData;
       default:
-        return (this.filterData = [...this.summaryData]);
+        return this.filterData;
     }
   }
 
