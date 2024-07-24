@@ -579,9 +579,9 @@
     p-6
   "
 >
-  <div class="grid grid-cols-1 relative w-full min-h-full p-2 dark:bg-gray-800">
+  <div class="relative w-full min-h-full p-2 dark:bg-gray-800 flex flex-col">
     <!-- Start of Header -->
-    <header class="grid grid-row flex-grow-0">
+    <header class="flex-grow-0">
       <div>
         <div class="flex flex-row pb-4">
           <div class="w-16 pr-2">
@@ -842,15 +842,7 @@
 
     <!-- Start of Forecast List -->
     <div
-      class="
-        flex flex-col
-        h-full
-        grid-auto-rows
-        grow
-        align-top
-        overflow-y-scroll
-        flex-shrink-0
-      "
+      class="flex flex-col h-full flex-grow align-top overflow-y-scroll"
       *ngIf="!errorMsg"
     >
       <div class="flex flex-col">
@@ -926,7 +918,7 @@
     <!-- End of No Forecast -->
 
     <!-- Start of Footer-->
-    <footer class="-mb-4 grid grid-row flex-grow-0">
+    <footer class="-mb-4 flex-grow-0 bottom-0">
       <div class="flex flex-row py-2 place-content-center">
         <div class="relative">
           <div
@@ -1074,7 +1066,7 @@
           <div class="font-bold text-gray-900 text-base">
             Access Data Archive
           </div>
-          <div class="-mt-2 text-gray-400 text-[8px]">
+          <div class="-mt-2 text-gray-700 text-[8px]">
             Click link to download previous forecast data.
           </div>
         </div>
