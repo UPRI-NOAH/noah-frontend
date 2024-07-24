@@ -581,7 +581,7 @@
 >
   <div class="grid grid-cols-1 relative w-full min-h-full p-2 dark:bg-gray-800">
     <!-- Start of Header -->
-    <header class="grid grid-row flex-shrink-0">
+    <header class="grid grid-row flex-grow-0">
       <div>
         <div class="flex flex-row pb-4">
           <div class="w-16 pr-2">
@@ -691,12 +691,6 @@
           </div>
         </div>
       </div>
-      <hr />
-    </header>
-    <!-- End of Header -->
-
-    <!-- Start of Search and Sort -->
-    <div class="sticky grid grid-row">
       <div class="pt-2 pb-2 w-full">
         <div class="mt-1 flex flex-row place-content-between">
           <div class="w-auto h-full">
@@ -842,13 +836,21 @@
           </div>
         </div>
       </div>
-    </div>
-    <hr class="pb-2" />
-    <!-- End of Search and Sort -->
+      <hr class="pb-2" />
+    </header>
+    <!-- End of Header -->
 
     <!-- Start of Forecast List -->
     <div
-      class="grid-auto-rows grow align-top overflow-y-scroll"
+      class="
+        flex flex-col
+        h-full
+        grid-auto-rows
+        grow
+        align-top
+        overflow-y-scroll
+        flex-shrink-0
+      "
       *ngIf="!errorMsg"
     >
       <div class="flex flex-col">
@@ -924,7 +926,7 @@
     <!-- End of No Forecast -->
 
     <!-- Start of Footer-->
-    <footer class="-mb-4 grid grid-row flex-shrink-0">
+    <footer class="-mb-4 grid grid-row flex-grow-0">
       <div class="flex flex-row py-2 place-content-center">
         <div class="relative">
           <div
@@ -981,6 +983,9 @@
               pl-9
               w-18
               h-9
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:text-gray-600
             "
             (click)="loadData(currentPage - 1)"
             [disabled]="currentPage === 1"
@@ -1007,6 +1012,9 @@
               pr-9
               w-18
               h-9
+              disabled:opacity-75
+              disabled:cursor-not-allowed
+              disabled:text-gray-600
             "
             (click)="loadData(currentPage + 1)"
             [disabled]="currentPage * itemsPerPage >= totalDataCount"
@@ -1147,6 +1155,7 @@
               </g>
             </svg>
           </div>
+
           <button
             class="
               bg-white
@@ -1160,9 +1169,36 @@
               pl-8
               w-auto
             "
+            (click)="showSelectDate()"
           >
             Select Date
           </button>
+          <ul
+            class="
+              bg-white
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              absolute
+              w-48
+              right-0
+              pt-1
+              bottom-full
+              top-auto
+              max-h-72
+              overflow-x-hidden overflow-y-scroll
+            "
+            *ngIf="showSelect"
+          >
+            <button
+              class="h-auto p-2.5 border-b border-gray-300 text-left"
+              *ngFor="let item of dropdown"
+              [value]="item"
+              (click)="onDateSelected(item)"
+            >
+              {{ item | date: 'medium':'+0000' }}
+            </button>
+          </ul>
         </div>
       </div>
     </footer>
