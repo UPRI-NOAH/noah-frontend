@@ -2219,7 +2219,7 @@
     />
     <div class="relative">
       <button
-        (click)="toogleDropDown()"
+        (click)="toggleDropDown()"
         class="
           text-sm
           border border-gray-300
@@ -2251,12 +2251,13 @@
           px-4
           pt-3
           mt-1
+          z-100
         "
       >
         <div
           *ngFor="let option of dropdownList"
           (click)="selectOption(option)"
-          class="pb-4"
+          class="pb-4 cursor-pointer"
         >
           {{ option }}
         </div>
@@ -2292,54 +2293,108 @@
   <div
     class="overflow-auto border-b border-gray-200 h-[calc(100vh-393px+36px)]"
   >
-    <!-- sample card -->
-    <div
-      class="pb-2"
-      *ngFor="
-        let data of filterData
-          | sort: sortField:sortDirection
-          | searchfilter: searchValue
-      "
-    >
-      <div class="bg-white border border-gray-300 rounded-lg p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-lg font-bold mr-12">
-            {{ data.name }}
-          </div>
-          <div class="text-lg font-bold text-right">
-            <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
-              getFormattedCategory(data)
-            }}</span
-            ><br />
-            <span id="iotTypeLatestData">
-              {{ getFormattedLatestData(data) }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex justify-between items-center mt-1">
-          <div class="text-sm" id="iotType">
-            <ng-container *ngIf="data.latest_date == null; else showDate">
-              <div>N/A</div>
-            </ng-container>
-            <ng-template #showDate>
-              <div *ngIf="data.latest_date == data.latest_date">
-                {{ data.latest_date | date: 'medium':'+0000' }}
+    <ng-container *ngIf="!filterButtonPressed; else useFilterData">
+      <div>
+        <!-- sample card -->
+        <div
+          class="pb-2"
+          *ngFor="
+            let data of summaryData
+              | sort: sortField:sortDirection
+              | searchfilter: searchValue
+          "
+        >
+          <div class="bg-white border border-gray-300 rounded-lg p-4">
+            <div class="flex justify-between items-center">
+              <div class="text-lg font-bold mr-12">
+                {{ data.name }}
               </div>
-            </ng-template>
-          </div>
-          <div class="text-sm font-bold text-right">
-            <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
-              data.status
-            }}</span>
-            •
-            <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
-              getFormattedIoTtype(data)
-            }}</span>
+              <div class="text-lg font-bold text-right">
+                <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
+                  getFormattedCategory(data)
+                }}</span
+                ><br />
+                <span id="iotTypeLatestData">
+                  {{ getFormattedLatestData(data) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-1">
+              <div class="text-sm" id="iotType">
+                <ng-container *ngIf="data.latest_date == null; else showDate">
+                  <div>N/A</div>
+                </ng-container>
+                <ng-template #showDate>
+                  <div *ngIf="data.latest_date == data.latest_date">
+                    {{ data.latest_date | date: 'medium':'+0000' }}
+                  </div>
+                </ng-template>
+              </div>
+              <div class="text-sm font-bold text-right">
+                <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+                  data.status
+                }}</span>
+                •
+                <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+                  getFormattedIoTtype(data)
+                }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #useFilterData>
+      <!-- sample card -->
+      <div
+        class="pb-2"
+        *ngFor="
+          let data of filterData
+            | sort: sortField:sortDirection
+            | searchfilter: searchValue
+        "
+      >
+        <div class="bg-white border border-gray-300 rounded-lg p-4">
+          <div class="flex justify-between items-center">
+            <div class="text-lg font-bold mr-12">
+              {{ data.name }}
+            </div>
+            <div class="text-lg font-bold text-right">
+              <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
+                getFormattedCategory(data)
+              }}</span
+              ><br />
+              <span id="iotTypeLatestData">
+                {{ getFormattedLatestData(data) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-1">
+            <div class="text-sm" id="iotType">
+              <ng-container *ngIf="data.latest_date == null; else showDate">
+                <div>N/A</div>
+              </ng-container>
+              <ng-template #showDate>
+                <div *ngIf="data.latest_date == data.latest_date">
+                  {{ data.latest_date | date: 'medium':'+0000' }}
+                </div>
+              </ng-template>
+            </div>
+            <div class="text-sm font-bold text-right">
+              <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+                data.status
+              }}</span>
+              •
+              <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+                getFormattedIoTtype(data)
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   </div>
 
   <!-- Scales -->

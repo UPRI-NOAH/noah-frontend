@@ -331,9 +331,9 @@ export class SummaryComponent implements OnInit {
   ];
   isDroppedDown = false;
   selectedOption = 'Latest Date';
-  decodedOption = '';
+  filterButtonPressed = false;
 
-  toogleDropDown() {
+  toggleDropDown() {
     this.isDroppedDown = !this.isDroppedDown;
   }
 
@@ -370,6 +370,7 @@ export class SummaryComponent implements OnInit {
   }
 
   filterCategory(category: string): SummaryItem[] {
+    this.filterButtonPressed = true;
     switch (category) {
       case 'All':
         this.filterData = [...this.summaryData];
