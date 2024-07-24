@@ -2192,7 +2192,6 @@
   <div class="h-px bg-gray-200 mt-3 mb-4 w-full"></div>
 
   <!-- search and sort button -->
-  <!-- TODO: fix search bar and sort button -->
   <div class="flex items-center">
     <input
       [(ngModel)]="searchValue"
@@ -2251,13 +2250,13 @@
           px-4
           pt-3
           mt-1
-          z-100
+          z-50
         "
       >
         <div
           *ngFor="let option of dropdownList"
           (click)="selectOption(option)"
-          class="pb-4 cursor-pointer"
+          class="pb-4 cursor-pointer z-50"
         >
           {{ option }}
         </div>
@@ -2291,7 +2290,12 @@
 
   <!-- scrollable cards -->
   <div
-    class="overflow-auto border-b border-gray-200 h-[calc(100vh-393px+36px)]"
+    class="
+      overflow-auto
+      border-b border-gray-200
+      h-[calc(100vh-393px+36px)]
+      z-25
+    "
   >
     <ng-container *ngIf="loading; else doneLoading">
       <div tabindex="0" class="flex justify-center items-center">
