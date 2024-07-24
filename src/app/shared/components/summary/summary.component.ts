@@ -330,7 +330,8 @@ export class SummaryComponent implements OnInit {
     'Status',
   ];
   isDroppedDown = false;
-  selectedOption = 'Location';
+  selectedOption = 'Latest Date';
+  decodedOption = '';
 
   toogleDropDown() {
     this.isDroppedDown = !this.isDroppedDown;
@@ -340,12 +341,31 @@ export class SummaryComponent implements OnInit {
     this.selectedOption = option;
     this.isDroppedDown = false;
 
-    if (this.sortField === option) {
+    this.sortField = this.decodeOptiontoKey(option);
+
+    if (this.selectedOption === option) {
       this.sortDirection =
         this.sortDirection === 'ascending' ? 'descending' : 'ascending';
     } else {
-      this.sortField = option;
+      this.selectedOption = option;
       this.sortDirection = 'ascending';
+    }
+  }
+
+  decodeOptiontoKey(option: string): string {
+    switch (option) {
+      case 'Location':
+        return 'name';
+      case 'Latest Date':
+        return 'latest_date';
+      case 'Latest Data':
+        return 'latest_data';
+      case 'Sensor Type':
+        return 'iot_type';
+      case 'Status':
+        return 'status';
+      default:
+        return 'Unknown';
     }
   }
 
