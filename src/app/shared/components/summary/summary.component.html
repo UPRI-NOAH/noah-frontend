@@ -2114,7 +2114,7 @@
 
 <!-- MOBILE VIEW -->
 <div
-  class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 z-50 lg:hidden"
+  class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 lg:hidden"
   *ngIf="iotSummaryModal"
 ></div>
 <div
@@ -2210,9 +2210,16 @@
         mr-1
         w-full
       "
+      style="
+        background-image: url('assets/icons/search-icon.png');
+        background-size: 14px;
+        background-repeat: no-repeat;
+        background-position: 12px center;
+      "
     />
     <div class="relative">
       <button
+        (click)="toogleDropDown()"
         class="
           text-sm
           border border-gray-300
@@ -2220,33 +2227,39 @@
           bg-white
           px-8
           py-2
-          bg-[url('sort.png')] bg-[url('down-arrow.png')] bg-no-repeat
-          bg-[length:14px]
-          bg-[position:12px_center]
-          bg-[right_8px_center]
-          w-[122px]
+          w-fit
+          whitespace-nowrap
+        "
+        style="
+          background-image: url('assets/icons/sort-icon.png'),
+            url('assets/icons/down-chevron.png');
+          background-size: 14px, 14px;
+          background-repeat: no-repeat, no-repeat;
+          background-position: 12px center, right 8px center;
         "
       >
-        Date
+        {{ selectedOption }}
       </button>
       <div
-        id="dropdown"
+        *ngIf="isDroppedDown"
         class="
-          hidden
           absolute
           text-sm
           border border-gray-300
           rounded-md
           bg-white
           px-4
-          py-3
-          w-[88px]
+          pt-3
           mt-1
         "
       >
-        <div>Location</div>
-        <div class="pt-4">Date</div>
-        <div class="pt-4">Status</div>
+        <div
+          *ngFor="let option of dropdownList"
+          (click)="selectOption(option)"
+          class="pb-4"
+        >
+          {{ option }}
+        </div>
       </div>
     </div>
   </div>

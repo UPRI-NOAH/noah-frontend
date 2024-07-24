@@ -322,6 +322,32 @@ export class SummaryComponent implements OnInit {
   // FUNCTIONS CREATED FOR MOBILE VIEW
 
   filterData: SummaryItem[] = [...this.summaryData];
+  dropdownList: string[] = [
+    'Location',
+    'Latest Date',
+    'Latest Data',
+    'Sensor Type',
+    'Status',
+  ];
+  isDroppedDown = false;
+  selectedOption = 'Location';
+
+  toogleDropDown() {
+    this.isDroppedDown = !this.isDroppedDown;
+  }
+
+  selectOption(option: string) {
+    this.selectedOption = option;
+    this.isDroppedDown = false;
+
+    if (this.sortField === option) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.sortField = option;
+      this.sortDirection = 'ascending';
+    }
+  }
 
   filterCategory(category: string): SummaryItem[] {
     switch (category) {
