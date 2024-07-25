@@ -447,6 +447,112 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  // FUNCTIONS FOR IOT SENSOR DETAILS
+
+  isGraphToggled = true;
+
+  toggleGraphDropdown() {
+    this.isGraphToggled = !this.isGraphToggled;
+  }
+
+  getFormattedLatestData(item: any): string {
+    if (item.iot_type === null) {
+      return 'N/A';
+    }
+
+    switch (item.iot_type) {
+      case 'rain':
+        return `${item.latest_data}mm/hr`;
+      case 'flood':
+        return `${item.latest_data}m`;
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getFormattedIoTtype(item: any): string {
+    switch (item) {
+      case 'rain':
+        return 'Rain Sensor';
+      case 'flood':
+        return 'Flood Sensor';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getFormattedCategory(iotType: any, latestData: number): string {
+    switch (iotType) {
+      case 'rain':
+        if (latestData <= 7.5) {
+          return 'LIGHT';
+        } else if (latestData > 7.5 && latestData <= 15) {
+          return 'HEAVY';
+        } else if (latestData > 15 && latestData <= 30) {
+          return 'INTENSE';
+        } else {
+          return 'TORRENTIAL';
+        }
+      case 'flood':
+        if (latestData <= 0.5) {
+          return 'LOW';
+        } else if (latestData > 0.5 && latestData <= 1.5) {
+          return 'MEDIUM';
+        } else {
+          return 'HIGH';
+        }
+      default:
+        return 'UNKNOWN';
+    }
+  }
+
+  getStatusDynamicStyle(item: any): string {
+    switch (item) {
+      case 'Active':
+        return 'style="color: green;"';
+      case 'Inactive':
+        return 'style="color: grey;"';
+      default:
+        return 'style="color: black;"';
+    }
+  }
+
+  getIoTtypeDynamicStyle(item: any): { [key: string]: string } {
+    switch (item.iot_type) {
+      case 'rain':
+        return { color: '#06B9E6' };
+      case 'flood':
+        return { color: '#519259' };
+      default:
+        return { color: 'black' };
+    }
+  }
+
+  getCategoryDynamicStyle(item: any): { [key: string]: string } {
+    switch (item.iot_type) {
+      case 'rain':
+        if (item.latest_data <= 7.5) {
+          return { color: '#d1d5d8' };
+        } else if (item.latest_data > 7.5 && item.latest_data <= 15) {
+          return { color: '#ebcb86' };
+        } else if (item.latest_data > 15 && item.latest_data <= 30) {
+          return { color: '#ff6600' };
+        } else {
+          return { color: '#ff1919' };
+        }
+      case 'flood':
+        if (item.latest_data <= 0.5) {
+          return { color: '#ebcb86' };
+        } else if (item.latest_data > 0.5 && item.latest_data <= 1.5) {
+          return { color: '#ff6600' };
+        } else {
+          return { color: '#ff1919' };
+        }
+      default:
+        return { color: 'black' };
+    }
+  }
+
   showQcDataPoints(qcSensorType: QuezonCitySensorType) {
     const graphDiv = document.getElementById('graph-dom');
     let chartPopUpOpen = false;
@@ -496,13 +602,94 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
             }
             popUp.setLngLat(coordinates).setHTML(
-              `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
-            <div><b>Name:</b> ${name} </div>
-            <div><b>IoT Sensor Type:</b> ${iotType}</div>
-            <div><b>Status:</b> ${status}</div>
-            <div><b>Battery Level:</b> ${formattedBatPercent}</div>
-            <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
-          </div>`
+              //     `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
+              //   <div><b>Name:</b> ${name} </div>
+              //   <div><b>IoT Sensor Type:</b> ${iotType}</div>
+              //   <div><b>Status:</b> ${status}</div>
+              //   <div><b>Battery Level:</b> ${formattedBatPercent}</div>
+              //   <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
+              // </div>`
+              `
+              <link rel="preconnect" href="https://fonts.googleapis.com">
+              <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+              <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+              <style>
+                .mobile-container {
+                    display: none;
+                }
+
+                @media (max-width: 767px) {
+                    .mobile-container {
+                        display: block;
+                    }
+                }
+
+                .non-mobile-container {
+                    display: none;
+                }
+
+                @media (min-width: 768px) {
+                    .non-mobile-container {
+                        display: block;
+                    }
+                }
+              </style>
+              
+              <div class="non-mobile-container">
+                <div style="color: #333333;font-size: 13px;padding-top: 4px;">
+                  <div><b>Name:</b> ${name} </div>
+                  <div><b>IoT Sensor Type:</b> ${iotType}</div>
+                  <div><b>Status:</b> ${status}</div>
+                  <div><b>Battery Level:</b> ${formattedBatPercent}</div>
+                  <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
+                </div>
+              </div>
+
+              
+              <div class="mobile-container">
+                <div style="font-family: Inter; padding: 16px; width: 400px;">
+                <div style="display: flex; justify-content: space-between">
+                  <div>
+                    <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
+                    <div style="font-size: 20px; font-weight: bold; display: inline-block; vertical-align: middle;">IoT Sensor Details</div>
+                  </div>
+                  <img src="assets/icons/close-button.png" alt="" style="height: 18px;">
+                </div>
+                
+                <hr style="height: 1px; border: none; border-top: 1px solid #ededed; margin-top: 16px; margin-bottom: 16px; width: 100%; align-items: center;">
+                
+                  <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div style="font-size: 16px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
+                      <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category">${this.getFormattedCategory(
+                        iotType,
+                        parseFloat(iotTypeLatestData)
+                      )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
+                    </div>
+                  
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div style="font-size: 14px; display: inline-block; padding: 0px; margin-right: 50px;" id="iotType">${this.getFormattedIoTtype(
+                        iotType
+                      )}</div>
+                      <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status">${status}</span> &middot ${formattedBatPercent}</div>
+                    </div>
+                  </div>
+                  
+                  <div style="height: 32px;"></div>
+                
+                <div style="display: flex; justify-content: center; align-items: center; padding-top: 12px; padding-bottom: 12px; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: rgba(197, 197, 197, 0.6);">
+                  <div style="font-weight: bold; font-size: 16px">Hide Flood Level History</div>
+                </div>
+              
+                <div style="height: 32px;"></div>
+                
+                <div style="height: 130px; width: 100%; background-color: gray;"></div>
+                
+              </div>
+              </div>
+              
+              `
             );
             if (!chartPopUpOpen) {
               popUp.addTo(_this.map);
