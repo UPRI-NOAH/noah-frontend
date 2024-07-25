@@ -455,21 +455,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.isGraphToggled = !this.isGraphToggled;
   }
 
-  getFormattedLatestData(item: any): string {
-    if (item.iot_type === null) {
-      return 'N/A';
-    }
-
-    switch (item.iot_type) {
-      case 'rain':
-        return `${item.latest_data}mm/hr`;
-      case 'flood':
-        return `${item.latest_data}m`;
-      default:
-        return 'Unknown';
-    }
-  }
-
   getFormattedIoTtype(item: any): string {
     switch (item) {
       case 'rain':
@@ -517,39 +502,28 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     }
   }
 
-  getIoTtypeDynamicStyle(item: any): { [key: string]: string } {
-    switch (item.iot_type) {
+  getCategoryDynamicStyle(latest_data: number, iot_type: string): string {
+    switch (iot_type) {
       case 'rain':
-        return { color: '#06B9E6' };
-      case 'flood':
-        return { color: '#519259' };
-      default:
-        return { color: 'black' };
-    }
-  }
-
-  getCategoryDynamicStyle(item: any): { [key: string]: string } {
-    switch (item.iot_type) {
-      case 'rain':
-        if (item.latest_data <= 7.5) {
-          return { color: '#d1d5d8' };
-        } else if (item.latest_data > 7.5 && item.latest_data <= 15) {
-          return { color: '#ebcb86' };
-        } else if (item.latest_data > 15 && item.latest_data <= 30) {
-          return { color: '#ff6600' };
+        if (latest_data <= 7.5) {
+          return 'style="color: #d1d5d8;"';
+        } else if (latest_data > 7.5 && latest_data <= 15) {
+          return 'style="color: #ebcb86;"';
+        } else if (latest_data > 15 && latest_data <= 30) {
+          return 'style="color: #ff6600"';
         } else {
-          return { color: '#ff1919' };
+          return 'style="color: #ff1919"';
         }
       case 'flood':
-        if (item.latest_data <= 0.5) {
-          return { color: '#ebcb86' };
-        } else if (item.latest_data > 0.5 && item.latest_data <= 1.5) {
-          return { color: '#ff6600' };
+        if (latest_data <= 0.5) {
+          return 'style="color: #ebcb86;"';
+        } else if (latest_data > 0.5 && latest_data <= 1.5) {
+          return 'style="color: #ff6600"';
         } else {
-          return { color: '#ff1919' };
+          return 'style="color: #ff1919"';
         }
       default:
-        return { color: 'black' };
+        return 'style="color: red"';
     }
   }
 
@@ -662,17 +636,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                       <div style="font-size: 16px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
-                      <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category">${this.getFormattedCategory(
-                        iotType,
-                        parseFloat(iotTypeLatestData)
-                      )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
+                      <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
+                        parseFloat(iotTypeLatestData),
+                        iotType
+                      )}>${this.getFormattedCategory(
+                iotType,
+                parseFloat(iotTypeLatestData)
+              )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
                     </div>
                   
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                       <div style="font-size: 14px; display: inline-block; padding: 0px; margin-right: 50px;" id="iotType">${this.getFormattedIoTtype(
                         iotType
                       )}</div>
-                      <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status">${status}</span> &middot ${formattedBatPercent}</div>
+                      <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status" ${this.getStatusDynamicStyle(
+                        status
+                      )}>${status}</span> &middot ${formattedBatPercent}</div>
                     </div>
                   </div>
                   
