@@ -552,7 +552,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
-          this.map.on('mouseenter', qcSensorType, (e) => {
+          this.map.on('mouseover', qcSensorType, (e) => {
             const coordinates = (
               e.features[0].geometry as any
             ).coordinates.slice();
@@ -676,7 +676,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             _this.map.getCanvas().style.cursor = 'pointer';
           });
 
-          this.map.on('click', qcSensorType, function (e) {
+          this.map.on('dblclick', qcSensorType, function (e) {
             graphDiv.hidden = false;
             chartPopUpOpen = false;
             _this.map.flyTo({
