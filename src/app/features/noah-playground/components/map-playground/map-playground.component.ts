@@ -6,6 +6,7 @@ import {
   ViewChild,
   ElementRef,
   EventEmitter,
+  HostListener,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -170,6 +171,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   geojson: any;
   linestring: any;
   private measurementActive: boolean = false;
+  screenWidth: number;
+  screenHeight: number;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -181,7 +184,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService
-  ) {}
+  ) {
+    this.getScreenSize();
+  }
 
   ngOnInit(): void {
     this.initMap();
@@ -194,6 +199,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initGeolocationListener();
         this.initCalculation();
       });
+    this.getScreenSize();
 
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
@@ -222,6 +228,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this._unsub.complete();
     this._changeStyle.next();
     this._changeStyle.complete();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize(event?) {
+    this.screenWidth = window.innerWidth;
+    this.screenHeight = window.innerHeight;
   }
 
   /**
@@ -449,12 +461,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   // FUNCTIONS FOR IOT SENSOR DETAILS
 
-  isGraphToggled = true;
-
-  toggleGraphDropdown() {
-    this.isGraphToggled = !this.isGraphToggled;
-  }
-
   getFormattedIoTtype(item: any): string {
     switch (item) {
       case 'rain':
@@ -552,65 +558,140 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
-          this.map.on('mouseover', qcSensorType, (e) => {
-            const coordinates = (
-              e.features[0].geometry as any
-            ).coordinates.slice();
-            const name = e.features[0].properties.name;
-            const iotType = e.features[0].properties.iot_type;
-            const status = e.features[0].properties.status;
-            const latestData = e.features[0].properties.latest_data;
-            const batPercent = e.features[0].properties.battery_percent;
-            const municity = e.features[0].properties.municity;
-            this.municity = municity;
-            const formattedBatPercent =
-              batPercent && batPercent !== 'null'
-                ? `${batPercent}%`
-                : 'Not Available';
-            const iotTypeLatestData =
-              iotType && iotType == 'flood'
-                ? `${latestData}m`
-                : `${latestData}mm`;
+          if (this.screenWidth < 768) {
+            this.map.on('click', qcSensorType, (e) => {
+              const coordinates = (
+                e.features[0].geometry as any
+              ).coordinates.slice();
+              _this.map.flyTo({
+                center: (e.features[0].geometry as any).coordinates.slice(),
+                zoom: 13,
+                offset: [0, -200],
+                essential: true,
+              });
+              const name = e.features[0].properties.name;
+              const iotType = e.features[0].properties.iot_type;
+              const status = e.features[0].properties.status;
+              const latestData = e.features[0].properties.latest_data;
+              const batPercent = e.features[0].properties.battery_percent;
+              const municity = e.features[0].properties.municity;
+              this.municity = municity;
+              const formattedBatPercent =
+                batPercent && batPercent !== 'null'
+                  ? `${batPercent}%`
+                  : 'Not Available';
+              const iotTypeLatestData =
+                iotType && iotType == 'flood'
+                  ? `${latestData}m`
+                  : `${latestData}mm`;
 
-            while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-              coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
-            }
-            popUp.setLngLat(coordinates).setHTML(
-              //     `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
-              //   <div><b>Name:</b> ${name} </div>
-              //   <div><b>IoT Sensor Type:</b> ${iotType}</div>
-              //   <div><b>Status:</b> ${status}</div>
-              //   <div><b>Battery Level:</b> ${formattedBatPercent}</div>
-              //   <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
-              // </div>`
-              `
-              <link rel="preconnect" href="https://fonts.googleapis.com">
-              <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-              <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              }
+              popUp.setLngLat(coordinates).setHTML(
+                `
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
-              <style>
-                .mobile-container {
-                    display: none;
-                }
+                
+                  <div style="font-family: Inter; padding: 16px; width: 400px;">
+                  <div style="display: flex; justify-content: space-between">
+                    <div>
+                      <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
+                      <div style="font-size: 20px; font-weight: bold; display: inline-block; vertical-align: middle;">IoT Sensor Details</div>
+                    </div>
+                    <img src="assets/icons/close-button.png" alt="" style="height: 18px;">
+                  </div>
+                  
+                  <hr style="height: 1px; border: none; border-top: 1px solid #ededed; margin-top: 16px; margin-bottom: 16px; width: 100%; align-items: center;">
+                  
+                    <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 16px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
+                        <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
+                          parseFloat(iotTypeLatestData),
+                          iotType
+                        )}>${this.getFormattedCategory(
+                  iotType,
+                  parseFloat(iotTypeLatestData)
+                )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
+                      </div>
+                    
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 14px; display: inline-block; padding: 0px; margin-right: 50px;" id="iotType">${this.getFormattedIoTtype(
+                          iotType
+                        )}</div>
+                        <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status" ${this.getStatusDynamicStyle(
+                          status
+                        )}>${status}</span> &middot ${formattedBatPercent}</div>
+                      </div>
+                    </div>
+                    
+                    <div style="height: 32px;"></div>
+                  
+                  <div style="display: flex; justify-content: center; align-items: center; padding-top: 12px; padding-bottom: 12px; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: rgba(197, 197, 197, 0.6);">
+                    <div style="font-weight: bold; font-size: 16px">Hide Flood Level History</div>
+                  </div>
+                  
+                </div>
+                
+                `
+              );
+              if (!chartPopUpOpen) {
+                popUp.addTo(_this.map);
+              }
+              _this.map.getCanvas().style.cursor = 'pointer';
+            });
 
-                @media (max-width: 767px) {
-                    .mobile-container {
-                        display: block;
-                    }
-                }
+            this.map.on('dblclick', qcSensorType, function (e) {
+              graphDiv.hidden = false;
+              chartPopUpOpen = false;
+              _this.map.flyTo({
+                center: (e.features[0].geometry as any).coordinates.slice(),
+                zoom: 13,
+                essential: true,
+              });
+              const name = e.features[0].properties.name;
+              const pk = e.features[0].properties.pk;
 
-                .non-mobile-container {
-                    display: none;
-                }
+              chartPopUp
+                .setLngLat((e.features[0].geometry as any).coordinates.slice())
+                .setDOMContent(graphDiv);
+              chartPopUp.addTo(_this.map);
+              _this.showQcChart(+pk, name, qcSensorType);
+              popUp.remove();
+            });
+          } else {
+            this.map.on('mouseover', qcSensorType, (e) => {
+              const coordinates = (
+                e.features[0].geometry as any
+              ).coordinates.slice();
+              const name = e.features[0].properties.name;
+              const iotType = e.features[0].properties.iot_type;
+              const status = e.features[0].properties.status;
+              const latestData = e.features[0].properties.latest_data;
+              const batPercent = e.features[0].properties.battery_percent;
+              const municity = e.features[0].properties.municity;
+              this.municity = municity;
+              const formattedBatPercent =
+                batPercent && batPercent !== 'null'
+                  ? `${batPercent}%`
+                  : 'Not Available';
+              const iotTypeLatestData =
+                iotType && iotType == 'flood'
+                  ? `${latestData}m`
+                  : `${latestData}mm`;
 
-                @media (min-width: 768px) {
-                    .non-mobile-container {
-                        display: block;
-                    }
-                }
-              </style>
-              
-              <div class="non-mobile-container">
+              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              }
+              popUp.setLngLat(coordinates).setHTML(
+                `
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
                 <div style="color: #333333;font-size: 13px;padding-top: 4px;">
                   <div><b>Name:</b> ${name} </div>
                   <div><b>IoT Sensor Type:</b> ${iotType}</div>
@@ -618,82 +699,33 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   <div><b>Battery Level:</b> ${formattedBatPercent}</div>
                   <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
                 </div>
-              </div>
-
-              
-              <div class="mobile-container">
-                <div style="font-family: Inter; padding: 16px; width: 400px;">
-                <div style="display: flex; justify-content: space-between">
-                  <div>
-                    <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
-                    <div style="font-size: 20px; font-weight: bold; display: inline-block; vertical-align: middle;">IoT Sensor Details</div>
-                  </div>
-                  <img src="assets/icons/close-button.png" alt="" style="height: 18px;">
-                </div>
-                
-                <hr style="height: 1px; border: none; border-top: 1px solid #ededed; margin-top: 16px; margin-bottom: 16px; width: 100%; align-items: center;">
-                
-                  <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <div style="font-size: 16px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
-                      <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
-                        parseFloat(iotTypeLatestData),
-                        iotType
-                      )}>${this.getFormattedCategory(
-                iotType,
-                parseFloat(iotTypeLatestData)
-              )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
-                    </div>
-                  
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <div style="font-size: 14px; display: inline-block; padding: 0px; margin-right: 50px;" id="iotType">${this.getFormattedIoTtype(
-                        iotType
-                      )}</div>
-                      <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status" ${this.getStatusDynamicStyle(
-                        status
-                      )}>${status}</span> &middot ${formattedBatPercent}</div>
-                    </div>
-                  </div>
-                  
-                  <div style="height: 32px;"></div>
-                
-                <div style="display: flex; justify-content: center; align-items: center; padding-top: 12px; padding-bottom: 12px; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: rgba(197, 197, 197, 0.6);">
-                  <div style="font-weight: bold; font-size: 16px">Hide Flood Level History</div>
-                </div>
-              
-                <div style="height: 32px;"></div>
-                
-                <div style="height: 130px; width: 100%; background-color: gray;"></div>
-                
-              </div>
-              </div>
-              
-              `
-            );
-            if (!chartPopUpOpen) {
-              popUp.addTo(_this.map);
-            }
-            _this.map.getCanvas().style.cursor = 'pointer';
-          });
-
-          this.map.on('dblclick', qcSensorType, function (e) {
-            graphDiv.hidden = false;
-            chartPopUpOpen = false;
-            _this.map.flyTo({
-              center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 13,
-              essential: true,
+                `
+              );
+              if (!chartPopUpOpen) {
+                popUp.addTo(_this.map);
+              }
+              _this.map.getCanvas().style.cursor = 'pointer';
             });
-            const name = e.features[0].properties.name;
-            const pk = e.features[0].properties.pk;
 
-            chartPopUp
-              .setLngLat((e.features[0].geometry as any).coordinates.slice())
-              .setDOMContent(graphDiv);
-            chartPopUp.addTo(_this.map);
-            _this.showQcChart(+pk, name, qcSensorType);
-            popUp.remove();
-          });
+            this.map.on('click', qcSensorType, function (e) {
+              graphDiv.hidden = false;
+              chartPopUpOpen = false;
+              _this.map.flyTo({
+                center: (e.features[0].geometry as any).coordinates.slice(),
+                zoom: 13,
+                essential: true,
+              });
+              const name = e.features[0].properties.name;
+              const pk = e.features[0].properties.pk;
+
+              chartPopUp
+                .setLngLat((e.features[0].geometry as any).coordinates.slice())
+                .setDOMContent(graphDiv);
+              chartPopUp.addTo(_this.map);
+              _this.showQcChart(+pk, name, qcSensorType);
+              popUp.remove();
+            });
+          }
         } else {
           popUp.remove();
           chartPopUp.remove();
