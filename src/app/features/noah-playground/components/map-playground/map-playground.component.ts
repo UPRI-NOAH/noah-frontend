@@ -559,6 +559,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
           if (this.screenWidth < 768) {
+            const popUp = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: true,
+              maxWidth: 'auto',
+            });
+
+            const chartPopUp = new mapboxgl.Popup({
+              closeButton: true,
+              closeOnClick: false,
+              maxWidth: 'auto',
+            });
+
             this.map.on('click', qcSensorType, (e) => {
               const coordinates = (
                 e.features[0].geometry as any
@@ -566,7 +578,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               _this.map.flyTo({
                 center: (e.features[0].geometry as any).coordinates.slice(),
                 zoom: 13,
-                offset: [0, -200],
+                offset: [0, -275],
                 essential: true,
               });
               const name = e.features[0].properties.name;
@@ -588,20 +600,20 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               while (Math.abs(e.lnglat - coordinates[0]) > 180) {
                 coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
               }
-              popUp.setLngLat(coordinates).setHTML(
-                `
+
+              const popupContent = `
                 <link rel="preconnect" href="https://fonts.googleapis.com">
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
                 
-                  <div style="font-family: Inter; padding: 16px; width: 400px;">
+                  <div style="font-family: Inter; padding: 16px; width: 90vw;">
                   <div style="display: flex; justify-content: space-between">
                     <div>
                       <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
                       <div style="font-size: 20px; font-weight: bold; display: inline-block; vertical-align: middle;">IoT Sensor Details</div>
                     </div>
-                    <img src="assets/icons/close-button.png" alt="" style="height: 18px;">
+                    
                   </div>
                   
                   <hr style="height: 1px; border: none; border-top: 1px solid #ededed; margin-top: 16px; margin-bottom: 16px; width: 100%; align-items: center;">
@@ -613,9 +625,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                           parseFloat(iotTypeLatestData),
                           iotType
                         )}>${this.getFormattedCategory(
-                  iotType,
-                  parseFloat(iotTypeLatestData)
-                )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
+                iotType,
+                parseFloat(iotTypeLatestData)
+              )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
                       </div>
                     
                       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -628,16 +640,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       </div>
                     </div>
                     
-                    <div style="height: 32px;"></div>
+                    <div style="height: 24px;"></div>
                   
-                  <div style="display: flex; justify-content: center; align-items: center; padding-top: 12px; padding-bottom: 12px; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: rgba(197, 197, 197, 0.6);">
-                    <div style="font-weight: bold; font-size: 16px">Hide Flood Level History</div>
+                  <div style="display: flex; justify-content: center; align-items: center; padding: 8px; height: 23vh; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: #ededed;">
+                      <div id="sensor-detail-graph">Graph Here</div>
                   </div>
                   
                 </div>
                 
-                `
-              );
+                `;
+              popUp.setLngLat(coordinates).setHTML(popupContent);
               if (!chartPopUpOpen) {
                 popUp.addTo(_this.map);
               }
@@ -727,7 +739,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             });
           }
         } else {
-          popUp.remove();
+          // popUp.remove();
           chartPopUp.remove();
           this.map.on('mouseenter', qcSensorType, (e) => {
             _this._graphShown = false;
@@ -738,7 +750,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.map.on('mouseleave', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
-            popUp.remove();
+            // popUp.remove();
             chartPopUpOpen = false;
           });
         }
@@ -747,7 +759,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.on('mouseleave', qcSensorType, function () {
       if (_this._graphShown) return;
       _this.map.getCanvas().style.cursor = '';
-      popUp.remove();
+      // popUp.remove();
     });
   }
 
