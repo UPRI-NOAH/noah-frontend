@@ -47,3 +47,21 @@
   padding: 5px 10px;
   border-radius: 3px;
 }
+
+.map-icon {
+  top: 228px;
+}
+
+.coords {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: absolute;
+  top: 284px;
+  right: 10px;
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 18px;
+  border-radius: 3px;
+  display: none;
+}
