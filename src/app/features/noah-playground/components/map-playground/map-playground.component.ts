@@ -558,6 +558,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
+          // TODO: Insert Highchart graph in popup
           if (this.screenWidth < 768) {
             const popUp = new mapboxgl.Popup({
               closeButton: false,
