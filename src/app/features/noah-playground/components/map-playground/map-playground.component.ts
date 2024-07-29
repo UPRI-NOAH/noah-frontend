@@ -252,17 +252,36 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center,
-          zoom: 16,
+          zoom: 17,
           essential: true,
         });
 
         if (!this.centerMarker) {
-          this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+          this.centerMarker = new mapboxgl.Marker({
+            color: '#FF0000',
+            draggable: true,
+          })
             .setLngLat(center)
-            .addTo(this.map);
+            .addTo(this.map)
+            .on('dragend', (e) => {
+              // Update the center position when the marker is dragged
+              const coords = document.getElementById('coordinates');
+              const LngLat = this.centerMarker.getLngLat();
+              coords.style.display = 'block';
+              coords.innerHTML = `Longitude: ${LngLat.lng}<br />Latitude: ${LngLat.lat}`;
+              this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
+              this.map.flyTo({
+                center: LngLat,
+                zoom: 17,
+                speed: 1.2,
+                curve: 1,
+                easing: (t) => t,
+                essential: true,
+              });
+            });
+        } else {
+          this.centerMarker.setLngLat(center);
         }
-
-        this.centerMarker.setLngLat(center);
       });
   }
 
@@ -750,7 +769,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             filter: ['==', 'CF Type', 'Barangay'],
           });
           this.map.addLayer({
-            id: 'hospital',
+            id: 'qc_hospitals',
             type: 'fill',
             source: {
               type: 'geojson',
@@ -932,7 +951,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 +(groupShown && soloShown)
               );
               this.map.setPaintProperty(
-                'hospital',
+                'qc_hospitals',
                 'fill-opacity',
                 +(groupShown && soloShown)
               );
@@ -1662,7 +1681,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.addSource('mapbox-dem', {
       type: 'raster-dem',
       url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-    });
+      volatile: true,
+    } as any);
 
     // Watch exaggeration level
     this.pgService.exagerration$
