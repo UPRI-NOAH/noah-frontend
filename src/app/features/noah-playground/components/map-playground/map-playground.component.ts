@@ -598,11 +598,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
               const popupContent = `
                 <link rel="preconnect" href="https://fonts.googleapis.com">
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
                 
-                  <div style="font-family: Inter; padding: 16px; width: 90vw;">
+                  <div style="font-family: Nunito; padding: 16px; width: 90vw;">
                   <div style="display: flex; justify-content: space-between">
                     <div>
                       <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
@@ -615,8 +615,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   
                     <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
                       <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div style="font-size: 16px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
-                        <div style="font-size: 16px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
+                        <div style="font-size: 18px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
+                        <div style="font-size: 18px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
                           parseFloat(iotTypeLatestData),
                           iotType
                         )}>${this.getFormattedCategory(
@@ -635,7 +635,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       </div>
                     </div>
                     
-                    <div style="height: 24px;"></div>
+                    <div style="height: 16px;"></div>
                   
                   <div id="qc-chart-mobile" style="display: flex; justify-content: center; align-items: center; padding: 8px; width: 100%; border-style: solid; border-radius: 8px; border: 1px solid #ededed; z-index: auto;">
                       
