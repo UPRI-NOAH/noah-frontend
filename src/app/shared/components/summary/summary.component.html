@@ -294,10 +294,7 @@
                   <div class="tab-content">
                     <ng-container *ngIf="loading; else dataSummaryall">
                       <div tabindex="0" class="justify-center">
-                        <div
-                          class="shadow-xl w-full z-10 overflow-hidden"
-                          style="max-width: 1000px"
-                        >
+                        <div class="shadow-xl w-full z-10 overflow-hidden">
                           <div class="md:flex w-full">
                             <div class="w-full py-10 px-5 md:px-10">
                               <div class="flex justify-center gap-x-4 mb-4">
@@ -448,7 +445,6 @@
                                     p-2
                                     text-sm text-gray-700
                                     whitespace-nowrap
-                                    text-center
                                     justify-center
                                   "
                                 >
@@ -492,7 +488,7 @@
                                       <ng-container
                                         *ngIf="
                                           data.latest_data >= '0' &&
-                                          data.latest_data < '7.5'
+                                          data.latest_data <= '7.50'
                                         "
                                       >
                                         <span
@@ -505,13 +501,13 @@
                                             rounded-lg
                                             bg-gray-300
                                           "
-                                          >Light (0 - 7.5mm/hr)</span
+                                          >Light (0 - 7.5 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
                                         *ngIf="
                                           data.latest_data >= '7.51' &&
-                                          data.latest_data < '15'
+                                          data.latest_data <= '15'
                                         "
                                       >
                                         <span
@@ -524,7 +520,7 @@
                                             rounded-lg
                                             bg-low
                                           "
-                                          >Heavy (7.51 - 15mm/hr)</span
+                                          >Heavy (7.51 - 15 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
@@ -543,7 +539,7 @@
                                             rounded-lg
                                             bg-medium
                                           "
-                                          >Intense (15 - 30mm/hr)</span
+                                          >Intense (15 - 30 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
@@ -559,7 +555,7 @@
                                             rounded-lg
                                             bg-high
                                           "
-                                          >Torrential (> 30.1mm/hr)</span
+                                          >Torrential (> 30.1 mm/hr)</span
                                         >
                                       </ng-container>
                                       <!-- Flood -->
@@ -569,8 +565,8 @@
                                     >
                                       <ng-container
                                         *ngIf="
-                                          data.latest_data >= '0' &&
-                                          data.latest_data < '0.6'
+                                          +data.latest_data >= 0 &&
+                                          +data.latest_data <= 0.5
                                         "
                                       >
                                         <span
@@ -583,14 +579,14 @@
                                             bg-low
                                             rounded-lg
                                           "
-                                          >Low (0 - 0.5m)</span
+                                          >Low (0 - 0.5 m)</span
                                         >
                                       </ng-container>
 
                                       <ng-container
                                         *ngIf="
-                                          data.latest_data >= '0.6' &&
-                                          data.latest_data <= '1.5'
+                                          +data.latest_data > 0.5 &&
+                                          +data.latest_data <= 1.5
                                         "
                                       >
                                         <span
@@ -603,12 +599,12 @@
                                             bg-medium
                                             rounded-lg
                                           "
-                                          >Medium (0.6 - 1.5m)</span
+                                          >Medium (0.5 - 1.5 m)</span
                                         >
                                       </ng-container>
 
                                       <ng-container
-                                        *ngIf="data.latest_data > '1.6'"
+                                        *ngIf="+data.latest_data > 1.5"
                                       >
                                         <span
                                           class="
@@ -621,7 +617,7 @@
                                             rounded-lg
                                           "
                                         >
-                                          High (> 1.5m)
+                                          High (> 1.5 m)
                                         </span>
                                       </ng-container>
                                     </ng-container>
@@ -751,7 +747,7 @@
                                   font-bold
                                 "
                               >
-                                Low(0 - 0.5m)
+                                Low (0 - 0.5 m)
                               </div>
                               <div
                                 class="
@@ -761,7 +757,7 @@
                                   font-bold
                                 "
                               >
-                                Medium(0.6 - 1.5m)
+                                Medium (0.5 - 1.5 m)
                               </div>
                               <div
                                 class="
@@ -771,7 +767,7 @@
                                   font-bold
                                 "
                               >
-                                High(1.6m+)
+                                High (> 1.5 m)
                               </div>
                             </div>
                           </div>
@@ -895,25 +891,25 @@
                                       class="text-low"
                                       *ngIf="
                                         data.latest_data >= '0' &&
-                                        data.latest_data < '0.5'
+                                        data.latest_data <= '0.5'
                                       "
                                     >
-                                      Latest Data: {{ data.latest_data }}m
+                                      Latest Data: {{ data.latest_data }} m
                                     </div>
 
                                     <div
                                       class="text-medium"
                                       *ngIf="
-                                        data.latest_data >= '0.6' &&
+                                        data.latest_data > '0.5' &&
                                         data.latest_data <= '1.5'
                                       "
                                     >
-                                      Latest Data: {{ data.latest_data }}m
+                                      Latest Data: {{ data.latest_data }} m
                                     </div>
 
                                     <div
                                       class="text-high"
-                                      *ngIf="data.latest_data > '1.6'"
+                                      *ngIf="data.latest_data > '1.5'"
                                     >
                                       Latest Data: {{ data.latest_data }}m
                                     </div>
@@ -1079,7 +1075,6 @@
                                     p-2
                                     text-sm text-gray-700
                                     whitespace-nowrap
-                                    text-center
                                     justify-center
                                   "
                                 >
@@ -1116,8 +1111,8 @@
                                   <ng-template #showLevel>
                                     <ng-container
                                       *ngIf="
-                                        data.latest_data >= '0' &&
-                                        data.latest_data < '0.6'
+                                        +data.latest_data >= 0 &&
+                                        +data.latest_data <= 0.5
                                       "
                                     >
                                       <span
@@ -1125,20 +1120,19 @@
                                           p-1.5
                                           text-xs
                                           font-medium
-                                          uppercase
                                           tracking-wider
                                           text-black
                                           bg-low
                                           rounded-lg
                                         "
-                                        >Low (0 - 0.5m)</span
+                                        >Low (0 - 0.5 m)</span
                                       >
                                     </ng-container>
 
                                     <ng-container
                                       *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data <= '1.5'
+                                        +data.latest_data > 0.5 &&
+                                        +data.latest_data <= 1.5
                                       "
                                     >
                                       <span
@@ -1146,32 +1140,30 @@
                                           p-1.5
                                           text-xs
                                           font-medium
-                                          uppercase
                                           tracking-wider
                                           text-black
                                           bg-medium
                                           rounded-lg
                                         "
-                                        >Medium (0.6 - 1.5m)</span
+                                        >Medium (0.5 - 1.5 m)</span
                                       >
                                     </ng-container>
 
                                     <ng-container
-                                      *ngIf="data.latest_data > '1.6'"
+                                      *ngIf="+data.latest_data > 1.5"
                                     >
                                       <span
                                         class="
                                           p-1.5
                                           text-xs
                                           font-medium
-                                          uppercase
                                           tracking-wider
                                           text-black
                                           bg-high
                                           rounded-lg
                                         "
                                       >
-                                        High (1.6m +)
+                                        High (> 1.5 m)
                                       </span>
                                     </ng-container>
                                   </ng-template>
@@ -1306,7 +1298,7 @@
                                   font-bold
                                 "
                               >
-                                Low(0 - 0.5m)
+                                Low (0 - 0.5 m)
                               </div>
                               <div
                                 class="
@@ -1316,7 +1308,7 @@
                                   font-bold
                                 "
                               >
-                                Medium(0.6 - 1.5m)
+                                Medium (0.5 - 1.5 m)
                               </div>
                               <div
                                 class="
@@ -1326,7 +1318,7 @@
                                   font-bold
                                 "
                               >
-                                High(1.6m+)
+                                High (> 1.5 m)
                               </div>
                             </div>
                           </div>
@@ -1450,26 +1442,26 @@
                                       class="text-low"
                                       *ngIf="
                                         data.latest_data >= '0' &&
-                                        data.latest_data < '0.6'
+                                        data.latest_data <= '0.50'
                                       "
                                     >
-                                      Latest Data: {{ data.latest_data }}m
+                                      Latest Data: {{ data.latest_data }} m
                                     </div>
                                     <div
                                       class="text-medium"
                                       *ngIf="
-                                        data.latest_data >= '0.6' &&
-                                        data.latest_data <= '1.5'
+                                        data.latest_data > '0.50' &&
+                                        data.latest_data <= '1.50'
                                       "
                                     >
-                                      Latest Data: {{ data.latest_data }}m
+                                      Latest Data: {{ data.latest_data }} m
                                     </div>
 
                                     <div
                                       class="text-high"
-                                      *ngIf="data.latest_data > '1.5'"
+                                      *ngIf="data.latest_data > '1.50'"
                                     >
-                                      Latest Data: {{ data.latest_data }}m
+                                      Latest Data: {{ data.latest_data }} m
                                     </div>
                                   </div>
                                 </ng-template>
@@ -1626,7 +1618,6 @@
                                     p-2
                                     text-sm text-gray-700
                                     whitespace-nowrap
-                                    text-center
                                     justify-center
                                   "
                                 >
@@ -1667,7 +1658,7 @@
                                       <ng-container
                                         *ngIf="
                                           data.latest_data >= '0' &&
-                                          data.latest_data < '7.5'
+                                          data.latest_data <= '7.50'
                                         "
                                       >
                                         <span
@@ -1680,13 +1671,13 @@
                                             rounded-lg
                                             bg-gray-300
                                           "
-                                          >Light (0 - 7.5mm/hr)</span
+                                          >Light (0 - 7.5 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
                                         *ngIf="
                                           data.latest_data >= '7.51' &&
-                                          data.latest_data < '15'
+                                          data.latest_data <= '15'
                                         "
                                       >
                                         <span
@@ -1699,7 +1690,7 @@
                                             rounded-lg
                                             bg-low
                                           "
-                                          >Heavy (7.51 - 15mm/hr)</span
+                                          >Heavy (7.51 - 15 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
@@ -1718,7 +1709,7 @@
                                             rounded-lg
                                             bg-medium
                                           "
-                                          >Intense (15 - 30mm/hr)</span
+                                          >Intense (15 - 30 mm/hr)</span
                                         >
                                       </ng-container>
                                       <ng-container
@@ -1732,9 +1723,9 @@
                                             tracking-wider
                                             text-black
                                             rounded-lg
-                                            bg-high
+                                            bg-hig
                                           "
-                                          >Torrential (> 30.1mm/hr)</span
+                                          >Torrential (> 30.1 mm/hr)</span
                                         >
                                       </ng-container>
                                     </ng-container>
@@ -1870,7 +1861,7 @@
                                   font-bold
                                 "
                               >
-                                Low(0 - 0.5m)
+                                Low (0 - 0.5 m)
                               </div>
                               <div
                                 class="
@@ -1880,7 +1871,7 @@
                                   font-bold
                                 "
                               >
-                                Medium(0.6 - 1.5m)
+                                Medium (0.5 - 1.5 m)
                               </div>
                               <div
                                 class="
@@ -1890,7 +1881,7 @@
                                   font-bold
                                 "
                               >
-                                High(1.6m+)
+                                High (> 1.5 m)
                               </div>
                             </div>
                           </div>
