@@ -535,11 +535,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   showQcDataPoints(qcSensorType: QuezonCitySensorType) {
     const graphDiv = document.getElementById('graph-dom');
+    const qcchartMobile = document.getElementById('qc-chart-mobile');
     let chartPopUpOpen = false;
 
     const popUp = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const popUpMobileView = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: true,
       maxWidth: 'auto',
     });
 
@@ -560,18 +567,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         if (groupShown && soloShown) {
           // TODO: Insert Highchart graph in popup
           if (this.screenWidth < 768) {
-            const popUp = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: true,
-              maxWidth: 'auto',
-            });
-
-            const chartPopUp = new mapboxgl.Popup({
-              closeButton: true,
-              closeOnClick: false,
-              maxWidth: 'auto',
-            });
-
             this.map.on('click', qcSensorType, (e) => {
               const coordinates = (
                 e.features[0].geometry as any
@@ -643,37 +638,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     
                     <div style="height: 24px;"></div>
                   
-                  <div style="display: flex; justify-content: center; align-items: center; padding: 8px; height: 23vh; width: 100%; border-style: solid; border-radius: 8px; border-width: 1px; border-color: #ededed;">
-                      <div id="sensor-detail-graph">Graph Here</div>
+                  <div id="qc-chart-mobile" style="display: flex; justify-content: center; align-items: center; padding: 8px; width: 100%; border-style: solid; border-radius: 8px; border: 1px solid #ededed; z-index: auto;">
+                      
                   </div>
                   
                 </div>
                 
                 `;
-              popUp.setLngLat(coordinates).setHTML(popupContent);
-              if (!chartPopUpOpen) {
-                popUp.addTo(_this.map);
-              }
-              _this.map.getCanvas().style.cursor = 'pointer';
-            });
-
-            this.map.on('dblclick', qcSensorType, function (e) {
-              graphDiv.hidden = false;
-              chartPopUpOpen = false;
-              _this.map.flyTo({
-                center: (e.features[0].geometry as any).coordinates.slice(),
-                zoom: 13,
-                essential: true,
-              });
-              const name = e.features[0].properties.name;
               const pk = e.features[0].properties.pk;
-
-              chartPopUp
-                .setLngLat((e.features[0].geometry as any).coordinates.slice())
-                .setDOMContent(graphDiv);
-              chartPopUp.addTo(_this.map);
-              _this.showQcChart(+pk, name, qcSensorType);
-              popUp.remove();
+              popUpMobileView.setLngLat(coordinates).setHTML(popupContent);
+              _this.showQcChartMobile(+pk, name, qcSensorType);
+              popUpMobileView.addTo(_this.map);
             });
           } else {
             this.map.on('mouseover', qcSensorType, (e) => {
@@ -762,6 +737,190 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       _this.map.getCanvas().style.cursor = '';
       // popUp.remove();
     });
+  }
+
+  // qc chart for mobile view
+  async showQcChartMobile(
+    pk: number,
+    appID: string,
+    qcSensorType: QuezonCitySensorType
+  ) {
+    localStorage.setItem('municity', JSON.stringify(this.municity));
+    const _this = this;
+
+    const options: any = {
+      title: {
+        text: null,
+      },
+      subtitle: {
+        text: null,
+      },
+      credits: {
+        enabled: false,
+      },
+      navigator: {
+        enabled: true,
+      },
+      exporting: {
+        fileName: 'Quezon IoT Data',
+        buttons: {
+          contextButton: {
+            menuItems: [
+              {
+                text: 'Download PDF',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn === '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (
+                    loggedIn === '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download CSV',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toLocaleString() === 'laguna'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toLocaleString() === 'quezon_city'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Print Chart',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download JPEG',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+                separator: false,
+              },
+            ],
+          },
+        },
+      },
+
+      ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
+    };
+    const chart = Highcharts.stockChart('qc-chart-mobile', options);
+    chart.showLoading();
+    let qcSensorChartOpts; // Declare the variable outside the try block
+    try {
+      const data = await this.qcSensorService.getQcSensorData(pk);
+      qcSensorChartOpts = {
+        data: data,
+        qcSensorType,
+      };
+      // Handle the response and chart options here
+    } catch (error) {
+      // Handle any errors
+    }
+    chart.hideLoading();
+    this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
 
   async showQcChart(
