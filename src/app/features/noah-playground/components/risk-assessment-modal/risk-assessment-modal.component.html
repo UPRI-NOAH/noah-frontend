@@ -556,6 +556,7 @@
 <!-- Mobile View -->
 <div
   class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 lg:hidden"
+  *ngIf="riskModal"
 ></div>
 <div
   class="
@@ -578,6 +579,7 @@
     lg:hidden
     p-6
   "
+  *ngIf="riskModal"
 >
   <div class="relative w-full min-h-full p-2 dark:bg-gray-800 flex flex-col">
     <!-- Start of Header -->
@@ -867,7 +869,7 @@
           "
         >
           <div class="text-left">
-            <div class="font-bold text-base">
+            <div class="font-bold text-sm">
               {{ data.brgy }}
             </div>
             <div class="font-semibold text-sm">{{ data.muni }}</div>
@@ -1183,7 +1185,7 @@
             *ngIf="showSelect"
           >
             <button
-              class="h-auto p-2.5 border-b border-gray-300 text-left"
+              class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
               *ngFor="let item of dropdown"
               [value]="item"
               (click)="onDateSelected(item)"
