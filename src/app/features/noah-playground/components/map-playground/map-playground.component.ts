@@ -263,7 +263,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           })
             .setLngLat(center)
             .addTo(this.map)
-            .on('drag', (e) => {
+            .on('dragend', (e) => {
               // Update the center position when the marker is dragged
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
@@ -282,12 +282,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         } else {
           this.centerMarker.setLngLat(center);
         }
-
-        // Handle the dragend event if you need to perform additional actions
-        this.centerMarker.on('dragend', (e) => {
-          const newLngLat = this.centerMarker.getLngLat();
-          // Perform any additional actions after dragging ends
-        });
       });
   }
 
