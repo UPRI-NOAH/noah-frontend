@@ -257,12 +257,34 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         });
 
         if (!this.centerMarker) {
-          this.centerMarker = new mapboxgl.Marker({ color: '#333' })
+          this.centerMarker = new mapboxgl.Marker({
+            color: '#333',
+            draggable: true,
+          })
             .setLngLat(center)
-            .addTo(this.map);
+            .addTo(this.map)
+            .on('drag', (e) => {
+              // Update the center position when the marker is dragged
+              const LngLat = this.centerMarker.getLngLat();
+              this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
+              this.map.flyTo({
+                center: LngLat,
+                zoom: 17,
+                speed: 1.2,
+                curve: 1,
+                easing: (t) => t,
+                essential: true,
+              });
+            });
+        } else {
+          this.centerMarker.setLngLat(center);
         }
 
-        this.centerMarker.setLngLat(center);
+        // Handle the dragend event if you need to perform additional actions
+        this.centerMarker.on('dragend', (e) => {
+          const newLngLat = this.centerMarker.getLngLat();
+          // Perform any additional actions after dragging ends
+        });
       });
   }
 
