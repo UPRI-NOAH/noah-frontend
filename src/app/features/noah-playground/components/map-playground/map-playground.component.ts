@@ -565,7 +565,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
-          // TODO: Insert Highchart graph in popup
           if (this.screenWidth < 768) {
             this.map.on('click', qcSensorType, (e) => {
               const coordinates = (
@@ -574,7 +573,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               _this.map.flyTo({
                 center: (e.features[0].geometry as any).coordinates.slice(),
                 zoom: 13,
-                offset: [0, -275],
+                offset: [0, -315],
                 essential: true,
               });
               const name = e.features[0].properties.name;
