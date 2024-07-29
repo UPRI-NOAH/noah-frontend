@@ -252,20 +252,23 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .subscribe((center) => {
         this.map.flyTo({
           center,
-          zoom: 16,
+          zoom: 17,
           essential: true,
         });
 
         if (!this.centerMarker) {
           this.centerMarker = new mapboxgl.Marker({
-            color: '#333',
+            color: '#FF0000',
             draggable: true,
           })
             .setLngLat(center)
             .addTo(this.map)
             .on('drag', (e) => {
               // Update the center position when the marker is dragged
+              const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
+              coords.style.display = 'block';
+              coords.innerHTML = `Longitude: ${LngLat.lng}<br />Latitude: ${LngLat.lat}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
               this.map.flyTo({
                 center: LngLat,
