@@ -1684,7 +1684,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.map.addSource('mapbox-dem', {
       type: 'raster-dem',
       url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-    });
+      volatile: true,
+    } as any);
 
     // Watch exaggeration level
     this.pgService.exagerration$
