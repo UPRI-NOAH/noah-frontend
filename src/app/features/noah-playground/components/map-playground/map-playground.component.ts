@@ -514,19 +514,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         if (latest_data <= 7.5) {
           return 'style="color: #d1d5d8;"';
         } else if (latest_data > 7.5 && latest_data <= 15) {
-          return 'style="color: #ebcb86;"';
+          return 'style="color: #f2c94c;"';
         } else if (latest_data > 15 && latest_data <= 30) {
-          return 'style="color: #ff6600"';
+          return 'style="color: #f2994a"';
         } else {
-          return 'style="color: #ff1919"';
+          return 'style="color: #eb5757"';
         }
       case 'flood':
         if (latest_data <= 0.5) {
-          return 'style="color: #ebcb86;"';
+          return 'style="color: #f2c94c;"';
         } else if (latest_data > 0.5 && latest_data <= 1.5) {
-          return 'style="color: #ff6600"';
+          return 'style="color: #f2994a"';
         } else {
-          return 'style="color: #ff1919"';
+          return 'style="color: #eb5757"';
         }
       default:
         return 'style="color: red"';
