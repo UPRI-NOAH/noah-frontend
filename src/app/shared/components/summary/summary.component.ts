@@ -465,19 +465,19 @@ export class SummaryComponent implements OnInit {
         if (item.latest_data <= 7.5) {
           return { color: '#d1d5d8' };
         } else if (item.latest_data > 7.5 && item.latest_data <= 15) {
-          return { color: '#ebcb86' };
+          return { color: '#f2c94c' };
         } else if (item.latest_data > 15 && item.latest_data <= 30) {
-          return { color: '#ff6600' };
+          return { color: '#f2994a' };
         } else {
-          return { color: '#ff1919' };
+          return { color: '#eb5757' };
         }
       case 'flood':
         if (item.latest_data <= 0.5) {
-          return { color: '#ebcb86' };
+          return { color: '#f2c94c' };
         } else if (item.latest_data > 0.5 && item.latest_data <= 1.5) {
-          return { color: '#ff6600' };
+          return { color: '#f2994a' };
         } else {
-          return { color: '#ff1919' };
+          return { color: '#eb5757' };
         }
       default:
         return { color: 'black' };
