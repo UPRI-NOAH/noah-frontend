@@ -675,10 +675,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               }
               popUp.setLngLat(coordinates).setHTML(
                 `
-                <link rel="preconnect" href="https://fonts.googleapis.com">
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-
                 <div style="color: #333333;font-size: 13px;padding-top: 4px;">
                   <div><b>Name:</b> ${name} </div>
                   <div><b>IoT Sensor Type:</b> ${iotType}</div>
@@ -714,7 +710,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             });
           }
         } else {
-          // popUp.remove();
+          popUp.remove();
+          popUpMobileView.remove();
           chartPopUp.remove();
           this.map.on('mouseenter', qcSensorType, (e) => {
             _this._graphShown = false;
@@ -725,16 +722,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           this.map.on('mouseleave', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
-            // popUp.remove();
+            popUp.remove();
             chartPopUpOpen = false;
           });
         }
       });
     popUp.on('close', () => (_this._graphShown = false));
+    popUpMobileView.on('close', () => (_this._graphShown = false));
     this.map.on('mouseleave', qcSensorType, function () {
       if (_this._graphShown) return;
       _this.map.getCanvas().style.cursor = '';
-      // popUp.remove();
+      popUp.remove();
     });
   }
 
