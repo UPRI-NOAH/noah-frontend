@@ -268,7 +268,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
               coords.style.display = 'block';
-              coords.innerHTML = `Longitude: ${LngLat.lng}<br />Latitude: ${LngLat.lat}`;
+              coords.innerHTML = `Lng: ${LngLat.lng.toFixed(
+                5
+              )}<br />Lat: ${LngLat.lat.toFixed(5)}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
               this.map.flyTo({
                 center: LngLat,
