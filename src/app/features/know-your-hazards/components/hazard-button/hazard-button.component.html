@@ -14,7 +14,7 @@
   "
   (click)="buttonAction()"
 >
-  <div class="flex items-center">
+  <div class="flex items-center bg-white">
     <img
       class="h-auto w-14"
       src="assets/images/{{ hazardType }}.svg"
@@ -38,5 +38,8 @@
       <small>{{ caption$ | async }}</small>
     </div>
   </div>
-  <img class="w-4" src="assets/icons/right-chevron.svg" />
+  <div class="flex stretch h-full">
+    <img class="w-4" src="assets/icons/right-chevron.svg" />
+    <div *ngIf="false" class="bg-gray-300 h-full w-4">test</div>
+  </div>
 </button>
