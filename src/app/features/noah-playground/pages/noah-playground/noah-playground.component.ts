@@ -24,7 +24,7 @@ export class NoahPlaygroundComponent implements OnInit {
   isSidebarOpen: boolean = false;
   isLogoutAlert: boolean = false;
   isMenu: boolean = true;
-  mobileMenuHeight: '0vh' | '50vh' | '90vh' | '100%' = '50vh';
+  mobileMenuHeight: '0vh' | '40vh' | '80vh' | '100%' = '40vh';
   isMobile: boolean = false;
   isList;
   hazardTypes = HAZARDS;
@@ -113,7 +113,7 @@ export class NoahPlaygroundComponent implements OnInit {
           this.mobileMenuHeight = '100%';
         } else {
           this.isMobile = true;
-          this.mobileMenuHeight = '50vh';
+          this.mobileMenuHeight = '40vh';
         }
       });
   }
@@ -163,17 +163,17 @@ export class NoahPlaygroundComponent implements OnInit {
 
     this.isMenu = true;
 
-    if (this.mobileMenuHeight === '50vh') {
-      this.mobileMenuHeight = '90vh';
+    if (this.mobileMenuHeight === '40vh') {
+      this.mobileMenuHeight = '80vh';
     }
   }
 
   reduceMobileMenu(): void {
     if (this.mobileMenuHeight === '100%') {
       this.isMenu = false;
-    } else if (this.mobileMenuHeight === '90vh') {
-      this.mobileMenuHeight = '50vh';
-    } else if (this.mobileMenuHeight === '50vh') {
+    } else if (this.mobileMenuHeight === '80vh') {
+      this.mobileMenuHeight = '40vh';
+    } else if (this.mobileMenuHeight === '40vh') {
       this.isMenu = false;
     }
   }
