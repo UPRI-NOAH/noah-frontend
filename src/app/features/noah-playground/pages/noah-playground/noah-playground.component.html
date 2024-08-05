@@ -2,7 +2,7 @@
   class="fixed w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row"
 >
   <button
-    (click)="isMenu = !isMenu"
+    (click)="toggleMenu()"
     class="
       fixed
       p-2
@@ -94,6 +94,7 @@
     "
     *ngIf="isMenu"
     id="sidebar"
+    [style.height] = "mobileMenuHeight"
   >
     <div
       class="
@@ -347,8 +348,7 @@
         </button>
       </div>
       <!-- QC IOT ACCOUNT LOCAL -->
-
-      <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
+      <div (click)="reduceMobileMenu()" class="text-black ml-8 cursor-pointer">
         <button
           class="
             md:fixed
@@ -389,6 +389,33 @@
           </svg>
         </button>
       </div>
+      <div (click)="enlargeMobileMenu()" class="text-black ml-8 cursor-pointer">
+        <button
+          class="
+            md:fixed
+            p-2
+            z-20
+            bg-white
+            text-gray-800
+            md:left-96
+            top-4
+            rounded-lg
+            md:rounded-l-sm
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 md:hidden"
+            viewBox="0 0 24 30"
+          >
+            <path
+              d="M18.293 16.707L12 10.414l-6.293 6.293a1 1 0 11-1.414-1.414l7-7a1 1 0 011.414 0l7 7a1 1 0 01-1.414 1.414z"
+              fill="#000"
+              fill-rule="nonzero"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="relative flex items-center justify-between mb-2">
       <!-- <noah-login></noah-login> -->
@@ -423,6 +450,7 @@
       ></noah-boundaries-group>
     </div>
   </nav>
+
   <!-- //Customizing Mapbox attribution -->
   <div class="mapboxgl-ctrl-bottom-right md:hidden z-40">
     <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
