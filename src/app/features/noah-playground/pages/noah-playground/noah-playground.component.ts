@@ -100,12 +100,14 @@ export class NoahPlaygroundComponent implements OnInit {
         Breakpoints.Small,
         Breakpoints.WebLandscape,
         Breakpoints.Medium,
+        Breakpoints.TabletPortrait,
       ])
       .subscribe((state) => {
         const breakpoints = state.breakpoints;
         if (
           breakpoints[Breakpoints.WebLandscape] ||
-          breakpoints[Breakpoints.Medium]
+          breakpoints[Breakpoints.Medium] ||
+          breakpoints[Breakpoints.TabletPortrait]
         ) {
           this.isMobile = false;
           this.mobileMenuHeight = '100%';
