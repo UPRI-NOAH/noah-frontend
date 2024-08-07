@@ -802,7 +802,13 @@
                   ? 'Percentage'
                   : sortField === 'total_pop'
                   ? 'Population'
-                  : 'Location'
+                  : sortField === 'prov'
+                  ? 'Province'
+                  : sortField === 'brgy'
+                  ? 'Barangay'
+                  : sortField === 'muni'
+                  ? 'Municipality'
+                  : ''
               }}
             </button>
             <ul
@@ -829,10 +835,22 @@
                 Population
               </button>
               <button
-                class="h-auto w-full p-2.5 border-gray-300 text-left"
+                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
                 (click)="onHeaderColumnClick('brgy')"
               >
-                Location
+                Barangay
+              </button>
+              <button
+                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+                (click)="onHeaderColumnClick('muni')"
+              >
+                Municipality
+              </button>
+              <button
+                class="h-auto w-full p-2.5 border-gray-300 text-left"
+                (click)="onHeaderColumnClick('prov')"
+              >
+                Province
               </button>
             </ul>
           </div>

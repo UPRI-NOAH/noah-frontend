@@ -15,7 +15,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   affectedData: AffectedData[] = [];
   riskModal = false;
   searchValue: string;
-  sortField = 'province';
+  sortField = 'prov';
   sortDirection = 'descending';
 
   currentPage = 1;
@@ -138,7 +138,8 @@ export class RiskAssessmentModalComponent implements OnInit {
   async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
-        .getAffectedPopulations(page, searchTerm)
+        .getSampleS3Data(page, searchTerm)
+        //.getAffectedPopulations(page, searchTerm)
         .pipe(first())
         .toPromise();
 
