@@ -99,9 +99,13 @@
   </section>
 
   <div class="h-10 bg-white flex sticky bottom-0 justify-between items-center">
-    <button (click)="changePage()" class="p-4"><</button>
-    <p>{{ currentPage }}</p>
-    <button (click)="changePage()" class="p-4">></button>
+    <button (click)="changePage()" class="p-4 text-blue-600 font-extrabold">
+      <
+    </button>
+    <p class="text-blue-600 font-extrabold">{{ currentPage }}</p>
+    <button (click)="changePage()" class="p-4 text-blue-600 font-extrabold">
+      >
+    </button>
   </div>
 </div>
 
