@@ -105,7 +105,17 @@
     >
       <
     </button>
-    <p class="text-blue-600 font-extrabold">{{ currentPage }}</p>
+    <div>
+      <div class="flex flex-row" *ngIf="currentPage == 1">
+        <div class="h-4 w-4 mr-3 rounded-3xl bg-blue-500"></div>
+        <div class="h-2 w-2 mt-1 rounded-3xl bg-blue-300"></div>
+      </div>
+      <div class="flex flex-row" *ngIf="currentPage == 2">
+        <div class="h-2 w-2 mt-1 mr-3 rounded-3xl bg-blue-300"></div>
+        <div class="h-4 w-4 rounded-3xl bg-blue-500"></div>
+      </div>
+    </div>
+
     <button
       (click)="changePage()"
       class="p-4 px-8 text-xl text-blue-600 font-extrabold"
