@@ -24,6 +24,7 @@
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
+    "@angular/service-worker": "~11.2.6",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@mapbox/mapbox-gl-geocoder": "^4.7.4",
     "@turf/turf": "^6.5.0",
