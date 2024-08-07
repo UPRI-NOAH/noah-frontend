@@ -2,7 +2,7 @@
   class="fixed w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row"
 >
   <button
-    (click)="isMenu = !isMenu"
+    (click)="toggleMenu()"
     class="
       fixed
       p-2
@@ -14,8 +14,12 @@
       rounded-t-lg
       md:rounded-tl-none md:rounded-r-lg md:top-4
       h-10
+      w-24
+      md:w-auto
       bottom-0
       self-center
+      flex flex-col
+      items-center
     "
   >
     <svg
@@ -80,11 +84,8 @@
       p-4
       z-50
       bg-white
-      rounded-lg
-      md:rounded-l-sm
-      overflow-y-auto
-      h-64
-      md:h-full
+      sm:rounded-t-lg
+      md:rounded-l-sm md:h-full
       w-full
       md:w-96
       bottom-0
@@ -115,7 +116,7 @@
 
     <!-- MAPBOX LOGO -->
     <div class="flex" *ngIf="isMenu">
-      <div class="absolute p-2 z-20 -left-2 top-0 md:hidden">
+      <div class="absolute p-2 z-20 -left-2 top-0 lg:hidden">
         <a class="fixed max-w-xs items-center">
           <div class="mapboxgl-ctrl-bottom-left mb-2">
             <div class="mapboxgl-ctrl">
@@ -347,8 +348,91 @@
         </button>
       </div>
       <!-- QC IOT ACCOUNT LOCAL -->
-
-      <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
+      <div (click)="toggleMenu()" class="text-black ml-8 cursor-pointer">
+        <button
+          class="
+            md:fixed
+            p-2
+            z-20
+            bg-white
+            text-gray-800
+            md:left-96
+            top-4
+            rounded-lg
+            md:rounded-l-sm
+          "
+        >
+          <svg
+            class="h-6 w-6"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            *ngIf="mobileMenuHeight === '100%'"
+          >
+            <path
+              d="M14.657 18.657a1 1 0 0 1-.707-.293l-5.657-5.657a1 1 0 0 1 0-1.414l5.657-5.657a1 1 0 0 1 1.414 1.414L10.414 12l4.95 4.95a1 1 0 0 1-.707 1.707z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        (click)="toggleMenu()"
+        class="text-black ml-8 cursor-pointer"
+        *ngIf="mobileMenuHeight !== '100%'"
+      >
+        <button
+          class="
+            md:fixed
+            p-2
+            z-20
+            bg-white
+            text-gray-800
+            md:left-96
+            top-4
+            rounded-lg
+            md:rounded-l-sm
+          "
+        >
+          <svg
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <g
+              id="1"
+              stroke="none"
+              stroke-width="1"
+              fill="none"
+              fill-rule="evenodd"
+            >
+              <g id="System" transform="translate(-192.000000, -230.000000)">
+                <g
+                  id="minimize_fill"
+                  transform="translate(192.000000, 240.000000)"
+                >
+                  <path
+                    d="M24,0 L24,24 L0,24 L0,0 L24,0 Z M12.5934901,23.257841 L12.5819402,23.2595131 L12.5108777,23.2950439 L12.4918791,23.2987469 L12.4918791,23.2987469 L12.4767152,23.2950439 L12.4056548,23.2595131 C12.3958229,23.2563662 12.3870493,23.2590235 12.3821421,23.2649074 L12.3780323,23.275831 L12.360941,23.7031097 L12.3658947,23.7234994 L12.3769048,23.7357139 L12.4804777,23.8096931 L12.4953491,23.8136134 L12.4953491,23.8136134 L12.5071152,23.8096931 L12.6106902,23.7357139 L12.6232938,23.7196733 L12.6232938,23.7196733 L12.6266527,23.7031097 L12.609561,23.275831 C12.6075724,23.2657013 12.6010112,23.2592993 12.5934901,23.257841 L12.5934901,23.257841 Z M12.8583906,23.1452862 L12.8445485,23.1473072 L12.6598443,23.2396597 L12.6498822,23.2499052 L12.6498822,23.2499052 L12.6471943,23.2611114 L12.6650943,23.6906389 L12.6699349,23.7034178 L12.6699349,23.7034178 L12.678386,23.7104931 L12.8793402,23.8032389 C12.8914285,23.8068999 12.9022333,23.8029875 12.9078286,23.7952264 L12.9118235,23.7811639 L12.8776777,23.1665331 C12.8752882,23.1545897 12.8674102,23.1470016 12.8583906,23.1452862 L12.8583906,23.1452862 Z M12.1430473,23.1473072 C12.1332178,23.1423925 12.1221763,23.1452606 12.1156365,23.1525954 L12.1099173,23.1665331 L12.0757714,23.7811639 C12.0751323,23.7926639 12.0828099,23.8018602 12.0926481,23.8045676 L12.108256,23.8032389 L12.3092106,23.7104931 L12.3186497,23.7024347 L12.3186497,23.7024347 L12.3225043,23.6906389 L12.340401,23.2611114 L12.337245,23.2485176 L12.337245,23.2485176 L12.3277531,23.2396597 L12.1430473,23.1473072 Z"
+                    id="MingCute"
+                    fill-rule="nonzero"
+                  ></path>
+                  <path
+                    d="M2.5,12 C2.5,11.1716 3.17157,10.5 4,10.5 L20,10.5 C20.8284,10.5 21.5,11.1716 21.5,12 C21.5,12.8284 20.8284,13.5 20,13.5 L4,13.5 C3.17157,13.5 2.5,12.8284 2.5,12 Z"
+                    id="1"
+                    fill="#09244B"
+                  ></path>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div
+        (click)="reduceMobileMenu()"
+        class="text-black ml-8 cursor-pointer"
+        *ngIf="mobileMenuHeight === '80vh'"
+      >
         <button
           class="
             md:fixed
@@ -364,9 +448,8 @@
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 hidden md:block"
-            fill="none"
-            viewBox="0 0 24 24"
+            class="h-6 w-6 hidden md:block lg:block"
+            fill="currentColor"
             stroke="currentColor"
           >
             <path
@@ -389,40 +472,74 @@
           </svg>
         </button>
       </div>
-    </div>
-    <div class="relative flex items-center justify-between mb-2">
-      <!-- <noah-login></noah-login> -->
-    </div>
-    <div class="relative">
-      <noah-search
-        class="w-full hidden md:block relative"
-        [searchTerm]="searchTerm"
-        (selectPlace)="selectPlace($event)"
+      <div
+        (click)="enlargeMobileMenu()"
+        class="text-black ml-8 cursor-pointer"
+        *ngIf="mobileMenuHeight === '40vh'"
       >
-      </noah-search>
-      <noah-exaggeration class="w-full"></noah-exaggeration>
-      <noah-hazard-type
-        class="w-full"
-        *ngFor="let hazard of hazardTypes"
-        [hazard]="hazard"
-      ></noah-hazard-type>
-      <noah-volcano-group class="w-full"></noah-volcano-group>
-      <noah-critical-facilities-playground
-        class="w-full"
-      ></noah-critical-facilities-playground>
-      <noah-weather-satellite-playground
-        class="w-full"
-      ></noah-weather-satellite-playground>
-      <!-- <noah-contour-maps></noah-contour-maps>
-      <noah-sensors-group></noah-sensors-group> -->
-      <noah-qc-sensors-group></noah-qc-sensors-group>
-      <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
-      <noah-boundaries-group
-        *ngIf="hideBoundaries"
-        class="w-full"
-      ></noah-boundaries-group>
+        <button
+          class="
+            md:fixed
+            p-2
+            z-20
+            bg-white
+            text-gray-800
+            md:left-96
+            top-4
+            rounded-lg
+            md:rounded-l-sm
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 md:hidden"
+            viewBox="0 0 24 30"
+          >
+            <path
+              d="M18.293 16.707L12 10.414l-6.293 6.293a1 1 0 11-1.414-1.414l7-7a1 1 0 011.414 0l7 7a1 1 0 01-1.414 1.414z"
+              fill="#000"
+              fill-rule="nonzero"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="overflow-y-scroll h-64" [style.height]="mobileMenuHeight">
+      <div class="relative flex items-center justify-between mb-2">
+        <!-- <noah-login></noah-login> -->
+      </div>
+      <div class="relative mb-2">
+        <noah-search
+          class="w-full hidden md:block relative"
+          [searchTerm]="searchTerm"
+          (selectPlace)="selectPlace($event)"
+        >
+        </noah-search>
+        <noah-exaggeration class="w-full"></noah-exaggeration>
+        <noah-hazard-type
+          class="w-full"
+          *ngFor="let hazard of hazardTypes"
+          [hazard]="hazard"
+        ></noah-hazard-type>
+        <noah-volcano-group class="w-full"></noah-volcano-group>
+        <noah-critical-facilities-playground
+          class="w-full"
+        ></noah-critical-facilities-playground>
+        <noah-weather-satellite-playground
+          class="w-full"
+        ></noah-weather-satellite-playground>
+        <!-- <noah-contour-maps></noah-contour-maps>
+        <noah-sensors-group></noah-sensors-group> -->
+        <noah-qc-sensors-group></noah-qc-sensors-group>
+        <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+        <noah-boundaries-group
+          *ngIf="hideBoundaries"
+          class="w-full"
+        ></noah-boundaries-group>
+      </div>
     </div>
   </nav>
+
   <!-- //Customizing Mapbox attribution -->
   <div class="mapboxgl-ctrl-bottom-right md:hidden z-40">
     <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">

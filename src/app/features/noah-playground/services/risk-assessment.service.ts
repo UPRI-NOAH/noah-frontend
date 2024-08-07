@@ -62,4 +62,10 @@ export class RiskAssessmentService {
   archiveData(): Observable<any> {
     return this.http.get(`${this.API_BASE_URL}/api/latest-results/`);
   }
+
+  getSampleS3Data(page?: number, searchTerm?: string): Observable<any> {
+    let url = this.S3_BASE_URL; // Start with the default URL
+
+    return this.http.get(`${this.S3_BASE_URL}/test/forecast_sample.json`);
+  }
 }
