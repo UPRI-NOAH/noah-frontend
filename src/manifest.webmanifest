@@ -1,8 +1,8 @@
 {
   "name": "Nationwide Operational Assessment of Hazards",
   "short_name": "NOAH",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#fafafa",
+  "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
