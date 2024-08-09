@@ -148,6 +148,30 @@
           rounded-full
           px-10
           py-2
+          m-4
+          inline-flex
+          items-center
+          justify-center
+          text-gray-800
+          focus:outline-none
+          lg:mx-0
+          tracking-widest
+        "
+        *ngIf="deferredPrompt"
+        (click)="installPWA()"
+      >
+        Install
+      </button>
+      <button
+        type="button"
+        class="
+          text-xs
+          uppercase
+          font-bold
+          bg-white
+          rounded-full
+          px-10
+          py-2
           my-4
           inline-flex
           items-center
@@ -429,6 +453,30 @@
               >
                 Donate
               </a>
+              <button
+                type="button"
+                class="
+                  text-xs
+                  uppercase
+                  font-bold
+                  bg-white
+                  rounded-full
+                  px-10
+                  py-2
+                  m-4
+                  inline-flex
+                  items-center
+                  justify-center
+                  text-gray-800
+                  focus:outline-none
+                  lg:mx-0
+                  tracking-widest
+                "
+                *ngIf="deferredPrompt"
+                (click)="installPWA()"
+              >
+                Install
+              </button>
               <noah-login></noah-login>
             </ul>
           </div>
