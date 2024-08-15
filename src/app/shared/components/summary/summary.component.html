@@ -1,5 +1,5 @@
 <!-- MODAL -->
-<div class="relative z-50" *ngIf="iotSummaryModal">
+<div class="relative z-50 hidden lg:block" *ngIf="iotSummaryModal">
   <div
     class="fixed inset-0 bg-black opacity-80 transition-opacity"
     (click)="closeModal()"
@@ -2111,3 +2111,329 @@
   </div>
 </div>
 <!-- alert -->
+
+<!-- MOBILE VIEW -->
+<div
+  class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 lg:hidden"
+  *ngIf="iotSummaryModal"
+></div>
+<div
+  class="
+    max-h-auto
+    border-none
+    shadow-lg
+    relative
+    flex flex-col
+    h-[100dvh]
+    w-[100dvw]
+    pointer-events-auto
+    bg-gray-50 bg-clip-padding
+    rounded-md
+    outline-none
+    text-xl
+    opacity-100
+    overflow-y-scroll overflow-x-hidden
+    lg:hidden
+    pt-8
+    px-6
+    pb-0
+  "
+>
+  <!-- insert iot data summary here -->
+  <!-- header -->
+  <div class="flex justify-between">
+    <div class="flex items-center">
+      <img src="assets/icons/noah_logo.png" alt="" class="h-5 mr-3.5" />
+      <div class="font-bold text-2xl">IoT Data Summary</div>
+    </div>
+    <button class="border-none bg-gray-50">
+      <img
+        src="assets/icons/close-button.png"
+        alt=""
+        class="h-5"
+        (click)="closeModal()"
+      />
+    </button>
+  </div>
+  <div class="h-px bg-gray-200 mt-4 mb-4 w-full"></div>
+
+  <!-- date, no. of sensors, no. of active and inactive -->
+  <div class="flex justify-between">
+    <div class="w-px h-full bg-gray-50"></div>
+    <div>
+      <div class="font-bold text-xl">
+        {{ todayString | date: 'mediumDate' }}
+      </div>
+      <div class="text-sm font-light mt-1">Last updated</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ totalSensor }}</div>
+      <div class="text-sm font-light mt-1">Total Sensors</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ activeSensor }}</div>
+      <div class="text-sm font-light mt-1">Active</div>
+    </div>
+    <div class="px-2.5">
+      <div class="w-px h-full bg-gray-200"></div>
+    </div>
+    <div>
+      <div class="font-bold text-xl">{{ inactive }}</div>
+      <div class="text-sm font-light mt-1">Inactive</div>
+    </div>
+    <div class="w-px h-full bg-gray-50"></div>
+  </div>
+  <div class="h-px bg-gray-200 mt-3 mb-4 w-full"></div>
+
+  <!-- search and sort button -->
+  <div class="flex items-center">
+    <input
+      [(ngModel)]="searchValue"
+      type="search"
+      placeholder="Search Location"
+      autocomplete="off"
+      class="
+        font-light
+        text-sm
+        px-9
+        py-2
+        rounded-lg
+        bg-white
+        border border-gray-300
+        mr-1
+        w-full
+      "
+      style="
+        background-image: url('assets/icons/search-icon.png');
+        background-size: 14px;
+        background-repeat: no-repeat;
+        background-position: 12px center;
+      "
+    />
+    <div class="relative">
+      <button
+        (click)="toggleDropDown()"
+        class="
+          text-sm
+          border border-gray-300
+          rounded-md
+          bg-white
+          px-8
+          py-2
+          w-fit
+          whitespace-nowrap
+        "
+        style="
+          background-image: url('assets/icons/sort-icon.png'),
+            url('assets/icons/down-chevron.png');
+          background-size: 14px, 14px;
+          background-repeat: no-repeat, no-repeat;
+          background-position: 12px center, right 8px center;
+        "
+      >
+        {{ selectedOption }}
+      </button>
+      <div
+        *ngIf="isDroppedDown"
+        class="
+          absolute
+          text-sm
+          border border-gray-300
+          rounded-md
+          bg-white
+          px-4
+          pt-3
+          mt-1
+          z-50
+        "
+      >
+        <div
+          *ngFor="let option of dropdownList"
+          (click)="selectOption(option)"
+          class="pb-4 cursor-pointer z-50"
+        >
+          {{ option }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-2"></div>
+
+  <!-- buttons for all, flood, rain sensors -->
+  <div class="space-y-2">
+    <button
+      (click)="filterCategory('All')"
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      All
+    </button>
+    <button
+      (click)="filterCategory('Flood')"
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      Flood Sensors ({{ activeFloodSensor }})
+    </button>
+    <button
+      (click)="filterCategory('Rain')"
+      class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
+    >
+      Rain Sensors ({{ activeRainSensor }})
+    </button>
+  </div>
+  <div class="h-px bg-gray-200 mt-4 mb-2 w-full"></div>
+
+  <!-- scrollable cards -->
+  <div
+    class="
+      overflow-auto
+      border-b border-gray-200
+      h-[calc(100dvh-393px+36px)]
+      z-25
+    "
+  >
+    <ng-container *ngIf="loading; else doneLoading">
+      <div tabindex="0" class="flex justify-center items-center">
+        <div class="w-full z-10 overflow-hidden" style="max-width: 1000px">
+          <div class="md:flex w-full">
+            <div class="w-full py-10 px-5 md:px-10">
+              <div class="flex justify-center gap-x-4 mb-4">
+                <div class="relative flex items-center justify-center">
+                  <div
+                    class="
+                      w-14
+                      h-14
+                      border-t-4 border-b-4 border-black
+                      rounded-full
+                      animate-spin
+                    "
+                  ></div>
+                  <img
+                    src="assets/icons/noah_logo.png"
+                    class="w-10 h-auto absolute animate-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #doneLoading>
+      <ng-container *ngIf="!filterButtonPressed; else useFilterData">
+        <div>
+          <!-- default data, user have yet to click filter buttons -->
+          <div
+            class="pb-2"
+            *ngFor="
+              let data of summaryData
+                | sort: sortField:sortDirection
+                | searchfilter: searchValue
+            "
+          >
+            <div class="bg-white border border-gray-300 rounded-lg p-4">
+              <div class="flex justify-between items-center">
+                <div class="text-lg font-bold mr-12">
+                  {{ data.name }}
+                </div>
+                <div class="text-lg font-bold text-right">
+                  <span
+                    id="category"
+                    [ngStyle]="getCategoryDynamicStyle(data)"
+                    >{{ getFormattedCategory(data) }}</span
+                  ><br />
+                  <span id="iotTypeLatestData">
+                    {{ getFormattedLatestData(data) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center mt-1">
+                <div class="text-sm" id="iotType">
+                  <ng-container *ngIf="data.latest_date == null; else showDate">
+                    <div>N/A</div>
+                  </ng-container>
+                  <ng-template #showDate>
+                    <div *ngIf="data.latest_date == data.latest_date">
+                      {{ data.latest_date | date: 'medium':'+0000' }}
+                    </div>
+                  </ng-template>
+                </div>
+                <div class="text-sm font-bold text-right">
+                  <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+                    data.status
+                  }}</span>
+                  •
+                  <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+                    getFormattedIoTtype(data)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #useFilterData>
+        <!-- data after using filter buttons -->
+        <div
+          class="pb-2"
+          *ngFor="
+            let data of filterData
+              | sort: sortField:sortDirection
+              | searchfilter: searchValue
+          "
+        >
+          <div class="bg-white border border-gray-300 rounded-lg p-4">
+            <div class="flex justify-between items-center">
+              <div class="text-lg font-bold mr-12">
+                {{ data.name }}
+              </div>
+              <div class="text-lg font-bold text-right">
+                <span id="category" [ngStyle]="getCategoryDynamicStyle(data)">{{
+                  getFormattedCategory(data)
+                }}</span
+                ><br />
+                <span id="iotTypeLatestData">
+                  {{ getFormattedLatestData(data) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-1">
+              <div class="text-sm" id="iotType">
+                <ng-container *ngIf="data.latest_date == null; else showDate">
+                  <div>N/A</div>
+                </ng-container>
+                <ng-template #showDate>
+                  <div *ngIf="data.latest_date == data.latest_date">
+                    {{ data.latest_date | date: 'medium':'+0000' }}
+                  </div>
+                </ng-template>
+              </div>
+              <div class="text-sm font-bold text-right">
+                <span id="status" [ngStyle]="getStatusDynamicStyle(data)">{{
+                  data.status
+                }}</span>
+                •
+                <span [ngStyle]="getIoTtypeDynamicStyle(data)">{{
+                  getFormattedIoTtype(data)
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <!-- Scales -->
+  <div class="bg-gray-50 h-16 flex justify-around items-center">
+    <img src="assets/images/Flood Scale.svg" alt="" class="h-10" />
+    <img src="assets/images/Rain Scale.svg" alt="" class="h-10" />
+  </div>
+</div>

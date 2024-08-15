@@ -5,6 +5,11 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
+import {
+  BreakpointObserver,
+  BreakpointState,
+  Breakpoints,
+} from '@angular/cdk/layout';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -19,6 +24,8 @@ export class NoahPlaygroundComponent implements OnInit {
   isSidebarOpen: boolean = false;
   isLogoutAlert: boolean = false;
   isMenu: boolean = true;
+  mobileMenuHeight: '0vh' | '40vh' | '80vh' | '100%' = '40vh';
+  isMobile: boolean = false;
   isList;
   hazardTypes = HAZARDS;
   LoginStatus$: Observable<boolean>;
@@ -37,7 +44,8 @@ export class NoahPlaygroundComponent implements OnInit {
     private pgService: NoahPlaygroundService,
     private title: Title,
     private qcLoginService: QcLoginService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    public breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
@@ -84,6 +92,30 @@ export class NoahPlaygroundComponent implements OnInit {
       this.lagunaAdmin = true;
       this.qcAdmin = false;
     }
+
+    // check if mobile view or desktop view
+
+    this.breakpointObserver
+      .observe([
+        Breakpoints.Small,
+        Breakpoints.WebLandscape,
+        Breakpoints.Medium,
+        Breakpoints.TabletPortrait,
+      ])
+      .subscribe((state) => {
+        const breakpoints = state.breakpoints;
+        if (
+          breakpoints[Breakpoints.WebLandscape] ||
+          breakpoints[Breakpoints.Medium] ||
+          breakpoints[Breakpoints.TabletPortrait]
+        ) {
+          this.isMobile = false;
+          this.mobileMenuHeight = '100%';
+        } else {
+          this.isMobile = true;
+          this.mobileMenuHeight = '40vh';
+        }
+      });
   }
 
   selectPlace(selectedPlace) {
@@ -124,5 +156,29 @@ export class NoahPlaygroundComponent implements OnInit {
 
   logout(): void {
     this.qcLoginService.logout();
+  }
+
+  enlargeMobileMenu(): void {
+    if (this.mobileMenuHeight === '100%') return;
+
+    this.isMenu = true;
+
+    if (this.mobileMenuHeight === '40vh') {
+      this.mobileMenuHeight = '80vh';
+    }
+  }
+
+  reduceMobileMenu(): void {
+    if (this.mobileMenuHeight === '100%') {
+      this.isMenu = false;
+    } else if (this.mobileMenuHeight === '80vh') {
+      this.mobileMenuHeight = '40vh';
+    } else if (this.mobileMenuHeight === '40vh') {
+      this.isMenu = false;
+    }
+  }
+
+  toggleMenu(): void {
+    this.isMenu = !this.isMenu;
   }
 }
