@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class BaseComponent implements OnInit {
   currentLocation$: Observable<string>;
+  currentPage: number = 1;
 
   constructor(private kyhService: KyhService) {}
 
@@ -21,5 +22,13 @@ export class BaseComponent implements OnInit {
     const [lng, lat] = selectedPlace.center;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+  }
+
+  changePage() {
+    if (this.currentPage == 1) {
+      this.currentPage = 2;
+    } else {
+      this.currentPage = 1;
+    }
   }
 }
