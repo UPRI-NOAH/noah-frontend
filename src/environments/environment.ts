@@ -3,16 +3,27 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
   mapbox: {
+    // production
+    // accessToken:
+    //   'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZTZyMGdjYzAybGMzbmwxMHA4MnE0enMifQ.tuOhBGsN-M7JCPaUqZ0Hng',
+    // local
     accessToken:
-      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
+      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZXc1am1hbzBkZ3Yzc280dHVrdHFpZ2MifQ.J13CArZfpEsGLzxXGOJQ7w',
+    //surge
+    // accessToken:
+    //   'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZjZoMzh3bzFtbWQzc256NTV1cGh5ZTkifQ.EVtgiCtpLvPa8QQgMmdVBg',
+    // staging
+    // accessToken:
+    //   'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZHh1OGlkZTBpMmszb29hd3Q2NGxndTQifQ.nv4guJwtP9MN7eSAnm_E0Q',
     styles: {
-      terrain: 'mapbox://styles/upri-noah/ckvnsepq51slc14p1wgy7849a',
-      satellite: 'mapbox://styles/upri-noah/ckvnso6nd35v514nlx9ib9v9t',
+      terrain: 'mapbox://styles/upri-noah/ckupb1t4ybxq517s530madpso',
+      satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
+      streets: 'mapbox://styles/upri-noah/clhj0bj1301i901pg2ryt9h0j',
     },
   },
-  gaTag: 'G-XXQTRHXBW3',
+  gaTag: 'G-589EMLLFCY',
 };
 
 /*
