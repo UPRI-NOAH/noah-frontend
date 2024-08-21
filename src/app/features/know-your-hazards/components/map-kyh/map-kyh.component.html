@@ -7,6 +7,23 @@
 ></noah-change-style-button>
 <pre id="coordinates" class="coords"></pre>
 
+<noah-search
+  [searchTerm]="currentLocation$ | async"
+  (selectPlace)="selectPlace($event)"
+  class="
+    md:hidden
+    px-12
+    md:px-8
+    w-full
+    md:mt-4
+    block
+    md:relative
+    absolute
+    top-0
+  "
+>
+</noah-search>
+
 <button
   class="
     opacity-80
@@ -20,7 +37,10 @@
     items-end
     absolute
     justify-end
-    bottom-8
+    md:bottom-8
+    bottom-96
+    md:mb-0
+    mb-2
     right-0
     rounded
     hover:bg-gray-200
@@ -35,7 +55,10 @@
   Legend
 </button>
 
-<div class="absolute bottom-8 mr-2 items-end right-0" *ngIf="kyhLegend">
+<div
+  class="absolute md:bottom-8 md:end-0 bottom-96 mt-10 mr-2 items-end right-0"
+  *ngIf="kyhLegend"
+>
   <div class="flex items-center justify-center">
     <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
       <div
