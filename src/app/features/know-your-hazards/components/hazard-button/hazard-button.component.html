@@ -6,13 +6,21 @@
     p-2
     bg-white
     shadow-md
-    hover:shodow-lg
+    hover:shadow-lg
     rounded-md
     hover:bg-gray-50
     items-center
     justify-between
+    border-r-8
   "
   (click)="buttonAction()"
+  [ngClass]="{
+    'border-noah-red-high': (exposureLevel$ | async) === 'high',
+    'border-noah-red-medium': (exposureLevel$ | async) === 'medium',
+    'border-noah-red-low': (exposureLevel$ | async) === 'low',
+    'border-noah-red-unavailable': (exposureLevel$ | async) === 'unavailable',
+    'border-noah-black-high': (exposureLevel$ | async) === 'little to none'
+  }"
 >
   <div class="flex items-center bg-white">
     <img
@@ -30,16 +38,16 @@
           <span class="text-gray-700">Loading...</span>
         </ng-container>
         <ng-template #expLevel>
-          <span class="text-noah-red-{{ exposureLevel$ | async }}">{{
-            exposureLevel$ | async
-          }}</span>
+          <span class="text-noah-red-{{ exposureLevel$ | async }}">
+            {{ exposureLevel$ | async }}
+          </span>
         </ng-template>
+        <ng-template #expLevel></ng-template>
       </div>
       <small>{{ caption$ | async }}</small>
     </div>
   </div>
   <div class="flex stretch h-full">
     <img class="w-4" src="assets/icons/right-chevron.svg" />
-    <div *ngIf="false" class="bg-gray-300 h-full w-4">test</div>
   </div>
 </button>
