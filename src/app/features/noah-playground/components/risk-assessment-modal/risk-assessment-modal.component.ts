@@ -138,7 +138,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
-        .getSampleS3Data(page, searchTerm)
+        .getAffectedPopulations(page, searchTerm)
         //.getAffectedPopulations(page, searchTerm)
         .pipe(first())
         .toPromise();
