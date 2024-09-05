@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
@@ -24,7 +24,6 @@ export class NoahPlaygroundComponent implements OnInit {
   isSidebarOpen: boolean = false;
   isLogoutAlert: boolean = false;
   isMenu: boolean = true;
-  mobileMenuHeight: '0vh' | '40vh' | '80vh' | '100%' = '40vh';
   isMobile: boolean = false;
   isList;
   hazardTypes = HAZARDS;
@@ -40,6 +39,12 @@ export class NoahPlaygroundComponent implements OnInit {
   raBtnPopu = false;
   userName: string;
   hideBoundaries = sessionStorage.getItem('loggedIn');
+
+  height = 256; // Default height (64 * 4 = 256px)
+  private initialTouchY = 0;
+  private initialHeight = this.height;
+  isVisible = false;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -93,29 +98,39 @@ export class NoahPlaygroundComponent implements OnInit {
       this.qcAdmin = false;
     }
 
-    // check if mobile view or desktop view
+    this.updateVisibility();
+    window.addEventListener('resize', this.updateVisibility.bind(this));
+  }
 
-    this.breakpointObserver
-      .observe([
-        Breakpoints.Small,
-        Breakpoints.WebLandscape,
-        Breakpoints.Medium,
-        Breakpoints.TabletPortrait,
-      ])
-      .subscribe((state) => {
-        const breakpoints = state.breakpoints;
-        if (
-          breakpoints[Breakpoints.WebLandscape] ||
-          breakpoints[Breakpoints.Medium] ||
-          breakpoints[Breakpoints.TabletPortrait]
-        ) {
-          this.isMobile = false;
-          this.mobileMenuHeight = '100%';
-        } else {
-          this.isMobile = true;
-          this.mobileMenuHeight = '40vh';
-        }
-      });
+  updateVisibility() {
+    // Update visibility based on window width
+    const width = window.innerWidth;
+    this.isVisible = width < 768; // Tailwind sm breakpoint is 640px, md is 768px
+  }
+  ngOnDestroy() {
+    // Clean up event listener when component is destroyed
+    window.removeEventListener('resize', this.updateVisibility.bind(this));
+  }
+
+  // Called when the user touches the screen
+  onTouchStart(event: TouchEvent) {
+    this.initialTouchY = event.touches[0].clientY;
+    this.initialHeight = this.height;
+  }
+
+  // Called when the user moves their finger on the screen
+  onTouchMove(event: TouchEvent) {
+    const currentTouchY = event.touches[0].clientY;
+    const deltaY = this.initialTouchY - currentTouchY; // Difference in Y direction
+    const newHeight = this.initialHeight + deltaY;
+
+    // Ensure that height doesn't go below a certain value or exceed a maximum
+    const minHeight = 200; // Adjust as needed
+    const maxHeight = window.innerHeight - 100; // Adjust as needed
+
+    if (newHeight >= minHeight && newHeight <= maxHeight) {
+      this.height = newHeight;
+    }
   }
 
   selectPlace(selectedPlace) {
@@ -156,26 +171,6 @@ export class NoahPlaygroundComponent implements OnInit {
 
   logout(): void {
     this.qcLoginService.logout();
-  }
-
-  enlargeMobileMenu(): void {
-    if (this.mobileMenuHeight === '100%') return;
-
-    this.isMenu = true;
-
-    if (this.mobileMenuHeight === '40vh') {
-      this.mobileMenuHeight = '80vh';
-    }
-  }
-
-  reduceMobileMenu(): void {
-    if (this.mobileMenuHeight === '100%') {
-      this.isMenu = false;
-    } else if (this.mobileMenuHeight === '80vh') {
-      this.mobileMenuHeight = '40vh';
-    } else if (this.mobileMenuHeight === '40vh') {
-      this.isMenu = false;
-    }
   }
 
   toggleMenu(): void {
