@@ -74,7 +74,6 @@ export class NoahPlaygroundComponent implements OnInit {
     this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
       this.iotModalOpen = iotModalOpen;
     });
-    3;
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
@@ -106,10 +105,6 @@ export class NoahPlaygroundComponent implements OnInit {
     // Update visibility based on window width
     const width = window.innerWidth;
     this.isVisible = width < 768; // Tailwind sm breakpoint is 640px, md is 768px
-  }
-  ngOnDestroy() {
-    // Clean up event listener when component is destroyed
-    window.removeEventListener('resize', this.updateVisibility.bind(this));
   }
 
   // Called when the user touches the screen
