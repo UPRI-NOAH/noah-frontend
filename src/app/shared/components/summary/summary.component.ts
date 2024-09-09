@@ -331,7 +331,7 @@ export class SummaryComponent implements OnInit {
     'Status',
   ];
   isDroppedDown = false;
-  selectedOption = 'Latest Date';
+  selectedOption = 'Sort by:';
   filterButtonPressed = false;
 
   toggleDropDown() {
