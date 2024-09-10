@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
@@ -21,6 +21,7 @@ export class NoahPlaygroundComponent implements OnInit {
   searchTerm: string;
   disclaimerModal: boolean;
   @Input() qcLoginModal: boolean;
+
   isSidebarOpen: boolean = false;
   isLogoutAlert: boolean = false;
   isMenu: boolean = true;
@@ -123,13 +124,17 @@ export class NoahPlaygroundComponent implements OnInit {
     const currentTouchY = event.touches[0].clientY;
     const deltaY = this.initialTouchY - currentTouchY; // Difference in Y direction
     const newHeight = this.initialHeight + deltaY;
-
-    // Ensure that height doesn't go below a certain value or exceed a maximum
+    const touch = event.touches[0];
     const minHeight = 200; // Adjust as needed
     const maxHeight = window.innerHeight - 100; // Adjust as needed
 
     if (newHeight >= minHeight && newHeight <= maxHeight) {
       this.height = newHeight;
+    }
+
+    if (event.touches.length > 1) return; // Skip for multi-touch gestures
+    if (touch.clientY > 0 && window.scrollY === 0) {
+      event.preventDefault(); // Prevent pull-to-refresh when swiping down at the top
     }
   }
 
