@@ -2268,22 +2268,36 @@
   <!-- buttons for all, flood, rain sensors -->
   <div class="space-y-2">
     <button
-      (click)="filterCategory('All')"
+      (click)="filterCategory('All') && (activeTab = 1)"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       All
+      <div
+        *ngIf="activeTab == 1"
+        class="w-full h-1 bg-indigo-700 rounded-t-md"
+      ></div>
     </button>
+
     <button
-      (click)="filterCategory('Flood')"
+      (click)="filterCategory('Flood') && (activeTab = 2)"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       Flood Sensors ({{ activeFloodSensor }})
+      <div
+        *ngIf="activeTab == 2"
+        class="w-full h-1 bg-green-700 rounded-t-md"
+      ></div>
     </button>
+
     <button
-      (click)="filterCategory('Rain')"
+      (click)="filterCategory('Rain') && (activeTab = 3)"
       class="bg-white border border-gray-300 rounded-md px-4 py-2 mr-1 text-sm"
     >
       Rain Sensors ({{ activeRainSensor }})
+      <div
+        *ngIf="activeTab == 3"
+        class="w-full h-1 bg-blue-400 rounded-t-md"
+      ></div>
     </button>
   </div>
   <div class="h-px bg-gray-200 mt-4 mb-2 w-full"></div>
