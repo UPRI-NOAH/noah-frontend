@@ -1,6 +1,278 @@
 <div class="flex flex-col md:flex-row h-screen w-screen">
+  <button
+    class="
+      fixed
+      p-2
+      z-50
+      bg-white
+      text-gray-800
+      shadow-2xl
+      drop-shadow-2xl
+      rounded-t-lg
+      md:rounded-tl-none md:rounded-r-lg md:top-4
+      h-10
+      w-20
+      md:w-auto
+      bottom-0
+      self-center
+      flex flex-col
+      md:self-auto
+      items-center
+      md:items-stretch
+    "
+    *ngIf="btnShowSideBar"
+    (click)="showSideBarMobile()"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 md:hidden animate-bounce"
+      viewBox="0 0 24 30"
+    >
+      <path
+        d="M18.293 16.707L12 10.414l-6.293 6.293a1 1 0 11-1.414-1.414l7-7a1 1 0 011.414 0l7 7a1 1 0 01-1.414 1.414z"
+        fill="#000"
+        fill-rule="nonzero"
+      />
+    </svg>
+  </button>
+
+  <button
+    class="
+      fixed
+      z-50
+      opacity-80
+      bg-white
+      text-gray-800
+      right-0
+      p-2
+      shadow-2xl
+      drop-shadow-2xl
+      font-bold
+      bottom-0
+      self-center
+      flex flex-col
+      items-center
+      rounded-lg
+      text-xs
+      justify-end
+      mb-9
+      mr-2
+      sm:text-sm
+      md:hidden
+    "
+    (click)="openLegendHideSide()"
+    *ngIf="btnHideSide"
+  >
+    Legend
+  </button>
+  <div
+    class="
+      md:hidden
+      cursor-pointer
+      fixed
+      bottom-24
+      -right-1
+      z-50
+      mb-2
+      mt-2
+      mr-2
+      dark:text-gray-100
+      text-black
+      transition
+      duration-150
+      ease-in-out
+      rounded-xl
+      bg-gray-400
+    "
+    (click)="hideLegendSide()"
+    *ngIf="minimizeLegendSide"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      class="icon icon-tabler icon-tabler-x pt-0.5"
+      viewBox="0 0 700 700"
+      stroke-width="2.5"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M490 294H210a14 14 0 0 1 0-28h280a14 14 0 0 1 0 28z" />
+    </svg>
+  </div>
+  <div
+    *ngIf="legendHideSide"
+    class="fixed transform bottom-10 z-40 right-2 md:hidden"
+  >
+    <div class="flex items-center justify-center">
+      <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
+        <h1 class="text-sm font-bold leading-3 text-center mb-2 text-gray-800">
+          Hazard Level
+        </h1>
+        <div class="flex flex-col items-center justify-center bg-transparent">
+          <div class="flex">
+            <div class="flex flex-col items-center pr-4">
+              <div class="h-2 w-5 bg-low mb-2"></div>
+              <span class="text-xs leading-3">Low</span>
+            </div>
+            <div class="flex flex-col items-center pr-4">
+              <div class="h-2 w-5 bg-medium mb-2"></div>
+              <span class="text-xs leading-3">Medium</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="h-2 w-5 bg-high mb-2"></div>
+              <span class="text-xs leading-3">High</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <noah-map-kyh class="relative h-full w-full"></noah-map-kyh>
 
+  <!-- MOBILE VIEW -->
+  <div
+    class="
+      bg-gray-50
+      md:bottom-0
+      bottom-8
+      shadow-md
+      md:h-full md:w-136
+      absolute
+      md:relative
+      h-2/5
+      w-11/12
+      left-1/2
+      md:left-0 md:transform-none
+      -translate-x-1/2
+      transform
+      rounded-2xl
+      block
+      md:hidden md:rounded-none
+    "
+    *ngIf="sideBarMobile"
+  >
+    <button
+      class="
+        opacity-80
+        bg-white
+        text-gray-800
+        font-bold
+        py-1
+        px-1
+        ml-2
+        flex
+        items-end
+        fixed
+        justify-end
+        -top-7
+        mb-2
+        right-0
+        rounded
+        hover:bg-gray-200
+        focus:outline-none
+        focus:ring-2
+        focus:ring-gray-600
+        focus:ring-opacity-50
+        mr-2
+        sm:text-sm
+        text-xs
+        md:hidden
+      "
+      (click)="openLegend()"
+      *ngIf="btnLegend"
+    >
+      Legend
+    </button>
+
+    <div
+      class="
+        cursor-pointer
+        absolute
+        -top-24
+        -right-4
+        z-50
+        mb-2
+        mt-2
+        mr-2
+        dark:text-gray-100
+        text-black
+        transition
+        duration-150
+        ease-in-out
+        rounded-xl
+        bg-gray-200
+        hover:bg-gray-400
+      "
+      (click)="openLegend()"
+      *ngIf="kyhLegend"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        class="icon icon-tabler icon-tabler-x pt-0.5"
+        viewBox="0 0 700 700"
+        stroke-width="2.5"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M490 294H210a14 14 0 0 1 0-28h280a14 14 0 0 1 0 28z" />
+      </svg>
+    </div>
+    <div
+      *ngIf="kyhLegend"
+      class="absolute transform -top-20 z-40 right-0 block md:hidden"
+    >
+      <div class="flex items-center justify-center">
+        <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
+          <h1
+            class="text-sm font-bold leading-3 text-center mb-2 text-gray-800"
+          >
+            Hazard Level
+          </h1>
+          <div class="flex flex-col items-center justify-center bg-transparent">
+            <div class="flex">
+              <div class="flex flex-col items-center pr-4">
+                <div class="h-2 w-5 bg-low mb-2"></div>
+                <span class="text-xs leading-3">Low</span>
+              </div>
+              <div class="flex flex-col items-center pr-4">
+                <div class="h-2 w-5 bg-medium mb-2"></div>
+                <span class="text-xs leading-3">Medium</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="h-2 w-5 bg-high mb-2"></div>
+                <span class="text-xs leading-3">High</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="fixed z-50 md:hidden right-2 items-center mt-5"
+      (click)="hideSideBar()"
+    >
+      <svg
+        class="w-6 h-6 cursor-pointer"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path d="M12 16l-8-8h16l-8 8z" />
+      </svg>
+    </div>
+    <div class="h-full overflow-auto rounded-2xl">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <!-- DESKTOP VIEW -->
   <div
     class="
       bg-gray-50
@@ -19,6 +291,8 @@
       transform
       rounded-2xl
       md:rounded-none
+      hidden
+      md:block
     "
   >
     <router-outlet></router-outlet>
