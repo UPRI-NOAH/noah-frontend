@@ -49,6 +49,7 @@ export class SummaryComponent implements OnInit {
 
   sortField = 'latest_date';
   sortDirection = 'ascending';
+  activeTab = 1;
 
   constructor(
     private qcSensorService: QcSensorService,
@@ -330,7 +331,7 @@ export class SummaryComponent implements OnInit {
     'Status',
   ];
   isDroppedDown = false;
-  selectedOption = 'Latest Date';
+  selectedOption = 'Sort by:';
   filterButtonPressed = false;
 
   toggleDropDown() {

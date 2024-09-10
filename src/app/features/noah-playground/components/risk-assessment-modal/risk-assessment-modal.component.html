@@ -693,10 +693,11 @@
           </div>
         </div>
       </div>
+
       <div class="pt-2 pb-2 w-full">
-        <div class="mt-1 flex flex-row place-content-between">
-          <div class="w-auto h-full">
-            <div class="relative">
+        <div class="mt-1 flex flex-row place-content-stretch">
+          <div class="w-3/5 h-full">
+            <div class="relative px-2">
               <div
                 class="
                   absolute
@@ -747,112 +748,112 @@
               />
             </div>
           </div>
-          <div class="w-4"></div>
-          <div class="w-auto h-full relative">
-            <div
-              class="absolute inset-y-0 left-0 flex pl-3 pointer-events-none"
-            >
-              <svg
-                class="h-5 w-5 mt-2.5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                *ngIf="sortDirection === 'ascending'"
+          <div class="w-2/5 h-full">
+            <div class="ml-4 mx-6 relative">
+              <div class="absolute left-0 flex pl-3 pointer-events-none">
+                <svg
+                  class="h-5 w-5 mt-2.5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  *ngIf="sortDirection === 'ascending'"
+                >
+                  <path
+                    d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  class="h-5 w-5 mt-2.5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  *ngIf="sortDirection === 'descending'"
+                >
+                  <path
+                    d="M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <button
+                class="
+                  bg-white
+                  border border-gray-300
+                  text-gray-900 text-sm
+                  rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500
+                  pl-9
+                  p-2.5
+                  w-full
+                  text-left
+                "
+                type="button"
+                (click)="showSortDropdown()"
               >
-                <path
-                  d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <svg
-                class="h-5 w-5 mt-2.5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                *ngIf="sortDirection === 'descending'"
+                {{
+                  sortField === 'perc_aff_medhigh'
+                    ? 'Percentage'
+                    : sortField === 'total_pop'
+                    ? 'Population'
+                    : sortField === 'prov'
+                    ? 'Province'
+                    : sortField === 'brgy'
+                    ? 'Barangay'
+                    : sortField === 'muni'
+                    ? 'Municipality'
+                    : 'Sort by:' // Default placeholder
+                }}
+              </button>
+
+              <ul
+                class="
+                  bg-white
+                  border border-gray-300
+                  text-gray-900 text-sm
+                  rounded-lg
+                  absolute
+                "
+                *ngIf="showSort"
               >
-                <path
-                  d="M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                <button
+                  class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+                  (click)="onHeaderColumnClick('perc_aff_medhigh')"
+                >
+                  Percentage
+                </button>
+                <button
+                  class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+                  (click)="onHeaderColumnClick('total_pop')"
+                >
+                  Population
+                </button>
+                <button
+                  class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+                  (click)="onHeaderColumnClick('brgy')"
+                >
+                  Barangay
+                </button>
+                <button
+                  class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+                  (click)="onHeaderColumnClick('muni')"
+                >
+                  Municipality
+                </button>
+                <button
+                  class="h-auto w-full p-2.5 border-gray-300 text-left"
+                  (click)="onHeaderColumnClick('prov')"
+                >
+                  Province
+                </button>
+              </ul>
             </div>
-            <button
-              class="
-                bg-white
-                border border-gray-300
-                text-gray-900 text-sm
-                rounded-lg
-                focus:ring-blue-500 focus:border-blue-500
-                block
-                pl-9
-                p-2.5
-              "
-              type="button"
-              (click)="showSortDropdown()"
-            >
-              {{
-                sortField === 'perc_aff_medhigh'
-                  ? 'Percentage'
-                  : sortField === 'total_pop'
-                  ? 'Population'
-                  : sortField === 'prov'
-                  ? 'Province'
-                  : sortField === 'brgy'
-                  ? 'Barangay'
-                  : sortField === 'muni'
-                  ? 'Municipality'
-                  : ''
-              }}
-            </button>
-            <ul
-              class="
-                bg-white
-                border border-gray-300
-                text-gray-900 text-sm
-                rounded-lg
-                absolute
-                w-full
-              "
-              *ngIf="showSort"
-            >
-              <button
-                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
-                (click)="onHeaderColumnClick('perc_aff_medhigh')"
-              >
-                Percentage
-              </button>
-              <button
-                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
-                (click)="onHeaderColumnClick('total_pop')"
-              >
-                Population
-              </button>
-              <button
-                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
-                (click)="onHeaderColumnClick('brgy')"
-              >
-                Barangay
-              </button>
-              <button
-                class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
-                (click)="onHeaderColumnClick('muni')"
-              >
-                Municipality
-              </button>
-              <button
-                class="h-auto w-full p-2.5 border-gray-300 text-left"
-                (click)="onHeaderColumnClick('prov')"
-              >
-                Province
-              </button>
-            </ul>
           </div>
         </div>
       </div>

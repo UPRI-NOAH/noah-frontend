@@ -15,7 +15,7 @@ export class RiskAssessmentModalComponent implements OnInit {
   affectedData: AffectedData[] = [];
   riskModal = false;
   searchValue: string;
-  sortField = 'prov';
+  sortField = '';
   sortDirection = 'descending';
 
   currentPage = 1;
