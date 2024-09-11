@@ -637,7 +637,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     
                     <div style="height: 16px;"></div>
                   
-                  <div id="qc-chart-mobile" style="display: flex; justify-content: center; align-items: center; padding: 8px; width: 100%; border-style: solid; border-radius: 8px; border: 1px solid #ededed; z-index: auto;">
+                  <div id="qc-chart-mobile" style="display: flex; justify-content: center; align-items: center; padding: 2px; width: 100%; border-style: solid; border-radius: 8px; border: 1px solid #ededed; z-index: auto;">
                       
                   </div>
                   
