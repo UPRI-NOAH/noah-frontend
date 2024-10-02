@@ -2147,12 +2147,16 @@
       <div class="font-bold text-2xl">IoT Data Summary</div>
     </div>
     <button class="border-none bg-gray-50">
-      <img
-        src="assets/icons/close-button.png"
-        alt=""
-        class="h-5"
+      <svg
+        class="ml-auto fill-current text-gray-700 w-6 h-6 cursor-pointer"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 18 18"
         (click)="closeModal()"
-      />
+      >
+        <path
+          d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+        />
+      </svg>
     </button>
   </div>
   <div class="h-px bg-gray-200 mt-4 mb-4 w-full"></div>
@@ -2216,7 +2220,7 @@
         background-position: 12px center;
       "
     />
-    <div class="relative">
+    <div>
       <button
         (click)="toggleDropDown()"
         class="
@@ -2245,7 +2249,7 @@
           absolute
           text-sm
           border border-gray-300
-          rounded-md
+          rounded-lg
           bg-white
           px-4
           pt-3
@@ -2256,7 +2260,7 @@
         <div
           *ngFor="let option of dropdownList"
           (click)="selectOption(option)"
-          class="pb-4 cursor-pointer z-50"
+          class="w-full pb-3 cursor-pointer"
         >
           {{ option }}
         </div>

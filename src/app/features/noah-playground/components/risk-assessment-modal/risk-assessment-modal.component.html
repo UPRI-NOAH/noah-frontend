@@ -587,9 +587,9 @@
       <div>
         <div class="flex flex-row pb-4">
           <div class="w-16 pr-2">
-            <img src="../../../../../assets/icons/logo-noah.svg" />
+            <img src="assets/icons/logo-noah.svg" />
           </div>
-          <div class="font-bold bottom-0 text-sm">Exposure Assessment</div>
+          <div class="font-bold bottom-0 text-base">Exposure Assessment</div>
           <div
             class="
               cursor-pointer
@@ -687,17 +687,17 @@
       </div>
       <div class="py-2">
         <div class="flex flex-row place-content-between">
-          <div class="text-sm">Last updated</div>
+          <div class="text-sm">Last updated:</div>
           <div class="font-bold text-sm">
             <span>{{ dateDataText }}</span>
           </div>
         </div>
       </div>
 
-      <div class="pt-2 pb-2 w-full">
+      <div class="pb-2 w-full">
         <div class="mt-1 flex flex-row place-content-stretch">
-          <div class="w-3/5 h-full">
-            <div class="relative px-2">
+          <div class="w-auto h-full">
+            <div class="relative pr-2">
               <div
                 class="
                   absolute
@@ -748,8 +748,8 @@
               />
             </div>
           </div>
-          <div class="w-2/5 h-full">
-            <div class="ml-4 mx-6 relative">
+          <div class="w-auto h-full">
+            <div class="relative">
               <div class="absolute left-0 flex pl-3 pointer-events-none">
                 <svg
                   class="h-5 w-5 mt-2.5"
@@ -791,7 +791,8 @@
                   focus:ring-blue-500 focus:border-blue-500
                   pl-9
                   p-2.5
-                  w-full
+                  w-fit
+                  whitespace-nowrap
                   text-left
                 "
                 type="button"
