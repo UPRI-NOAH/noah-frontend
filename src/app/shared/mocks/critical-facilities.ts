@@ -9,6 +9,20 @@ export const CRITICAL_FACILITIES_ARR = [
   'school',
 ] as const;
 
+export type GeoJSONFeature = {
+  type: string;
+  properties: any;
+  geometry: {
+    type: string;
+    coordinates: any[];
+  };
+};
+
+export type GeoJSONFeatureCollection = {
+  type: 'FeatureCollection';
+  features: GeoJSONFeature[];
+};
+
 export type CriticalFacility = typeof CRITICAL_FACILITIES_ARR[number];
 
 export type SampleMarker = {
@@ -25,6 +39,7 @@ export const getSymbolLayer = (
   id: `${sourceName}-image`,
   type: 'symbol',
   source: sourceName,
+  'source-layer': MAPBOX_CRIT_FAC[sourceName].sourceLayer,
   paint: {
     'icon-opacity': 1,
     'text-opacity': 1,
@@ -60,6 +75,7 @@ export const getCircleLayer = (sourceName: string): CircleLayer => {
     id: `${sourceName}-cluster`,
     type: 'circle',
     source: sourceName,
+    'source-layer': MAPBOX_CRIT_FAC[sourceName].sourceLayer,
     filter: ['has', 'point_count'],
     paint: {
       'circle-color': circleColors[sourceName],
@@ -80,6 +96,7 @@ export const getClusterTextCount = (sourceName: string): SymbolLayer => {
     id: `${sourceName}-cluster-text`,
     type: 'symbol',
     source: sourceName,
+    'source-layer': MAPBOX_CRIT_FAC[sourceName].sourceLayer,
     filter: ['has', 'point_count'],
     layout: {
       'text-field': `{point_count_abbreviated}\n${facilityNames[sourceName]}`,
@@ -116,19 +133,19 @@ export const criticalFacilities = {
 
 export const MAPBOX_CRIT_FAC = {
   school: {
-    url: 'mapbox://upri-noah.drbtf3uh',
-    sourceLayer: 'schools_g-cjc0bt',
+    url: 'mapbox://upri-noah.ph_cf_school_tls',
+    sourceLayer: 'ph_cf_schools',
   },
   hospital: {
-    url: 'mapbox://upri-noah.0qj1zvhm',
-    sourceLayer: 'hospitals_g-2v0hca',
+    url: 'mapbox://upri-noah.ph_cf_hospital_tls',
+    sourceLayer: 'ph_cf_hospitals',
   },
   'fire-station': {
-    url: 'mapbox://upri-noah.cebidtpr',
-    sourceLayer: 'fire_station_g-64u931',
+    url: 'mapbox://upri-noah.ph_cf_fire_station_tls',
+    sourceLayer: 'ph_cf_fire_station',
   },
   'police-station': {
-    url: 'mapbox://upri-noah.ds1saq22',
-    sourceLayer: 'police_station_g-6ekisg',
+    url: 'mapbox://upri-noah.ph_cf_police_station_tls',
+    sourceLayer: 'ph_cf_police_station',
   },
 };

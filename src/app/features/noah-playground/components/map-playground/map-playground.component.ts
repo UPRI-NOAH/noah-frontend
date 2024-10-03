@@ -47,6 +47,8 @@ import {
   getCircleLayer,
   getClusterTextCount,
   getSymbolLayer,
+  MAPBOX_CRIT_FAC,
+  GeoJSONFeatureCollection,
 } from '@shared/mocks/critical-facilities';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -2462,12 +2464,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       if (error) throw error;
       _this.map.addImage(name, image);
 
+      //for geojson data format
+      // _this.map.addSource(name, {
+      //   type: 'geojson',
+      //   data: criticalFacilities[name].data,
+      //   cluster: true,
+      //   clusterMaxZoom: 12,
+      //   clusterMinPoints: 3,
+      // });
+
       _this.map.addSource(name, {
-        type: 'geojson',
-        data: criticalFacilities[name].data,
-        cluster: true,
-        clusterMaxZoom: 12,
-        clusterMinPoints: 3,
+        type: 'vector',
+        url: MAPBOX_CRIT_FAC[name].url,
       });
 
       _this.map.addLayer(getCircleLayer(name));
