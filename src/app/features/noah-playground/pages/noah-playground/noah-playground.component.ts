@@ -4,7 +4,7 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./noah-playground.component.scss'],
 })
 export class NoahPlaygroundComponent implements OnInit {
+  //userName$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   currentLocationPg$: Observable<string>;
   searchTerm: string;
   disclaimerModal: boolean;
@@ -31,8 +32,9 @@ export class NoahPlaygroundComponent implements OnInit {
   disclaimerModalOpen = false;
   iotModalOpen = false;
   raBtnPopu = false;
-  userName: string;
-  hideBoundaries = sessionStorage.getItem('loggedIn');
+  userName: string | null = null;
+  localStorageCheckInterval: any;
+  hideBoundaries = localStorage.getItem('loggedIn');
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -44,7 +46,16 @@ export class NoahPlaygroundComponent implements OnInit {
     this.currentLocationPg$ = this.pgService.currentLocation$;
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
-    this.userName = sessionStorage.getItem('name');
+    this.userName = localStorage.getItem('name');
+    // Set up an interval to check for updates to localStorage
+    this.localStorageCheckInterval = setInterval(() => {
+      const name = localStorage.getItem('name');
+      if (this.userName !== name) {
+        this.userName = name; // Update the view if the name has changed
+        this.updateAdminStatus(this.userName);
+        console.log('1');
+      }
+    }, 100); // Check every second (you can adjust the interval)
 
     this.modalService.btnRiskAssessment$.subscribe((raBtnPopu) => {
       this.raBtnPopu = raBtnPopu;
@@ -86,6 +97,11 @@ export class NoahPlaygroundComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    if (this.localStorageCheckInterval) {
+      clearInterval(this.localStorageCheckInterval); // Clean up when the component is destroyed
+    }
+  }
   selectPlace(selectedPlace) {
     this.pgService.setCurrentLocation(selectedPlace.text);
     const [lng, lat] = selectedPlace.center;
@@ -93,7 +109,7 @@ export class NoahPlaygroundComponent implements OnInit {
   }
 
   isLoggedIn(): boolean {
-    return sessionStorage.getItem('loggedIn') === 'true';
+    return localStorage.getItem('loggedIn') === 'true';
   }
 
   processLogout() {
@@ -124,5 +140,25 @@ export class NoahPlaygroundComponent implements OnInit {
 
   logout(): void {
     this.qcLoginService.logout();
+  }
+
+  private updateAdminStatus(name: string | null) {
+    if (name) {
+      // Example logic to determine admin status
+      if (name === 'qc admin') {
+        this.qcAdmin = true;
+        this.lagunaAdmin = false;
+      } else if (name === 'laguna admin') {
+        this.qcAdmin = false;
+        this.lagunaAdmin = true;
+      } else {
+        this.qcAdmin = false;
+        this.lagunaAdmin = false;
+      }
+    } else {
+      // If no name, reset admin statuses
+      this.qcAdmin = false;
+      this.lagunaAdmin = false;
+    }
   }
 }
