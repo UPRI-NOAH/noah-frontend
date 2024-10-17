@@ -42,10 +42,12 @@ export class QcLoginService {
   }
 
   logout() {
-    sessionStorage.removeItem('loggedIn');
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('municity');
+    localStorage.removeItem('name');
     localStorage.removeItem('loginStatus');
-    sessionStorage.removeItem('userData');
-    sessionStorage.removeItem('loginStatus');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('loginStatus');
     console.log('Logged out successfully');
     this.router
       .navigateByUrl('/logout', { skipLocationChange: true })
