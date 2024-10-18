@@ -185,7 +185,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService
   ) {
-    this.getScreenSize();
+    // this.getScreenSize();
   }
 
   ngOnInit(): void {
@@ -198,12 +198,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
+        this.getScreenSize();
       });
-    this.getScreenSize();
+    // this.getScreenSize();
 
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        // this.getScreenSize();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
@@ -545,7 +547,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
 
     const popUpMobileView = new mapboxgl.Popup({
-      closeButton: false,
+      closeButton: true,
       closeOnClick: true,
       maxWidth: 'auto',
     });
@@ -565,8 +567,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
+          // console.log(this.screenHeight, this.screenWidth)
+          // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
           if (this.screenWidth < 768) {
-            this.map.on('click', qcSensorType, (e) => {
+            // console.log("INSIDE screenWidth < 768");
+            this.map.on('touchend', qcSensorType, (e) => {
+              // console.log("entered click on screenWidth < 768");
               const coordinates = (
                 e.features[0].geometry as any
               ).coordinates.slice();
@@ -644,13 +650,18 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 </div>
                 
                 `;
+
               const pk = e.features[0].properties.pk;
-              popUpMobileView.setLngLat(coordinates).setHTML(popupContent);
+              popUpMobileView
+                .setLngLat((e.features[0].geometry as any).coordinates.slice())
+                .setHTML(popupContent);
+              // .setDOMContent(graphDiv);
               _this.showQcChartMobile(+pk, name, qcSensorType);
               popUpMobileView.addTo(_this.map);
             });
           } else {
             this.map.on('mouseover', qcSensorType, (e) => {
+              console.log('entered MOUSEOVER on screenWidth NOT 768');
               const coordinates = (
                 e.features[0].geometry as any
               ).coordinates.slice();
@@ -717,12 +728,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
+            popUpMobileView.remove();
             chartPopUpOpen = false;
           });
           this.map.on('mouseleave', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
+            popUpMobileView.remove();
             chartPopUpOpen = false;
           });
         }
