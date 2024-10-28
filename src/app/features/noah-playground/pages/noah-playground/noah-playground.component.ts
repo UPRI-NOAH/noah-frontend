@@ -31,6 +31,7 @@ export class NoahPlaygroundComponent implements OnInit {
   isWarningAlert = false;
   disclaimerModalOpen = false;
   iotModalOpen = false;
+  earthquakeModalOpen = false;
   raBtnPopu = false;
   userName: string | null = null;
   localStorageCheckInterval: any;
@@ -72,7 +73,12 @@ export class NoahPlaygroundComponent implements OnInit {
     this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
       this.iotModalOpen = iotModalOpen;
     });
-    3;
+
+    this.modalService.earthquakeSummaryModal$.subscribe(
+      (earthquakeModalOpen) => {
+        this.earthquakeModalOpen = earthquakeModalOpen;
+      }
+    );
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
