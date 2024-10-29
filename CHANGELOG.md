@@ -1,10 +1,41 @@
+## [4.1.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v4.0.0...v4.1.0) (2024-10-28)
+
+#### Features
+
+- **update:** upgrading angular 11 to 12 ([#400](https://github.com/UPRI-NOAH/noah-frontend/pull/400)) ([5595d78](https://github.com/UPRI-NOAH/noah-frontend/commit/5595d788f83b5a49e751e35893883d95223b732b))
+- **know-your-hazards:** change icon in hazard button ([#402](https://github.com/UPRI-NOAH/noah-frontend/pull/402)) ([7ff4529](https://github.com/UPRI-NOAH/noah-frontend/commit/7ff452973f33a1234cdc9071da16e08c5ad25f5e))
+- **know-your-hazards:** add lat long coordinates display when pin is dragged ([#384](https://github.com/UPRI-NOAH/noah-frontend/pull/384)) ([037b867](https://github.com/UPRI-NOAH/noah-frontend/commit/037b867a0d054543175bf584fe3a63638c7fb515))
+- **landing-page:** add Donate link in navigation menu ([#392](https://github.com/UPRI-NOAH/noah-frontend/pull/392)) ([d376636](https://github.com/UPRI-NOAH/noah-frontend/commit/d37663666eaeff342a25368ad445d8d0220cbd6b))
+- **studio:** add municipal and provincial boundaries ([#370](https://github.com/UPRI-NOAH/noah-frontend/pull/370)) ([d580c1b](https://github.com/UPRI-NOAH/noah-frontend/commit/d580c1bde4a34dacc761d35ea98fd714239ccad3))
+- **iot:** show boundaries if user logged in ([#369](https://github.com/UPRI-NOAH/noah-frontend/pull/369)) ([8fe4c9e](https://github.com/UPRI-NOAH/noah-frontend/commit/8fe4c9ec49073c17e9661282b85b05d5afcf9002))
+- **iot:** add login and logout for devs account ([#365](https://github.com/UPRI-NOAH/noah-frontend/pull/365)) ([69654de](https://github.com/UPRI-NOAH/noah-frontend/commit/69654dee618962575a134d07c7b89c000c630807))
+- **studio:** add calculation of distance and area in map ([#361](https://github.com/UPRI-NOAH/noah-frontend/pull/361)) ([0c39ef7](https://github.com/UPRI-NOAH/noah-frontend/commit/0c39ef7c23b33839b6cfae3fe05651d51981b733))
+- **studio:** hide contour and sensor in noah studio ([#360](https://github.com/UPRI-NOAH/noah-frontend/pull/360)) ([56e90f2](https://github.com/UPRI-NOAH/noah-frontend/commit/56e90f201567d8addec8c047d549006725165195))
+
+#### Bug Fixes
+
+- **studio:** hide unstable slope in landslide feature ([#417](https://github.com/UPRI-NOAH/noah-frontend/pull/417)) ([e0f5f3d](https://github.com/UPRI-NOAH/noah-frontend/commit/e0f5f3dab5705207c7fd14955a1d2bafe2923820))
+- **know-your-hazards:** remove double marker in map display ([#413](https://github.com/UPRI-NOAH/noah-frontend/pull/413)) ([cd4ec73](https://github.com/UPRI-NOAH/noah-frontend/commit/cd4ec731e3b744cc6fecde6edeeff4ee4a5fe367))
+- **qc-iot:** iot download for devs account ([#412](https://github.com/UPRI-NOAH/noah-frontend/pull/412)) ([73386e8](https://github.com/UPRI-NOAH/noah-frontend/commit/73386e8c85ddabdf13ec0c933964f9ebd4dfc34b))
+- **qc-iot:** iot download for devs account ([#411](https://github.com/UPRI-NOAH/noah-frontend/pull/411)) ([52ef1f4](https://github.com/UPRI-NOAH/noah-frontend/commit/52ef1f4d379bb15eeeb51e5da5bba7cf1150f0aa))
+- **studio:** text color for boundaries and displaying hazard when mapstyle change ([#383](https://github.com/UPRI-NOAH/noah-frontend/pull/383)) ([7b02842](https://github.com/UPRI-NOAH/noah-frontend/commit/7b02842cbd60d4e68580e56ad00e5006f8052e1e))
+- **4as:** summary modal UI and button archived ([#376](https://github.com/UPRI-NOAH/noah-frontend/pull/376)) ([c0bb308](https://github.com/UPRI-NOAH/noah-frontend/commit/c0bb308899deb5f792d3a2c0be99f67b89e5b543))
+- **studio:** administrative boundaries popup and legend ([#372](https://github.com/UPRI-NOAH/noah-frontend/pull/372)) ([ad1944b](https://github.com/UPRI-NOAH/noah-frontend/commit/ad1944b354c5e496f170b86165770c1f5ff64a78))
+- **4as:** freeze header in table summary ([#363](https://github.com/UPRI-NOAH/noah-frontend/pull/363)) ([ed83af1](https://github.com/UPRI-NOAH/noah-frontend/commit/ed83af195c00461f14fa1ad02d8453048197be63))
+- **4as:** improve archive button and download ([#359](https://github.com/UPRI-NOAH/noah-frontend/pull/359)) ([0626215](https://github.com/UPRI-NOAH/noah-frontend/commit/0626215f1a4ae2cf7e96de74eb3e4003f044fe3b))
+- **4as:** minor changes for scroll bar for 4as summary data, fix header and footer ([#358](https://github.com/UPRI-NOAH/noah-frontend/pull/358)) ([bd0c598](https://github.com/UPRI-NOAH/noah-frontend/commit/bd0c598f8f3d4a6395429551850358a9881ad2f5))
+- **4as:** responsive popup and archive download data and fix duplicating data ([#357](https://github.com/UPRI-NOAH/noah-frontend/pull/357)) ([ff8e293](https://github.com/UPRI-NOAH/noah-frontend/commit/ff8e293b8c88adbbaf3e2297f7af1b8861058df5))
+- **4as:** responsive popup and archive download data and fix duplicating data ([#356](https://github.com/UPRI-NOAH/noah-frontend/pull/356)) ([764cf33](https://github.com/UPRI-NOAH/noah-frontend/commit/764cf33656c805294ee649cd60366998236e04f4))
+- **4as:** responsive popup and archive download data and fix duplicating data ([#355](https://github.com/UPRI-NOAH/noah-frontend/pull/355)) ([6a46eee](https://github.com/UPRI-NOAH/noah-frontend/commit/6a46eeed38348eeba4b40ed7eccf224f716c1a86))
+- **4as:** exposure assessment data summary and UI ([#354](https://github.com/UPRI-NOAH/noah-frontend/pull/354)) ([bfd136d](https://github.com/UPRI-NOAH/noah-frontend/commit/bfd136de4872d6f4d4452622ff413c7649ea37f6))
+
 ## [4.0.0](https://github.com/UPRI-NOAH/noah-frontend/compare/v3.2.0...v4.0.0) (2024-02-01)
 
 ### New Feature - Exposure Assessment (4As)
 
 - **4as:** create base component for risk assessment feature ([#341](https://github.com/UPRI-NOAH/noah-frontend/pull/341)) ([aa3b397](https://github.com/UPRI-NOAH/noah-frontend/commit/aa3b397e8a9c5a3aad11b294164d40d17ef93399))
 
-#### Features  
+#### Features
 
 - **4as:** change legend for rain forecast and population and adjust whitespace in mobile view ([#353](https://github.com/UPRI-NOAH/noah-frontend/pull/353)) ([35ab8cb](https://github.com/UPRI-NOAH/noah-frontend/commit/35ab8cb69afdbd5b6229da82300f976f77c96ce7))
 - **4as:** disclaimer IoT and 4as responsive, also the bug when search ([#352](https://github.com/UPRI-NOAH/noah-frontend/pull/352)) ([64d0016](https://github.com/UPRI-NOAH/noah-frontend/commit/64d00165c08885176c62612a3b244ab3c3b8fe7a))
@@ -16,7 +47,7 @@
 - **4as-modal:** add data in modal risk assessment ([#342](https://github.com/UPRI-NOAH/noah-frontend/pull/342)) ([9ec22ea](https://github.com/UPRI-NOAH/noah-frontend/commit/9ec22ea052b6b41612d28f6f76e36198323ecb6f))
 - **4as-modal:** popup modal when calculate risk button is clicked ([#340](https://github.com/UPRI-NOAH/noah-frontend/pull/340)) ([b4e5acc](https://github.com/UPRI-NOAH/noah-frontend/commit/b4e5accdf5f27a81ece9752cee2efdbe2809c629))
 
-#### Bug Fixes 
+#### Bug Fixes
 
 - **iot:** update modal service for iot ([#345](https://github.com/UPRI-NOAH/noah-frontend/pull/345)) ([4e33505](https://github.com/UPRI-NOAH/noah-frontend/commit/4e3350554bf12c4bdb09f44e4b5c4412e0a56208))
 - **iot:** modal for safari testing ([#344](https://github.com/UPRI-NOAH/noah-frontend/pull/344)) ([315289e](https://github.com/UPRI-NOAH/noah-frontend/commit/315289e8ffd06fbf8e4899ef3eda0eb31275867b))
