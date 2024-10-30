@@ -56,11 +56,11 @@ export class LoginComponent implements OnInit {
   ButtonShow$: Observable<boolean>;
 
   ngOnInit(): void {
-    this.userName = sessionStorage.getItem('name');
+    this.userName = localStorage.getItem('name');
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    if (sessionStorage.getItem('loggedIn') === 'true') {
+    if (localStorage.getItem('loggedIn') === 'true') {
       this.router.navigate([this.returnUrl]);
     }
 
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     // Check if the user is already logged in before attempting to login again
-    if (sessionStorage.getItem('loggedIn') === 'true') {
+    if (localStorage.getItem('loggedIn') === 'true') {
       console.log('Already logged in');
       return;
     }
@@ -88,17 +88,17 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl(this.returnUrl);
         this.isLoginModal = false;
         this.loadingNoah = true;
-        sessionStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('loggedIn', 'true');
 
         if (this.username === 'qc_admin') {
-          sessionStorage.setItem('name', 'qc admin');
+          localStorage.setItem('name', 'qc admin');
           localStorage.setItem('loginStatus', '1');
         } else if (this.username === 'laguna_admin') {
-          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
         } else if (this.username === 'noah_dev') {
-          sessionStorage.setItem('name', 'Devs');
-          sessionStorage.setItem('loginStatus', 'devs');
+          localStorage.setItem('name', 'Devs');
+          localStorage.setItem('loginStatus', 'devs');
         } else {
           console.log('Invalid Credentials');
         }
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
   }
 
   isLoggedIn(): boolean {
-    return sessionStorage.getItem('loggedIn') === 'true';
+    return localStorage.getItem('loggedIn') === 'true';
   }
 
   logoutModal() {

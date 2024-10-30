@@ -28,7 +28,7 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
 export class MapKyhComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
-  centerMarker!: Marker;
+  //centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
   currentLocation$: Observable<string>;
 
@@ -37,7 +37,7 @@ export class MapKyhComponent implements OnInit {
 
   private _unsub = new Subject();
   private _changeStyle = new Subject();
-
+  private centerMarker: mapboxgl.Marker | null = null;
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
@@ -256,7 +256,7 @@ export class MapKyhComponent implements OnInit {
 
   async initMarkers() {
     this.centerMarker = new mapboxgl.Marker({
-      color: '#FF0000',
+      color: '#4D4C51',
       draggable: true,
     })
       .setLngLat(this.kyhService.currentCoords)
@@ -389,6 +389,10 @@ export class MapKyhComponent implements OnInit {
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next();
+    }
+    if (this.centerMarker) {
+      this.centerMarker.remove();
+      this.centerMarker = null; // Reset the marker
     }
   }
 }
