@@ -101,7 +101,7 @@ export class QcLoginComponent implements OnInit {
 
   onSubmit() {
     // Check if the user is already logged in before attempting to login again
-    if (sessionStorage.getItem('loggedIn') === 'true') {
+    if (localStorage.getItem('loggedIn') === 'true') {
       console.log('Already logged in');
       return;
     }
@@ -112,17 +112,17 @@ export class QcLoginComponent implements OnInit {
         this.router.navigateByUrl(this.returnUrl);
         this.qcLoginModal = false;
         this.loadingNoah = false;
-        sessionStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('loggedIn', 'true');
 
         if (this.username === 'qc_admin') {
-          sessionStorage.setItem('name', 'qc admin');
+          localStorage.setItem('name', 'qc admin');
           localStorage.setItem('loginStatus', '1');
         } else if (this.username === 'laguna_admin') {
-          sessionStorage.setItem('name', 'Laguna');
+          localStorage.setItem('name', 'Laguna');
           localStorage.setItem('loginStatus', '2');
         } else if (this.username === 'noah_dev') {
-          sessionStorage.setItem('name', 'Devs');
-          sessionStorage.setItem('loginStatus', 'devs');
+          localStorage.setItem('name', 'Devs');
+          localStorage.setItem('loginStatus', 'devs');
         } else {
           console.log('Invalid Credentials');
         }
