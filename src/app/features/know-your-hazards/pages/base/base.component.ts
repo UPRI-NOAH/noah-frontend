@@ -31,4 +31,21 @@ export class BaseComponent implements OnInit {
       this.currentPage = 1;
     }
   }
+  noahBrowser() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = 'https://noah.up.edu.ph/noah-studio';
+    } else {
+      window.open('https://noah.up.edu.ph/noah-studio', '_blank');
+    }
+  }
+
+  noahBiblio() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = 'https://noah.up.edu.ph/bibliography';
+    } else {
+      window.open('https://noah.up.edu.ph/bibliography', '_blank');
+    }
+  }
 }

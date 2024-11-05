@@ -73,9 +73,7 @@
       <li class="mb-2">3) 5-meters for storm surges.</li>
       <li>
         For more information, please go to the
-        <a routerLink="/noah-playground" target="_blank" class="text-primary"
-          >NOAH Studio.</a
-        >
+        <a (click)="noahBrowser()" class="text-primary">NOAH Studio.</a>
       </li>
     </ol>
 
@@ -85,9 +83,7 @@
     </p>
     <p>
       Click
-      <a routerLink="/bibliography" target="_blank" class="text-primary"
-        >here</a
-      >
+      <a (click)="noahBiblio()" class="text-primary">here</a>
       for the methods used.
     </p>
     <p class="mt-2 text-xs tracking-wide">
@@ -205,7 +201,12 @@
       <li class="mb-2">3) 5-meters for storm surges.</li>
       <li>
         For more information, please go to the
-        <a routerLink="/noah-playground" class="text-primary">NOAH Studio.</a>
+        <a
+          href="https://noah.up.edu.ph/noah-studio"
+          target="_blank"
+          class="text-primary"
+          >NOAH Studio.</a
+        >
       </li>
     </ol>
 
@@ -214,8 +215,14 @@
       and historical data.
     </p>
     <p>
-      Click <a routerLink="/bibliography" class="text-primary">here</a> for the
-      methods used.
+      Click
+      <a
+        href="https://noah.up.edu.ph/bibliography"
+        target="_blank"
+        class="text-primary"
+        >here</a
+      >
+      for the methods used.
     </p>
     <p class="mt-2 text-xs tracking-wide">
       <span class="font-bold">Disclaimer:</span> Project NOAH is still in beta
