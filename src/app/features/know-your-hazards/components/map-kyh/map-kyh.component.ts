@@ -109,7 +109,7 @@ export class MapKyhComponent implements OnInit {
         maxZoom: 13, // If you want your result not to go further than a specific zoom
       },
     });
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     geocoder.on('result', (e) => {
       this.kyhService.setCurrentLocation(e.result['place_name']);
@@ -119,7 +119,7 @@ export class MapKyhComponent implements OnInit {
 
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
-    this.map.addControl(this.geolocateControl, 'top-right');
+    // this.map.addControl(this.geolocateControl, 'top-right');
   }
 
   initGeolocationListener() {
