@@ -278,7 +278,7 @@
       sm:overflow-auto
       md:overflow-auto
     "
-    *ngIf="sideBarMobile || desktopView"
+    [style.display]="!sideBarMobile && !desktopView ? 'none' : null"
   >
     <!-- Hide Sidebar Button -->
     <div
