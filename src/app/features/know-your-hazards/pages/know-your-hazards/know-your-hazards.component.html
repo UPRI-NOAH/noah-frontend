@@ -39,40 +39,52 @@
   <button
     class="
       fixed
-      z-50
-      opacity-80
+      z-40
       bg-white
-      text-gray-800
-      right-0
-      p-2
-      shadow-2xl
+      left-2
       drop-shadow-2xl
       font-bold
-      bottom-0
+      top-16
       self-center
-      flex flex-col
-      items-center
-      rounded-lg
-      text-xs
-      justify-end
-      mb-9
-      mr-2
+      flex
+      pb-2
+      px-2
+      rounded-full
+      text-black
+      transform
+      active:scale-x-75
+      transition-transform
+      items-end
+      justify-center
       sm:text-sm
+      text-xs
       md:hidden
     "
     (click)="openLegendHideSide()"
-    *ngIf="btnHideSide"
+    *ngIf="btnLegend"
   >
+    <svg
+      class="h-6 w-6 pt-2"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 40"
+      x="0px"
+      y="0px"
+    >
+      <rect x="22" y="4" width="8" height="24" rx="2" ry="2" fill="red" />
+      <rect x="12" y="10" width="8" height="18" rx="2" ry="2" fill="orange" />
+      <rect x="2" y="16" width="8" height="12" fill="yellow" />
+    </svg>
     Legend
   </button>
+
   <div
     class="
       md:hidden
       cursor-pointer
       fixed
-      bottom-24
-      -right-1
-      z-50
+      top-12
+      left-2
+      z-40
       mb-2
       mt-2
       mr-2
@@ -103,7 +115,7 @@
   </div>
   <div
     *ngIf="legendHideSide"
-    class="fixed transform bottom-10 z-40 right-2 md:hidden"
+    class="fixed transform top-16 z-30 left-2 md:hidden"
   >
     <div class="flex items-center justify-center">
       <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
@@ -153,107 +165,7 @@
       md:hidden md:rounded-none
     "
     *ngIf="sideBarMobile"
-  >
-    <button
-      class="
-        opacity-80
-        bg-white
-        text-gray-800
-        font-bold
-        py-1
-        px-1
-        ml-2
-        flex
-        items-end
-        fixed
-        justify-end
-        -top-7
-        mb-2
-        right-0
-        rounded
-        hover:bg-gray-200
-        focus:outline-none
-        focus:ring-2
-        focus:ring-gray-600
-        focus:ring-opacity-50
-        mr-2
-        sm:text-sm
-        text-xs
-        md:hidden
-      "
-      (click)="openLegend()"
-      *ngIf="btnLegend"
-    >
-      Legend
-    </button>
-
-    <div
-      class="
-        cursor-pointer
-        absolute
-        -top-24
-        -right-4
-        z-50
-        mb-2
-        mt-2
-        mr-2
-        dark:text-gray-100
-        text-black
-        transition
-        duration-150
-        ease-in-out
-        rounded-xl
-        bg-gray-200
-        hover:bg-gray-400
-      "
-      (click)="openLegend()"
-      *ngIf="kyhLegend"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        class="icon icon-tabler icon-tabler-x pt-0.5"
-        viewBox="0 0 700 700"
-        stroke-width="2.5"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M490 294H210a14 14 0 0 1 0-28h280a14 14 0 0 1 0 28z" />
-      </svg>
-    </div>
-    <div
-      *ngIf="kyhLegend"
-      class="absolute transform -top-20 z-40 right-0 block md:hidden"
-    >
-      <div class="flex items-center justify-center">
-        <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
-          <h1
-            class="text-sm font-bold leading-3 text-center mb-2 text-gray-800"
-          >
-            Hazard Level
-          </h1>
-          <div class="flex flex-col items-center justify-center bg-transparent">
-            <div class="flex">
-              <div class="flex flex-col items-center pr-4">
-                <div class="h-2 w-5 bg-low mb-2"></div>
-                <span class="text-xs leading-3">Low</span>
-              </div>
-              <div class="flex flex-col items-center pr-4">
-                <div class="h-2 w-5 bg-medium mb-2"></div>
-                <span class="text-xs leading-3">Medium</span>
-              </div>
-              <div class="flex flex-col items-center">
-                <div class="h-2 w-5 bg-high mb-2"></div>
-                <span class="text-xs leading-3">High</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  ></div>
 
   <!-- Desktop and Tablet View: Sidebar & Legend with scroll -->
   <div
