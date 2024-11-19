@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
-import { QcSensorService } from '@features/noah-playground/services/qc-sensor.service';
 @Component({
   selector: 'noah-landing-page',
   templateUrl: './landing-page.component.html',
@@ -14,8 +13,7 @@ export class LandingPageComponent implements OnInit {
   constructor(
     private kyhService: KyhService,
     private router: Router,
-    private title: Title,
-    private qcSensorService: QcSensorService
+    private title: Title
   ) {}
 
   ngOnInit(): void {
@@ -36,5 +34,14 @@ export class LandingPageComponent implements OnInit {
       left: 0,
       behavior: 'smooth',
     });
+  }
+
+  noahBrowser() {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = 'https://noah.up.edu.ph/noah-studio';
+    } else {
+      window.open('https://noah.up.edu.ph/noah-studio', '_blank');
+    }
   }
 }
