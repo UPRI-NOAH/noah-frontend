@@ -32,9 +32,10 @@
 }
 .area-container {
   position: absolute;
-  top: 146px;
+  top: 175px;
   right: 47px;
   z-index: 1;
+  margin-right: 3px;
 }
 
 .area-container > * {
