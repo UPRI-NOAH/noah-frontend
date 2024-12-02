@@ -263,7 +263,7 @@ export class MapKyhComponent implements OnInit {
       const coords = document.getElementById('coordinates');
       const lngLat = this.centerMarker.getLngLat();
       coords.style.display = 'block';
-      coords.innerHTML = `Lng: ${lngLat.lng.toFixed(
+      coords.innerHTML = `Lon: ${lngLat.lng.toFixed(
         5
       )}<br />Lat: ${lngLat.lat.toFixed(5)}`;
       await this.mapService.dragReverseGeocode(lngLat.lat, lngLat.lng);
