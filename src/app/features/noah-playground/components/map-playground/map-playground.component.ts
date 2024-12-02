@@ -282,7 +282,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
               coords.style.display = 'block';
-              coords.innerHTML = `Lng: ${LngLat.lng.toFixed(
+              coords.innerHTML = `Lon: ${LngLat.lng.toFixed(
                 5
               )}<br />Lat: ${LngLat.lat.toFixed(5)}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
@@ -2523,7 +2523,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         trash: true,
       },
     });
-
     this.map.addControl(this.draw);
 
     this.map.on('draw.create', this.updateCalculate.bind(this));
@@ -2552,11 +2551,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
       if (totalLength > 0) {
         const roundedLength = Math.round(totalLength * 100) / 100;
-        output += `<p>Total Distance: ${roundedLength.toLocaleString()} km</p>`;
+        output += `<p style="margin-bottom:2px;"><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
       }
       if (totalArea > 0) {
         const roundedArea = Math.round(totalArea * 100) / 100;
-        output += `<p>Total Area: ${roundedArea.toLocaleString()} sqm</p>`;
+        output += `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
       }
 
       answer.innerHTML = output;
