@@ -32,9 +32,15 @@
 }
 .area-container {
   position: absolute;
-  top: 146px;
-  right: 47px;
+  top: 174px;
+  right: 50px;
   z-index: 1;
+  margin-right: 3px;
+}
+
+.base-icon {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
 
 .area-container > * {
@@ -49,14 +55,14 @@
 }
 
 .map-icon {
-  top: 228px;
+  top: 278px;
 }
 
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 284px;
+  top: 338px;
   right: 10px;
   padding: 5px 10px;
   margin: 0;
