@@ -4,7 +4,12 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import {
+  BreakpointObserver,
+  BreakpointState,
+  Breakpoints,
+} from '@angular/cdk/layout';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -17,9 +22,11 @@ export class NoahPlaygroundComponent implements OnInit {
   searchTerm: string;
   disclaimerModal: boolean;
   @Input() qcLoginModal: boolean;
+
   isSidebarOpen: boolean = false;
   isLogoutAlert: boolean = false;
   isMenu: boolean = true;
+  isMobile: boolean = false;
   isList;
   hazardTypes = HAZARDS;
   LoginStatus$: Observable<boolean>;
@@ -35,11 +42,17 @@ export class NoahPlaygroundComponent implements OnInit {
   userName: string | null = null;
   localStorageCheckInterval: any;
   hideBoundaries = localStorage.getItem('loggedIn');
+  height = 256; // Default height (64 * 4 = 256px)
+  private initialTouchY = 0;
+  private initialHeight = this.height;
+  isVisible = false;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
     private qcLoginService: QcLoginService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    public breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +85,6 @@ export class NoahPlaygroundComponent implements OnInit {
     this.modalService.iotSummaryModal$.subscribe((iotModalOpen) => {
       this.iotModalOpen = iotModalOpen;
     });
-    3;
 
     const disableAlert = localStorage.getItem('loginStatus');
     if (disableAlert == '1') {
@@ -94,6 +106,40 @@ export class NoahPlaygroundComponent implements OnInit {
     if (admin == '2') {
       this.lagunaAdmin = true;
       this.qcAdmin = false;
+    }
+
+    this.updateVisibility();
+    window.addEventListener('resize', this.updateVisibility.bind(this));
+  }
+
+  updateVisibility() {
+    // Update visibility based on window width
+    const width = window.innerWidth;
+    this.isVisible = width < 768; // Tailwind sm breakpoint is 640px, md is 768px
+  }
+
+  // Called when the user touches the screen
+  onTouchStart(event: TouchEvent) {
+    this.initialTouchY = event.touches[0].clientY;
+    this.initialHeight = this.height;
+  }
+
+  // Called when the user moves their finger on the screen
+  onTouchMove(event: TouchEvent) {
+    const currentTouchY = event.touches[0].clientY;
+    const deltaY = this.initialTouchY - currentTouchY; // Difference in Y direction
+    const newHeight = this.initialHeight + deltaY;
+    const touch = event.touches[0];
+    const minHeight = 200; // Adjust as needed
+    const maxHeight = window.innerHeight - 100; // Adjust as needed
+
+    if (newHeight >= minHeight && newHeight <= maxHeight) {
+      this.height = newHeight;
+    }
+
+    if (event.touches.length > 1) return; // Skip for multi-touch gestures
+    if (touch.clientY > 0 && window.scrollY === 0) {
+      event.preventDefault(); // Prevent pull-to-refresh when swiping down at the top
     }
   }
 
