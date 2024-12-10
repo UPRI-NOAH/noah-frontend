@@ -12,10 +12,9 @@ export class KnowYourHazardsComponent implements OnInit {
   btnShowSideBar: boolean = false;
   constructor(private kyhService: KyhService, private title: Title) {}
 
-  kyhLegend: boolean = true;
-  btnLegend: boolean = false;
   legendHideSide: boolean = false;
   btnHideSide: boolean = false;
+  btnLegend: boolean = true;
   minimizeLegendSide: boolean = false;
 
   ngOnInit(): void {
@@ -33,38 +32,26 @@ export class KnowYourHazardsComponent implements OnInit {
   hideSideBar() {
     this.sideBarMobile = false;
     this.btnShowSideBar = true;
-    this.kyhLegend = false;
-    this.btnLegend = true;
     this.btnHideSide = true;
   }
 
   showSideBarMobile() {
     this.sideBarMobile = true;
     this.btnShowSideBar = false;
-
-    this.kyhLegend = true;
-    this.btnLegend = false;
-
-    this.legendHideSide = false;
-    this.minimizeLegendSide = false;
     this.btnHideSide = false;
-  }
-
-  openLegend() {
-    this.btnLegend = !this.btnLegend;
-    this.kyhLegend = !this.kyhLegend;
   }
 
   openLegendHideSide() {
     this.legendHideSide = true;
     this.minimizeLegendSide = true;
-    this.btnHideSide = false;
+    this.btnLegend = false;
   }
 
   hideLegendSide() {
     this.legendHideSide = false;
     this.btnHideSide = true;
     this.minimizeLegendSide = false;
+    this.btnLegend = true;
   }
   private updateSideBarState() {
     this.desktopView = window.innerWidth < 768 ? false : true;
