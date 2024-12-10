@@ -31,11 +31,29 @@ export class BaseComponent implements OnInit {
       this.currentPage = 1;
     }
   }
+
   noahBrowser() {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     if (isMobile) {
-      window.location.href = 'https://noah.up.edu.ph/noah-studio';
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (userAgent.includes('android')) {
+        // For Android, use intent://
+        window.location.href =
+          'intent://noah.up.edu.ph/noah-studio#Intent;scheme=https;package=com.android.chrome;end';
+      } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+        // For iOS, open normally (Safari will handle it as the default browser)
+        const link = document.createElement('a');
+        link.href = 'https://noah.up.edu.ph/noah-studio';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     } else {
+      // Desktop behavior
       window.open('https://noah.up.edu.ph/noah-studio', '_blank');
     }
   }
