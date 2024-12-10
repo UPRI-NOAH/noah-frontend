@@ -1,4 +1,53 @@
-<noah-navigation class="fixed z-50"></noah-navigation>
+<!-- for maintenance only -->
+<div
+  class="
+    min-w-screen
+    h-screen
+    animated
+    fadeIn
+    faster
+    fixed
+    left-0
+    top-0
+    flex
+    justify-center
+    items-center
+    inset-0
+    z-50
+    outline-none
+    focus:outline-none
+    bg-no-repeat bg-center bg-cover
+  "
+>
+  <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+  <!--content-->
+  <div class="min-w-screen min-h-screen flex items-center z-50 justify-center">
+    <div class="flex flex-col items-start">
+      <div class="flex flex-col justify-center items-center">
+        <img
+          class="w-8/12 sm:w-4/6"
+          src="assets/images/noah-maintenance.png"
+          alt="qc logo"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Disable body scrolling when maintenance is active -->
+<style>
+  body {
+    overflow: hidden;
+  }
+  hr,
+  section,
+  noah-footer {
+    display: none;
+  }
+</style>
+<!-- for maintenance only -->
+
+<!-- change z-50 once maintenance is done -->
+<noah-navigation class="fixed z-40"></noah-navigation>
 
 <app-banner
   lowResImgUrl="assets/images/landing-bg-min.jpg"
