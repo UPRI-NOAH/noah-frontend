@@ -833,7 +833,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     });
                   } else if (devs) {
                     this.exportChart({
-                      type: 'application/pdf',
+                      type: 'application/csv',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -866,7 +866,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     });
                   } else if (devs) {
                     this.exportChart({
-                      type: 'application/pdf',
+                      type: 'print',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -899,7 +899,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     });
                   } else if (devs) {
                     this.exportChart({
-                      type: 'application/pdf',
+                      type: 'image/jpeg',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
