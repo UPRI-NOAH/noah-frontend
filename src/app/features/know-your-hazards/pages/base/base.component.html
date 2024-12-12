@@ -63,8 +63,15 @@
   <!-- NOTES -->
   <section *ngIf="currentPage == 1" class="px-6 md:px-8 py-2">
     <p class="mt-2 italic text-xs tracking-wide">
-      <span class="font-bold">Note:</span> Assessment is for a point location.
-      Please refer to map for visual evaluation.
+      <span class="font-bold">Note:</span>
+      <li>
+        If you want an independent assessment of flood, landslide, or storm
+        surge, then click on the tabs above.
+      </li>
+      <li>
+        Assessment is for a point location. Please refer to map for visual
+        evaluation.
+      </li>
     </p>
     <p class="font-bold py-2">Hazards included in map database are:</p>
     <ol>
@@ -73,9 +80,7 @@
       <li class="mb-2">3) 5-meters for storm surges.</li>
       <li>
         For more information, please go to the
-        <a routerLink="/noah-playground" target="_blank" class="text-primary"
-          >NOAH Studio.</a
-        >
+        <a (click)="noahBrowser()" class="text-primary">NOAH Studio.</a>
       </li>
     </ol>
 
@@ -84,11 +89,8 @@
       and historical data.
     </p>
     <p>
-      Click
-      <a routerLink="/bibliography" target="_blank" class="text-primary"
-        >here</a
-      >
-      for the methods used.
+      Click <a routerLink="/bibliography" class="text-primary">here</a> for the
+      methods used.
     </p>
     <p class="mt-2 text-xs tracking-wide">
       <span class="font-bold">Disclaimer:</span> Project NOAH is still in beta
@@ -196,6 +198,7 @@
   <section class="px-6 md:px-8 py-2">
     <p class="mt-2 italic text-xs tracking-wide">
       <span class="font-bold">Note:</span>
+
       <li>
         If you want an independent assessment of flood, landslide, or storm
         surge, then click on the tabs above.
@@ -212,7 +215,12 @@
       <li class="mb-2">3) 5-meters for storm surges.</li>
       <li>
         For more information, please go to the
-        <a routerLink="/noah-playground" class="text-primary">NOAH Studio.</a>
+        <a
+          href="https://noah.up.edu.ph/noah-studio"
+          target="_blank"
+          class="text-primary"
+          >NOAH Studio.</a
+        >
       </li>
     </ol>
 

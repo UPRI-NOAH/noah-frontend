@@ -1,26 +1,30 @@
 <div class="absolute top-0 left-0 w-full h-full" id="map-kyh"></div>
 
 <noah-change-style-button
-  class="absolute map-icon right-0 p-2"
+  class="absolute right-0 p-2 top-12"
   [selectedStyle]="mapStyle"
   (selectedStyleChange)="switchMapStyle($event)"
 ></noah-change-style-button>
-<pre id="coordinates" class="coords"></pre>
+
+<pre
+  id="coordinates"
+  class="
+    bg-black
+    top-24
+    right-2
+    absolute
+    p-2
+    hidden
+    rounded-lg
+    text-xs text-white
+    opacity-75
+  "
+></pre>
 
 <noah-search
   [searchTerm]="currentLocation$ | async"
   (selectPlace)="selectPlace($event)"
-  class="
-    md:hidden
-    px-12
-    md:px-8
-    w-full
-    md:mt-4
-    block
-    md:relative
-    absolute
-    top-0
-  "
+  class="md:hidden px-2 md:px-8 w-full md:mt-4 block md:relative absolute top-0"
 >
 </noah-search>
 
