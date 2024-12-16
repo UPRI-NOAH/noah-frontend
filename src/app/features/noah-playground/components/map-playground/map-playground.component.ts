@@ -832,8 +832,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/csv',
                     });
                   } else if (devs) {
-                    this.exportChart({
-                      type: 'application/pdf',
+                    this.downloadCSV({
+                      type: 'application/csv',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -865,8 +865,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'print',
                     });
                   } else if (devs) {
-                    this.exportChart({
-                      type: 'application/pdf',
+                    this.print({
+                      type: 'print',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -899,7 +899,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                     });
                   } else if (devs) {
                     this.exportChart({
-                      type: 'application/pdf',
+                      type: 'image/jpeg',
                     });
                   } else if (loggedIn) {
                     _this.modalService.warningPopup();
@@ -1015,7 +1015,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/csv',
                     });
                   } else if (devs) {
-                    this.exportChart({
+                    this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (loggedIn) {
@@ -1048,7 +1048,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'print',
                     });
                   } else if (devs) {
-                    this.exportChart({
+                    this.print({
                       type: 'print',
                     });
                   } else if (loggedIn) {
