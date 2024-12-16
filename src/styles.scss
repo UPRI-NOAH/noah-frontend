@@ -20,6 +20,11 @@
   font-size: 16px;
 }
 
+.mapboxgl-ctrl-group button {
+  width: 36px;
+  height: 36px;
+}
+
 html {
   @apply text-noah-black-high;
 }

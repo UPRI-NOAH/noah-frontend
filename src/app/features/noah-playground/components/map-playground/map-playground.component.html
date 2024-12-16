@@ -1,7 +1,7 @@
 <div id="map"></div>
 
 <div id="distance" class="distance-container"></div>
-<div id="area" class="area-container"></div>
+<div id="area" class="area-container my-2"></div>
 <pre id="coordinates" class="coords"></pre>
 
 <div
@@ -17,18 +17,20 @@
   "
 ></div>
 
-<div class="map-icon absolute z-10 right-0 pl-2 h-16 w-16 flex flex-row py-1.5">
+<div
+  class="map-icon absolute z-10 right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
+>
   <div class="p-2">
     <div class="dropdown inline-block relative">
       <button
         class="
           bg-white
+          base-icon
           text-gray-800
           font-semibold
-          py-1
-          px-1
+          py-1.5
+          px-1.5
           ml-2
-          rounded
           inline-flex
           items-center
           hover:bg-gray-200
@@ -60,7 +62,7 @@
           shadow-2xl
           drop-shadow-xl
           bg-white
-          right-9
+          right-10
           bottom-0
           absolute
           hidden
