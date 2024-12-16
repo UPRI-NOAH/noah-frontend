@@ -253,7 +253,34 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- Desktop and Tablet View: Sidebar & Legend with scroll -->
+  <div
+    class="
+      bg-gray-50
+      md:bottom-0
+      bottom-8
+      shadow-md
+      md:h-full md:w-136
+      absolute
+      md:relative
+      h-2/5
+      w-11/12
+      left-1/2
+      md:left-0 md:transform-none
+      -translate-x-1/2
+      transform
+      rounded-2xl
+      md:rounded-none
+      block
+      md:block
+      sm:overflow-auto
+      md:overflow-auto
+    "
+    [style.display]="!sideBarMobile && !desktopView ? 'none' : null"
+  >
+    <!-- Hide Sidebar Button -->
     <div
       class="fixed z-50 md:hidden right-2 items-center mt-5"
       (click)="hideSideBar()"
@@ -267,34 +294,10 @@
         <path d="M12 16l-8-8h16l-8 8z" />
       </svg>
     </div>
+
+    <!-- Sidebar content (survival kit) -->
     <div class="h-full overflow-auto rounded-2xl">
       <router-outlet></router-outlet>
     </div>
-  </div>
-
-  <!-- DESKTOP VIEW -->
-  <div
-    class="
-      bg-gray-50
-      md:bottom-0
-      bottom-8
-      shadow-md
-      overflow-auto
-      md:h-full md:w-136
-      absolute
-      md:relative
-      h-2/5
-      w-11/12
-      left-1/2
-      md:left-0 md:transform-none
-      -translate-x-1/2
-      transform
-      rounded-2xl
-      md:rounded-none
-      hidden
-      md:block
-    "
-  >
-    <router-outlet></router-outlet>
   </div>
 </div>

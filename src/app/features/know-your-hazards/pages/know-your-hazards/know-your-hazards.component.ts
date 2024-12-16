@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 @Component({
@@ -8,6 +8,7 @@ import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 })
 export class KnowYourHazardsComponent implements OnInit {
   sideBarMobile: boolean = true;
+  desktopView: boolean = false;
   btnShowSideBar: boolean = false;
   constructor(private kyhService: KyhService, private title: Title) {}
 
@@ -21,6 +22,12 @@ export class KnowYourHazardsComponent implements OnInit {
     this.title.setTitle('NOAH - Know Your Hazards');
     this.kyhService.init();
     this.kyhService.setCurrentView('all');
+    this.updateSideBarState();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.updateSideBarState();
   }
 
   hideSideBar() {
@@ -58,5 +65,8 @@ export class KnowYourHazardsComponent implements OnInit {
     this.legendHideSide = false;
     this.btnHideSide = true;
     this.minimizeLegendSide = false;
+  }
+  private updateSideBarState() {
+    this.desktopView = window.innerWidth < 768 ? false : true;
   }
 }

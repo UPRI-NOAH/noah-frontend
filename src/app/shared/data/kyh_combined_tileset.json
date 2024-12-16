@@ -46,29 +46,6 @@
     ]
   },
   {
-    "url": "mapbox://upri-noah.ph_lh_lh2_tls",
-    "sourceLayer": [
-      "ph_lh_af",
-      "ph_lh_df",
-      "albay_lh_df",
-      "aurora_lh_df",
-      "leyte_lh_df",
-      "kusiong_lh_df",
-      "southcotabato_lh_df"
-    ]
-  },
-  {
-    "url": "mapbox://upri-noah.ph_lh_lh3_tls",
-    "sourceLayer": [
-      "PH010000000_LH_lh3",
-      "PH020000000_LH_lh3",
-      "PH030000000_LH_lh3",
-      "PH040000000_LH_lh3",
-      "PH090000000_LH_lh3",
-      "PH130000000_LH_lh3"
-    ]
-  },
-  {
     "url": "mapbox://upri-noah.ph_ssh_ssa4_tls",
     "sourceLayer": [
       "PH010000000_SSH_ssa4",
