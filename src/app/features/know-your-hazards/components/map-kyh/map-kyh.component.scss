@@ -1,13 +1,16 @@
 .map-icon {
   top: 166px;
   right: 2px;
+  @media only screen and (max-width: 768px) {
+    top: 229px;
+  }
 }
 
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 220px;
+  top: 284px;
   right: 10px;
   padding: 5px 10px;
   margin: 0;

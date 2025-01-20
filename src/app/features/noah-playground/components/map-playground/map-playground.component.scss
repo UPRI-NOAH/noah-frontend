@@ -56,13 +56,16 @@
 
 .map-icon {
   top: 278px;
+  @media only screen and (max-width: 768px) {
+    top: 340px;
+  }
 }
 
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 338px;
+  top: 342px;
   right: 10px;
   padding: 5px 10px;
   margin: 0;
@@ -70,4 +73,7 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
+  @media only screen and (max-width: 768px) {
+    top: 405px;
+  }
 }
