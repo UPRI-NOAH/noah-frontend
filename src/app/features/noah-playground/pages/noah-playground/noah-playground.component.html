@@ -73,7 +73,7 @@
       md:mt-4
       self-center
       md:hidden md:relative
-      w-auto
+      w-full
     "
     [searchTerm]="searchTerm"
     (selectPlace)="selectPlace($event)"
@@ -440,7 +440,7 @@
     </div>
     <div class="relative z-50">
       <noah-search
-        class="w-full hidden md:block relative mb-2"
+        class="w-auto hidden md:block relative mb-2"
         [searchTerm]="searchTerm"
         (selectPlace)="selectPlace($event)"
       >
