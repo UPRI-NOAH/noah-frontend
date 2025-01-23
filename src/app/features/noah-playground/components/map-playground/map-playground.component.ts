@@ -198,6 +198,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
+        this.addCustomTooltips();
         this.getScreenSize();
       });
     // this.getScreenSize();
@@ -282,7 +283,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
               coords.style.display = 'block';
-              coords.innerHTML = `Lon: ${LngLat.lng.toFixed(
+              coords.innerHTML = `Lng: ${LngLat.lng.toFixed(
                 5
               )}<br />Lat: ${LngLat.lat.toFixed(5)}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
@@ -2523,6 +2524,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         trash: true,
       },
     });
+
     this.map.addControl(this.draw);
 
     this.map.on('draw.create', this.updateCalculate.bind(this));
@@ -2566,6 +2568,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  // Add custom tooltips for are and distance
+  private addCustomTooltips = () => {
+    const buttons = document.querySelectorAll('.mapbox-gl-draw_ctrl-draw-btn');
+    buttons.forEach((button) => {
+      if (button.classList.contains('mapbox-gl-draw_polygon')) {
+        button.setAttribute('title', 'Measure Area');
+      }
+      if (button.classList.contains('mapbox-gl-draw_line')) {
+        button.setAttribute('title', 'Measure Distance');
+      }
+    });
+  };
 
   /**
    * All hazard maps except the debris flow and alluvial fan are
