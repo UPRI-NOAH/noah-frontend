@@ -6,6 +6,7 @@ import {
   ViewChild,
   ElementRef,
   EventEmitter,
+  HostListener,
 } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
@@ -170,6 +171,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   geojson: any;
   linestring: any;
   private measurementActive: boolean = false;
+  screenWidth: number;
+  screenHeight: number;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -181,7 +184,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService
-  ) {}
+  ) {
+    // this.getScreenSize();
+  }
 
   ngOnInit(): void {
     this.initMap();
@@ -193,11 +198,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
+        this.addCustomTooltips();
+        this.getScreenSize();
       });
+    // this.getScreenSize();
 
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        // this.getScreenSize();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
         this.initHazardLayers();
@@ -222,6 +231,12 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this._unsub.complete();
     this._changeStyle.next();
     this._changeStyle.complete();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  getScreenSize(event?) {
+    this.screenWidth = window.innerWidth;
+    this.screenHeight = window.innerHeight;
   }
 
   /**
@@ -268,7 +283,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
               coords.style.display = 'block';
-              coords.innerHTML = `Lon: ${LngLat.lng.toFixed(
+              coords.innerHTML = `Lng: ${LngLat.lng.toFixed(
                 5
               )}<br />Lat: ${LngLat.lat.toFixed(5)}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
@@ -447,13 +462,94 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  // FUNCTIONS FOR IOT SENSOR DETAILS
+
+  getFormattedIoTtype(item: any): string {
+    switch (item) {
+      case 'rain':
+        return 'Rain Sensor';
+      case 'flood':
+        return 'Flood Sensor';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getFormattedCategory(iotType: any, latestData: number): string {
+    switch (iotType) {
+      case 'rain':
+        if (latestData <= 7.5) {
+          return 'LIGHT';
+        } else if (latestData > 7.5 && latestData <= 15) {
+          return 'HEAVY';
+        } else if (latestData > 15 && latestData <= 30) {
+          return 'INTENSE';
+        } else {
+          return 'TORRENTIAL';
+        }
+      case 'flood':
+        if (latestData <= 0.5) {
+          return 'LOW';
+        } else if (latestData > 0.5 && latestData <= 1.5) {
+          return 'MEDIUM';
+        } else {
+          return 'HIGH';
+        }
+      default:
+        return 'UNKNOWN';
+    }
+  }
+
+  getStatusDynamicStyle(item: any): string {
+    switch (item) {
+      case 'Active':
+        return 'style="color: green;"';
+      case 'Inactive':
+        return 'style="color: grey;"';
+      default:
+        return 'style="color: black;"';
+    }
+  }
+
+  getCategoryDynamicStyle(latest_data: number, iot_type: string): string {
+    switch (iot_type) {
+      case 'rain':
+        if (latest_data <= 7.5) {
+          return 'style="color: #d1d5d8;"';
+        } else if (latest_data > 7.5 && latest_data <= 15) {
+          return 'style="color: #f2c94c;"';
+        } else if (latest_data > 15 && latest_data <= 30) {
+          return 'style="color: #f2994a"';
+        } else {
+          return 'style="color: #eb5757"';
+        }
+      case 'flood':
+        if (latest_data <= 0.5) {
+          return 'style="color: #f2c94c;"';
+        } else if (latest_data > 0.5 && latest_data <= 1.5) {
+          return 'style="color: #f2994a"';
+        } else {
+          return 'style="color: #eb5757"';
+        }
+      default:
+        return 'style="color: red"';
+    }
+  }
+
   showQcDataPoints(qcSensorType: QuezonCitySensorType) {
     const graphDiv = document.getElementById('graph-dom');
+    const qcchartMobile = document.getElementById('qc-chart-mobile');
     let chartPopUpOpen = false;
 
     const popUp = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
+      maxWidth: 'auto',
+    });
+
+    const popUpMobileView = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: true,
       maxWidth: 'auto',
     });
 
@@ -472,85 +568,370 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe(([groupShown, soloShown]) => {
         if (groupShown && soloShown) {
-          this.map.on('mouseenter', qcSensorType, (e) => {
-            const coordinates = (
-              e.features[0].geometry as any
-            ).coordinates.slice();
-            const name = e.features[0].properties.name;
-            const iotType = e.features[0].properties.iot_type;
-            const status = e.features[0].properties.status;
-            const latestData = e.features[0].properties.latest_data;
-            const batPercent = e.features[0].properties.battery_percent;
-            const municity = e.features[0].properties.municity;
-            this.municity = municity;
-            const formattedBatPercent =
-              batPercent && batPercent !== 'null'
-                ? `${batPercent}%`
-                : 'Not Available';
-            const iotTypeLatestData =
-              iotType && iotType == 'flood'
-                ? `${latestData}m`
-                : `${latestData}mm`;
+          // console.log(this.screenHeight, this.screenWidth)
+          // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (this.screenWidth < 768) {
+            // console.log("INSIDE screenWidth < 768");
+            this.map.on('touchend', qcSensorType, (e) => {
+              // console.log("entered click on screenWidth < 768");
+              const coordinates = (
+                e.features[0].geometry as any
+              ).coordinates.slice();
+              _this.map.flyTo({
+                center: (e.features[0].geometry as any).coordinates.slice(),
+                zoom: 13,
+                offset: [0, -315],
+                essential: true,
+              });
+              const name = e.features[0].properties.name;
+              const iotType = e.features[0].properties.iot_type;
+              const status = e.features[0].properties.status;
+              const latestData = e.features[0].properties.latest_data;
+              const batPercent = e.features[0].properties.battery_percent;
+              const municity = e.features[0].properties.municity;
+              this.municity = municity;
+              const formattedBatPercent =
+                batPercent && batPercent !== 'null'
+                  ? `${batPercent}%`
+                  : 'Not Available';
+              const iotTypeLatestData =
+                iotType && iotType == 'flood'
+                  ? `${latestData}m`
+                  : `${latestData}mm`;
 
-            while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-              coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
-            }
-            popUp.setLngLat(coordinates).setHTML(
-              `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
-            <div><b>Name:</b> ${name} </div>
-            <div><b>IoT Sensor Type:</b> ${iotType}</div>
-            <div><b>Status:</b> ${status}</div>
-            <div><b>Battery Level:</b> ${formattedBatPercent}</div>
-            <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
-          </div>`
-            );
-            if (!chartPopUpOpen) {
-              popUp.addTo(_this.map);
-            }
-            _this.map.getCanvas().style.cursor = 'pointer';
-          });
+              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              }
 
-          this.map.on('click', qcSensorType, function (e) {
-            graphDiv.hidden = false;
-            chartPopUpOpen = false;
-            _this.map.flyTo({
-              center: (e.features[0].geometry as any).coordinates.slice(),
-              zoom: 13,
-              essential: true,
+              const popupContent = `
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+                
+                  <div style="font-family: Nunito; padding: 16px; width: 90vw;">
+                  <div style="display: flex; justify-content: space-between">
+                    <div>
+                      <img src="assets/icons/noah_logo.png" alt="" style="height: 16px; display: inline-block; margin-right: 8px; vertical-align: middle;">
+                      <div style="font-size: 20px; font-weight: bold; display: inline-block; vertical-align: middle;">IoT Sensor Details</div>
+                    </div>
+                    
+                  </div>
+                  
+                  <hr style="height: 1px; border: none; border-top: 1px solid #ededed; margin-top: 16px; margin-bottom: 16px; width: 100%; align-items: center;">
+                  
+                    <div style="background-color: white; border-width: 1px; border-style: solid; border-color: #ededed; border-radius: 8px; padding: 16px;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 18px; font-weight: bold; display: inline-block; padding: 0px; margin-right: 50px;">${name}</div>
+                        <div style="font-size: 18px; font-weight: bold; display: inline-block; text-align: right;"><span id="category" ${this.getCategoryDynamicStyle(
+                          parseFloat(iotTypeLatestData),
+                          iotType
+                        )}>${this.getFormattedCategory(
+                iotType,
+                parseFloat(iotTypeLatestData)
+              )}</span><br><span id="iotTypeLatestData">${iotTypeLatestData}</span></div>
+                      </div>
+                    
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 14px; display: inline-block; padding: 0px; margin-right: 50px;" id="iotType">${this.getFormattedIoTtype(
+                          iotType
+                        )}</div>
+                        <div style="font-size: 14px; font-weight: bold; display: inline-block; text-align: right;"><span id="status" ${this.getStatusDynamicStyle(
+                          status
+                        )}>${status}</span> &middot ${formattedBatPercent}</div>
+                      </div>
+                    </div>
+                    
+                    <div style="height: 16px;"></div>
+                  
+                  <div id="qc-chart-mobile" style="display: flex; justify-content: center; align-items: center; padding: 2px; width: 100%; border-style: solid; border-radius: 8px; border: 1px solid #ededed; z-index: auto;">
+                      
+                  </div>
+                  
+                </div>
+                
+                `;
+
+              const pk = e.features[0].properties.pk;
+              popUpMobileView
+                .setLngLat((e.features[0].geometry as any).coordinates.slice())
+                .setHTML(popupContent);
+              // .setDOMContent(graphDiv);
+              _this.showQcChartMobile(+pk, name, qcSensorType);
+              popUpMobileView.addTo(_this.map);
             });
-            const name = e.features[0].properties.name;
-            const pk = e.features[0].properties.pk;
+          } else {
+            this.map.on('mouseover', qcSensorType, (e) => {
+              console.log('entered MOUSEOVER on screenWidth NOT 768');
+              const coordinates = (
+                e.features[0].geometry as any
+              ).coordinates.slice();
+              const name = e.features[0].properties.name;
+              const iotType = e.features[0].properties.iot_type;
+              const status = e.features[0].properties.status;
+              const latestData = e.features[0].properties.latest_data;
+              const batPercent = e.features[0].properties.battery_percent;
+              const municity = e.features[0].properties.municity;
+              this.municity = municity;
+              const formattedBatPercent =
+                batPercent && batPercent !== 'null'
+                  ? `${batPercent}%`
+                  : 'Not Available';
+              const iotTypeLatestData =
+                iotType && iotType == 'flood'
+                  ? `${latestData}m`
+                  : `${latestData}mm`;
 
-            chartPopUp
-              .setLngLat((e.features[0].geometry as any).coordinates.slice())
-              .setDOMContent(graphDiv);
-            chartPopUp.addTo(_this.map);
-            _this.showQcChart(+pk, name, qcSensorType);
-            popUp.remove();
-          });
+              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              }
+              popUp.setLngLat(coordinates).setHTML(
+                `
+                <div style="color: #333333;font-size: 13px;padding-top: 4px;">
+                  <div><b>Name:</b> ${name} </div>
+                  <div><b>IoT Sensor Type:</b> ${iotType}</div>
+                  <div><b>Status:</b> ${status}</div>
+                  <div><b>Battery Level:</b> ${formattedBatPercent}</div>
+                  <div><b>Latest Data:</b> ${iotTypeLatestData}</div>
+                </div>
+                `
+              );
+              if (!chartPopUpOpen) {
+                popUp.addTo(_this.map);
+              }
+              _this.map.getCanvas().style.cursor = 'pointer';
+            });
+
+            this.map.on('click', qcSensorType, function (e) {
+              graphDiv.hidden = false;
+              chartPopUpOpen = false;
+              _this.map.flyTo({
+                center: (e.features[0].geometry as any).coordinates.slice(),
+                zoom: 13,
+                essential: true,
+              });
+              const name = e.features[0].properties.name;
+              const pk = e.features[0].properties.pk;
+
+              chartPopUp
+                .setLngLat((e.features[0].geometry as any).coordinates.slice())
+                .setDOMContent(graphDiv);
+              chartPopUp.addTo(_this.map);
+              _this.showQcChart(+pk, name, qcSensorType);
+              popUp.remove();
+            });
+          }
         } else {
           popUp.remove();
+          popUpMobileView.remove();
           chartPopUp.remove();
           this.map.on('mouseenter', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
+            popUpMobileView.remove();
             chartPopUpOpen = false;
           });
           this.map.on('mouseleave', qcSensorType, (e) => {
             _this._graphShown = false;
             _this.map.getCanvas().style.cursor = '';
             popUp.remove();
+            popUpMobileView.remove();
             chartPopUpOpen = false;
           });
         }
       });
     popUp.on('close', () => (_this._graphShown = false));
+    popUpMobileView.on('close', () => (_this._graphShown = false));
     this.map.on('mouseleave', qcSensorType, function () {
       if (_this._graphShown) return;
       _this.map.getCanvas().style.cursor = '';
       popUp.remove();
     });
+  }
+
+  // qc chart for mobile view
+  async showQcChartMobile(
+    pk: number,
+    appID: string,
+    qcSensorType: QuezonCitySensorType
+  ) {
+    localStorage.setItem('municity', JSON.stringify(this.municity));
+    const _this = this;
+
+    const options: any = {
+      title: {
+        text: null,
+      },
+      subtitle: {
+        text: null,
+      },
+      credits: {
+        enabled: false,
+      },
+      navigator: {
+        enabled: true,
+      },
+      exporting: {
+        fileName: 'Quezon IoT Data',
+        buttons: {
+          contextButton: {
+            menuItems: [
+              {
+                text: 'Download PDF',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn === '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (
+                    loggedIn === '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'application/pdf',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download CSV',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toLocaleString() === 'laguna'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toLocaleString() === 'quezon_city'
+                  ) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (devs) {
+                    this.downloadCSV({
+                      type: 'application/csv',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Print Chart',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (devs) {
+                    this.print({
+                      type: 'print',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+              },
+              {
+                text: 'Download JPEG',
+                onclick: function () {
+                  const loggedIn = localStorage.getItem('loginStatus');
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
+                  const selectMunicity = _this.municity;
+                  if (loggedIn === '0') {
+                    _this.modalService.openLoginModal();
+                  } else if (
+                    loggedIn == '2' &&
+                    selectMunicity.toString() === 'laguna'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (
+                    loggedIn == '1' &&
+                    selectMunicity.toString() === 'quezon_city'
+                  ) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (devs) {
+                    this.exportChart({
+                      type: 'image/jpeg',
+                    });
+                  } else if (loggedIn) {
+                    _this.modalService.warningPopup();
+                  } else {
+                    _this.modalService.openLoginModal();
+                  }
+                },
+                separator: false,
+              },
+            ],
+          },
+        },
+      },
+
+      ...this.qcSensorChartService.getQcChartOpts(qcSensorType),
+    };
+    const chart = Highcharts.stockChart('qc-chart-mobile', options);
+    chart.showLoading();
+    let qcSensorChartOpts; // Declare the variable outside the try block
+    try {
+      const data = await this.qcSensorService.getQcSensorData(pk);
+      qcSensorChartOpts = {
+        data: data,
+        qcSensorType,
+      };
+      // Handle the response and chart options here
+    } catch (error) {
+      // Handle any errors
+    }
+    chart.hideLoading();
+    this.qcSensorChartService.qcShowChart(chart, qcSensorChartOpts);
   }
 
   async showQcChart(
@@ -635,7 +1016,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'application/csv',
                     });
                   } else if (devs) {
-                    this.exportChart({
+                    this.downloadCSV({
                       type: 'application/csv',
                     });
                   } else if (loggedIn) {
@@ -668,7 +1049,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       type: 'print',
                     });
                   } else if (devs) {
-                    this.exportChart({
+                    this.print({
                       type: 'print',
                     });
                   } else if (loggedIn) {
@@ -2143,6 +2524,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         trash: true,
       },
     });
+
     this.map.addControl(this.draw);
 
     this.map.on('draw.create', this.updateCalculate.bind(this));
@@ -2186,6 +2568,19 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  // Add custom tooltips for are and distance
+  private addCustomTooltips = () => {
+    const buttons = document.querySelectorAll('.mapbox-gl-draw_ctrl-draw-btn');
+    buttons.forEach((button) => {
+      if (button.classList.contains('mapbox-gl-draw_polygon')) {
+        button.setAttribute('title', 'Measure Area');
+      }
+      if (button.classList.contains('mapbox-gl-draw_line')) {
+        button.setAttribute('title', 'Measure Distance');
+      }
+    });
+  };
 
   /**
    * All hazard maps except the debris flow and alluvial fan are
