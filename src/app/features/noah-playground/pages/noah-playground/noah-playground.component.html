@@ -14,8 +14,14 @@
       rounded-t-lg
       md:rounded-tl-none md:rounded-r-lg md:top-4
       h-10
+      w-24
+      md:w-auto
       bottom-0
       self-center
+      flex flex-col
+      md:self-auto
+      items-center
+      md:items-stretch
     "
   >
     <svg
@@ -64,10 +70,10 @@
       z-20
       md:rounded-r-lg
       rounded-t-lg
-      md:top-4
+      md:mt-4
       self-center
-      md:hidden
-      w-2/3
+      md:hidden md:relative
+      w-full
     "
     [searchTerm]="searchTerm"
     (selectPlace)="selectPlace($event)"
@@ -82,7 +88,6 @@
       bg-white
       rounded-lg
       md:rounded-l-sm
-      overflow-y-auto
       h-64
       md:h-full
       w-full
@@ -91,10 +96,43 @@
       md:order-first
       shadow-2xl
       rounded-t-lg
+      transition
+      duration-300
+      ease-in-out
     "
+    [ngClass]="{ block: !isVisible }"
+    [ngStyle]="{ 'height.px': isVisible ? height : null }"
     *ngIf="isMenu"
     id="sidebar"
   >
+    <!-- Dash SVG centered at the top of the navigation -->
+    <div
+      class="
+        absolute
+        md:hidden
+        w-full
+        top-0
+        left-1/2
+        transform
+        -translate-x-1/2
+        mt-2
+        shadow-xl
+        flex
+        items-center
+        justify-center
+      "
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="4"
+        viewBox="0 0 40 4"
+        fill="none"
+      >
+        <rect width="40" height="4" rx="2" fill="gray" />
+      </svg>
+    </div>
+
     <div
       class="
         md:bottom-20
@@ -252,12 +290,16 @@
     </div>
     <div class="absolute">
       <img
-        class="object-cover w-full h-full opacity-5"
+        class="object-cover w-full h-screen opacity-5"
         src="assets/images/sidebar-bg.png"
         alt="Sidebar background"
       />
     </div>
-    <div class="relative flex items-center justify-between mb-2">
+    <div
+      class="relative flex items-center justify-between mb-2"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+    >
       <div class="w-full">
         <img
           src="assets/icons/noah_logo.png"
@@ -361,6 +403,7 @@
             top-4
             rounded-lg
             md:rounded-l-sm
+            flex
           "
         >
           <svg
@@ -391,16 +434,30 @@
         </button>
       </div>
     </div>
+
     <div class="relative flex items-center justify-between mb-2">
       <!-- <noah-login></noah-login> -->
     </div>
-    <div class="relative">
+    <div class="relative z-50">
       <noah-search
-        class="w-full hidden md:block relative"
+        class="w-auto hidden md:block relative mb-2"
         [searchTerm]="searchTerm"
         (selectPlace)="selectPlace($event)"
       >
       </noah-search>
+    </div>
+    <div
+      class="
+        overflow-y-auto
+        h-full
+        relative
+        pr-2
+        md:pb-24
+        pb-16
+        mb-2
+        scroll-smooth
+      "
+    >
       <noah-exaggeration class="w-full"></noah-exaggeration>
       <noah-hazard-type
         class="w-full"

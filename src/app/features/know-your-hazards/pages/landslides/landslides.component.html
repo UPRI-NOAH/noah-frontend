@@ -1,4 +1,36 @@
 <div class="flex flex-col justify-between w-full">
+  <div
+    class="
+      px-6
+      md:px-8
+      py-4
+      lg:py-2
+      flex
+      items-center
+      bg-white
+      shadow
+      sticky
+      top-0
+      lg-hidden
+    "
+  >
+    <a
+      class="
+        toggleColour
+        no-underline
+        hover:no-underline
+        font-bold
+        text-2xl
+        lg:text-4xl
+      "
+      routerLink="/"
+    >
+      <div class="flex max-w-xs items-center">
+        <img src="assets/icons/noah_logo.png" class="z-50 w-16 lg:w-20" />
+        <img src="assets/icons/noah_text.png" class="z-50 h-10 pl-2" />
+      </div>
+    </a>
+  </div>
   <div class="text-gray-800 pt-4 pb-2 mx-8 items-center flex">
     <button class="text-gray-800 pr-4" (click)="back()">
       <svg
