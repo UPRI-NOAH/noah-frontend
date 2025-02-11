@@ -781,7 +781,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download PDF',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -814,7 +814,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download CSV',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -847,7 +847,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Print Chart',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
@@ -880,7 +880,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 text: 'Download JPEG',
                 onclick: function () {
                   const loggedIn = localStorage.getItem('loginStatus');
-                  const devs = sessionStorage.getItem('loginStatus') == 'devs';
+                  const devs = localStorage.getItem('loginStatus') == 'devs';
                   const selectMunicity = _this.municity;
                   if (loggedIn === '0') {
                     _this.modalService.openLoginModal();
