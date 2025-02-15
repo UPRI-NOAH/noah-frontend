@@ -1658,10 +1658,16 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
                 ],
               ],
-              'text-offset': [0, 2],
-              'text-size': 12,
+              'text-offset': [0, 1],
+              'text-size': 18,
               'text-letter-spacing': 0.08,
             },
+          });
+
+          const popUp = new mapboxgl.Popup({
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: 'auto',
           });
 
           // 6 - listen to the values from the store (group and individual)
@@ -1675,8 +1681,31 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               let newOpacity = 0;
               if (volcano.shown && allShown) {
                 newOpacity = volcano.opacity / 100;
+                this.map.on('click', layerID, (e) => {
+                  const name = e.features[0].properties.name;
+                  const coordinates = (
+                    e.features[0].geometry as any
+                  ).coordinates.slice();
+                  while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                    coordinates[0] +=
+                      e.lnglat.lng > coordinates[0] ? 360 : -360;
+                  }
+                  popUp
+                    .setLngLat(coordinates)
+                    .setHTML(
+                      `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
+                      <div><b>Name:</b> ${name} </div>
+                      <div><b>Insert Volcano Info!</b></div>
+                    </div>`
+                    )
+                    .addTo(this.map);
+                });
+              } else {
+                this.map.on('click', layerID, (e) => {
+                  popUp.remove();
+                });
               }
-
+              popUp.remove();
               this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
               this.map.setPaintProperty(layerID, 'text-opacity', newOpacity);
             });
