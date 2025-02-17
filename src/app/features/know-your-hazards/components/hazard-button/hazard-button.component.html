@@ -11,8 +11,16 @@
     hover:bg-gray-100
     items-center
     justify-between
+    border-r-8
   "
   (click)="buttonAction()"
+  [ngClass]="{
+    'border-noah-red-high': (exposureLevel$ | async) === 'high',
+    'border-noah-red-medium': (exposureLevel$ | async) === 'medium',
+    'border-noah-red-low': (exposureLevel$ | async) === 'low',
+    'border-noah-red-unavailable': (exposureLevel$ | async) === 'unavailable',
+    'border-noah-black-high': (exposureLevel$ | async) === 'little to none'
+  }"
 >
   <div class="flex items-center">
     <img
@@ -30,10 +38,11 @@
           <span class="text-gray-700">Loading...</span>
         </ng-container>
         <ng-template #expLevel>
-          <span class="text-noah-red-{{ exposureLevel$ | async }}">{{
-            exposureLevel$ | async
-          }}</span>
+          <span class="text-noah-red-{{ exposureLevel$ | async }}">
+            {{ exposureLevel$ | async }}
+          </span>
         </ng-template>
+        <ng-template #expLevel></ng-template>
       </div>
       <small>{{ caption$ | async }}</small>
     </div>

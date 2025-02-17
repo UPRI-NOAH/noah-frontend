@@ -25,6 +25,12 @@
   height: 36px;
 }
 
+@media only screen and (max-width: 768px) {
+  .mapboxgl-ctrl-top-right {
+    top: 63px;
+  }
+}
+
 html {
   @apply text-noah-black-high;
 }

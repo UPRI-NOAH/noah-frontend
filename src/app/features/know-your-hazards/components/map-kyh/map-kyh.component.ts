@@ -14,6 +14,7 @@ import {
   HazardType,
   MapStyle,
 } from '@features/know-your-hazards/store/kyh.store';
+import { Observable } from 'rxjs';
 import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
@@ -29,6 +30,7 @@ export class MapKyhComponent implements OnInit {
   geolocateControl!: GeolocateControl;
   //centerMarker!: Marker;
   mapStyle: MapStyle = 'terrain';
+  currentLocation$: Observable<string>;
 
   kyhLegend: boolean = true;
   btnLegend: boolean = false;
@@ -66,6 +68,13 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next();
     this._unsub.complete();
+  }
+
+  selectPlace(selectedPlace) {
+    this.kyhService.setCurrentLocation(selectedPlace.text);
+    const [lng, lat] = selectedPlace.center;
+    this.kyhService.setCenter({ lat, lng });
+    this.kyhService.setCurrentCoords({ lat, lng });
   }
 
   initAttribution() {
@@ -231,6 +240,7 @@ export class MapKyhComponent implements OnInit {
   }
 
   initMap() {
+    this.currentLocation$ = this.kyhService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
       container: 'map-kyh',

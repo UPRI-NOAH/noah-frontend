@@ -49,6 +49,7 @@ export class SummaryComponent implements OnInit {
 
   sortField = 'latest_date';
   sortDirection = 'ascending';
+  activeTab = 1;
 
   constructor(
     private qcSensorService: QcSensorService,
@@ -316,6 +317,171 @@ export class SummaryComponent implements OnInit {
     } else {
       this.sortField = field;
       this.sortDirection = 'ascending';
+    }
+  }
+
+  // FUNCTIONS CREATED FOR MOBILE VIEW
+
+  filterData: SummaryItem[] = [];
+  dropdownList: string[] = [
+    'Location',
+    'Latest Date',
+    'Latest Data',
+    'Sensor Type',
+    'Status',
+  ];
+  isDroppedDown = false;
+  selectedOption = 'Sort by:';
+  filterButtonPressed = false;
+
+  toggleDropDown() {
+    this.isDroppedDown = !this.isDroppedDown;
+  }
+
+  selectOption(option: string) {
+    this.selectedOption = option;
+    this.isDroppedDown = false;
+
+    this.sortField = this.decodeOptiontoKey(option);
+
+    if (this.selectedOption === option) {
+      this.sortDirection =
+        this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+    } else {
+      this.selectedOption = option;
+      this.sortDirection = 'ascending';
+    }
+  }
+
+  decodeOptiontoKey(option: string): string {
+    switch (option) {
+      case 'Location':
+        return 'name';
+      case 'Latest Date':
+        return 'latest_date';
+      case 'Latest Data':
+        return 'latest_data';
+      case 'Sensor Type':
+        return 'iot_type';
+      case 'Status':
+        return 'status';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  filterCategory(category: string): SummaryItem[] {
+    this.filterButtonPressed = true;
+    switch (category) {
+      case 'All':
+        this.filterData = [...this.summaryData];
+        return this.filterData;
+      case 'Rain':
+        this.filterData = [...this.rainSummaryData];
+        return this.filterData;
+      case 'Flood':
+        this.filterData = [...this.floodSummaryData];
+        return this.filterData;
+      default:
+        return this.filterData;
+    }
+  }
+
+  getFormattedLatestData(item: any): string {
+    if (item.iot_type === null) {
+      return 'N/A';
+    }
+
+    switch (item.iot_type) {
+      case 'rain':
+        return `${item.latest_data}mm/hr`;
+      case 'flood':
+        return `${item.latest_data}m`;
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getFormattedIoTtype(item: any): string {
+    switch (item.iot_type) {
+      case 'rain':
+        return 'Rain';
+      case 'flood':
+        return 'Flood';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  getFormattedCategory(item: any): string {
+    switch (item.iot_type) {
+      case 'rain':
+        if (item.latest_data <= 7.5) {
+          return 'LIGHT';
+        } else if (item.latest_data > 7.5 && item.latest_data <= 15) {
+          return 'HEAVY';
+        } else if (item.latest_data > 15 && item.latest_data <= 30) {
+          return 'INTENSE';
+        } else {
+          return 'TORRENTIAL';
+        }
+      case 'flood':
+        if (item.latest_data <= 0.5) {
+          return 'LOW';
+        } else if (item.latest_data > 0.5 && item.latest_data <= 1.5) {
+          return 'MEDIUM';
+        } else {
+          return 'HIGH';
+        }
+      default:
+        return 'UNKNOWN';
+    }
+  }
+
+  getStatusDynamicStyle(item: any): { [key: string]: string } {
+    switch (item.status) {
+      case 'Active':
+        return { color: 'green' };
+      case 'Inactive':
+        return { color: 'grey' };
+      default:
+        return { color: 'black' };
+    }
+  }
+
+  getIoTtypeDynamicStyle(item: any): { [key: string]: string } {
+    switch (item.iot_type) {
+      case 'rain':
+        return { color: '#06B9E6' };
+      case 'flood':
+        return { color: '#519259' };
+      default:
+        return { color: 'black' };
+    }
+  }
+
+  getCategoryDynamicStyle(item: any): { [key: string]: string } {
+    switch (item.iot_type) {
+      case 'rain':
+        if (item.latest_data <= 7.5) {
+          return { color: '#d1d5d8' };
+        } else if (item.latest_data > 7.5 && item.latest_data <= 15) {
+          return { color: '#f2c94c' };
+        } else if (item.latest_data > 15 && item.latest_data <= 30) {
+          return { color: '#f2994a' };
+        } else {
+          return { color: '#eb5757' };
+        }
+      case 'flood':
+        if (item.latest_data <= 0.5) {
+          return { color: '#f2c94c' };
+        } else if (item.latest_data > 0.5 && item.latest_data <= 1.5) {
+          return { color: '#f2994a' };
+        } else {
+          return { color: '#eb5757' };
+        }
+      default:
+        return { color: 'black' };
     }
   }
 }
