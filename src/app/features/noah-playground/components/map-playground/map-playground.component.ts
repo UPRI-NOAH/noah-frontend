@@ -1715,8 +1715,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       .setHTML(
                         `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
                           <div><b>Name:</b> ${name} </div>
-                          <div><b>Elevation: </b>${elevation}</div>
-                          <div><b>Read more:</b> <i><a href="${infoUrl}" style="color: blue;" target="_blank">Click here</a></i></div>
+                          <div><b>Elevation: </b>${elevation}masl</div>
+                          <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here</a></i></div>
                         </div>`
                       )
                       .addTo(this.map);
