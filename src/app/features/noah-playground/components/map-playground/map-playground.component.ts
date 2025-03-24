@@ -1631,14 +1631,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             source: volcanoMapSource,
             paint: {
               'icon-opacity': 1,
-              'text-opacity': 1,
-              'text-color':
-                _this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+              'text-opacity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                4,
+                0, // Invisible at zoom level 4
+                5,
+                1, // Fully visible at zoom level 5 and above
+              ],
+              'text-color': this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
               'text-halo-color':
-                _this.mapStyle === 'terrain'
+                this.mapStyle === 'terrain'
                   ? 'rgba(255, 255, 255, 1)'
                   : 'rgba(0, 0, 0, 1)',
-              'text-halo-width': 0.5,
+              'text-halo-width': 1,
               'text-halo-blur': 0.5,
             },
             layout: {
@@ -1659,9 +1666,25 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 ],
               ],
               'text-offset': [0, 2],
-              'text-size': 12,
+              'text-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                4,
+                10, // Smaller text at low zoom
+                6,
+                14, // Medium size at zoom 6
+                10,
+                20, // Larger text at zoom 10+
+              ],
               'text-letter-spacing': 0.08,
             },
+          });
+
+          const popUp = new mapboxgl.Popup({
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: 'auto',
           });
 
           // 6 - listen to the values from the store (group and individual)
@@ -1675,8 +1698,38 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               let newOpacity = 0;
               if (volcano.shown && allShown) {
                 newOpacity = volcano.opacity / 100;
+                if (volcanoType === 'active') {
+                  const handleClick = (e) => {
+                    const name = e.features[0].properties.name;
+                    const coordinates = (
+                      e.features[0].geometry as any
+                    ).coordinates.slice();
+                    const elevation = e.features[0].properties.elevation;
+                    const infoUrl = e.features[0].properties.url;
+                    while (Math.abs(e.lnglat - coordinates[0]) > 180) {
+                      coordinates[0] +=
+                        e.lnglat.lng > coordinates[0] ? 360 : -360;
+                    }
+                    popUp
+                      .setLngLat(coordinates)
+                      .setHTML(
+                        `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
+                          <div><b>Name:</b> ${name} </div>
+                          <div><b>Elevation: </b>${elevation}masl</div>
+                          <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
+                        </div>`
+                      )
+                      .addTo(this.map);
+                  };
+                  this.map.on('click', layerID, handleClick);
+                  this.map.on('touchend', layerID, handleClick);
+                }
+              } else {
+                this.map.on('click', layerID, (e) => {
+                  popUp.remove();
+                });
               }
-
+              popUp.remove();
               this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
               this.map.setPaintProperty(layerID, 'text-opacity', newOpacity);
             });
