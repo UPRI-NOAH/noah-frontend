@@ -2,7 +2,7 @@
   top: 166px;
   right: 2px;
   @media only screen and (max-width: 768px) {
-    top: 229px;
+    top: 216px;
   }
 }
 
@@ -11,11 +11,17 @@
   color: #fff;
   position: absolute;
   top: 220px;
+  z-index: 40;
   right: 10px;
   padding: 5px 10px;
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 18px;
   border-radius: 3px;
   display: none;
+  @media only screen and (max-width: 768px) {
+    top: 60px;
+    left: 10px;
+    width: fit-content;
+  }
 }
