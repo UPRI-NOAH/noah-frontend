@@ -1705,6 +1705,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       e.features[0].geometry as any
                     ).coordinates.slice();
                     const elevation = e.features[0].properties.elevation;
+                    const peak_elevation =
+                      e.features[0].properties.peak_elevation;
                     const infoUrl = e.features[0].properties.url;
                     while (Math.abs(e.lnglat - coordinates[0]) > 180) {
                       coordinates[0] +=
@@ -1715,7 +1717,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       .setHTML(
                         `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
                           <div><b>Name:</b> ${name} </div>
-                          <div><b>Elevation: </b>${elevation}masl</div>
+                          <div><b>Elevation: </b>${elevation.toLocaleString()} MASL</div>
+                          <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} MASL</div>
                           <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
                         </div>`
                       )
