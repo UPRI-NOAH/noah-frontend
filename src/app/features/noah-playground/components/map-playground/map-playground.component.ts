@@ -1648,7 +1648,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               // If elevation is available, display it below the volcano name
               'text-field': ['concat', ['get', 'name']],
               'text-offset': [0, 1.5],
-              'text-size': 18,
+              'text-size': ['interpolate', ['linear'], ['zoom'], 0, 15, 22, 20], // Adjust text size based on zoom
               'text-letter-spacing': 0.05,
             },
           });
