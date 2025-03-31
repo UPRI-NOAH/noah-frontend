@@ -1631,15 +1631,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             source: volcanoMapSource,
             paint: {
               'icon-opacity': 1,
-              'text-opacity': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                4,
-                0, // Invisible at zoom level 4
-                5,
-                1, // Fully visible at zoom level 5 and above
-              ],
               'text-color': this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
               'text-halo-color':
                 this.mapStyle === 'terrain'
@@ -1655,29 +1646,10 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-anchor': 'top',
               'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
               // If elevation is available, display it below the volcano name
-              'text-field': [
-                'concat',
-                ['get', 'name'],
-                [
-                  'case',
-                  ['<=', ['get', 'elevation'], 0],
-                  '',
-                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
-                ],
-              ],
-              'text-offset': [0, 2],
-              'text-size': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                4,
-                10, // Smaller text at low zoom
-                6,
-                14, // Medium size at zoom 6
-                10,
-                20, // Larger text at zoom 10+
-              ],
-              'text-letter-spacing': 0.08,
+              'text-field': ['concat', ['get', 'name']],
+              'text-offset': [0, 1.5],
+              'text-size': 20,
+              'text-letter-spacing': 0.05,
             },
           });
 
@@ -1717,8 +1689,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                       .setHTML(
                         `<div style="color: #333333;font-size: 13px;padding-top: 4px;">
                           <div><b>Name:</b> ${name} </div>
-                          <div><b>Elevation: </b>${elevation.toLocaleString()} MASL</div>
-                          <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} MASL</div>
+                          <div><b>Elevation: </b>${elevation.toLocaleString()} masl</div>
+                          <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} masl</div>
                           <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
                         </div>`
                       )
