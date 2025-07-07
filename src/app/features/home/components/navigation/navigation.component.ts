@@ -9,27 +9,27 @@ export class NavigationComponent implements OnInit {
   isMenu: boolean = false;
   isList: number;
   isSearch: boolean = false;
-  deferredPrompt: any;
+
+  private androidUrl =
+    'https://play.google.com/store/apps/details?id=co.median.android.akawld&hl=en';
+  private iosUrl = 'https://apps.apple.com/ph/app/up-noah/id6479632667';
   constructor() {}
 
-  ngOnInit(): void {
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      this.deferredPrompt = event;
-    });
-  }
+  ngOnInit(): void {}
 
-  installPWA() {
-    if (this.deferredPrompt) {
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        this.deferredPrompt = null;
-      });
+  installMobileApp() {
+    const userAgent = navigator.userAgent || navigator.vendor;
+
+    if (/android/i.test(userAgent)) {
+      window.location.href = this.androidUrl;
+    } else if (
+      /iPad|iPhone|iPod/.test(userAgent) &&
+      !(window as any).MSStream
+    ) {
+      window.location.href = this.iosUrl;
+    } else {
+      // Fallback: maybe show both links
+      alert('Please open this page on your mobile device to download the app.');
     }
   }
 }
