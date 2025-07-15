@@ -1,18 +1,37 @@
-<footer class="bg-footer pt-12 pb-8 px-4">
+<!-- Footer -->
+<footer class="bg-footer shadow-lg mt-auto">
   <div
     class="
+      max-w-7xl
       mx-auto
-      px-4
-      container
-      overflow-hidden
-      flex flex-col
-      lg:flex-row
-      justify-between
-      text-white
+      p-4
+      lg:px-2
+      px-2
+      lg:pl-4
+      pl-12
+      py-12
+      grid
+      lg:justify-items-center
+      grid-cols-1
+      sm:grid-cols-2
+      lg:grid-cols-4
+      md:gap-6
+      gap-5
     "
   >
-    <div class="w-full lg:w-2/6 ml-3 lg:mx-4 lg:pr-8">
-      <a class="flex title-font font-medium items-center md:justify-start">
+    <!-- Column 1: Company Info -->
+    <div class="">
+      <a
+        class="
+          flex
+          title-font
+          font-medium
+          items-center
+          place-content-center
+          sm:place-content-start
+          md:justify-start
+        "
+      >
         <svg
           width="76"
           height="28"
@@ -45,11 +64,10 @@
             fill="white"
           />
         </svg>
-        <span class="ml-3 text-s text-white">
-          Nationwide Operational<br />Assessment of Hazards (NOAH)</span
+        <span class="ml-3 xl:text-base sm:text-sm text-lg text-white">
+          Nationwide Operational<br />Assessment of Hazards</span
         >
       </a>
-
       <div class="flex items-center text-sm mt-6 justify-center">
         <ul
           class="
@@ -73,6 +91,7 @@
               uppercase
               font-bold
               tracking-widest
+              text-white
             "
           >
             noah is a project of:
@@ -101,6 +120,7 @@
               uppercase
               font-bold
               tracking-widest
+              text-white
             "
           >
             in partnership with:
@@ -141,57 +161,11 @@
       </div>
     </div>
 
-    <div class="w-2/3 block sm:flex text-sm mt-6 lg:mt-0">
-      <ul class="list-none p-0 font-thin flex flex-col text-left w-full">
-        <li class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
-          Related Project
-        </li>
-        <li>
-          <a
-            href="https://endcov.ph/"
-            target="_blank"
-            class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-            >Endcov.ph</a
-          >
-        </li>
-        <li>
-          <a
-            href="https://rebuild.noah.up.edu.ph/"
-            target="_blank"
-            class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-            >ReBUILD</a
-          >
-        </li>
-        <li>
-          <a
-            href="http://noah.up.edu.ph/#/websafe"
-            target="_blank"
-            class="inline-block py-2 px-3 hover:text-blue-600 no-underline"
-            >WebSAFE</a
-          >
-        </li>
-        <!-- <li>
-            <a href="#" class="inline-block py-2 px-3 hover:text-blue-600 no-underline pb-5">Safer U</a>
-          </li> -->
-      </ul>
-
-      <ul
-        class="
-          list-none
-          p-0
-          font-thin
-          flex flex-col
-          text-left
-          w-full
-          md:pl-20
-          lg:pl-24
-          xl:pl-0
-        "
-      >
-        <div class="inline-block py-2 px-3 uppercase font-bold tracking-wide">
-          Contact Us
-        </div>
-        <div class="flex pl-4 justify-start mt-2 pb-4">
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h3 class="text-base uppercase font-semibold text-white">Contact Us</h3>
+      <ul class="mt-3 space-y-2">
+        <div class="flex justify-start text-white mt-2 pb-4">
           <a
             class="flex items-center hover:text-blue-600 mr-6 no-underline"
             href="https://www.facebook.com/UPNOAH"
@@ -235,30 +209,64 @@
           </a>
         </div>
       </ul>
+    </div>
 
-      <div class="flex flex-col w-full md:pl-6 pr-2">
-        <li class="inline-block py-2 px-4 uppercase font-bold tracking-wide">
-          About
-        </li>
-        <p
-          class="
-            text-black-400
-            py-2
-            px-4
-            w-96
-            sm:w-80
-            lg:w-64
-            xl:w-96
-            md:w-96
-            tracking-widest
-          "
-        >
-          UP NOAH seeks to assist the country in disaster risk reduction and
-          management, climate change adaptation and mitigation efforts and
-          related activities through research, development and extension
-          services.
-        </p>
-      </div>
+    <!-- Column 3: Customer Service -->
+
+    <!-- Column 4: Newsletter Subscription -->
+    <div class="">
+      <h3 class="text-base uppercase font-semibold text-white">About</h3>
+      <p class="text-white mt-3">
+        UP NOAH seeks to assist the country in disaster risk reduction and
+        management, climate change adaptation and mitigation efforts and related
+        activities through research, development and extension services.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-base uppercase font-semibold text-white">
+        Download Mobile App
+      </h3>
+      <ul class="mt-3 space-y-2">
+        <div class="flex items-center pt-2">
+          <button
+            class="
+              hover:shadow-lg
+              mr-4
+              focus:outline-none
+              rounded-md
+              focus:ring-2 focus:ring-offset-2 focus:ring-gray-600
+            "
+            aria-label="get it on google play"
+            (click)="installMobileApp()"
+          >
+            <div>
+              <img
+                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_center_aligned_with_logo-svg2.svg"
+                alt="download on the app store"
+              />
+            </div>
+          </button>
+
+          <button
+            class="
+              hover:shadow-lg
+              focus:outline-none
+              rounded-md
+              focus:ring-2 focus:ring-offset-2 focus:ring-gray-600
+            "
+            aria-label="get it on google play"
+            (click)="installMobileApp()"
+          >
+            <div>
+              <img
+                src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_center_aligned_with_logo-svg3.svg"
+                alt="get it on google play"
+              />
+            </div>
+          </button>
+        </div>
+      </ul>
     </div>
   </div>
 </footer>
