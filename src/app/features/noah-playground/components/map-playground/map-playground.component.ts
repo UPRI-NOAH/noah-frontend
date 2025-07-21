@@ -1646,10 +1646,29 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               'text-anchor': 'top',
               'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
               // If elevation is available, display it below the volcano name
-              'text-field': ['concat', ['get', 'name']],
-              'text-offset': [0, 1.5],
-              'text-size': ['interpolate', ['linear'], ['zoom'], 0, 15, 22, 20], // Adjust text size based on zoom
-              'text-letter-spacing': 0.05,
+              'text-field': [
+                'concat',
+                ['get', 'name'],
+                [
+                  'case',
+                  ['<=', ['get', 'elevation'], 0],
+                  '',
+                  ['concat', '\n(', ['get', 'elevation'], ' MASL)'],
+                ],
+              ],
+              'text-offset': [0, 2],
+              'text-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                4,
+                10, // Smaller text at low zoom
+                6,
+                14, // Medium size at zoom 6
+                10,
+                20, // Larger text at zoom 10+
+              ],
+              'text-letter-spacing': 0.08,
             },
           });
 
