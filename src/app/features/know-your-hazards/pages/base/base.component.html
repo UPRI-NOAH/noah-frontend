@@ -176,72 +176,86 @@
   <noah-search
     [searchTerm]="currentLocation$ | async"
     (selectPlace)="selectPlace($event)"
-    class="px-12 md:px-8 w-full md:mt-4 block md:relative absolute top-0"
+    class="
+      px-12
+      md:px-8
+      w-full
+      py-4
+      md:py-2
+      block
+      md:relative
+      absolute
+      top-0
+      shadow-sm
+    "
   >
   </noah-search>
 
-  <!-- DRAGGABLE NOTE -->
-  <section class="px-6 md:px-8 py-0">
-    <p class="mt-3 italic text-xs tracking-wide">
-      <span class="font-bold">Tip:</span> You may drag the pin to change the
-      location.
-    </p>
-  </section>
-  <!-- KYH -->
-  <section class="px-6 md:px-8">
-    <header class="text-xl font-bold leading-tight mt-2 pb-2">
-      Hazard Levels In Your Area
-    </header>
+  <div class="max-h-[87vh] overflow-y-auto">
+    <!-- DRAGGABLE NOTE -->
+    <section class="px-6 md:px-8 py-0">
+      <p class="mt-3 italic text-xs tracking-wide">
+        <span class="font-bold">Tip:</span> You may drag the pin to change the
+        location.
+      </p>
+    </section>
+    <!-- KYH -->
+    <section class="px-6 md:px-8">
+      <header class="text-xl font-bold leading-tight mt-2 pb-2">
+        Hazard Levels In Your Area
+      </header>
 
-    <!-- BUTTON -->
-    <noah-hazard-button hazardType="flood"></noah-hazard-button>
-    <noah-hazard-button hazardType="landslide"></noah-hazard-button>
-    <noah-hazard-button hazardType="storm-surge"></noah-hazard-button>
-  </section>
+      <!-- BUTTON -->
+      <noah-hazard-button hazardType="flood"></noah-hazard-button>
+      <noah-hazard-button hazardType="landslide"></noah-hazard-button>
+      <noah-hazard-button hazardType="storm-surge"></noah-hazard-button>
+    </section>
 
-  <!-- NOTES -->
-  <section class="px-6 md:px-8 py-2">
-    <p class="mt-2 italic text-xs tracking-wide">
-      <span class="font-bold">Note:</span>
-      <li>
-        If you want an independent assessment of flood, landslide, or storm
-        surge, then click on the tabs above.
-      </li>
-      <li>
-        Assessment is for a point location. Please refer to map for visual
-        evaluation.
-      </li>
-    </p>
-    <p class="font-bold py-2">Hazards included in map database are:</p>
-    <ol>
-      <li>1) 100-year rain return for floods;</li>
-      <li>2) Shallow and structurally-controlled landslides;</li>
-      <li class="mb-2">3) 5-meters for storm surges.</li>
-      <li>
-        For more information, please go to the
-        <a routerLink="/noah-playground" class="text-primary">NOAH Studio.</a>
-      </li>
-    </ol>
+    <!-- NOTES -->
+    <section class="px-6 md:px-8 py-2">
+      <p class="mt-2 italic text-xs tracking-wide">
+        <span class="font-bold">Note:</span>
+        <li>
+          If you want an independent assessment of flood, landslide, or storm
+          surge, then click on the tabs above.
+        </li>
+        <li>
+          Assessment is for a point location. Please refer to map for visual
+          evaluation.
+        </li>
+      </p>
+      <p class="font-bold py-2">Hazards included in map database are:</p>
+      <ol>
+        <li>1) 100-year rain return for floods;</li>
+        <li>2) Shallow and structurally-controlled landslides;</li>
+        <li class="mb-2">3) 5-meters for storm surges.</li>
+        <li>
+          For more information, please go to the
+          <a routerLink="/noah-playground" class="text-primary">NOAH Studio.</a>
+        </li>
+      </ol>
 
-    <p class="mt-2">
-      These hazard levels are based on flood simulations as well as satellite
-      and historical data.
-    </p>
-    <p>
-      Click <a routerLink="/bibliography" class="text-primary">here</a> for the
-      methods used.
-    </p>
-    <p class="mt-2 text-xs tracking-wide">
-      <span class="font-bold">Disclaimer:</span> Project NOAH is still in beta
-      release. There are ongoing developments to stabilize the platform and to
-      complete the hazard maps. The UP System, UP Resilience Institute, and UP
-      NOAH Center will not be liable for any damages and losses of any party as
-      a result of using this beta website, its contents, and functionalities.
-    </p>
-  </section>
+      <p class="mt-2">
+        These hazard levels are based on flood simulations as well as satellite
+        and historical data.
+      </p>
+      <p>
+        Click <a routerLink="/bibliography" class="text-primary">here</a> for
+        the methods used.
+      </p>
+      <p class="mt-2 text-xs tracking-wide">
+        <span class="font-bold">Disclaimer:</span> Project NOAH is still in beta
+        release. There are ongoing developments to stabilize the platform and to
+        complete the hazard maps. The UP System, UP Resilience Institute, and UP
+        NOAH Center will not be liable for any damages and losses of any party
+        as a result of using this beta website, its contents, and
+        functionalities.
+      </p>
+    </section>
 
-  <!-- CRITICAL FACILITIES -->
-  <section class="px-6 md:px-8">
-    <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
-  </section>
+    <!-- CRITICAL FACILITIES -->
+    <section class="px-6 md:px-8 pb-10">
+      <noah-critical-facilities-kyh></noah-critical-facilities-kyh>
+    </section>
+  </div>
 </div>
