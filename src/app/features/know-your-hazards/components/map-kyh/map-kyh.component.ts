@@ -419,9 +419,7 @@ export class MapKyhComponent implements OnInit {
     const applyPosition = () => {
       if (window.innerWidth <= 767) {
         container.style.top = '287px';
-        console.log('1');
       } else {
-        console.log('2');
         container.style.top = '242px';
       }
     };
