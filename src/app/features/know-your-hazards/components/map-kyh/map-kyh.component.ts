@@ -55,6 +55,7 @@ export class MapKyhComponent implements OnInit {
         this.initAttribution();
         this.initCenterListener();
         this.initGeolocationListener();
+        this.iniScaleControl();
       });
 
     fromEvent(this.map, 'style.load')
@@ -71,8 +72,22 @@ export class MapKyhComponent implements OnInit {
   }
 
   selectPlace(selectedPlace) {
-    this.kyhService.setCurrentLocation(selectedPlace.text);
-    const [lng, lat] = selectedPlace.center;
+    this.kyhService.setCurrentLocation(
+      selectedPlace.text ||
+        selectedPlace.place_name ||
+        selectedPlace.properties?.name || // display on search results
+        selectedPlace.properties?.full_address
+    );
+
+    // Handle both Geocoding API (.center) and Searchbox API (.geometry.coordinates)
+    const coords = selectedPlace.center || selectedPlace.geometry?.coordinates;
+
+    if (!coords) {
+      console.error('No coordinates found in selected place:', selectedPlace);
+      return;
+    }
+
+    const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
   }
@@ -290,8 +305,9 @@ export class MapKyhComponent implements OnInit {
         lngLat.lat,
         lngLat.lng
       );
+
       this.kyhService.setCenter(lngLat);
-      this.kyhService.setCurrentLocation(dragAddress);
+      this.kyhService.setCurrentLocation(dragAddress); // update current location
     });
 
     function addImages(map, images) {
@@ -368,6 +384,48 @@ export class MapKyhComponent implements OnInit {
           },
         });
       });
+  }
+
+  iniScaleControl() {
+    const scale = new mapboxgl.ScaleControl({
+      maxWidth: 80,
+      unit: 'metric',
+    });
+
+    // Create a custom container
+    const container = document.createElement('div');
+    container.id = 'custom-scale-control';
+    container.style.position = 'absolute';
+    //container.style.top = '242px';       // middle vertically
+    container.style.right = '10px'; // adjust distance from right edge
+    container.style.transform = 'translateY(-50%)'; // center properly
+    container.style.padding = '8px'; // custom padding
+    container.style.background = 'white';
+    container.style.borderRadius = '6px';
+    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+
+    // Append container to the map
+    this.map.getContainer().appendChild(container);
+
+    // Mount scale control inside it
+    const scaleEl = scale.onAdd(this.map);
+    container.appendChild(scaleEl);
+
+    // Adjust font size of scale text
+    (scaleEl as HTMLElement).style.fontSize = '16px'; // make text bigger
+    (scaleEl as HTMLElement).style.lineHeight = '20px'; // keep spacing nice
+    (scaleEl as HTMLElement).style.fontWeight = 'bold'; // optional
+
+    const applyPosition = () => {
+      if (window.innerWidth <= 767) {
+        container.style.top = '287px';
+        console.log('1');
+      } else {
+        console.log('2');
+        container.style.top = '242px';
+      }
+    };
+    applyPosition();
   }
 
   openLegend() {
