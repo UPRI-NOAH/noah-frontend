@@ -148,9 +148,25 @@ export class NoahPlaygroundComponent implements OnInit {
       clearInterval(this.localStorageCheckInterval); // Clean up when the component is destroyed
     }
   }
+
   selectPlace(selectedPlace) {
-    this.pgService.setCurrentLocation(selectedPlace.text);
-    const [lng, lat] = selectedPlace.center;
+    this.pgService.setCurrentLocation(
+      selectedPlace.text ||
+        selectedPlace.place_name ||
+        selectedPlace.properties?.name || // display on search results
+        selectedPlace.properties?.full_address
+    );
+
+    // Handle both Geocoding API (.center) and Searchbox API (.geometry.coordinates)
+    const coords = selectedPlace.center || selectedPlace.geometry?.coordinates;
+
+    if (!coords) {
+      console.error('No coordinates found in selected place:', selectedPlace);
+      return;
+    }
+
+    const [lng, lat] =
+      selectedPlace.center || selectedPlace.geometry?.coordinates;
     this.pgService.setCenter({ lat, lng });
   }
 

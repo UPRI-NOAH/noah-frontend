@@ -200,6 +200,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initCalculation();
         this.addCustomTooltips();
         this.getScreenSize();
+        this.iniScaleControl();
       });
     // this.getScreenSize();
 
@@ -273,7 +274,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
         if (!this.centerMarker) {
           this.centerMarker = new mapboxgl.Marker({
-            color: '#FF0000',
+            color: '#4D4C51',
             draggable: true,
           })
             .setLngLat(center)
@@ -324,6 +325,46 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         duration: 1000,
       });
     }
+  }
+
+  iniScaleControl() {
+    const scale = new mapboxgl.ScaleControl({
+      maxWidth: 80,
+      unit: 'metric',
+    });
+
+    // Create a custom container
+    const container = document.createElement('div');
+    container.id = 'custom-scale-control';
+    container.style.position = 'absolute';
+    //container.style.top = '242px';       // middle vertically
+    container.style.right = '10px'; // adjust distance from right edge
+    container.style.transform = 'translateY(-50%)'; // center properly
+    container.style.padding = '8px'; // custom padding
+    container.style.background = 'white';
+    container.style.borderRadius = '6px';
+    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+
+    // Append container to the map
+    this.map.getContainer().appendChild(container);
+
+    // Mount scale control inside it
+    const scaleEl = scale.onAdd(this.map);
+    container.appendChild(scaleEl);
+
+    // Adjust font size of scale text
+    (scaleEl as HTMLElement).style.fontSize = '16px'; // make text bigger
+    (scaleEl as HTMLElement).style.lineHeight = '20px'; // keep spacing nice
+    (scaleEl as HTMLElement).style.fontWeight = 'bold'; // optional
+
+    const applyPosition = () => {
+      if (window.innerWidth <= 767) {
+        container.style.top = '423px';
+      } else {
+        container.style.top = '359px';
+      }
+    };
+    applyPosition();
   }
 
   /**
