@@ -178,9 +178,13 @@
             </svg>
           </div>
           <button class="flex-1 text-left">
-            <p class="font-bold text-gray-700 text-sm">{{ place.text }}</p>
-            <p class="text-xs text-gray-300 group-hover:text-gray-400">
-              {{ place.place_name }}
+            <p class="font-bold text-gray-700 text-sm">
+              {{ place.name || place.text }}
+            </p>
+            <p class="text-xs text-gray-700 group-hover:text-gray-600 italic">
+              {{
+                place.full_address || place.place_formatted || place.place_name
+              }}
             </p>
           </button>
         </div>

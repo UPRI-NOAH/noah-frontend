@@ -58,9 +58,11 @@ export class SearchComponent implements OnInit {
         switchMap((searchText) => this.mapService.forwardGeocode(searchText)),
         tap(() => (this.loading = false))
       )
+
       .subscribe((value: any) => {
-        this.places$.next(value.features);
+        this.places$.next(value.suggestions); //different from Geocoding API
       });
+
     this.mapService.address$.subscribe((address) => {
       this.address = address; // Update address in real-time
       this.searchTermCtrl.setValue(address);
@@ -141,10 +143,25 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  pickPlace(place) {
+  pickPlace(place: any) {
     this.gaService.event('select_location', 'dropdown_option');
-    this.searchTermCtrl.setValue(place.text);
+
+    this.searchTermCtrl.setValue(place.name || place.text || place.place_name);
     this.isDropdownOpen = false;
-    this.selectPlace.emit(place);
+
+    this.mapService.retrievePlace(place.mapbox_id).subscribe((result: any) => {
+      // check both possible response shapes
+      const fullPlace = result?.features?.[0] || result?.feature || null;
+
+      if (fullPlace) {
+        this.selectPlace.emit(fullPlace);
+      } else {
+        console.warn(
+          'No features returned from retrieve, falling back:',
+          place
+        );
+        this.selectPlace.emit(place);
+      }
+    });
   }
 }
