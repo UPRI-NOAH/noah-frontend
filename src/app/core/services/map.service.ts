@@ -10,6 +10,8 @@ import { Observable, Subject } from 'rxjs';
 export class MapService {
   constructor(private httpClient: HttpClient) {}
   private addressSubject = new Subject<string>();
+  private sessionToken: string = this.generateUUID();
+
   address$: Observable<string> = this.addressSubject.asObservable();
 
   init() {
@@ -32,14 +34,59 @@ export class MapService {
     });
   }
 
+  // Simple UUID generator (to replace crypto.randomUUID for Angular compatibility)
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   /**
    * Returns the geographic coordinates given a string address
    */
   forwardGeocode(searchText: string) {
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchText}.json?country=PH&access_token=${environment.mapbox.accessToken}`;
+    const params = new URLSearchParams({
+      q: searchText,
+      country: 'ph',
+      types: [
+        'poi',
+        'address',
+        'country',
+        'block',
+        'street',
+        'chome',
+        'region',
+        'district',
+        'postcode',
+        'place',
+        'neighborhood',
+        'locality',
+        'prefecture',
+        'city',
+        'oaza',
+      ].join(','),
+      proximity: '-73.990593,40.740121', // Example: set dynamically based on user location
+      session_token: this.sessionToken,
+      access_token: environment.mapbox.accessToken,
+    });
+
+    const url = `https://api.mapbox.com/search/searchbox/v1/suggest?${params.toString()}`;
+
     return this.httpClient.get(url);
   }
 
+  // Retrieve API (needs only mapbox_id + session_token + token)
+  retrievePlace(mapboxId: string) {
+    const url = `https://api.mapbox.com/search/searchbox/v1/retrieve/${encodeURIComponent(
+      mapboxId
+    )}?session_token=${this.sessionToken}&access_token=${
+      environment.mapbox.accessToken
+    }`;
+
+    return this.httpClient.get(url);
+  }
   /**
    * Returns the string address given the geographic coordinates
    */

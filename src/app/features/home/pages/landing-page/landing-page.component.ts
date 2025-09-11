@@ -22,11 +22,26 @@ export class LandingPageComponent implements OnInit {
     this.title.setTitle('NOAH - Nationwide Operational Assessment of Hazards');
   }
 
-  selectPlace(selectedPlace) {
-    this.kyhService.setCurrentLocation(selectedPlace.text);
-    const [lng, lat] = selectedPlace.center;
+  selectPlace(selectedPlace: any) {
+    this.kyhService.setCurrentLocation(
+      selectedPlace.text ||
+        selectedPlace.place_name ||
+        selectedPlace.properties?.name || // display on search results
+        selectedPlace.properties?.full_address
+    );
+
+    // Handle both Geocoding API (.center) and Searchbox API (.geometry.coordinates)
+    const coords = selectedPlace.center || selectedPlace.geometry?.coordinates;
+
+    if (!coords) {
+      console.error('No coordinates found in selected place:', selectedPlace);
+      return;
+    }
+
+    const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+
     this.router.navigate(['know-your-hazards']);
   }
 
