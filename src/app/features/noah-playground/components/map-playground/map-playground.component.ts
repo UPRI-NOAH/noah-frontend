@@ -2312,11 +2312,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari_1.webm',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
         type: 'video',
       },
       'himawari-GSMAP': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap_1.webm',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
         type: 'video',
       },
     };
@@ -2381,8 +2381,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         'line-dasharray': [
           'case',
           ['==', ['get', 'layer'], 'PAR'],
-          ['literal', [4, 2]], // Dashed lines for PAR only
-          ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
+          ['literal', [1, 0]], // Dashed lines for PAR only
+          ['literal', [4, 2]], // Solid lines for philoutline (1px dash, 0px gap = solid)
         ],
       },
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
