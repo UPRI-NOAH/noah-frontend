@@ -2312,11 +2312,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari_1.webm',
         type: 'video',
       },
       'himawari-GSMAP': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap_1.webm',
         type: 'video',
       },
     };
@@ -2397,6 +2397,17 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'line-opacity',
           allShown ? 1 : 0
         );
+
+        if (allShown) {
+          // Bring the PAR outline to the very top
+          const layerIds = this.map.getStyle().layers?.map((l) => l.id) || [];
+          const topLayerId = layerIds[layerIds.length - 1]; // last layer is the top-most
+
+          // Move PAR outline on top of everything
+          if (topLayerId) {
+            this.map.moveLayer('par-outline-layer', topLayerId);
+          }
+        }
       });
 
     /** 3. Continue with weather satellite layers as before */
@@ -2434,13 +2445,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = +(allShown && selectedWeather === weatherType);
-            if (opacity) {
-              opacity = weatherTypeOpacity / 100;
+            let opacity = 0;
+
+            // Only show if allShown is true AND this weather type is the selected one
+            if (
+              allShown &&
+              selectedWeather?.toString() === weatherType.toString()
+            ) {
+              opacity = weatherTypeOpacity / 100; // convert 0-100 → 0-1
             }
 
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
+        selectedWeather$.subscribe((val) =>
+          console.log('Selected weather:', val)
+        );
       }
     );
   }
