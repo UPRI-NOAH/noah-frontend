@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 //Modules
 import { WeatherUpdatesRoutingModule } from './weather-updates-routing.module';
 import { SharedModule } from '@shared/shared.module';
+import { SwiperModule } from 'swiper/angular';
 //Pages
 import { BaseComponent } from './pages/base/base.component';
 import { WeatherUpdatesComponent } from './pages/weather-updates/weather-updates.component';
@@ -23,6 +24,11 @@ import { WeatherSatelliteComponent } from './components/weather-satellite/weathe
     TyphoonTrackSoloComponent,
     WeatherSatelliteComponent,
   ],
-  imports: [CommonModule, WeatherUpdatesRoutingModule, SharedModule],
+  imports: [
+    CommonModule,
+    WeatherUpdatesRoutingModule,
+    SharedModule,
+    SwiperModule,
+  ],
 })
 export class WeatherUpdatesModule {}
