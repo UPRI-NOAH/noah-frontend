@@ -10,6 +10,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'weather-updates',
+    loadChildren: () =>
+      import('@features/weather-updates/weather-updates.module').then(
+        (m) => m.WeatherUpdatesModule
+      ),
+  },
+  {
     path: '',
     loadChildren: () =>
       import('@features/home/home.module').then((m) => m.HomeModule),
