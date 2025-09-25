@@ -2344,17 +2344,84 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       }
     };
 
+    // Create allShown$ outside so we can use it for both weather & geojson layers
+    const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+      shareReplay(1)
+    );
+
+    /** 1. Add GeoJSON source & layer */
+    this.map.addSource('par-outline', {
+      type: 'geojson',
+      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson',
+    });
+
+    this.map.addLayer({
+      id: 'par-outline-layer',
+      type: 'line',
+      source: 'par-outline',
+      paint: {
+        'line-color': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          '#FFFFFF', // White for PAR
+          ['==', ['get', 'layer'], 'philoutline'],
+          '#000000', // Black for philoutline
+          '#FFFFFF', // Default to white
+        ],
+        'line-width': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          3, // Thicker line for PAR
+
+          ['==', ['get', 'layer'], 'philoutline'],
+          2, // Thinner line for philoutline
+          2, // Default line width
+        ],
+        'line-opacity': 0.8,
+        'line-dasharray': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          ['literal', [1, 0]], // Dashed lines for PAR only
+          ['literal', [4, 2]], // Solid lines for philoutline (1px dash, 0px gap = solid)
+        ],
+      },
+      filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
+    });
+
+    /** 2. React to allShown$ for GeoJSON visibility */
+    allShown$
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe((allShown) => {
+        this.map.setPaintProperty(
+          'par-outline-layer',
+          'line-opacity',
+          allShown ? 1 : 0
+        );
+
+        if (allShown) {
+          // Bring the PAR outline to the very top
+          const layerIds = this.map.getStyle().layers?.map((l) => l.id) || [];
+          const topLayerId = layerIds[layerIds.length - 1]; // last layer is the top-most
+
+          // Move PAR outline on top of everything
+          if (topLayerId) {
+            this.map.moveLayer('par-outline-layer', topLayerId);
+          }
+        }
+      });
+
+    /** 3. Continue with weather satellite layers as before */
     Object.keys(weatherSatelliteImages).forEach(
       (weatherType: WeatherSatelliteType) => {
         const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
 
-        // 1. Add source per weather satellite type
+        // Add source  per weather satellite type
         this.map.addSource(
           weatherType,
           getWeatherSatelliteSource(weatherSatelliteDetails)
         );
 
-        // 2. Add layer per weather satellite source
+        // Add layer per weather satellite source
         this.map.addLayer({
           id: weatherType,
           type: 'raster',
@@ -2365,22 +2432,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         });
 
-        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-        //   distinctUntilChanged(),
-        //   tap(() => {
-        //     this.map.flyTo({
-        //       center: PH_DEFAULT_CENTER,
-        //       zoom: 4,
-        //       essential: true,
-        //     });
-        //   }),
-        //   shareReplay(1)
-        // );
-
-        // 3. Check for group and individual visibility and opacity
-        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-          shareReplay(1)
-        );
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
           shareReplay(1)
         );
@@ -2394,13 +2445,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = +(allShown && selectedWeather === weatherType);
-            if (opacity) {
-              opacity = weatherTypeOpacity / 100;
+            let opacity = 0;
+
+            // Only show if allShown is true AND this weather type is the selected one
+            if (
+              allShown &&
+              selectedWeather?.toString() === weatherType.toString()
+            ) {
+              opacity = weatherTypeOpacity / 100; // convert 0-100 → 0-1
             }
 
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
+        selectedWeather$.subscribe((val) =>
+          console.log('Selected weather:', val)
+        );
       }
     );
   }
