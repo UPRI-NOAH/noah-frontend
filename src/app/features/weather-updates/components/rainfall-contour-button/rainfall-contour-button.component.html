@@ -1,40 +1,4 @@
 <!-- MOBILE VIEW -->
-<!-- <div class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping">
-  <div
-    class="flex space-x-2 w-auto mb-5 justify-center"
-    style="place-content: space-evenly"
-  >
-    <div
-      class="
-        font-semibold
-        text-center
-        rounded-xl
-        border-4
-        p-2
-        max-w-xs
-        flex-shrink-0
-      "
-      style="background-color: #f9fafb"
-      *ngFor="let rainfallContourType of rainfallContourTypes"
-      role="button"
-      [ngClass]="{
-        'border-primary': activeRainfallContourType === rainfallContourType,
-        'border-transparent': activeRainfallContourType !== rainfallContourType
-      }"
-      (click)="selectRainfallContourType(rainfallContourType)"
-    >
-      <img
-        class="w-12 h-12 mx-auto"
-        [src]="getMobileIcon(rainfallContourType)"
-        alt="rainfall"
-      />
-
-      <h1 class="text-sm text-gray-700 whitespace-nowrap">
-        {{ getLabel(rainfallContourType) }}
-      </h1>
-    </div>
-  </div>
-</div> -->
 <div class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping">
   <div
     class="flex space-x-2 w-auto mb-4 justify-center"
@@ -68,7 +32,7 @@
       />
 
       <h1 class="text-sm text-gray-700 whitespace-nowrap">
-        {{ getLabel(rainfallContourType) }}
+        {{ getLabelMobile(rainfallContourType) }}
       </h1>
     </div>
   </div>
