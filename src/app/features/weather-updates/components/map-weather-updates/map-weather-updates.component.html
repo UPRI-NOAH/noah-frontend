@@ -1,0 +1,66 @@
+<div class="absolute top-0 left-0 w-full h-full" id="map-weather-updates"></div>
+
+<pre
+  id="coordinates"
+  class="
+    bg-black
+    right-2
+    absolute
+    p-2
+    hidden
+    rounded-lg
+    text-xs text-white
+    opacity-75
+  "
+  style="top: 9rem"
+></pre>
+
+<div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
+  <!-- Back Button -->
+  <button
+    routerLink="/"
+    class="
+      w-10
+      h-10
+      rounded-full
+      bg-white
+      flex
+      items-center
+      justify-center
+      shadow
+    "
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+  </button>
+
+  <!-- Search Input Container -->
+  <div class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl">
+    <noah-search
+      [searchTerm]="currentLocation$ | async"
+      (selectPlace)="selectPlace($event)"
+      class="flex-1"
+    >
+    </noah-search>
+  </div>
+</div>
+
+<!-- Switch Map Style -->
+<noah-change-style-button
+  class="md:top-0 absolute right-0 p-2 top-12"
+  [selectedStyle]="mapStyle"
+  (selectedStyleChange)="switchMapStyle($event)"
+>
+</noah-change-style-button>
