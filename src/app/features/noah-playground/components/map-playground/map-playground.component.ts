@@ -2382,7 +2382,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'case',
           ['==', ['get', 'layer'], 'PAR'],
           ['literal', [1, 0]], // Dashed lines for PAR only
-          ['literal', [4, 2]], // Solid lines for philoutline (1px dash, 0px gap = solid)
+          ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
         ],
       },
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries

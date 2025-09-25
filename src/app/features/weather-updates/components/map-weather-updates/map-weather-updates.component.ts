@@ -108,14 +108,14 @@ export class MapWeatherUpdatesComponent implements OnInit {
       unit: 'metric',
     });
 
-    // Create a custom container
+    // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    //container.style.top = '242px';       // middle vertically
-    container.style.right = '10px'; // adjust distance from right edge
-    container.style.transform = 'translateY(-50%)'; // center properly
-    container.style.padding = '5px'; // custom padding
+    container.style.top = '50%'; // vertically centered
+    container.style.right = '10px'; // some margin from right edge
+    container.style.transform = 'translateY(-50%)';
+    container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
     container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
@@ -123,16 +123,28 @@ export class MapWeatherUpdatesComponent implements OnInit {
     // Append container to the map
     this.map.getContainer().appendChild(container);
 
-    // Mount scale control inside it
+    // Add the scale control using Mapbox’s API
     const scaleEl = scale.onAdd(this.map);
     container.appendChild(scaleEl);
 
-    // Adjust font size of scale text
-    (scaleEl as HTMLElement).style.fontSize = '12px'; // make text bigger
-    (scaleEl as HTMLElement).style.lineHeight = '20px'; // keep spacing nice
-    (scaleEl as HTMLElement).style.border = 'none'; // optional, remove inner border
-    (scaleEl as HTMLElement).style.fontWeight = 'bold'; // optional
+    // Style adjustments
+    const scaleElem = scaleEl as HTMLElement;
+    scaleElem.style.fontSize = '12px';
+    scaleElem.style.lineHeight = '20px';
+    scaleElem.style.fontWeight = 'bold';
 
+    // Align the text and scale bar like Mapbox example
+    scaleElem.style.display = 'flex';
+    scaleElem.style.flexDirection = 'column'; // puts number above the bar
+    scaleElem.style.alignItems = 'center'; // center horizontal alignment
+
+    if (scaleElem.style.flexDirection === 'row') {
+      // find the label element inside the scaleEl
+      const label = scaleElem.querySelector('div');
+      if (label) {
+        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
+      }
+    }
     const applyPosition = () => {
       if (window.innerWidth <= 767) {
         container.style.top = '114px';
@@ -457,7 +469,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
     // 0 - declare the source json files
     const typhoonLayerSourceFile: string =
       // 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/BISINGDANAS.geojson';
-      'https://upri-noah.s3.amazonaws.com/typhoon_track/test/pagasa_typhoon.geojson';
+      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
     const parOutlineSourceFile: string =
       'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson';
 
@@ -537,11 +549,14 @@ export class MapWeatherUpdatesComponent implements OnInit {
         );
         const datetime = feature.properties?.datetime;
         const radius = feature.properties?.radius;
+        const formattedTyphoonName = typhoonName
+          .replace('{', '(')
+          .replace('}', ')');
 
         // HTML of the popup
         const popupContent = `
           <div>
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${typhoonName}</h3>
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
             <p style="margin: 5px 0; font-size: 12px; color: #666;">
               <strong>Classification:</strong> ${typhoonClass}
             </p>
@@ -625,25 +640,14 @@ export class MapWeatherUpdatesComponent implements OnInit {
       type: 'fill',
       source: typhoonMapSource,
       paint: {
-        'fill-color': [
-          'case',
-          ['>=', ['get', 'radius_km'], 191],
-          'rgba(70, 31, 142, 0.5)', // 120hr
-          ['>=', ['get', 'radius_km'], 182],
-          'rgba(242, 192, 75, 0.5)', // 96hr
-          ['>=', ['get', 'radius_km'], 153],
-          'rgba(84, 181, 133, 0.5)', // 72hr
-          ['>=', ['get', 'radius_km'], 117],
-          'rgba(113, 162, 243, 0.5)', // 48hr
-          'rgba(232, 121, 116, 0.5)', // 24hr default
-        ],
-        'fill-opacity': 0.9,
+        'fill-color': 'rgba(96, 96, 96, 0.5)', // always same color
+        'fill-opacity': 1,
       },
       filter: [
         'all',
-        ['==', ['get', 'type'], 'radius'],
+        ['==', ['get', 'type'], 'smoothed_hull'],
         ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['get', 'radius_km'], 0],
+        ['>', ['get', 'radius'], 0],
       ],
     });
 
@@ -653,26 +657,15 @@ export class MapWeatherUpdatesComponent implements OnInit {
       type: 'line',
       source: typhoonMapSource,
       paint: {
-        'line-color': [
-          'case',
-          ['>=', ['get', 'radius_km'], 191],
-          '#461F8E', // 120hr
-          ['>=', ['get', 'radius_km'], 182],
-          '#F2C04B', // 96hr
-          ['>=', ['get', 'radius_km'], 153],
-          '#54B585', // 72hr
-          ['>=', ['get', 'radius_km'], 117],
-          '#71A2F3', // 48hr
-          '#E87974', // 24hr default
-        ],
-        'line-width': 2,
-        'line-opacity': 1,
+        'line-color': '#606060', // always same color
+        'line-width': 0.9,
+        'line-opacity': 0,
       },
       filter: [
         'all',
-        ['==', ['get', 'type'], 'radius'],
+        ['==', ['get', 'type'], 'smoothed_hull'],
         ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['get', 'radius_km'], 0],
+        ['>', ['get', 'radius'], 0],
       ],
     });
 
@@ -715,7 +708,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
         'line-dasharray': [
           'case',
           ['==', ['get', 'layer'], 'PAR'],
-          ['literal', [4, 2]], // Dashed lines for PAR only
+          ['literal', [1, 0]], // Dashed lines for PAR only
           ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
         ],
       },
@@ -752,7 +745,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
   initWeatherSatellite() {
     const weatherSatelliteMapImage = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari_1.webm',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
         type: 'video',
       },
     };
