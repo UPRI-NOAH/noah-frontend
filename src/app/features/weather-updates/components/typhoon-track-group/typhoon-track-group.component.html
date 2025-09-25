@@ -1,1 +1,106 @@
-<p>typhoon-track-group works!</p>
+<!-- MOBILE VIEW -->
+<div class="overflow-x-scroll mx-2 md:hidden">
+  <div class="flex w-auto mb-5">
+    <div class="flex left-0 pt-4">
+      <label class="inline-flex items-center checkbox">
+        <input
+          type="checkbox"
+          class="checkbox h-5 w-5 text-blue-600"
+          [checked]="shown"
+          (click)="toggleShown($event)"
+        />
+      </label>
+      <div class="flex flex-col ml-3">
+        <div class="text-xl leading-none font-bold">Typhoon Track</div>
+      </div>
+    </div>
+  </div>
+  <div class="pl-6">
+    <div class="items-center">
+      <!-- Typhoon Track Legend START -->
+      <noah-typhoon-track-solo></noah-typhoon-track-solo>
+    </div>
+  </div>
+</div>
+<!-- DESKTOP VIEW -->
+<div
+  class="
+    md:block
+    hidden
+    flex-col
+    p-5
+    w-full
+    bg-sidebar
+    shadow-md
+    hover:shadow-lg
+    rounded-lg
+    mt-5
+    mb-5
+  "
+>
+  <div
+    (click)="toggleExpanded()"
+    class="select-none flex items-center justify-between cursor-pointer"
+  >
+    <div class="flex items-center">
+      <label class="inline-flex items-center checkbox">
+        <input
+          type="checkbox"
+          class="checkbox h-5 w-5 text-blue-600"
+          [checked]="shown"
+          (click)="toggleShown($event)"
+        />
+      </label>
+      <div class="flex flex-col ml-3">
+        <div class="text-xl leading-none font-bold">Typhoon Track</div>
+      </div>
+    </div>
+    <div class="cursor-pointer">
+      <button
+        class="
+          w-6
+          h-6
+          focus:outline-none
+          flex
+          items-center
+          justify-center
+          rounded-full
+        "
+      >
+        <svg
+          [ngClass]="expanded ? ' hidden ' : ' '"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1000 1000"
+          width="18"
+          height="12"
+        >
+          <path
+            d="M283.7 10l-58.4 58.4L656 500 225.3 931.6l58.4 58.4 491-490-491-490z"
+          />
+        </svg>
+        <svg
+          [ngClass]="expanded ? ' ' : ' hidden '"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 18 12"
+          fill="none"
+        >
+          <path
+            d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+            fill="#4A5568"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div [ngClass]="expanded ? ' pt-2 ' : ' hidden '">
+    <hr class="pb-0" />
+    <div class="pl-6">
+      <div class="items-center">
+        <!-- Typhoon Track Legend START -->
+        <noah-typhoon-track-solo></noah-typhoon-track-solo>
+      </div>
+    </div>
+  </div>
+</div>

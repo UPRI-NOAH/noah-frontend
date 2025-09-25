@@ -1,1 +1,173 @@
-<p>rainfall-contour-button works!</p>
+<!-- MOBILE VIEW -->
+<!-- <div class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping">
+  <div
+    class="flex space-x-2 w-auto mb-5 justify-center"
+    style="place-content: space-evenly"
+  >
+    <div
+      class="
+        font-semibold
+        text-center
+        rounded-xl
+        border-4
+        p-2
+        max-w-xs
+        flex-shrink-0
+      "
+      style="background-color: #f9fafb"
+      *ngFor="let rainfallContourType of rainfallContourTypes"
+      role="button"
+      [ngClass]="{
+        'border-primary': activeRainfallContourType === rainfallContourType,
+        'border-transparent': activeRainfallContourType !== rainfallContourType
+      }"
+      (click)="selectRainfallContourType(rainfallContourType)"
+    >
+      <img
+        class="w-12 h-12 mx-auto"
+        [src]="getMobileIcon(rainfallContourType)"
+        alt="rainfall"
+      />
+
+      <h1 class="text-sm text-gray-700 whitespace-nowrap">
+        {{ getLabel(rainfallContourType) }}
+      </h1>
+    </div>
+  </div>
+</div> -->
+<div class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping">
+  <div
+    class="flex space-x-2 w-auto mb-4 justify-center"
+    style="place-content: space-evenly"
+  >
+    <div
+      class="
+        bg-white
+        font-semibold
+        text-center
+        rounded-xl
+        border
+        shadow-lg
+        p-2
+        max-w-xs
+        flex-shrink-0
+      "
+      *ngFor="let rainfallContourType of rainfallContourTypes"
+      role="button"
+      [ngClass]="{
+        'border-primary border-4':
+          activeRainfallContourType === rainfallContourType,
+        'border-transparent': activeRainfallContourType !== rainfallContourType
+      }"
+      (click)="selectRainfallContourType(rainfallContourType)"
+    >
+      <img
+        class="w-14 h-14 mx-auto"
+        [src]="getContourIcon(rainfallContourType)"
+        alt="rainfall"
+      />
+
+      <h1 class="text-sm text-gray-700 whitespace-nowrap">
+        {{ getLabel(rainfallContourType) }}
+      </h1>
+    </div>
+  </div>
+</div>
+
+<!-- DESKTOP VIEW -->
+<div *ngFor="let rainfallContourType of rainfallContourTypes" role="button">
+  <button
+    class="
+      hidden
+      my-2
+      w-full
+      md:flex
+      p-2
+      bg-white
+      shadow-md
+      hover:shadow-lg
+      rounded-md
+      hover:bg-gray-100
+      items-center
+      justify-between
+      border-b-4 border-primary
+    "
+    [ngClass]="{
+      'border-primary': activeRainfallContourType === rainfallContourType,
+      'border-transparent': activeRainfallContourType !== rainfallContourType
+    }"
+    (click)="selectRainfallContourType(rainfallContourType)"
+  >
+    <div class="flex items-center" role="button">
+      <div class="bg-primary rounded-md">
+        <img
+          class="h-auto w-10"
+          [src]="getDesktopIcon(rainfallContourType)"
+          alt="rainfall"
+        />
+      </div>
+      <div class="flex flex-col text-left ml-3">
+        <label
+          class="font-bold text-2xl leading-none f-f-r capitalize"
+          for="selected-contour-map-{{ rainfallContourType }}"
+        >
+          <span role="button">{{ getLabel(rainfallContourType) }}</span>
+        </label>
+        <div class="uppercase font-bold text-xl leading-none">
+          <ng-container *ngIf="isLoading$ | async; else expLevel">
+            <span class="text-gray-700">Loading...</span>
+          </ng-container>
+          <ng-template #expLevel></ng-template>
+        </div>
+      </div>
+    </div>
+    <!-- <img class="w-6" src="assets/icons/info.svg" /> -->
+  </button>
+</div>
+
+<div class="mb-2 md:mb-10">
+  <section class="px-6 md:px-0 mt-2 md:mt-4">
+    <header class="text-xl font-bold leading-tight pb-2">Opacity</header>
+
+    <div class="px-6">
+      <div class="flex items-center pb-2">
+        <div class="text-m f-f-r">{{ label }}</div>
+      </div>
+      <div class="flex">
+        <div class="w-10/12">
+          <input
+            class="w-full swiper-no-swiping"
+            type="range"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            [value]="initialValue"
+            [formControl]="sliderCtrl"
+            (input)="changeOpacity($event)"
+          />
+
+          <div class="flex justify-between text-xs text-gray-600 mx-1">
+            <span class="w-8 text-left">{{ min }}</span>
+            <span class="w-8 text-right">{{ max }}</span>
+          </div>
+        </div>
+        <div class="pl-2 w-2/12">
+          {{ sliderCtrl.value }}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="mb-10">
+  <section class="px-6 md:px-0 mt-2 md:mt-0">
+    <header class="text-xl font-bold leading-tight pb-2">Legend</header>
+  </section>
+
+  <img
+    style="justify-self: anchor-center"
+    src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
+      selectedRainfallContourType$ | async
+    }}.png"
+  />
+</div>
