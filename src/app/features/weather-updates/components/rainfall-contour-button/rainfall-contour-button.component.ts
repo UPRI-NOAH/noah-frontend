@@ -82,7 +82,7 @@ export class RainfallContourButtonComponent implements OnInit {
   getLabel(type: RainfallContourTypes): string {
     const number = type.replace(/[^0-9]/g, '');
     const label = +number === 1 ? 'hour' : 'hours';
-    return `${number} ${label}`;
+    return ` ${label}`;
   }
 
   changeOpacity(event: Event): void {
