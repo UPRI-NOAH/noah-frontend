@@ -1,0 +1,12 @@
+/* Mapbox popup close button positioning */
+::ng-deep .mapboxgl-popup-close-button {
+  right: 10px !important; /* Move close button away from the right edge */
+  top: 10px !important; /* Move close button away from the top edge */
+}
+
+/* Optional: Additional popup styling for better appearance */
+::ng-deep .mapboxgl-popup-content {
+  padding: 16px 20px 16px 16px; /* Extra right padding to accommodate close button spacing */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

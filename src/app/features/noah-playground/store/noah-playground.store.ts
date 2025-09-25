@@ -56,7 +56,7 @@ export type LandslideHazards =
 
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
-export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
+export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-+GSMAP'] as const;
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
