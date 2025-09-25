@@ -57,7 +57,7 @@
 .map-icon {
   top: 278px;
   @media only screen and (max-width: 768px) {
-    top: 340px;
+    top: 328px;
   }
 }
 
@@ -65,18 +65,22 @@
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 342px;
+  top: 386px;
+  z-index: 40;
   right: 10px;
   padding: 5px 10px;
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 18px;
   border-radius: 3px;
   display: none;
   @media only screen and (max-width: 768px) {
-    top: 405px;
+    top: 60px;
+    left: 10px;
+    width: fit-content;
   }
 }
+
 .mapboxgl-popup-content {
   border-radius: 12px;
   padding: 10px;
