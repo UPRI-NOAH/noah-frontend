@@ -7,12 +7,47 @@
 ></noah-change-style-button>
 <pre id="coordinates" class="coords"></pre>
 
-<noah-search
-  [searchTerm]="currentLocation$ | async"
-  (selectPlace)="selectPlace($event)"
-  class="md:hidden px-2 md:px-8 w-full md:mt-4 block md:relative absolute top-0"
->
-</noah-search>
+<div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
+  <!-- Back Button -->
+  <button
+    routerLink="/"
+    class="
+      w-10
+      h-10
+      rounded-full
+      bg-white
+      flex
+      items-center
+      justify-center
+      shadow
+    "
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+      />
+    </svg>
+  </button>
+
+  <!-- Search Input Container -->
+  <div class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl">
+    <noah-search
+      [searchTerm]="currentLocation$ | async"
+      (selectPlace)="selectPlace($event)"
+      class="flex-1"
+    >
+    </noah-search>
+  </div>
+</div>
 
 <button
   class="
