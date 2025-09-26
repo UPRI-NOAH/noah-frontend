@@ -16,7 +16,7 @@ export class WeatherComponent implements OnInit {
   initialOpacityValue: number = 30;
 
   get displayName(): string {
-    return this.name.replace('-', ' ');
+    return this.name.replace('-', ' + ');
   }
 
   constructor(private pgService: NoahPlaygroundService) {}

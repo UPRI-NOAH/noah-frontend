@@ -147,9 +147,9 @@ export class MapWeatherUpdatesComponent implements OnInit {
     }
     const applyPosition = () => {
       if (window.innerWidth <= 767) {
-        container.style.top = '114px';
+        container.style.top = '287px';
       } else {
-        container.style.top = '80px';
+        container.style.top = '235px';
       }
     };
     applyPosition();
@@ -257,6 +257,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
         maxZoom: 13,
       },
     });
+    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     geocoder.on('result', (e) => {
       this.wuService.setCurrentLocation(e.result['place_name']);
@@ -266,6 +267,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
 
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
+    this.map.addControl(this.geolocateControl, 'top-right');
   }
 
   initGeolocationListener() {
