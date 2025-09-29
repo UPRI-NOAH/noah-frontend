@@ -431,14 +431,6 @@ export class MapWeatherUpdatesComponent implements OnInit {
     );
     this.map.setLayoutProperty('par-outline', 'visibility', visibility);
 
-    // if (shown) {
-    //   this.map.flyTo({
-    //     center: PH_DEFAULT_CENTER,
-    //     zoom: 4.4,
-    //     essential: true,
-    //   });
-    // }
-
     if (!shown) {
       this.closeAllTyphoonPopups();
     }
@@ -470,7 +462,6 @@ export class MapWeatherUpdatesComponent implements OnInit {
   initTyphoonTrackLayers() {
     // 0 - declare the source json files
     const typhoonLayerSourceFile: string =
-      // 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/typhoon_track/BISINGDANAS.geojson';
       'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
     const parOutlineSourceFile: string =
       'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson';
