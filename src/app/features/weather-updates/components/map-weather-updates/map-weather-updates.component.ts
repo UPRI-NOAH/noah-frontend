@@ -19,6 +19,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'noah-map-weather-updates',
   templateUrl: './map-weather-updates.component.html',
@@ -738,20 +739,25 @@ export class MapWeatherUpdatesComponent implements OnInit {
   initWeatherSatellite() {
     const weatherSatelliteMapImage = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        url: [
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari_1.mp4',
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        ],
         type: 'video',
       },
     };
 
     const getWeatherSatelliteSource = (weatherSatelliteMapDetails: {
-      url: string;
+      url: string | string[];
       type: string;
     }): AnySourceData => {
       switch (weatherSatelliteMapDetails.type) {
         case 'video':
           return {
             type: 'video',
-            urls: [weatherSatelliteMapDetails.url],
+            urls: Array.isArray(weatherSatelliteMapDetails.url)
+              ? weatherSatelliteMapDetails.url
+              : [weatherSatelliteMapDetails.url],
             coordinates: [
               [100.0, 29.25], // top-left
               [160.0, 29.25], // top-right
@@ -787,6 +793,24 @@ export class MapWeatherUpdatesComponent implements OnInit {
             'raster-fade-duration': 0,
             'raster-opacity': 0,
           },
+        });
+
+        // Step 3️⃣: Apply iOS playback rules
+        const videos = document.querySelectorAll('video');
+        videos.forEach((v) => {
+          v.setAttribute('muted', '');
+          v.setAttribute('playsinline', '');
+          v.setAttribute('autoplay', '');
+          (v as HTMLVideoElement).muted = true;
+          (v as HTMLVideoElement).playsInline = true;
+          (v as HTMLVideoElement).autoplay = true;
+          (v as HTMLVideoElement).loop = true;
+          (v as HTMLVideoElement).crossOrigin = 'anonymous';
+
+          // Step 4️⃣: Try to start it
+          (v as HTMLVideoElement).play().catch(() => {
+            console.warn('iOS blocked autoplay — user tap required');
+          });
         });
 
         // Combine observables for visibility and opacity

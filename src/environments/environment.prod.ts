@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   mapbox: {
     accessToken:
-      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
+      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZjZoMzh3bzFtbWQzc256NTV1cGh5ZTkifQ.EVtgiCtpLvPa8QQgMmdVBg',
     styles: {
       terrain: 'mapbox://styles/upri-noah/ckupb1t4ybxq517s530madpso',
       satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
