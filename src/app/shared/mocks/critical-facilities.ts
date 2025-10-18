@@ -1,4 +1,4 @@
-import { CircleLayer, LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
+import { CircleLayer, LngLatLike, SymbolLayer, AnySourceData } from 'mapbox-gl';
 
 export type MapStyle = 'terrain' | 'satellite';
 
@@ -9,7 +9,7 @@ export const CRITICAL_FACILITIES_ARR = [
   'school',
 ] as const;
 
-export type CriticalFacility = typeof CRITICAL_FACILITIES_ARR[number];
+export type CriticalFacility = (typeof CRITICAL_FACILITIES_ARR)[number];
 
 export type SampleMarker = {
   coords: LngLatLike;

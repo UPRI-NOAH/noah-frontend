@@ -36,7 +36,19 @@
             ],
             "scripts": [],
             "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json"
+            "ngswConfigPath": "ngsw-config.json",
+            "allowedCommonJsDependencies": [
+              "@mapbox/geojson-area",
+              "@mapbox/mapbox-gl-draw",
+              "@mapbox/mapbox-gl-geocoder",
+              "geojson-equality",
+              "density-clustering",
+              "skmeans",
+              "rbush",
+              "geojson-rbush",
+              "deep-equal",
+              "point-in-polygon"
+            ]
           },
           "configurations": {
             "production": {

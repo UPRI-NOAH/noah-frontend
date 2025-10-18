@@ -46,7 +46,7 @@ html {
 
   input[type='checkbox'] {
     appearance: none;
-    color-adjust: exact;
+    print-color-adjust: exact;
     vertical-align: middle;
     background-origin: border-box;
     user-select: none;
@@ -69,14 +69,12 @@ html {
       background-repeat: no-repeat;
     }
 
-    @media not print {
-      &::-ms-check {
-        border-width: 1px;
-        color: transparent;
-        background: inherit;
-        border-color: inherit;
-        border-radius: inherit;
-      }
+    &::-ms-check {
+      border-width: 1px;
+      color: transparent;
+      background: inherit;
+      border-color: inherit;
+      border-radius: inherit;
     }
 
     &:focus {

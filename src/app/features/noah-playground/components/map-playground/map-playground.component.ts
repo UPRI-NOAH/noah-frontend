@@ -654,8 +654,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
 
               const popupContent = `
@@ -737,8 +737,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
               popUp.setLngLat(coordinates).setHTML(
                 `
@@ -1843,7 +1843,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
-          interactive: true,
         });
 
         // Add line layer
@@ -1870,7 +1869,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           source: boundariesMapSource,
           'source-layer': boundariesObjData.sourceLayer,
           paint: linePaint,
-          interactive: false,
         });
         let municipalTextLayerID;
         let provincialTextLayerID;

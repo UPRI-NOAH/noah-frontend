@@ -16,9 +16,9 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "resolveJsonModule": true,
-    "target": "es2015",
+    "target": "es2020",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "lib": ["es2020", "dom"],
     "paths": {
       "@env/*": ["./src/environments/*"],
       "@assets/*": ["./src/assets/*"],
