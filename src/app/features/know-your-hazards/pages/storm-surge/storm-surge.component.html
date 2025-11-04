@@ -54,9 +54,11 @@
   </div>
 
   <div class="text-gray-800 py-4 mx-8 items-center">
-    <p class="text-black-700">
-      A <b>storm surge</b> is the <b>abnormal rise</b> of sea level resulting
-      from <b>tropical cyclone (storms)</b>.
+    <p class="text-black-700 text-lg">
+      A
+      <b [ngClass]="getExposureClass(exposureLevel$ | async)"> storm surge</b>
+      is the <b>abnormal rise</b> of sea level resulting from
+      <b>tropical cyclone (storms)</b>.
     </p>
   </div>
 
