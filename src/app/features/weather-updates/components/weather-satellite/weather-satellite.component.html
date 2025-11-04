@@ -1,0 +1,43 @@
+<div class="flex items-center pt-2">
+  <div class="inline-flex items-center radio">
+    <input
+      type="radio"
+      class="radio h-4 w-4 text-blue-600"
+      [checked]="isSelected"
+      (change)="selectSatellite()"
+    />
+    <span class="text-xl font-bold capitalize ml-2">{{ name }}</span>
+  </div>
+</div>
+
+<div class="pl-4 mb-2 md:mb-10">
+  <section class="md:px-0 pl-2 md:mt-2">
+    <header class="text-xl font-bold pt-1 mt-2 leading-tight pb-2">
+      Opacity
+    </header>
+    <div class="px-0">
+      <div class="flex items-center pb-2">
+        <div class="text-m f-f-r">{{ label }}</div>
+      </div>
+      <div class="flex">
+        <div class="w-10/12">
+          <input
+            class="w-full swiper-no-swiping"
+            type="range"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            [formControl]="sliderCtrl"
+          />
+          <div class="flex justify-between text-xs text-gray-600 mx-1">
+            <span class="w-8 text-left">{{ min }}</span>
+            <span class="w-8 text-right">{{ max }}</span>
+          </div>
+        </div>
+        <div class="pl-2 w-2/12">
+          {{ sliderCtrl.value }}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,88 @@
+<div class="flex flex-col md:flex-row absolute h-full w-screen">
+  <button
+    class="
+      fixed
+      p-2
+      z-50
+      bg-white
+      text-gray-800
+      shadow-2xl
+      drop-shadow-2xl
+      rounded-t-lg
+      md:rounded-tl-none md:rounded-r-lg md:top-4
+      h-10
+      w-20
+      md:w-auto
+      bottom-0
+      self-center
+      flex flex-col
+      md:self-auto
+      items-center
+      md:items-stretch
+    "
+    *ngIf="btnShowSideBar"
+    (click)="showSideBarMobile()"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 md:hidden animate-bounce"
+      viewBox="0 0 24 30"
+    >
+      <path
+        d="M18.293 16.707L12 10.414l-6.293 6.293a1 1 0 11-1.414-1.414l7-7a1 1 0 011.414 0l7 7a1 1 0 01-1.414 1.414z"
+        fill="#000"
+        fill-rule="nonzero"
+      />
+    </svg>
+  </button>
+  <noah-map-weather-updates class="relative h-full w-full">
+  </noah-map-weather-updates>
+
+  <!-- MOBILE VIEW -->
+
+  <!-- Desktop and Tablet View: Sidebar & Legend with scroll -->
+  <div
+    class="
+      bg-gray-50
+      md:bottom-0
+      bottom-8
+      shadow-md
+      md:h-full md:w-136
+      absolute
+      md:relative
+      h-2/5
+      w-11/12
+      left-1/2
+      md:left-0 md:transform-none
+      -translate-x-1/2
+      transform
+      rounded-2xl
+      md:rounded-none
+      block
+      md:block
+      sm:overflow-auto
+      md:overflow-auto
+    "
+    [style.display]="!sideBarMobile && !desktopView ? 'none' : null"
+  >
+    <!-- Hide Sidebar Button -->
+    <div
+      class="fixed z-50 md:hidden right-2 items-center mt-5"
+      (click)="hideSideBar()"
+    >
+      <svg
+        class="w-6 h-6 cursor-pointer"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path d="M12 16l-8-8h16l-8 8z" />
+      </svg>
+    </div>
+
+    <!-- Sidebar content (survival kit) -->
+    <div class="h-full overflow-auto rounded-2xl">
+      <noah-base></noah-base>
+    </div>
+  </div>
+</div>
