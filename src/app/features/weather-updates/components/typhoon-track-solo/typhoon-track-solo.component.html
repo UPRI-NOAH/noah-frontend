@@ -1,0 +1,29 @@
+<section class="mb-3">
+  <p class="mt-3 italic text-xs tracking-wide">
+    <span class="font-bold">Source: </span>
+    <a href="https://www.panahon.gov.ph/" style="color: blue" target="_blank">
+      PANaHON (DOST-PAGASA)
+    </a>
+  </p>
+</section>
+<div class="pl-4 py-2 flex flex-col">
+  <div class="text-xl font-semibold">Legend:</div>
+  <img
+    src="assets/images/typhoontrack-legend.png"
+    alt="Typhoon Track Legend"
+    class="md:my-2 -ml-4 my-2 w-auto h-auto"
+  />
+  <!-- <div class="text-xl font-semibold">Forecast:</div>
+  <img
+    src="assets/images/typhoontrack-forecast.png"
+    alt="Typhoon Track Forecast"
+    class="md:my-4 mx-auto w-96 h-auto"
+  /> -->
+</div>
+
+<noah-weather-satellite
+  *ngFor="let weatherSat of weatherSatellite"
+  [name]="weatherSat"
+  class="w-full pt-2"
+>
+</noah-weather-satellite>

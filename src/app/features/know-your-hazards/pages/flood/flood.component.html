@@ -54,9 +54,10 @@
   </div>
 
   <div class="text-gray-800 py-4 mx-8 items-center">
-    <p class="text-black-700">
-      <b>Flooding</b> is the overflow of water from a river or another body of
-      water due to heavy rainfall.
+    <p class="text-black-700 text-lg">
+      <b [ngClass]="getExposureClass(exposureLevel$ | async)">Flooding</b> is
+      the overflow of water from a river or another body of water due to heavy
+      rainfall.
     </p>
   </div>
   <div class="items-start mx-8">
