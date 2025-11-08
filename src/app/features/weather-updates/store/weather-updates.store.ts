@@ -15,6 +15,7 @@ export const RainfallContourType = [
   '6hr',
   '12hr',
   '24hr',
+  'forecast',
 ] as const;
 
 export type MapStyle = 'terrain' | 'satellite';
@@ -80,6 +81,7 @@ const createInitialValue = (): WeatherUpdatesState => {
         '6hr': { opacity: 100 },
         '12hr': { opacity: 100 },
         '24hr': { opacity: 100 },
+        forecast: { opacity: 100 },
       },
     },
     typhoonTrack: {

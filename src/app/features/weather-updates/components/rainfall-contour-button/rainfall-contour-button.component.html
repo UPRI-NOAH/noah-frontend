@@ -4,42 +4,91 @@
     class="flex space-x-2 w-auto mb-4 justify-center"
     style="place-content: space-evenly"
   >
-    <div
-      class="
-        bg-white
-        font-semibold
-        text-center
-        rounded-xl
-        border
-        shadow-lg
-        p-2
-        max-w-xs
-        flex-shrink-0
-      "
-      *ngFor="let rainfallContourType of rainfallContourTypes"
-      role="button"
-      [ngClass]="{
-        'border-primary border-4':
-          activeRainfallContourType === rainfallContourType,
-        'border-transparent': activeRainfallContourType !== rainfallContourType
-      }"
-      (click)="selectRainfallContourType(rainfallContourType)"
-    >
-      <img
-        class="w-14 h-14 mx-auto"
-        [src]="getContourIcon(rainfallContourType)"
-        alt="rainfall"
-      />
+    <ng-container *ngFor="let rainfallContourType of rainfallContourTypes">
+      <div
+        class="
+          bg-white
+          font-semibold
+          text-center
+          rounded-xl
+          border
+          shadow-lg
+          p-2
+          max-w-xs
+          flex-shrink-0
+        "
+        role="button"
+        *ngIf="rainfallContourType !== 'forecast'"
+        [ngClass]="{
+          'border-primary border-4':
+            activeRainfallContourType === rainfallContourType,
+          'border-transparent':
+            activeRainfallContourType !== rainfallContourType
+        }"
+        (click)="selectRainfallContourType(rainfallContourType)"
+      >
+        <img
+          class="w-14 h-14 mx-auto"
+          [src]="getContourIcon(rainfallContourType)"
+          alt="rainfall"
+        />
 
-      <h1 class="text-sm text-gray-700 whitespace-nowrap">
-        {{ getLabelMobile(rainfallContourType) }}
-      </h1>
+        <h1 class="text-sm text-gray-700 whitespace-nowrap">
+          {{ getLabelMobile(rainfallContourType) }}
+        </h1>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Separate Forecast Button -->
+<ng-container>
+  <section class="px-5 md:px-0 md:hidden mb-1">
+    <p class="mt-3 italic text-xs tracking-wide">
+      <span class="font-bold">Forecasted Rainfall in Your Area</span>
+    </p>
+  </section>
+</ng-container>
+<div class="flex justify-center md:hidden swiper-no-swiping px-4">
+  <div
+    class="
+      bg-white
+      font-semibold
+      text-center
+      rounded-xl
+      border
+      shadow-lg
+      p-10
+      flex-shrink-0
+      w-full
+    "
+    role="button"
+    [ngClass]="{
+      'border-primary border-4': activeRainfallContourType === 'forecast',
+      'border-transparent': activeRainfallContourType !== 'forecast'
+    }"
+    (click)="selectRainfallContourType('forecast')"
+  >
+    <div class="flex items-center w-full" role="button">
+      <div class="rounded-md">
+        <img
+          class="w-14 h-14 mx-auto"
+          [src]="getContourIcon('forecast')"
+          alt="forecast"
+        />
+      </div>
+      <div class="flex flex-col text-left ml-3">
+        <h1 class="text-lg text-gray-700">Rainfall for Tomorrow</h1>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- DESKTOP VIEW -->
-<div *ngFor="let rainfallContourType of rainfallContourTypes" role="button">
+<div
+  *ngFor="let rainfallContourType of rainfallContourTypes; let i = index"
+  role="button"
+>
   <button
     class="
       hidden
@@ -70,13 +119,17 @@
           alt="rainfall"
         />
       </div>
+
       <div class="flex flex-col text-left ml-3">
         <label
-          class="font-bold text-2xl leading-none f-f-r capitalize"
+          class="font-bold text-2xl leading-none f-f-r"
           for="selected-contour-map-{{ rainfallContourType }}"
         >
-          <span role="button">{{ getLabel(rainfallContourType) }}</span>
+          <span role="button">
+            {{ getLabel(rainfallContourType) }}
+          </span>
         </label>
+
         <div class="uppercase font-bold text-xl leading-none">
           <ng-container *ngIf="isLoading$ | async; else expLevel">
             <span class="text-gray-700">Loading...</span>
@@ -85,18 +138,36 @@
         </div>
       </div>
     </div>
-    <!-- <img class="w-6" src="assets/icons/info.svg" /> -->
   </button>
+
+  <!-- ✅ Insert Forecast label right after the 24hr button -->
+  <ng-container *ngIf="rainfallContourType === '24hr'">
+    <section class="px-5 md:px-0 md:block hidden">
+      <p class="mt-3 italic text-xs tracking-wide">
+        <span class="font-bold">Forecasted Rainfall in Your Area</span>
+      </p>
+    </section>
+  </ng-container>
 </div>
 
-<div class="py-3 md:mb-4">
+<div class="pt-2">
+  <section class="px-6 md:px-0 mt-2 md:mt-0">
+    <header class="text-xl font-bold leading-tight">Legend</header>
+  </section>
+
+  <img
+    style="justify-self: anchor-center"
+    src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
+      selectedRainfallContourType$ | async
+    }}.png"
+  />
+</div>
+
+<div class="md:mb-4">
   <section class="px-6 md:px-0 mt-2 md:mt-4">
-    <header class="text-xl font-bold leading-tight pb-2">Opacity</header>
+    <header class="text-xl font-bold leading-tight">Opacity</header>
 
     <div class="px-6">
-      <div class="flex items-center pb-2">
-        <div class="text-m f-f-r">{{ label }}</div>
-      </div>
       <div class="flex">
         <div class="w-10/12">
           <input
@@ -121,17 +192,4 @@
       </div>
     </div>
   </section>
-</div>
-
-<div class="mb-10 pt-2">
-  <section class="px-6 md:px-0 mt-2 md:mt-0">
-    <header class="text-xl font-bold leading-tight pb-2">Legend</header>
-  </section>
-
-  <img
-    style="justify-self: anchor-center"
-    src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
-      selectedRainfallContourType$ | async
-    }}.png"
-  />
 </div>

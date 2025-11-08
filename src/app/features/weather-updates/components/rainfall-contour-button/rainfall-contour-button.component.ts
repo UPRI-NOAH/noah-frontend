@@ -29,7 +29,9 @@ export class RainfallContourButtonComponent implements OnInit {
     '6hr',
     '12hr',
     '24hr',
+    'forecast',
   ];
+
   labelRainfallContourTypes: string[] = [];
   activeRainfallContourType: RainfallContourTypes = '1hr';
   shown$: Observable<boolean>;
@@ -80,8 +82,12 @@ export class RainfallContourButtonComponent implements OnInit {
   }
 
   getLabel(type: RainfallContourTypes): string {
+    if (type === 'forecast') {
+      return 'Rainfall for Tomorrow';
+    }
+
     const number = type.replace(/[^0-9]/g, '');
-    const label = +number === 1 ? 'hour' : 'hours';
+    const label = +number === 1 ? 'Hour' : 'Hours';
     return `${number} ${label}`;
   }
 
