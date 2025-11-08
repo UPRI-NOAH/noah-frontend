@@ -122,7 +122,11 @@
 
       <div class="flex flex-col text-left ml-3">
         <label
-          class="font-bold text-2xl leading-none f-f-r"
+          [ngClass]="{
+            'text-lg lg:text-xl': rainfallContourType === 'forecast',
+            'text-2xl': rainfallContourType !== 'forecast'
+          }"
+          class="font-bold leading-none f-f-r"
           for="selected-contour-map-{{ rainfallContourType }}"
         >
           <span role="button">
