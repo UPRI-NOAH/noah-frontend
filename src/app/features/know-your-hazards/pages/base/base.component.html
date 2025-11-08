@@ -92,9 +92,7 @@
     </p>
     <p>
       Click
-      <a routerLink="/bibliography" target="_blank" class="text-primary"
-        >here</a
-      >
+      <a [href]="bibliographyUrl" target="_blank" class="text-primary">here</a>
       for the methods used.
     </p>
     <p class="mt-2 text-xs tracking-wide">
@@ -240,8 +238,11 @@
         and historical data.
       </p>
       <p>
-        Click <a routerLink="/bibliography" class="text-primary">here</a> for
-        the methods used.
+        Click
+        <a [href]="bibliographyUrl" target="_blank" class="text-primary"
+          >here</a
+        >
+        for the methods used.
       </p>
       <p class="mt-2 text-xs tracking-wide">
         <span class="font-bold">Disclaimer:</span> Project NOAH is still in beta
