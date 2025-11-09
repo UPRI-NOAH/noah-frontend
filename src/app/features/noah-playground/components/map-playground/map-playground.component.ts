@@ -284,7 +284,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               const coords = document.getElementById('coordinates');
               const LngLat = this.centerMarker.getLngLat();
               coords.style.display = 'block';
-              coords.innerHTML = `Lng: ${LngLat.lng.toFixed(
+              coords.innerHTML = `Lon: ${LngLat.lng.toFixed(
                 5
               )}<br />Lat: ${LngLat.lat.toFixed(5)}`;
               this.mapService.dragReverseGeocode(LngLat.lat, LngLat.lng);
@@ -333,14 +333,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       unit: 'metric',
     });
 
-    // Create a custom container
+    // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    //container.style.top = '242px';       // middle vertically
-    container.style.right = '10px'; // adjust distance from right edge
-    container.style.transform = 'translateY(-50%)'; // center properly
-    container.style.padding = '8px'; // custom padding
+    container.style.top = '50%'; // vertically centered
+    container.style.right = '10px'; // some margin from right edge
+    container.style.transform = 'translateY(-50%)';
+    container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
     container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
@@ -348,14 +348,28 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // Append container to the map
     this.map.getContainer().appendChild(container);
 
-    // Mount scale control inside it
+    // Add the scale control using Mapbox’s API
     const scaleEl = scale.onAdd(this.map);
     container.appendChild(scaleEl);
 
-    // Adjust font size of scale text
-    (scaleEl as HTMLElement).style.fontSize = '16px'; // make text bigger
-    (scaleEl as HTMLElement).style.lineHeight = '20px'; // keep spacing nice
-    (scaleEl as HTMLElement).style.fontWeight = 'bold'; // optional
+    // Style adjustments
+    const scaleElem = scaleEl as HTMLElement;
+    scaleElem.style.fontSize = '12px';
+    scaleElem.style.lineHeight = '20px';
+    scaleElem.style.fontWeight = 'bold';
+
+    // Align the text and scale bar like Mapbox example
+    scaleElem.style.display = 'flex';
+    scaleElem.style.flexDirection = 'column'; // puts number above the bar
+    scaleElem.style.alignItems = 'center'; // center horizontal alignment
+
+    if (scaleElem.style.flexDirection === 'row') {
+      // find the label element inside the scaleEl
+      const label = scaleElem.querySelector('div');
+      if (label) {
+        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
+      }
+    }
 
     const applyPosition = () => {
       if (window.innerWidth <= 767) {
@@ -2382,7 +2396,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           'case',
           ['==', ['get', 'layer'], 'PAR'],
           ['literal', [1, 0]], // Dashed lines for PAR only
-          ['literal', [4, 2]], // Solid lines for philoutline (1px dash, 0px gap = solid)
+          ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
         ],
       },
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
