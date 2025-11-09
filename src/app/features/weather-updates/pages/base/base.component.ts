@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
 import { Observable } from 'rxjs';
 import { SwiperComponent } from 'swiper/angular';
-import Swiper from 'swiper';
+import Swiper, { SwiperOptions } from 'swiper';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-base',
@@ -12,22 +13,21 @@ import Swiper from 'swiper';
 })
 export class BaseComponent implements OnInit {
   currentLocation$: Observable<string>;
-  initialSlide: number | undefined; // start as undefined
 
   @ViewChild('swiperRef', { static: false }) swiper?: SwiperComponent;
 
+  config: SwiperOptions = {
+    slidesPerView: 1,
+  };
   constructor(
     private wuService: WeatherUpdatesService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
     this.currentLocation$ = this.wuService.currentLocation$;
-    this.route.queryParams.subscribe((params) => {
-      const slide = Number(params['slide']);
-      this.initialSlide = slide === 1 ? 1 : 0;
-    });
   }
 
   selectPlace(selectedPlace) {
@@ -51,24 +51,44 @@ export class BaseComponent implements OnInit {
     this.wuService.setCurrentCoords({ lat, lng });
   }
 
+  ngAfterViewInit() {
+    if (this.swiper?.swiperRef) {
+      // 🔹 Handle swipe events → update URL
+      this.swiper.swiperRef.on('slideChange', () => {
+        const activeIndex = this.swiper?.swiperRef.activeIndex ?? 0;
+        this.ngZone.run(() => {
+          if (activeIndex === 0) {
+            this.router.navigateByUrl('/weather-updates/rainfall-contour');
+          } else if (activeIndex === 1) {
+            this.router.navigateByUrl('/weather-updates/typhoon-track');
+          }
+        });
+      });
+
+      // 🔹 Handle URL change → update swiper index
+      this.router.events
+        .pipe(filter((event) => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
+          if (!this.swiper?.swiperRef) return;
+
+          this.ngZone.runOutsideAngular(() => {
+            if (event.url.includes('/weather-updates/typhoon-track')) {
+              this.swiper?.swiperRef.slideTo(1);
+            } else if (
+              event.url.includes('/weather-updates/rainfall-contour')
+            ) {
+              this.swiper?.swiperRef.slideTo(0);
+            }
+          });
+        });
+    }
+  }
+
   slideNext() {
     this.swiper?.swiperRef.slideNext();
-    this.router.navigate(['weather-updates/typhoon-track']);
   }
 
   slidePrev() {
     this.swiper?.swiperRef.slidePrev();
-    this.router.navigate(['weather-updates/rainfall-contour']);
-  }
-
-  onSlideChange(swiperComp: SwiperComponent) {
-    const swiper: Swiper = swiperComp.swiperRef; // ✅ Correct way
-    const activeIndex = swiper.activeIndex;
-
-    if (activeIndex === 0) {
-      this.router.navigate(['weather-updates/rainfall-contour']);
-    } else if (activeIndex === 1) {
-      this.router.navigate(['weather-updates/typhoon-track']);
-    }
   }
 }

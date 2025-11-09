@@ -46,13 +46,10 @@
   <!-- NOTES
   <noah-rainfall-contour-button></noah-rainfall-contour-button> -->
   <swiper
-    *ngIf="initialSlide !== null"
     #swiperRef
     [pagination]="true"
     [navigation]="false"
     [spaceBetween]="16"
-    [initialSlide]="initialSlide"
-    (slideChange)="onSlideChange(swiperRef)"
   >
     <!-- Slide 0: Rainfall -->
     <ng-template swiperSlide>
