@@ -326,35 +326,40 @@ export class MapWeatherUpdatesComponent implements OnInit {
         url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
         type: 'image',
       },
+      forecast: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        type: 'image',
+      },
     };
 
-    const getRainfallContourSource = (rainfallContourMapDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
+    const getRainfallContourSource = (
+      key: string,
+      rainfallContourMapDetails: { url: string; type: string }
+    ): AnySourceData => {
       switch (rainfallContourMapDetails.type) {
         case 'image':
+          // Use special coordinates for forecast
+          const coordinates =
+            key === 'forecast'
+              ? [
+                  [116.855, 19.402], // top-left
+                  [127.055, 19.402], // top-right
+                  [127.055, 5.205], // bottom-right
+                  [116.855, 5.205], // bottom-left
+                ]
+              : [
+                  [115.35, 21.55], // top-left
+                  [128.25, 21.55], // top-right
+                  [128.25, 3.85], // bottom-right
+                  [115.35, 3.85], // bottom-left
+                ];
+
           return {
             type: 'image',
             url: rainfallContourMapDetails.url,
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
+            coordinates,
           };
-        case 'video':
-          return {
-            type: 'video',
-            urls: [rainfallContourMapDetails.url],
-            coordinates: [
-              [115.35, 21.55], // top-left
-              [128.25, 21.55], // top-right
-              [128.25, 3.85], // bottom-right
-              [115.35, 3.85], // bottom-left
-            ],
-          };
+
         default:
           throw new Error('[Weather Updates] Invalid rainfall contour type');
       }
@@ -366,7 +371,10 @@ export class MapWeatherUpdatesComponent implements OnInit {
           rainfallContourMapImages[rainfallContourType];
         this.map.addSource(
           rainfallContourType,
-          getRainfallContourSource(rainfallContourMapDetails)
+          getRainfallContourSource(
+            rainfallContourType,
+            rainfallContourMapDetails
+          )
         );
 
         this.map.addLayer({
@@ -541,6 +549,17 @@ export class MapWeatherUpdatesComponent implements OnInit {
           feature.properties?.typhoon_type
         );
         const datetime = feature.properties?.datetime;
+
+        // Format date/time to 'MMM DD, YYYY
+        const formattedDate = new Date(datetime).toLocaleString('en-PH', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Manila',
+        });
         const radius = feature.properties?.radius;
         const formattedTyphoonName = typhoonName
           .replace('{', '(')
@@ -554,7 +573,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
               <strong>Classification:</strong> ${typhoonClass}
             </p>
             <p style="margin: 5px 0; font-size: 12px; color: #666;">
-              <strong>Date/Time:</strong> ${datetime}
+              <strong>Date/Time:</strong> ${formattedDate}
             </p>
             ${
               radius && radius > 0
