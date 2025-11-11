@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable } from 'rxjs';
 
@@ -10,11 +11,15 @@ import { Observable } from 'rxjs';
 export class BaseComponent implements OnInit {
   currentLocation$: Observable<string>;
   currentPage: number = 1;
-
-  constructor(private kyhService: KyhService) {}
+  bibliographyUrl: string;
+  constructor(private kyhService: KyhService, private router: Router) {}
 
   ngOnInit(): void {
     this.currentLocation$ = this.kyhService.currentLocation$;
+    // Get the absolute URL for the route
+    this.bibliographyUrl = this.router.serializeUrl(
+      this.router.createUrlTree(['/bibliography'])
+    );
   }
 
   selectPlace(selectedPlace) {

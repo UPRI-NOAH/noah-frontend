@@ -49,12 +49,17 @@ export class TyphoonTrackGroupComponent implements OnInit {
     this.wuService.toggleWeatherSatelliteVisibility();
 
     const selectedType = this.wuService.getSelectedRainfallContourType();
+
+    // Zoom when shown
     if (this.shown) {
       this.wuService.triggerZoomToTyphoon();
     }
 
-    // If on typhoon track page
-    if (this.router.url === '/weather-updates/typhoon-track') {
+    // Update opacity based on route
+    if (
+      this.router.url === '/weather-updates/typhoon-track' ||
+      this.router.url === '/weather-updates/rainfall-contour'
+    ) {
       if (this.shown) {
         this.wuService.setRainfallContourOpacity(0, selectedType);
       } else {
@@ -62,13 +67,11 @@ export class TyphoonTrackGroupComponent implements OnInit {
       }
     }
 
-    // If on rainfall contour page
-    if (this.router.url === '/weather-updates/rainfall-contour') {
-      if (this.shown) {
-        this.wuService.setRainfallContourOpacity(0, selectedType);
-      } else {
-        this.wuService.setRainfallContourOpacity(100, selectedType);
-      }
+    // ✅ Update URL based on checkbox state
+    if (this.shown) {
+      this.router.navigate(['/weather-updates/typhoon-track']);
+    } else {
+      this.router.navigate(['/weather-updates/rainfall-contour']);
     }
   }
 
