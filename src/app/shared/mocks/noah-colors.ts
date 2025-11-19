@@ -1,4 +1,5 @@
 import { SensorType } from '@features/noah-playground/services/sensor.service';
+import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
 import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 
 export const NOAH_COLORS = {
@@ -60,4 +61,13 @@ export const SENSOR_COLORS: Record<SensorType, string> = {
 export const IOT_SENSOR_COLORS: Record<QuezonCitySensorType, string> = {
   rain: '#06b9e6',
   flood: '#519259',
+};
+export const TYPHOON_TRACK_COLORS: Record<TyphoonTrackType, string> = {
+  pagasa: '#0099cc',
+  hko: '#cc0000',
+  jtwc: '#990099',
+  jma: '#cc6600',
+  nmc: '#006666',
+  cwa: '#009900',
+  kma: '#999900',
 };

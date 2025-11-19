@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
-
+import { TyphoonTrackType } from '../services/typhoon-track.service';
 /**
  * Official geographic center of the Philippines.
  * Located in the Mindoro Strait, 12 kilometers
@@ -36,6 +36,8 @@ export type BarangayBoundary = 'brgy-boundary';
 export type RiskAssessmentRainType = 'rain-forecast';
 
 export type RiskAssessmentExposureType = 'population';
+
+//xport type TyphoonTrackType = 'pagasa' | 'hko' | 'jtwc' | 'jma' | 'nmc' | 'cwa' | 'kma';
 
 export type FloodReturnPeriod =
   | 'flood-return-period-5'
@@ -251,6 +253,17 @@ export type BoundariesState = {
   opacity: number;
 };
 
+export type TyphoonTrackTypeState = {
+  fetched: boolean;
+  shown: boolean;
+};
+
+export type TyphoonTrackState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<TyphoonTrackType, TyphoonTrackTypeState>;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -279,6 +292,7 @@ type NoahPlaygroundState = {
   };
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
+  typhoonTrack: TyphoonTrackState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -534,6 +548,40 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     selectedType: '1hr',
+  },
+  typhoonTrack: {
+    shown: false,
+    expanded: false,
+    types: {
+      pagasa: {
+        fetched: false,
+        shown: true,
+      },
+      hko: {
+        fetched: false,
+        shown: false,
+      },
+      jtwc: {
+        fetched: false,
+        shown: false,
+      },
+      jma: {
+        fetched: false,
+        shown: false,
+      },
+      nmc: {
+        fetched: false,
+        shown: false,
+      },
+      cwa: {
+        fetched: false,
+        shown: false,
+      },
+      kma: {
+        fetched: false,
+        shown: false,
+      },
+    },
   },
 });
 

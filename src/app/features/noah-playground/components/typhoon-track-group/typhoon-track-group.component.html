@@ -1,0 +1,102 @@
+<div class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6">
+  <div
+    (click)="toggleExpanded()"
+    class="select-none flex items-center justify-between cursor-pointer"
+  >
+    <div class="flex items-center">
+      <label class="inline-flex items-center checkbox">
+        <input
+          type="checkbox"
+          class="checkbox h-5 w-5 text-blue-600"
+          [checked]="shown$ | async"
+          (click)="toggleShown($event)"
+        />
+      </label>
+
+      <div class="flex flex-col ml-3">
+        <div class="text-xl leading-none font-bold">Typhoon Track</div>
+      </div>
+    </div>
+    <div class="cursor-pointer">
+      <button
+        class="
+          w-6
+          h-6
+          focus:outline-none
+          flex
+          items-center
+          justify-center
+          rounded-full
+        "
+      >
+        <svg
+          [class.hidden]="expanded$ | async"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1000 1000"
+          width="18"
+          height="12"
+        >
+          <path
+            d="M283.7 10l-58.4 58.4L656 500 225.3 931.6l58.4 58.4 491-490-491-490z"
+          />
+        </svg>
+        <svg
+          [class.hidden]="!(expanded$ | async)"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 18 12"
+          fill="none"
+        >
+          <path
+            d="M9.00002 4.73399L2.40001 11.334L0.514683 9.44865L9.00002 0.963319L17.4854 9.44865L15.6 11.334L9.00002 4.73399Z"
+            fill="#4A5568"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
+    <hr class="pb-0" />
+    <div class="pl-0">
+      <div class="items-center">
+        <!-- Typhoon Track Legend START -->
+        <noah-typhoon-track-solo
+          *ngFor="let typhoonTrackType of typhoonTrackTypes"
+          [typhoonTrackType]="typhoonTrackType"
+        >
+        </noah-typhoon-track-solo>
+
+        <section class="px-5 md:px-0 mb-1">
+          <p class="italic text-xs tracking-wide mb-2">
+            <span class="font-bold">Source:</span>
+            <a
+              href="https://www.panahon.gov.ph/"
+              target="_blank"
+              class="text-primary"
+            >
+              PANaHON (DOST-PAGASA)
+            </a>
+            and
+            <a
+              href="https://typhoon2000.ph/"
+              target="_blank"
+              class="text-primary"
+            >
+              Typhoon 2000
+            </a>
+          </p>
+        </section>
+
+        <div class="py-2 flex flex-col">
+          <div class="text-xl font-semibold">Legend:</div>
+          <img
+            src="assets/images/typhoontrack-legend.png"
+            alt="Typhoon Track Legend"
+            class="ml-2 md:my-2 my-2 w-auto h-auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

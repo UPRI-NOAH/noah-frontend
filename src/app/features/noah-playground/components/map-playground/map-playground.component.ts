@@ -105,9 +105,15 @@ import {
   NOAH_COLORS,
   IOT_SENSOR_COLORS,
   SENSOR_COLORS,
+  TYPHOON_TRACK_COLORS,
 } from '@shared/mocks/noah-colors';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
+import {
+  TYPHOON,
+  TyphoonTrackService,
+  TyphoonTrackType,
+} from '@features/noah-playground/services/typhoon-track.service';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -183,7 +189,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     private sensorService: SensorService,
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private typhoonService: TyphoonTrackService
   ) {
     // this.getScreenSize();
   }
@@ -224,6 +231,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initBarangayBoundary();
         this.initAffectedExposure();
         this.initRainForcast();
+        this.initTyphoonTrack();
+        this.initPar();
+        this.initTyphoonForecast();
       });
   }
 
@@ -717,7 +727,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             });
           } else {
             this.map.on('mouseover', qcSensorType, (e) => {
-              console.log('entered MOUSEOVER on screenWidth NOT 768');
               const coordinates = (
                 e.features[0].geometry as any
               ).coordinates.slice();
@@ -1585,6 +1594,60 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  initPar() {
+    this.map.addSource('par-outline', {
+      type: 'geojson',
+      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson',
+    });
+
+    this.map.addLayer({
+      id: 'par-outline-layer',
+      type: 'line',
+      source: 'par-outline',
+      paint: {
+        'line-color': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          '#FFFFFF', // White for PAR
+          ['==', ['get', 'layer'], 'philoutline'],
+          '#000000', // Black for philoutline
+          '#FFFFFF', // Default to white
+        ],
+        'line-width': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          3, // Thicker line for PAR
+
+          ['==', ['get', 'layer'], 'philoutline'],
+          2, // Thinner line for philoutline
+          2, // Default line width
+        ],
+        'line-opacity': 0.8,
+        'line-dasharray': [
+          'case',
+          ['==', ['get', 'layer'], 'PAR'],
+          ['literal', [1, 0]], // Dashed lines for PAR only
+          ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
+        ],
+      },
+      filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
+    });
+
+    const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+      shareReplay(1)
+    );
+    const groupShown$ = this.pgService.typhoonTrackGroupShown$.pipe(
+      shareReplay(1)
+    );
+
+    combineLatest([allShown$, groupShown$])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([allShown, groupShown]) => {
+        const opacity = +(allShown || groupShown);
+        this.map.setPaintProperty('par-outline-layer', 'line-opacity', opacity);
+      });
+  }
+
   // END OF QC IOT
   // initSensors() {
   //   SENSORS.forEach((sensorType) => {
@@ -1633,6 +1696,378 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   //       );
   //   });
   // }
+
+  initRainForcast() {
+    const rainForcastImage = {
+      'rain-forecast': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        type: 'image',
+      },
+    };
+
+    const getRainForcastSource = (rainForcastDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (rainForcastDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: rainForcastDetails.url,
+            coordinates: [
+              [116.855, 19.402],
+              [127.055, 19.402],
+              [127.055, 5.205],
+              [116.855, 5.205],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Rain Forcast');
+      }
+    };
+    Object.keys(rainForcastImage).forEach((rainType) => {
+      const rainForcastDetails = rainForcastImage[rainType];
+      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
+
+      this.map.addLayer({
+        id: rainType,
+        type: 'raster',
+        source: rainType,
+        paint: {
+          'raster-fade-duration': 0,
+          'raster-opacity': 1,
+        },
+      });
+
+      const soloShown$ = this.pgService.rainForcastShown$.pipe(shareReplay(1));
+
+      const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
+        shareReplay(1)
+      );
+
+      const rainForeCast$ = this.pgService
+        .getRainRiskAssessment$('rain-forecast')
+        .pipe(shareReplay(1));
+
+      combineLatest([allShown$, soloShown$, rainForeCast$])
+        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+        .subscribe(([allShown, groupShown, rainForeCast]) => {
+          let newOpacity = 0;
+          if (allShown && groupShown) {
+            newOpacity = rainForeCast.opacity / 100;
+          }
+          // let opacity = +(allShown && groupShown);
+          this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
+        });
+    });
+  }
+
+  initTyphoonForecast() {
+    TYPHOON.forEach((typhoonType) => {
+      this.typhoonService
+        .getTyphoonTracks(typhoonType)
+        .pipe(first())
+        .toPromise()
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // Line Layer
+          this.map.addLayer({
+            id: `${typhoonType}-line`,
+            type: 'line',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            filter: [
+              'all',
+              ['==', ['geometry-type'], 'LineString'],
+              ['==', ['get', 'agency'], typhoonType.toUpperCase()],
+            ],
+            paint: {
+              'line-width': 4,
+              'line-color': TYPHOON_TRACK_COLORS[typhoonType],
+              'line-opacity': 1,
+            },
+          });
+
+          // Point Layer
+          this.map.addLayer({
+            id: `${typhoonType}-points`,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data,
+            },
+            filter: [
+              'all',
+              ['==', ['geometry-type'], 'Point'],
+              ['==', ['get', 'agency'], typhoonType.toUpperCase()],
+            ],
+            paint: {
+              'circle-radius': 7,
+              'circle-color': TYPHOON_TRACK_COLORS[typhoonType],
+              'circle-opacity': 1,
+            },
+          });
+
+          // Opacity subscription
+          combineLatest([
+            this.pgService.typhoonTrackGroupShown$,
+            this.pgService.getTyphoonTrackShown$(typhoonType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              this.map.setPaintProperty(
+                `${typhoonType}-line`,
+                'line-opacity',
+                +(groupShown && soloShown)
+              );
+
+              this.map.setPaintProperty(
+                `${typhoonType}-points`,
+                'circle-opacity',
+                +(groupShown && soloShown)
+              );
+            });
+
+          this.pgService.setTyphoonTypeFetched(typhoonType, true);
+          this.showTyphoon(typhoonType);
+        })
+        .catch(() =>
+          console.error(
+            `Unable to fetch data from TYPHOON 2000 for typhoon tracks of type "${typhoonType}"`
+          )
+        );
+    });
+  }
+
+  initTyphoonTrack() {
+    const typhoonLayerSourceFile: string =
+      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
+
+    // 1 - load typhoon track layers icons
+    const _this = this;
+    const typhoonLegend = {
+      LPA: 'assets/legends/typhoon-track/LPA.png',
+      STS: 'assets/legends/typhoon-track/STS.png',
+      STY: 'assets/legends/typhoon-track/STY.png',
+      TD: 'assets/legends/typhoon-track/TD.png',
+      TS: 'assets/legends/typhoon-track/TS.png',
+      TY: 'assets/legends/typhoon-track/TY.png',
+    };
+
+    // add typhoon legend.
+    Object.entries(typhoonLegend).forEach(([legend, url]) => {
+      this.map.loadImage(url, (error, image) => {
+        if (error) throw error;
+        this.map.addImage(`custom-marker-${legend}`, image);
+      });
+    });
+
+    // 2 - add map sources.
+    const typhoonMapSource = `typhoon-track-map-source`;
+    _this.map.addSource(typhoonMapSource, {
+      type: 'geojson',
+      data: typhoonLayerSourceFile,
+    });
+
+    // 3 - add point layer.
+    this.map.addLayer({
+      id: 'typhoon-track-icon',
+      type: 'symbol',
+      source: typhoonMapSource,
+      paint: {
+        'icon-opacity': 1,
+        'text-opacity': 1,
+        'text-color': _this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
+        'text-halo-color':
+          _this.mapStyle === 'terrain'
+            ? 'rgba(255, 255, 255, 1)'
+            : 'rgba(0, 0, 0, 1)',
+        'text-halo-width': 0.5,
+        'text-halo-blur': 0.5,
+      },
+
+      layout: {
+        'icon-image': [
+          'concat',
+          'custom-marker-',
+          ['concat', ['get', 'typhoon_type']],
+        ],
+        'icon-allow-overlap': true,
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
+      },
+      filter: ['==', ['geometry-type'], 'Point'],
+    });
+
+    // Click events.
+    this.map.on('click', 'typhoon-track-icon', (e) => {
+      if (e.features && e.features.length > 0) {
+        // Close all existing popups before opening a new one
+        this.closeAllTyphoonPopups();
+
+        const feature = e.features[0];
+        const coordinates = (feature.geometry as any).coordinates.slice();
+        const typhoonName = feature.properties?.international_name;
+        const typhoonClass = this.getTyphoonClassFullName(
+          feature.properties?.typhoon_type
+        );
+        const datetime = feature.properties?.datetime;
+
+        // Format date/time to 'MMM DD, YYYY
+        const formattedDate = new Date(datetime).toLocaleString('en-PH', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Manila',
+        });
+        const radius = feature.properties?.radius;
+        const formattedTyphoonName = typhoonName
+          .replace('{', '(')
+          .replace('}', ')');
+
+        // HTML of the popup
+        const popupContent = `
+              <div>
+                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
+                <p style="margin: 5px 0; font-size: 12px; color: #666;">
+                  <strong>Classification:</strong> ${typhoonClass}
+                </p>
+                <p style="margin: 5px 0; font-size: 12px; color: #666;">
+                  <strong>Date/Time:</strong> ${formattedDate}
+                </p>
+                ${
+                  radius && radius > 0
+                    ? `<p style="margin: 5px 0; font-size: 12px; color: #666;">
+                         <strong>Forecast Radius:</strong> ${radius} km
+                       </p>`
+                    : `<p style="margin: 5px 0; font-size: 12px; color: #2563eb; font-weight: 500;">
+                         Actual Position
+                       </p>`
+                }
+              </div>
+            `;
+
+        // if map is zoomed out such that multiple
+        // copies of the feature are visible, popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Create a new popup instance for each click
+        const popup = new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: false,
+          offset: 25,
+        })
+          .setLngLat(coordinates)
+          .setHTML(popupContent)
+          .addTo(this.map);
+
+        // Store the popup reference
+        this.activePopups.push(popup);
+
+        // event listener for the close button
+        popup.getElement().addEventListener('click', (event) => {
+          if ((event.target as HTMLElement).classList.contains('close-popup')) {
+            popup.remove();
+            // Remove from active popups array
+            const index = this.activePopups.indexOf(popup);
+            if (index > -1) {
+              this.activePopups.splice(index, 1);
+            }
+          }
+        });
+      }
+    });
+
+    // change cursor when hovering over icon.
+    this.map.on('mouseenter', 'typhoon-track-icon', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', 'typhoon-track-icon', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
+
+    // Add forecast circle fill layer
+    this.map.addLayer({
+      id: 'typhoon-forecast-circles-fill',
+      type: 'fill',
+      source: typhoonMapSource,
+      paint: {
+        'fill-color': 'rgba(96, 96, 96, 0.5)', // always same color
+        'fill-opacity': 1,
+      },
+      filter: [
+        'all',
+        ['==', ['get', 'type'], 'smoothed_hull'],
+        ['==', ['geometry-type'], 'Polygon'],
+        ['>', ['get', 'radius'], 0],
+      ],
+    });
+
+    // Add forecast circle outline layer
+    this.map.addLayer({
+      id: 'typhoon-forecast-circles-outline',
+      type: 'line',
+      source: typhoonMapSource,
+      paint: {
+        'line-color': '#606060', // always same color
+        'line-width': 0.9,
+        'line-opacity': 0,
+      },
+      filter: [
+        'all',
+        ['==', ['get', 'type'], 'smoothed_hull'],
+        ['==', ['geometry-type'], 'Polygon'],
+        ['>', ['get', 'radius'], 0],
+      ],
+    });
+
+    // 5 - Add line layer
+    this.map.addLayer({
+      id: 'typhoon-track-line',
+      type: 'line',
+      source: typhoonMapSource,
+      paint: {
+        'line-color': '#000000',
+        'line-width': 2,
+      },
+      filter: ['==', ['get', 'type'], 'track_line'],
+    });
+
+    // 7 - listen to the values from the store.
+
+    combineLatest([this.pgService.typhoonTrackGroupShown$])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([soloShown]) => {
+        const visibility = soloShown ? 'visible' : 'none';
+        this.map.setLayoutProperty(
+          'typhoon-track-icon',
+          'visibility',
+          visibility
+        );
+        this.map.setLayoutProperty(
+          'typhoon-track-line',
+          'visibility',
+          visibility
+        );
+        this.map.setLayoutProperty(
+          'typhoon-forecast-circles-fill',
+          'visibility',
+          visibility
+        );
+        this.map.setLayoutProperty(
+          'typhoon-forecast-circles-outline',
+          'visibility',
+          visibility
+        );
+      });
+  }
 
   initVolcanoes() {
     // 0 - declare the source json files
@@ -1785,6 +2220,102 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  initWeatherSatelliteLayers() {
+    const weatherSatelliteImages = {
+      himawari: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        type: 'video',
+      },
+      'himawari-GSMAP': {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        type: 'video',
+      },
+    };
+
+    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (weatherSatelliteDetails.type) {
+        case 'video':
+          return {
+            type: 'video',
+            urls: [weatherSatelliteDetails.url],
+            coordinates: [
+              [100.0, 29.25], // top-left
+              [160.0, 29.25], // top-right
+              [160.0, 5.0], // bottom-right
+              [100.0, 5.0], // bottom-left
+            ],
+          };
+        default:
+          throw new Error(
+            '[MapPlayground] Unable to get weather satellite source'
+          );
+      }
+    };
+
+    Object.keys(weatherSatelliteImages).forEach(
+      (weatherType: WeatherSatelliteType) => {
+        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
+
+        // 1. Add source per weather satellite type
+        this.map.addSource(
+          weatherType,
+          getWeatherSatelliteSource(weatherSatelliteDetails)
+        );
+
+        // 2. Add layer per weather satellite source
+        this.map.addLayer({
+          id: weatherType,
+          type: 'raster',
+          source: weatherType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+        //   distinctUntilChanged(),
+        //   tap(() => {
+        //     this.map.flyTo({
+        //       center: PH_DEFAULT_CENTER,
+        //       zoom: 4,
+        //       essential: true,
+        //     });
+        //   }),
+        //   shareReplay(1)
+        // );
+
+        // 3. Check for group and individual visibility and opacity
+        const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          shareReplay(1)
+        );
+        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
+          shareReplay(1)
+        );
+        const weatherTypeOpacity$ = this.pgService
+          .getWeatherSatellite$(weatherType)
+          .pipe(
+            map((weather) => weather.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
+            let opacity = +(allShown && selectedWeather === weatherType);
+            if (opacity) {
+              opacity = weatherTypeOpacity / 100;
+            }
+
+            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
+          });
+      }
+    );
   }
 
   // start of boundaries
@@ -2146,6 +2677,88 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     this.sensorChartService.showChart(chart, sensorChartOpts);
   }
 
+  showTyphoon(typhoonType: TyphoonTrackType) {
+    const pointLayerId = `${typhoonType}-points`;
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    });
+
+    // Keep references to the listeners
+    let mouseOverListener: (e: any) => void;
+    let mouseOutListener: (e: any) => void;
+
+    combineLatest([
+      this.pgService.typhoonTrackGroupShown$,
+      this.pgService.getTyphoonTrackShown$(typhoonType),
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([groupShown, soloShown]) => {
+        const visible = groupShown && soloShown;
+
+        // Remove previous listeners if they exist
+        if (mouseOverListener)
+          this.map.off('mouseover', pointLayerId, mouseOverListener);
+        if (mouseOutListener)
+          this.map.off('mouseout', pointLayerId, mouseOutListener);
+
+        if (visible) {
+          mouseOverListener = (e: any) => {
+            popup.remove(); // Always remove previous popup
+
+            const feature = e.features[0];
+            const coordinates = (feature.geometry as any).coordinates.slice();
+            const internationalName = feature.properties.international_name;
+            const agencyName = feature.properties.agency;
+            const windSpeed = feature.properties.windspeed;
+            const status = feature.properties.status;
+            const datetime = feature.properties?.datetime;
+
+            const fixed = datetime.replace(/T(\d+)-(\d+)-(\d+)/, 'T$1:$2:$3');
+            const formattedDate = new Date(fixed).toLocaleString('en-PH', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+              timeZone: 'Asia/Manila',
+            });
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            this.map.getCanvas().style.cursor = 'pointer';
+
+            popup
+              .setLngLat(coordinates)
+              .setHTML(
+                `
+              <strong>Typhoon name: ${internationalName}</strong><br>
+              Windspeed: ${windSpeed} kt<br>
+              Agency: ${agencyName}<br>
+              Status: ${status}<br>
+              Time: ${formattedDate}
+            `
+              )
+              .addTo(this.map);
+          };
+
+          mouseOutListener = () => {
+            popup.remove();
+            this.map.getCanvas().style.cursor = '';
+          };
+
+          this.map.on('mouseover', pointLayerId, mouseOverListener);
+          this.map.on('mouseout', pointLayerId, mouseOutListener);
+        } else {
+          popup.remove();
+          this.map.getCanvas().style.cursor = '';
+        }
+      });
+  }
+
   /**
    * Add the layers for the critical facilities.
    *
@@ -2258,224 +2871,27 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  initRainForcast() {
-    const rainForcastImage = {
-      'rain-forecast': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
-        type: 'image',
-      },
-    };
+  // an array of popups for storing all opened popups.
+  private activePopups: mapboxgl.Popup[] = [];
 
-    const getRainForcastSource = (rainForcastDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (rainForcastDetails.type) {
-        case 'image':
-          return {
-            type: 'image',
-            url: rainForcastDetails.url,
-            coordinates: [
-              [116.855, 19.402],
-              [127.055, 19.402],
-              [127.055, 5.205],
-              [116.855, 5.205],
-            ],
-          };
-        default:
-          throw new Error('[Map Playground] Unable to get Rain Forcast');
-      }
-    };
-    Object.keys(rainForcastImage).forEach((rainType) => {
-      const rainForcastDetails = rainForcastImage[rainType];
-      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
-
-      this.map.addLayer({
-        id: rainType,
-        type: 'raster',
-        source: rainType,
-        paint: {
-          'raster-fade-duration': 0,
-          'raster-opacity': 1,
-        },
-      });
-
-      const soloShown$ = this.pgService.rainForcastShown$.pipe(shareReplay(1));
-
-      const allShown$ = this.pgService.riskAssessmentGroupShown$.pipe(
-        shareReplay(1)
-      );
-
-      const rainForeCast$ = this.pgService
-        .getRainRiskAssessment$('rain-forecast')
-        .pipe(shareReplay(1));
-
-      combineLatest([allShown$, soloShown$, rainForeCast$])
-        .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-        .subscribe(([allShown, groupShown, rainForeCast]) => {
-          let newOpacity = 0;
-          if (allShown && groupShown) {
-            newOpacity = rainForeCast.opacity / 100;
-          }
-          // let opacity = +(allShown && groupShown);
-          this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
-        });
-    });
+  // method for closing all active popups.
+  private closeAllTyphoonPopups(): void {
+    this.activePopups.forEach((popup) => popup.remove());
+    this.activePopups = [];
   }
 
-  initWeatherSatelliteLayers() {
-    const weatherSatelliteImages = {
-      himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
-        type: 'video',
-      },
-      'himawari-GSMAP': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
-        type: 'video',
-      },
+  // method to convert typhoon class abbreviations to full names
+  private getTyphoonClassFullName(abbreviation: string): string {
+    const typhoonClassMap: { [key: string]: string } = {
+      LPA: 'Low Pressure Area',
+      TD: 'Tropical Depression',
+      TS: 'Tropical Storm',
+      STS: 'Severe Tropical Storm',
+      TY: 'Typhoon',
+      STY: 'Super Typhoon',
     };
 
-    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (weatherSatelliteDetails.type) {
-        case 'video':
-          return {
-            type: 'video',
-            urls: [weatherSatelliteDetails.url],
-            coordinates: [
-              [100.0, 29.25], // top-left
-              [160.0, 29.25], // top-right
-              [160.0, 5.0], // bottom-right
-              [100.0, 5.0], // bottom-left
-            ],
-          };
-        default:
-          throw new Error(
-            '[MapPlayground] Unable to get weather satellite source'
-          );
-      }
-    };
-
-    // Create allShown$ outside so we can use it for both weather & geojson layers
-    const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-      shareReplay(1)
-    );
-
-    /** 1. Add GeoJSON source & layer */
-    this.map.addSource('par-outline', {
-      type: 'geojson',
-      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson',
-    });
-
-    this.map.addLayer({
-      id: 'par-outline-layer',
-      type: 'line',
-      source: 'par-outline',
-      paint: {
-        'line-color': [
-          'case',
-          ['==', ['get', 'layer'], 'PAR'],
-          '#FFFFFF', // White for PAR
-          ['==', ['get', 'layer'], 'philoutline'],
-          '#000000', // Black for philoutline
-          '#FFFFFF', // Default to white
-        ],
-        'line-width': [
-          'case',
-          ['==', ['get', 'layer'], 'PAR'],
-          3, // Thicker line for PAR
-
-          ['==', ['get', 'layer'], 'philoutline'],
-          2, // Thinner line for philoutline
-          2, // Default line width
-        ],
-        'line-opacity': 0.8,
-        'line-dasharray': [
-          'case',
-          ['==', ['get', 'layer'], 'PAR'],
-          ['literal', [1, 0]], // Dashed lines for PAR only
-          ['literal', [1, 0]], // Solid lines for philoutline (1px dash, 0px gap = solid)
-        ],
-      },
-      filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
-    });
-
-    /** 2. React to allShown$ for GeoJSON visibility */
-    allShown$
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe((allShown) => {
-        this.map.setPaintProperty(
-          'par-outline-layer',
-          'line-opacity',
-          allShown ? 1 : 0
-        );
-
-        if (allShown) {
-          // Bring the PAR outline to the very top
-          const layerIds = this.map.getStyle().layers?.map((l) => l.id) || [];
-          const topLayerId = layerIds[layerIds.length - 1]; // last layer is the top-most
-
-          // Move PAR outline on top of everything
-          if (topLayerId) {
-            this.map.moveLayer('par-outline-layer', topLayerId);
-          }
-        }
-      });
-
-    /** 3. Continue with weather satellite layers as before */
-    Object.keys(weatherSatelliteImages).forEach(
-      (weatherType: WeatherSatelliteType) => {
-        const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
-
-        // Add source  per weather satellite type
-        this.map.addSource(
-          weatherType,
-          getWeatherSatelliteSource(weatherSatelliteDetails)
-        );
-
-        // Add layer per weather satellite source
-        this.map.addLayer({
-          id: weatherType,
-          type: 'raster',
-          source: weatherType,
-          paint: {
-            'raster-fade-duration': 0,
-            'raster-opacity': 0,
-          },
-        });
-
-        const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
-          shareReplay(1)
-        );
-        const weatherTypeOpacity$ = this.pgService
-          .getWeatherSatellite$(weatherType)
-          .pipe(
-            map((weather) => weather.opacity),
-            distinctUntilChanged()
-          );
-
-        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
-          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = 0;
-
-            // Only show if allShown is true AND this weather type is the selected one
-            if (
-              allShown &&
-              selectedWeather?.toString() === weatherType.toString()
-            ) {
-              opacity = weatherTypeOpacity / 100; // convert 0-100 → 0-1
-            }
-
-            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
-          });
-        selectedWeather$.subscribe((val) =>
-          console.log('Selected weather:', val)
-        );
-      }
-    );
+    return typhoonClassMap[abbreviation] || abbreviation;
   }
 
   async initAffectedExposure() {
@@ -2724,9 +3140,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       answer.innerHTML = output;
     } else {
       answer.innerHTML = '';
-      if (event.type !== 'draw.delete') {
-        console.log('computation for area or distance: ');
-      }
     }
   }
 

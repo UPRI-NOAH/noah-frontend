@@ -41,6 +41,8 @@ import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
+import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
+import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
 
 @Injectable({
   providedIn: 'root',
@@ -215,6 +217,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.btnCalculateRisk.shown));
   }
 
+  get typhoonTrackGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.typhoonTrack.shown));
+  }
+
+  get typhoonTrackGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.typhoonTrack.expanded));
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
@@ -342,6 +352,18 @@ export class NoahPlaygroundService {
     return this.store.state[hazardType].levels[hazardLevel].shown;
   }
 
+  getTyphoonTrack(): TyphoonTrackState {
+    return this.store.state.typhoonTrack;
+  }
+
+  getTyphoonTrackTypeShown$(
+    typhoonType: TyphoonTrackType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.typhoonTrack.types[typhoonType].shown)
+    );
+  }
+
   setHazardLevelOpacity(
     opacity: number,
     hazardType: HazardType,
@@ -400,6 +422,22 @@ export class NoahPlaygroundService {
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.qcMunicipalboundary.types[qcMunicipalBoundary].shown)
+    );
+  }
+
+  getTyphoonTrackShown$(
+    typhoonTrackType: TyphoonTrackType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.typhoonTrack.types[typhoonTrackType].shown)
+    );
+  }
+
+  getTyphoonTrackFetched$(
+    typhoonTrackType: TyphoonTrackType
+  ): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.typhoonTrack.types[typhoonTrackType].fetched)
     );
   }
 
@@ -924,6 +962,18 @@ export class NoahPlaygroundService {
     );
   }
 
+  setTyphoonTypeFetched(typhoonType: TyphoonTrackType, fetched = true): void {
+    const typhoonTrack = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    typhoonTrack.types[typhoonType].fetched = fetched;
+    this.store.patch(
+      { typhoonTrack },
+      `change typhoon track's fetched status ${typhoonType}' to ${!fetched}`
+    );
+  }
+
   setQuezonCitySensorTypeFetched(
     qcSensorType: QuezonCitySensorType,
     fetched = true
@@ -1016,6 +1066,51 @@ export class NoahPlaygroundService {
     this.store.patch(
       { boundaries },
       `Boundaries - update ${type}'s shown to ${value}`
+    );
+  }
+
+  setTyphoonTrackTypeShown(typhoonType: TyphoonTrackType): void {
+    const typhoonTrack = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    const { shown } = typhoonTrack.types[typhoonType];
+    typhoonTrack.types[typhoonType].shown = !shown;
+
+    this.store.patch(
+      { typhoonTrack },
+      `update typhoon track type ${typhoonType} state shown to ${!shown}`
+    );
+  }
+
+  toggleTyphoonTrackGroupShown(): void {
+    const typhoonTrack = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    const { shown } = typhoonTrack;
+
+    typhoonTrack.shown = !shown;
+
+    this.store.patch(
+      {
+        typhoonTrack,
+      },
+      `Typhoon Track Group State shwon to ${!shown}`
+    );
+  }
+
+  toggleTyphoonTrackExpanded(): void {
+    const typhoonTrack = {
+      ...this.store.state.typhoonTrack,
+    };
+
+    const { expanded } = typhoonTrack;
+    typhoonTrack.expanded = !typhoonTrack.expanded;
+
+    this.store.patch(
+      { typhoonTrack },
+      `update typhoon track state expanded to ${!expanded}`
     );
   }
 }
