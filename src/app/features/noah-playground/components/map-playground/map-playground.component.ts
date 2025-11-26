@@ -2703,7 +2703,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               <strong>Typhoon Name: ${internationalName}</strong><br>
               Wind Speed: ${windSpeedDisplay}<br>
               Status: ${status}<br>
-              Time: ${formattedDate}
+              Date/Time: ${formattedDate}
             `
               )
               .addTo(this.map);
