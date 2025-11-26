@@ -63,7 +63,7 @@ export const IOT_SENSOR_COLORS: Record<QuezonCitySensorType, string> = {
   flood: '#519259',
 };
 export const TYPHOON_TRACK_COLORS: Record<TyphoonTrackType, string> = {
-  pagasa: '#0099cc',
+  pagasa: '#000000',
   hko: '#cc0000',
   jtwc: '#990099',
   jma: '#cc6600',

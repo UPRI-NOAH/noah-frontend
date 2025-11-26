@@ -233,7 +233,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.initRainForcast();
         this.initTyphoonTrack();
         this.initPar();
-        this.initTyphoonForecast();
       });
   }
 
@@ -1762,90 +1761,11 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
-  initTyphoonForecast() {
-    TYPHOON.forEach((typhoonType) => {
-      this.typhoonService
-        .getTyphoonTracks(typhoonType)
-        .pipe(first())
-        .toPromise()
-        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          // Line Layer
-          this.map.addLayer({
-            id: `${typhoonType}-line`,
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            filter: [
-              'all',
-              ['==', ['geometry-type'], 'LineString'],
-              ['==', ['get', 'agency'], typhoonType.toUpperCase()],
-            ],
-            paint: {
-              'line-width': 4,
-              'line-color': TYPHOON_TRACK_COLORS[typhoonType],
-              'line-opacity': 1,
-            },
-          });
-
-          // Point Layer
-          this.map.addLayer({
-            id: `${typhoonType}-points`,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            filter: [
-              'all',
-              ['==', ['geometry-type'], 'Point'],
-              ['==', ['get', 'agency'], typhoonType.toUpperCase()],
-            ],
-            paint: {
-              'circle-radius': 7,
-              'circle-color': TYPHOON_TRACK_COLORS[typhoonType],
-              'circle-opacity': 1,
-            },
-          });
-
-          // Opacity subscription
-          combineLatest([
-            this.pgService.typhoonTrackGroupShown$,
-            this.pgService.getTyphoonTrackShown$(typhoonType),
-          ])
-            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-            .subscribe(([groupShown, soloShown]) => {
-              this.map.setPaintProperty(
-                `${typhoonType}-line`,
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-
-              this.map.setPaintProperty(
-                `${typhoonType}-points`,
-                'circle-opacity',
-                +(groupShown && soloShown)
-              );
-            });
-
-          this.pgService.setTyphoonTypeFetched(typhoonType, true);
-          this.showTyphoon(typhoonType);
-        })
-        .catch(() =>
-          console.error(
-            `Unable to fetch data from TYPHOON 2000 for typhoon tracks of type "${typhoonType}"`
-          )
-        );
-    });
-  }
-
-  initTyphoonTrack() {
+  async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
-      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
+      'https://upri-noah.s3.amazonaws.com/typhoon_track_hotdog/pagasa_typhoon.geojson';
 
-    // 1 - load typhoon track layers icons
-    const _this = this;
+    // Legends
     const typhoonLegend = {
       LPA: 'assets/legends/typhoon-track/LPA.png',
       STS: 'assets/legends/typhoon-track/STS.png',
@@ -1855,218 +1775,257 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       TY: 'assets/legends/typhoon-track/TY.png',
     };
 
-    // add typhoon legend.
+    // Load icon images
     Object.entries(typhoonLegend).forEach(([legend, url]) => {
-      this.map.loadImage(url, (error, image) => {
-        if (error) throw error;
-        this.map.addImage(`custom-marker-${legend}`, image);
+      this.map.loadImage(url, (err, image) => {
+        if (err) return;
+        if (!this.map.hasImage(`custom-marker-${legend}`)) {
+          this.map.addImage(`custom-marker-${legend}`, image);
+        }
       });
     });
 
-    // 2 - add map sources.
-    const typhoonMapSource = `typhoon-track-map-source`;
-    _this.map.addSource(typhoonMapSource, {
-      type: 'geojson',
-      data: typhoonLayerSourceFile,
-    });
+    const typhoonMapSource = 'typhoon-track-map-source';
 
-    // 3 - add point layer.
-    this.map.addLayer({
-      id: 'typhoon-track-icon',
-      type: 'symbol',
-      source: typhoonMapSource,
-      paint: {
-        'icon-opacity': 1,
-        'text-opacity': 1,
-        'text-color': _this.mapStyle === 'terrain' ? '#333333' : '#ffffff',
-        'text-halo-color':
-          _this.mapStyle === 'terrain'
-            ? 'rgba(255, 255, 255, 1)'
-            : 'rgba(0, 0, 0, 1)',
-        'text-halo-width': 0.5,
-        'text-halo-blur': 0.5,
-      },
+    // 1) LOAD MAIN TRACK (S3)
+    let mainData = null;
 
-      layout: {
-        'icon-image': [
-          'concat',
-          'custom-marker-',
-          ['concat', ['get', 'typhoon_type']],
+    try {
+      mainData = await fetch(typhoonLayerSourceFile)
+        .then((res) => res.json())
+        .catch(() => null);
+    } catch {
+      mainData = null;
+    }
+
+    const hasMainData = mainData?.features?.length > 0;
+    const usePagasaFallback = !hasMainData;
+
+    // 2) LOAD PAGASA ONLY IF S3 EMPTY
+    if (usePagasaFallback) {
+      try {
+        mainData = await this.typhoonService
+          .getTyphoonTracks('pagasa')
+          .pipe(first())
+          .toPromise();
+      } catch {
+        mainData = { type: 'FeatureCollection', features: [] };
+      }
+    }
+
+    // 3) ADD PRIMARY SOURCE
+    if (!this.map.getSource(typhoonMapSource)) {
+      this.map.addSource(typhoonMapSource, { type: 'geojson', data: mainData });
+    } else {
+      (this.map.getSource(typhoonMapSource) as any).setData(mainData);
+    }
+    // MAIN POINTS
+    if (!this.map.getLayer('typhoon-track-icon')) {
+      this.map.addLayer({
+        id: 'typhoon-track-icon',
+        type: 'symbol',
+        source: typhoonMapSource,
+        layout: {
+          'icon-image': ['concat', 'custom-marker-', ['get', 'typhoon_type']],
+          'icon-allow-overlap': true,
+          'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
+        },
+        paint: {
+          'icon-opacity': 1,
+        },
+        filter: ['==', ['geometry-type'], 'Point'],
+      });
+    }
+
+    // MAIN LINE
+    if (!this.map.getLayer('typhoon-track-line')) {
+      this.map.addLayer({
+        id: 'typhoon-track-line',
+        type: 'line',
+        source: typhoonMapSource,
+        filter: ['==', ['get', 'type'], 'track_line'],
+        paint: {
+          'line-width': 2,
+          'line-color': '#000',
+        },
+      });
+    }
+
+    // FORECAST - IF EXISTING
+    if (!this.map.getLayer('typhoon-forecast-circles-fill')) {
+      this.map.addLayer({
+        id: 'typhoon-forecast-circles-fill',
+        type: 'fill',
+        source: typhoonMapSource,
+        paint: {
+          'fill-color': 'rgba(96,96,96,0.5)',
+          'fill-opacity': 1,
+        },
+        filter: [
+          'all',
+          ['==', ['get', 'type'], 'smoothed_hull'],
+          ['>', ['get', 'radius'], 0],
         ],
-        'icon-allow-overlap': true,
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
-      },
-      filter: ['==', ['geometry-type'], 'Point'],
-    });
+      });
 
-    // Click events.
-    this.map.on('click', 'typhoon-track-icon', (e) => {
-      if (e.features && e.features.length > 0) {
-        // Close all existing popups before opening a new one
-        this.closeAllTyphoonPopups();
+      this.map.addLayer({
+        id: 'typhoon-forecast-circles-outline',
+        type: 'line',
+        source: typhoonMapSource,
+        paint: {
+          'line-color': '#606060',
+          'line-width': 0.9,
+        },
+        filter: [
+          'all',
+          ['==', ['get', 'type'], 'smoothed_hull'],
+          ['>', ['get', 'radius'], 0],
+        ],
+      });
+    }
 
-        const feature = e.features[0];
-        const coordinates = (feature.geometry as any).coordinates.slice();
-        const typhoonName = feature.properties?.international_name;
-        const typhoonClass = this.getTyphoonClassFullName(
-          feature.properties?.typhoon_type
-        );
-        const datetime = feature.properties?.datetime;
+    // Track line
+    if (!this.map.getLayer('typhoon-track-line')) {
+      this.map.addLayer({
+        id: 'typhoon-track-line',
+        type: 'line',
+        source: typhoonMapSource,
+        paint: { 'line-color': '#000', 'line-width': 2 },
+        filter: ['==', ['get', 'type'], 'track_line'],
+      });
+    }
 
-        // Format date/time to 'MMM DD, YYYY
-        const formattedDate = new Date(datetime).toLocaleString('en-PH', {
-          year: 'numeric',
-          month: 'short',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-          timeZone: 'Asia/Manila',
-        });
-        const radius = feature.properties?.radius;
-        const formattedTyphoonName = typhoonName
-          .replace('{', '(')
-          .replace('}', ')');
-
-        // HTML of the popup
-        const popupContent = `
-              <div>
-                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
-                <p style="margin: 5px 0; font-size: 12px; color: #666;">
-                  <strong>Classification:</strong> ${typhoonClass}
-                </p>
-                <p style="margin: 5px 0; font-size: 12px; color: #666;">
-                  <strong>Date/Time:</strong> ${formattedDate}
-                </p>
-                ${
-                  radius && radius > 0
-                    ? `<p style="margin: 5px 0; font-size: 12px; color: #666;">
-                         <strong>Forecast Radius:</strong> ${radius} km
-                       </p>`
-                    : `<p style="margin: 5px 0; font-size: 12px; color: #2563eb; font-weight: 500;">
-                         Actual Position
-                       </p>`
-                }
-              </div>
-            `;
-
-        // if map is zoomed out such that multiple
-        // copies of the feature are visible, popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
-        // Create a new popup instance for each click
-        const popup = new mapboxgl.Popup({
-          closeButton: true,
-          closeOnClick: false,
-          offset: 25,
-        })
-          .setLngLat(coordinates)
-          .setHTML(popupContent)
-          .addTo(this.map);
-
-        // Store the popup reference
-        this.activePopups.push(popup);
-
-        // event listener for the close button
-        popup.getElement().addEventListener('click', (event) => {
-          if ((event.target as HTMLElement).classList.contains('close-popup')) {
-            popup.remove();
-            // Remove from active popups array
-            const index = this.activePopups.indexOf(popup);
-            if (index > -1) {
-              this.activePopups.splice(index, 1);
-            }
+    combineLatest([
+      this.pgService.typhoonTrackGroupShown$,
+      this.pgService.getTyphoonTrackShown$('pagasa'), // Pagasa only
+    ])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([groupShown, soloShown]) => {
+        const visibility = groupShown && soloShown ? 'visible' : 'none';
+        [
+          'typhoon-track-icon',
+          'typhoon-track-line',
+          'typhoon-forecast-circles-fill',
+          'typhoon-forecast-circles-outline',
+        ].forEach((layer) => {
+          if (this.map.getLayer(layer)) {
+            this.map.setLayoutProperty(layer, 'visibility', visibility);
           }
         });
-      }
-    });
-
-    // change cursor when hovering over icon.
-    this.map.on('mouseenter', 'typhoon-track-icon', () => {
-      this.map.getCanvas().style.cursor = 'pointer';
-    });
-
-    this.map.on('mouseleave', 'typhoon-track-icon', () => {
-      this.map.getCanvas().style.cursor = '';
-    });
-
-    // Add forecast circle fill layer
-    this.map.addLayer({
-      id: 'typhoon-forecast-circles-fill',
-      type: 'fill',
-      source: typhoonMapSource,
-      paint: {
-        'fill-color': 'rgba(96, 96, 96, 0.5)', // always same color
-        'fill-opacity': 1,
-      },
-      filter: [
-        'all',
-        ['==', ['get', 'type'], 'smoothed_hull'],
-        ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['get', 'radius'], 0],
-      ],
-    });
-
-    // Add forecast circle outline layer
-    this.map.addLayer({
-      id: 'typhoon-forecast-circles-outline',
-      type: 'line',
-      source: typhoonMapSource,
-      paint: {
-        'line-color': '#606060', // always same color
-        'line-width': 0.9,
-        'line-opacity': 0,
-      },
-      filter: [
-        'all',
-        ['==', ['get', 'type'], 'smoothed_hull'],
-        ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['get', 'radius'], 0],
-      ],
-    });
-
-    // 5 - Add line layer
-    this.map.addLayer({
-      id: 'typhoon-track-line',
-      type: 'line',
-      source: typhoonMapSource,
-      paint: {
-        'line-color': '#000000',
-        'line-width': 2,
-      },
-      filter: ['==', ['get', 'type'], 'track_line'],
-    });
-
-    // 7 - listen to the values from the store.
-
-    combineLatest([this.pgService.typhoonTrackGroupShown$])
-      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([soloShown]) => {
-        const visibility = soloShown ? 'visible' : 'none';
-        this.map.setLayoutProperty(
-          'typhoon-track-icon',
-          'visibility',
-          visibility
-        );
-        this.map.setLayoutProperty(
-          'typhoon-track-line',
-          'visibility',
-          visibility
-        );
-        this.map.setLayoutProperty(
-          'typhoon-forecast-circles-fill',
-          'visibility',
-          visibility
-        );
-        this.map.setLayoutProperty(
-          'typhoon-forecast-circles-outline',
-          'visibility',
-          visibility
-        );
       });
+
+    // END Load the rest of the agencies (excluding Pagasa if main data exists)
+
+    // Start typhoon Track
+    TYPHOON.forEach((agencyType) => {
+      const isPagasa = agencyType.toLowerCase() === 'pagasa';
+
+      // Hide pagasa if main S3 data exists
+      const pagasaShouldBeHidden = hasMainData && isPagasa;
+
+      this.typhoonService
+        .getTyphoonTracks(agencyType)
+        .pipe(first())
+        .toPromise()
+        .then((data) => {
+          const lineId = `${agencyType}-line`;
+          const pointsId = `${agencyType}-points`;
+          const agencyUpper = agencyType.toUpperCase();
+          const isPagasa = agencyType.toLowerCase() === 'pagasa';
+          const pagasaShouldBeHidden = hasMainData && isPagasa;
+
+          // add line
+          if (!this.map.getLayer(lineId)) {
+            this.map.addLayer({
+              id: lineId,
+              type: 'line',
+              source: { type: 'geojson', data },
+              filter: [
+                'all',
+                ['==', ['geometry-type'], 'LineString'],
+                ['==', ['get', 'agency'], agencyUpper],
+              ],
+              paint: {
+                'line-width': 4,
+                'line-color': TYPHOON_TRACK_COLORS[agencyType],
+                'line-opacity': 1,
+              },
+            });
+          }
+
+          // add points
+          if (!this.map.getLayer(pointsId)) {
+            this.map.addLayer({
+              id: pointsId,
+              type: 'circle',
+              source: { type: 'geojson', data },
+              filter: [
+                'all',
+                ['==', ['geometry-type'], 'Point'],
+                ['==', ['get', 'agency'], agencyUpper],
+              ],
+              paint: {
+                'circle-radius': 7,
+                'circle-color': TYPHOON_TRACK_COLORS[agencyType],
+                'circle-opacity': 1,
+              },
+            });
+          }
+
+          // Immediately hide pagasa layers if main S3 data exists
+          if (pagasaShouldBeHidden) {
+            if (this.map.getLayer(lineId)) {
+              this.map.setLayoutProperty(lineId, 'visibility', 'none');
+            }
+            if (this.map.getLayer(pointsId)) {
+              this.map.setLayoutProperty(pointsId, 'visibility', 'none');
+            }
+          }
+
+          combineLatest([
+            this.pgService.typhoonTrackGroupShown$,
+            this.pgService.getTyphoonTrackShown$(agencyType),
+          ])
+            .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+            .subscribe(([groupShown, soloShown]) => {
+              const visibleByToggle = groupShown && soloShown;
+
+              if (isPagasa && hasMainData) {
+                this.map.setPaintProperty(lineId, 'line-opacity', 0);
+                this.map.setPaintProperty(pointsId, 'circle-opacity', 0);
+                this.map.setLayoutProperty(lineId, 'visibility', 'none');
+                this.map.setLayoutProperty(pointsId, 'visibility', 'none');
+              } else {
+                this.map.setPaintProperty(
+                  lineId,
+                  'line-opacity',
+                  visibleByToggle ? 1 : 0
+                );
+                this.map.setPaintProperty(
+                  pointsId,
+                  'circle-opacity',
+                  visibleByToggle ? 1 : 0
+                );
+                this.map.setLayoutProperty(
+                  lineId,
+                  'visibility',
+                  visibleByToggle ? 'visible' : 'none'
+                );
+                this.map.setLayoutProperty(
+                  pointsId,
+                  'visibility',
+                  visibleByToggle ? 'visible' : 'none'
+                );
+              }
+            });
+
+          this.pgService.setTyphoonTypeFetched(agencyType, true);
+          this.showTyphoon(agencyType);
+        });
+    });
+
+    // Separate popups for clean code
+    this.addTyphoonPopups('typhoon-track-icon');
   }
 
   initVolcanoes() {
@@ -2578,7 +2537,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const stationID = e.features[0].properties.station_id;
             const typeName = e.features[0].properties.type_name;
             const status = e.features[0].properties.status_description;
-            const dateInstalled = e.features[0].properties.date_installed;
+            const dateTime = e.features[0].properties.date_installed;
             const province = e.features[0].properties.province;
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
@@ -2594,7 +2553,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 <div><strong>#${stationID} - ${location}</strong></div>
                 <div>Type: ${typeName}</div>
                 <div>Status: ${status}</div>
-                <div>Date Installed: ${dateInstalled}</div>
+                <div>Date/Time: ${dateTime}</div>
                 <div>Province: ${province}</div>
               </div>
             `
@@ -2709,8 +2668,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             const feature = e.features[0];
             const coordinates = (feature.geometry as any).coordinates.slice();
             const internationalName = feature.properties.international_name;
-            const agencyName = feature.properties.agency;
             const windSpeed = feature.properties.windspeed;
+            const windSpeedDisplay =
+              windSpeed === null ||
+              windSpeed === undefined ||
+              windSpeed === 'null' ||
+              windSpeed === ''
+                ? 'N/A'
+                : `${windSpeed} KT`;
             const status = feature.properties.status;
             const datetime = feature.properties?.datetime;
 
@@ -2735,9 +2700,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               .setLngLat(coordinates)
               .setHTML(
                 `
-              <strong>Typhoon name: ${internationalName}</strong><br>
-              Windspeed: ${windSpeed} kt<br>
-              Agency: ${agencyName}<br>
+              <strong>Typhoon Name: ${internationalName}</strong><br>
+              Wind Speed: ${windSpeedDisplay}<br>
               Status: ${status}<br>
               Time: ${formattedDate}
             `
@@ -2869,6 +2833,105 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
     });
+  }
+
+  private addTyphoonPopups(source: string) {
+    // Ensure activePopups array exists
+    if (!this.activePopups) this.activePopups = [];
+
+    // Click event for typhoon points
+    this.map.on(
+      'click',
+      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
+      (e) => {
+        if (!e.features || e.features.length === 0) return;
+
+        // Close existing popups
+        this.closeAllTyphoonPopups();
+
+        const feature = e.features[0];
+        const coords = (feature.geometry as any).coordinates.slice();
+        const typhoonName = feature.properties?.international_name || 'Unnamed';
+        const typhoonClass = this.getTyphoonClassFullName(
+          feature.properties?.typhoon_type
+        );
+        const datetime = feature.properties?.datetime;
+        const radius = feature.properties?.radius;
+
+        // Format date/time
+        const formattedDate = datetime
+          ? new Date(datetime).toLocaleString('en-PH', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+              timeZone: 'Asia/Manila',
+            })
+          : 'N/A';
+
+        const formattedTyphoonName = typhoonName
+          .replace('{', '(')
+          .replace('}', ')');
+
+        const popupHTML = `
+      <div>
+        <h3 style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#333;">${formattedTyphoonName}</h3>
+        <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Classification:</strong> ${typhoonClass}</p>
+        <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Date/Time:</strong> ${formattedDate}</p>
+        ${
+          radius && radius > 0
+            ? `<p style="margin:5px 0;font-size:12px;color:#666;"><strong>Forecast Radius:</strong> ${radius} km</p>`
+            : `<p style="margin:5px 0;font-size:12px;color:#2563eb;font-weight:500;">Actual Position</p>`
+        }
+      </div>
+    `;
+
+        // Fix for wrapped coordinates at world edges
+        while (Math.abs(e.lngLat.lng - coords[0]) > 180) {
+          coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
+        }
+
+        // Create popup
+        const popup = new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: false,
+          offset: 25,
+        })
+          .setLngLat(coords)
+          .setHTML(popupHTML)
+          .addTo(this.map);
+
+        // Store popup reference
+        this.activePopups.push(popup);
+
+        // Optional: handle close button manually if needed
+        popup.getElement().addEventListener('click', (event) => {
+          if ((event.target as HTMLElement).classList.contains('close-popup')) {
+            popup.remove();
+            const index = this.activePopups.indexOf(popup);
+            if (index > -1) this.activePopups.splice(index, 1);
+          }
+        });
+      }
+    );
+
+    // Hover cursor changes
+    this.map.on(
+      'mouseenter',
+      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
+      () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      }
+    );
+    this.map.on(
+      'mouseleave',
+      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
+      () => {
+        this.map.getCanvas().style.cursor = '';
+      }
+    );
   }
 
   // an array of popups for storing all opened popups.

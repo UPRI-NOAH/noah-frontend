@@ -1,4 +1,4 @@
-<div class="pl-6 relative pb-2">
+<div class="pl-6 mt-3 relative pb-2">
   <div class="pl-4 flex items-center" (click)="toggleShown()">
     <div class="inline-flex items-center checkbox {{ typhoonTrackType }}">
       <input
@@ -25,6 +25,6 @@
     class="absolute left-0 bottom-0 text-xs italic pl-16 ml-2 text-gray-400"
     *ngIf="fetchFailed"
   >
-    (Unable to fetch data)
+    (No active/incoming typhoon)
   </div>
 </div>

@@ -48,8 +48,8 @@ export class TyphoonTrackService {
   constructor(private http: HttpClient) {}
 
   getTyphoonTracks(type: TyphoonTrackType) {
-    return this.http.get(
-      `https://upri-noah.s3.amazonaws.com/typhoon_track/multi_typhoon.geojson`
+    return this.http.get<GeoJSON.FeatureCollection<GeoJSON.Geometry>>(
+      `https://upri-noah.s3.amazonaws.com/typhoon_track/test2/multi_typhoon.geojson`
     );
   }
 

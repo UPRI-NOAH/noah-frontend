@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 export const TYPHOON_TRACK_NAMES: Record<TyphoonTrackType, string> = {
-  pagasa: 'PAGASA (Philippine)',
+  pagasa: 'DOST-PAGASA (Philippines)',
   hko: 'HKO (Hong Kong Observatory)',
   jtwc: 'JTWC (Joint Typhoon Warning Center)',
   jma: 'JMA (Japan Meteorological Agency)',
