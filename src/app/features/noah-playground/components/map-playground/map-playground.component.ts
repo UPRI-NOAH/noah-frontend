@@ -1764,7 +1764,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
       'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
-
+    //   'https://upri-noah.s3.amazonaws.com/typhoon_track_hotdog/pagasa_typhoon.geojson';
     // Legends
     const typhoonLegend = {
       LPA: 'assets/legends/typhoon-track/LPA.png',
@@ -1919,22 +1919,68 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // Start typhoon Track
     TYPHOON.forEach((agencyType) => {
       const isPagasa = agencyType.toLowerCase() === 'pagasa';
-
-      // Hide pagasa if main S3 data exists
+      const lineId = `${agencyType}-line`;
+      const pointsId = `${agencyType}-points`;
       const pagasaShouldBeHidden = hasMainData && isPagasa;
 
       this.typhoonService
         .getTyphoonTracks(agencyType)
         .pipe(first())
         .toPromise()
-        .then((data) => {
-          const lineId = `${agencyType}-line`;
-          const pointsId = `${agencyType}-points`;
-          const agencyUpper = agencyType.toUpperCase();
-          const isPagasa = agencyType.toLowerCase() === 'pagasa';
-          const pagasaShouldBeHidden = hasMainData && isPagasa;
+        .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          const hasFeatures = data.features?.length > 0;
 
-          // add line
+          // --- If both main data and this agency's data are empty → disable all layers and remove popups ---
+          if (!hasFeatures && !hasMainData) {
+            TYPHOON.forEach((t) => {
+              const line = `${t}-line`;
+              const points = `${t}-points`;
+              if (this.map.getLayer(line)) {
+                this.map.setLayoutProperty(line, 'visibility', 'none');
+                this.map.setPaintProperty(line, 'line-opacity', 0);
+              }
+              if (this.map.getLayer(points)) {
+                this.map.setLayoutProperty(points, 'visibility', 'none');
+                this.map.setPaintProperty(points, 'circle-opacity', 0);
+              }
+            });
+            // Remove all popups
+            const popups = document.getElementsByClassName('mapboxgl-popup');
+            Array.from(popups).forEach((popup: any) => popup.remove());
+            return; // skip further processing
+          }
+
+          // --- If GeoJSON is empty and not PAGASA → disable layer ---
+          if (!hasFeatures && !isPagasa) {
+            if (this.map.getLayer(lineId)) {
+              this.map.setLayoutProperty(lineId, 'visibility', 'none');
+              this.map.setPaintProperty(lineId, 'line-opacity', 0);
+            }
+            if (this.map.getLayer(pointsId)) {
+              this.map.setLayoutProperty(pointsId, 'visibility', 'none');
+              this.map.setPaintProperty(pointsId, 'circle-opacity', 0);
+            }
+            return; // skip further processing
+          }
+
+          // --- PAGASA with data → enable layer (unless we want to hide it) ---
+          if (isPagasa && hasFeatures) {
+            const visibility = pagasaShouldBeHidden ? 'none' : 'visible';
+            const opacity = pagasaShouldBeHidden ? 0 : 1;
+
+            if (this.map.getLayer(lineId)) {
+              this.map.setLayoutProperty(lineId, 'visibility', visibility);
+              this.map.setPaintProperty(lineId, 'line-opacity', opacity);
+            }
+            if (this.map.getLayer(pointsId)) {
+              this.map.setLayoutProperty(pointsId, 'visibility', visibility);
+              this.map.setPaintProperty(pointsId, 'circle-opacity', opacity);
+            }
+          }
+
+          // --- Normal flow: add layers if not exists ---
+          const agencyUpper = agencyType.toUpperCase();
+
           if (!this.map.getLayer(lineId)) {
             this.map.addLayer({
               id: lineId,
@@ -1948,12 +1994,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               paint: {
                 'line-width': 4,
                 'line-color': TYPHOON_TRACK_COLORS[agencyType],
-                'line-opacity': 1,
+                'line-opacity': hasFeatures
+                  ? pagasaShouldBeHidden && isPagasa
+                    ? 0
+                    : 1
+                  : 0,
               },
             });
           }
 
-          // add points
           if (!this.map.getLayer(pointsId)) {
             this.map.addLayer({
               id: pointsId,
@@ -1967,55 +2016,54 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               paint: {
                 'circle-radius': 7,
                 'circle-color': TYPHOON_TRACK_COLORS[agencyType],
-                'circle-opacity': 1,
+                'circle-opacity': hasFeatures
+                  ? pagasaShouldBeHidden && isPagasa
+                    ? 0
+                    : 1
+                  : 0,
               },
             });
           }
 
-          // Immediately hide pagasa layers if main S3 data exists
-          if (pagasaShouldBeHidden) {
-            if (this.map.getLayer(lineId)) {
-              this.map.setLayoutProperty(lineId, 'visibility', 'none');
-            }
-            if (this.map.getLayer(pointsId)) {
-              this.map.setLayoutProperty(pointsId, 'visibility', 'none');
-            }
-          }
-
+          // --- Observable toggle ---
           combineLatest([
             this.pgService.typhoonTrackGroupShown$,
             this.pgService.getTyphoonTrackShown$(agencyType),
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              const visibleByToggle = groupShown && soloShown;
+              const visibleByToggle = groupShown && soloShown && hasFeatures;
 
-              if (isPagasa && hasMainData) {
-                this.map.setPaintProperty(lineId, 'line-opacity', 0);
-                this.map.setPaintProperty(pointsId, 'circle-opacity', 0);
-                this.map.setLayoutProperty(lineId, 'visibility', 'none');
-                this.map.setLayoutProperty(pointsId, 'visibility', 'none');
+              // Apply PAGASA hide condition
+              const finalVisibility =
+                isPagasa && pagasaShouldBeHidden
+                  ? 'none'
+                  : visibleByToggle
+                  ? 'visible'
+                  : 'none';
+              const finalOpacity =
+                isPagasa && pagasaShouldBeHidden ? 0 : visibleByToggle ? 1 : 0;
+
+              this.map.setPaintProperty(lineId, 'line-opacity', finalOpacity);
+              this.map.setPaintProperty(
+                pointsId,
+                'circle-opacity',
+                finalOpacity
+              );
+              this.map.setLayoutProperty(lineId, 'visibility', finalVisibility);
+              this.map.setLayoutProperty(
+                pointsId,
+                'visibility',
+                finalVisibility
+              );
+
+              // --- Add or remove popups based on toggle ---
+              if (visibleByToggle) {
+                this.addTyphoonPopups('typhoon-track-icon');
               } else {
-                this.map.setPaintProperty(
-                  lineId,
-                  'line-opacity',
-                  visibleByToggle ? 1 : 0
-                );
-                this.map.setPaintProperty(
-                  pointsId,
-                  'circle-opacity',
-                  visibleByToggle ? 1 : 0
-                );
-                this.map.setLayoutProperty(
-                  lineId,
-                  'visibility',
-                  visibleByToggle ? 'visible' : 'none'
-                );
-                this.map.setLayoutProperty(
-                  pointsId,
-                  'visibility',
-                  visibleByToggle ? 'visible' : 'none'
-                );
+                const popups =
+                  document.getElementsByClassName('mapboxgl-popup');
+                Array.from(popups).forEach((popup: any) => popup.remove());
               }
             });
 

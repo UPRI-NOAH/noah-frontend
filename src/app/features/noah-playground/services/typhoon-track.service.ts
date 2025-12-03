@@ -22,50 +22,18 @@ export const TYPHOON: TyphoonTrackType[] = [
   'kma',
 ];
 
-interface TyphoonFeature {
-  type: string;
-  properties: {
-    international_name: string;
-    agency: string;
-    datetime: string;
-    [key: string]: any;
-  };
-  geometry: any;
-}
-
-interface TyphoonGeoJSON {
-  type: string;
-  features: TyphoonFeature[];
-}
-
 @Injectable({
   providedIn: 'root',
 })
 export class TyphoonTrackService {
-  //https://upri-noah.s3.amazonaws.com/typhoon_track/test/multi_typhoon.geojson
   private BASE_URL = 'https://upri-noah.s3.amazonaws.com';
+  //https://upri-noah.s3.amazonaws.com/typhoon_track/test2/multi_typhoon.geojson
 
   constructor(private http: HttpClient) {}
 
   getTyphoonTracks(type: TyphoonTrackType) {
-    return this.http.get<GeoJSON.FeatureCollection<GeoJSON.Geometry>>(
-      `https://upri-noah.s3.amazonaws.com/typhoon_track/test2/multi_typhoon.geojson`
+    return this.http.get<any>(
+      `${this.BASE_URL}/typhoon_track/multi_typhoon.geojson`
     );
-  }
-
-  getInternationalNames(): Observable<string | null> {
-    return this.http
-      .get<TyphoonGeoJSON>(
-        'https://upri-noah.s3.amazonaws.com/typhoon_track/multi_typhoon.geojson'
-      )
-      .pipe(
-        map((geojson) => {
-          if (geojson.features.length > 0) {
-            return geojson.features[0].properties.international_name;
-          } else {
-            return null;
-          }
-        })
-      );
   }
 }
