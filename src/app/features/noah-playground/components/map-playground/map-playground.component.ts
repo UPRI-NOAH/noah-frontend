@@ -1764,7 +1764,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
       'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
-    //   'https://upri-noah.s3.amazonaws.com/typhoon_track_hotdog/pagasa_typhoon.geojson';
+
     // Legends
     const typhoonLegend = {
       LPA: 'assets/legends/typhoon-track/LPA.png',
@@ -1884,7 +1884,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Track line
+    // TRACK LINE
     if (!this.map.getLayer('typhoon-track-line')) {
       this.map.addLayer({
         id: 'typhoon-track-line',
@@ -1897,7 +1897,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
     combineLatest([
       this.pgService.typhoonTrackGroupShown$,
-      this.pgService.getTyphoonTrackShown$('pagasa'), // Pagasa only
+      this.pgService.getTyphoonTrackShown$('pagasa'), // PAGASA ONLY
     ])
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
       .subscribe(([groupShown, soloShown]) => {
@@ -1913,8 +1913,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           }
         });
       });
-
-    // END Load the rest of the agencies (excluding Pagasa if main data exists)
 
     // Start typhoon Track
     TYPHOON.forEach((agencyType) => {
@@ -1944,13 +1942,13 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 this.map.setPaintProperty(points, 'circle-opacity', 0);
               }
             });
-            // Remove all popups
+
             const popups = document.getElementsByClassName('mapboxgl-popup');
             Array.from(popups).forEach((popup: any) => popup.remove());
-            return; // skip further processing
+            return;
           }
 
-          // --- If GeoJSON is empty and not PAGASA → disable layer ---
+          // --- If GeoJSON is empty and not PAGASA - disable layer ---
           if (!hasFeatures && !isPagasa) {
             if (this.map.getLayer(lineId)) {
               this.map.setLayoutProperty(lineId, 'visibility', 'none');
@@ -1960,7 +1958,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.setLayoutProperty(pointsId, 'visibility', 'none');
               this.map.setPaintProperty(pointsId, 'circle-opacity', 0);
             }
-            return; // skip further processing
+            return;
           }
 
           // --- PAGASA with data → enable layer (unless we want to hide it) ---
@@ -1978,7 +1976,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             }
           }
 
-          // --- Normal flow: add layers if not exists ---
+          // add layers if not exists
           const agencyUpper = agencyType.toUpperCase();
 
           if (!this.map.getLayer(lineId)) {
@@ -2025,7 +2023,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             });
           }
 
-          // --- Observable toggle ---
           combineLatest([
             this.pgService.typhoonTrackGroupShown$,
             this.pgService.getTyphoonTrackShown$(agencyType),
@@ -2057,7 +2054,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                 finalVisibility
               );
 
-              // --- Add or remove popups based on toggle ---
               if (visibleByToggle) {
                 this.addTyphoonPopups('typhoon-track-icon');
               } else {

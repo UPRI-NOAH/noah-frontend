@@ -27,8 +27,6 @@ export const TYPHOON: TyphoonTrackType[] = [
 })
 export class TyphoonTrackService {
   private BASE_URL = 'https://upri-noah.s3.amazonaws.com';
-  //https://upri-noah.s3.amazonaws.com/typhoon_track/test2/multi_typhoon.geojson
-
   constructor(private http: HttpClient) {}
 
   getTyphoonTracks(type: TyphoonTrackType) {
