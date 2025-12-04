@@ -33,6 +33,8 @@ import { RiskAssessmentRainComponent } from './components/risk-assessment-rain/r
 import { RiskAssessmentExposureComponent } from './components/risk-assessment-exposure/risk-assessment-exposure.component';
 import { BoundariesGroupComponent } from './components/boundaries-group/boundaries-group.component';
 import { BoundariesSoloComponent } from './components/boundaries-solo/boundaries-solo.component';
+import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typhoon-track-group.component';
+import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { BoundariesSoloComponent } from './components/boundaries-solo/boundaries
     RiskAssessmentExposureComponent,
     BoundariesGroupComponent,
     BoundariesSoloComponent,
+    TyphoonTrackGroupComponent,
+    TyphoonTrackSoloComponent,
   ],
   imports: [
     CommonModule,
