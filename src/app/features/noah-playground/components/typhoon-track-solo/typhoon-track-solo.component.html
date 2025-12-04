@@ -1,0 +1,30 @@
+<div class="pl-6 mt-3 relative pb-1">
+  <div class="pl-2 flex items-center" (click)="toggleShown()">
+    <div class="inline-flex items-center checkbox {{ typhoonTrackType }}">
+      <input
+        [checked]="(shown$ | async) && !fetchFailed"
+        [disabled]="fetchFailed"
+        type="checkbox"
+        class="h-5 w-5 text-blue-600"
+        [ngStyle]="{ color: TYPHOON_TRACK_COLORS[typhoonTrackType] }"
+        name="input-{{ typhoonTrackType }}"
+      />
+    </div>
+    <label
+      [class.line-through]="fetchFailed"
+      [class.text-gray-400]="fetchFailed"
+      class="ml-3 text-sm"
+      for="input-{{ typhoonTrackType }}"
+      [ngStyle]="{ color: TYPHOON_TRACK_COLORS[typhoonTrackType] }"
+    >
+      {{ typhoonTrackTypesName }}
+    </label>
+  </div>
+
+  <div
+    class="absolute left-0 bottom-0 text-xs italic pl-16 ml-2 text-gray-400"
+    *ngIf="fetchFailed"
+  >
+    (No Active/Incoming Typhoon)
+  </div>
+</div>
