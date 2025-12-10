@@ -1945,6 +1945,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
             const popups = document.getElementsByClassName('mapboxgl-popup');
             Array.from(popups).forEach((popup: any) => popup.remove());
+            this.typhoonService.setNoTyphoonTypeData(true);
+            this.typhoonService.setNoData(false);
+
             return;
           }
 
@@ -1958,6 +1961,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.setLayoutProperty(pointsId, 'visibility', 'none');
               this.map.setPaintProperty(pointsId, 'circle-opacity', 0);
             }
+            this.typhoonService.setNoData(true);
+            this.typhoonService.setNoTyphoonTypeData(false);
             return;
           }
 
@@ -2038,6 +2043,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   : visibleByToggle
                   ? 'visible'
                   : 'none';
+
               const finalOpacity =
                 isPagasa && pagasaShouldBeHidden ? 0 : visibleByToggle ? 1 : 0;
 
@@ -2927,7 +2933,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         ${
           radius && radius > 0
             ? `<p style="margin:5px 0;font-size:12px;color:#666;"><strong>Forecast Radius:</strong> ${radius} km</p>`
-            : `<p style="margin:5px 0;font-size:12px;color:#2563eb;font-weight:500;">Actual Position</p>`
+            : `<p style="margin:5px 0;font-size:12px;font-weight:500;">Actual Position</p>`
         }
       </div>
     `;
