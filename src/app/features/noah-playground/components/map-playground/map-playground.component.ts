@@ -1763,9 +1763,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
-      // 'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
+      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
 
-      'https://upri-noah.s3.amazonaws.com/typhoon_track_hotdog/pagasa_typhoon.geojson';
     // Legends
     const typhoonLegend = {
       LPA: 'assets/legends/typhoon-track/LPA.png',
