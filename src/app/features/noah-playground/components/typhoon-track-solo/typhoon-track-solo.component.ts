@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
+import {
+  TyphoonTrackService,
+  TyphoonTrackType,
+} from '@features/noah-playground/services/typhoon-track.service';
 import { TYPHOON_TRACK_COLORS } from '@shared/mocks/noah-colors';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,6 +28,9 @@ export class TyphoonTrackSoloComponent implements OnInit {
 
   shown$: Observable<boolean>;
   fetchFailed: boolean;
+  noTyphoon$ = this.typhoonService.noTyphoon$;
+  noData$ = this.typhoonService.noData$;
+
   TYPHOON_TRACK_COLORS = TYPHOON_TRACK_COLORS;
   private _unsub = new Subject();
 
@@ -36,7 +42,10 @@ export class TyphoonTrackSoloComponent implements OnInit {
     return TYPHOON_TRACK_NAMES[this.typhoonTrackType];
   }
 
-  constructor(private pgService: NoahPlaygroundService) {}
+  constructor(
+    private pgService: NoahPlaygroundService,
+    private typhoonService: TyphoonTrackService
+  ) {}
 
   ngOnInit(): void {
     this.shown$ = this.pgService.getTyphoonTrackTypeShown$(
