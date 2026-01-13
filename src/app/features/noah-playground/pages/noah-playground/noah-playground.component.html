@@ -490,22 +490,47 @@
       "
     >
       <noah-exaggeration class="w-full"></noah-exaggeration>
+
+      <ng-container *ngFor="let hazard of hazardTypes">
+        <noah-hazard-type
+          *ngIf="hazard.type === 'flood'"
+          class="w-full"
+          [hazard]="hazard"
+        >
+        </noah-hazard-type>
+      </ng-container>
+
+      <noah-typhoon-track-group></noah-typhoon-track-group>
+      <noah-weather-satellite-playground
+        class="w-full"
+      ></noah-weather-satellite-playground>
+      <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+      <!-- <noah-dengue-risk-group class="w-full"></noah-dengue-risk-group> -->
+
+      <ng-container *ngFor="let hazard of hazardTypes">
+        <noah-hazard-type
+          *ngIf="hazard.type !== 'flood'"
+          class="w-full"
+          [hazard]="hazard"
+        >
+        </noah-hazard-type>
+      </ng-container>
+
+      <!-- 
       <noah-hazard-type
         class="w-full"
         *ngFor="let hazard of hazardTypes"
         [hazard]="hazard"
-      ></noah-hazard-type>
+      ></noah-hazard-type> 
+-->
       <noah-volcano-group class="w-full"></noah-volcano-group>
       <noah-critical-facilities-playground
         class="w-full"
       ></noah-critical-facilities-playground>
-      <noah-weather-satellite-playground
-        class="w-full"
-      ></noah-weather-satellite-playground>
-      <noah-typhoon-track-group></noah-typhoon-track-group>
+
       <!-- <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group> -->
-      <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+
       <noah-qc-sensors-group></noah-qc-sensors-group>
       <noah-boundaries-group
         *ngIf="hideBoundaries"
