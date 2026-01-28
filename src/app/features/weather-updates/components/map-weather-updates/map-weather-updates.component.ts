@@ -160,7 +160,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
     if (!this.map) return;
     this.map.flyTo({
       center: PH_DEFAULT_CENTER,
-      zoom: 4.4,
+      zoom: 5,
       essential: true,
     });
   }

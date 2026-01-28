@@ -2297,7 +2297,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     });
   }
-
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
@@ -2310,40 +2309,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     };
 
-    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (weatherSatelliteDetails.type) {
-        case 'video':
-          return {
-            type: 'video',
-            urls: [weatherSatelliteDetails.url],
-            coordinates: [
-              [100.0, 29.25], // top-left
-              [160.0, 29.25], // top-right
-              [160.0, 5.0], // bottom-right
-              [100.0, 5.0], // bottom-left
-            ],
-          };
-        default:
-          throw new Error(
-            '[MapPlayground] Unable to get weather satellite source'
-          );
-      }
-    };
-
     Object.keys(weatherSatelliteImages).forEach(
       (weatherType: WeatherSatelliteType) => {
         const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
 
-        // 1. Add source per weather satellite type
-        this.map.addSource(
-          weatherType,
-          getWeatherSatelliteSource(weatherSatelliteDetails)
-        );
+        this.map.addSource(weatherType, {
+          type: 'video',
+          urls: [weatherSatelliteDetails.url],
+          coordinates: [
+            [100.0, 29.25],
+            [160.0, 29.25],
+            [160.0, 5.0],
+            [100.0, 5.0],
+          ],
+        });
 
-        // 2. Add layer per weather satellite source
         this.map.addLayer({
           id: weatherType,
           type: 'raster',
@@ -2354,25 +2334,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         });
 
-        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-        //   distinctUntilChanged(),
-        //   tap(() => {
-        //     this.map.flyTo({
-        //       center: PH_DEFAULT_CENTER,
-        //       zoom: 4,
-        //       essential: true,
-        //     });
-        //   }),
-        //   shareReplay(1)
-        // );
-
-        // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
           shareReplay(1)
         );
+
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
           shareReplay(1)
         );
+
         const weatherTypeOpacity$ = this.pgService
           .getWeatherSatellite$(weatherType)
           .pipe(
@@ -2380,13 +2350,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             distinctUntilChanged()
           );
 
+        let hasZoomed = false;
+
         combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = +(allShown && selectedWeather === weatherType);
-            if (opacity) {
-              opacity = weatherTypeOpacity / 100;
+            // ✅ Zoom only when allShown turns true
+            if (allShown && !hasZoomed) {
+              hasZoomed = true;
+              this.map.flyTo({
+                center: PH_DEFAULT_CENTER,
+                zoom: 5,
+                essential: true,
+              });
             }
+            if (!allShown) {
+              hasZoomed = false;
+            }
+
+            const isVisible = allShown && selectedWeather === weatherType;
+            const opacity = isVisible ? weatherTypeOpacity / 100 : 0;
 
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
