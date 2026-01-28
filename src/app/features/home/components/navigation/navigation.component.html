@@ -1,8 +1,6 @@
 <nav class="w-screen bg-white shadow hidden lg:block">
-  <div
-    class="max-w-7xl mx-auto flex items-center justify-between mt-0 py-2 px-4"
-  >
-    <div class="pl-0 flex items-center">
+  <div class="max-w-7xl mx-auto flex items-center justify-between mt-0 py-2">
+    <div class="flex items-center">
       <div
         class="
           w-full
@@ -11,8 +9,6 @@
           flex flex-wrap
           items-center
           justify-between
-          mt-0
-          py-2
         "
       >
         <div class="flex items-center">
@@ -28,11 +24,13 @@
             routerLink="/"
           >
             <div class="flex max-w-xs p-2 items-center">
-              <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
-              <img
-                src="assets/icons/noah_text.png"
-                class="hidden xl:block z-50 h-10 pl-2"
-              />
+              <img src="assets/icons/mmda_logo.png" class="z-50 w-24 pr-2" />
+              <div class="flex flex-col items-start text-center gap-4">
+                <span class="text-xs text-gray-500 whitespace-nowrap"
+                  >POWERED BY:</span
+                >
+                <img src="assets/icons/noah_logo.png" class="z-50 w-24" />
+              </div>
             </div>
           </a>
         </div>
@@ -54,70 +52,26 @@
         lg:p-0
         z-20
       "
+      id="nav-content"
     >
-      <div
-        class="
-          w-full
-          flex-grow
-          lg:flex lg:items-center lg:w-auto
-          hidden
-          mt-2
-          lg:mt-0
-          bg-white
-          lg:bg-transparent
-          text-black
-          p-4
-          lg:p-0
-          z-20
-        "
+      <!-- <div
+        class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20"
         id="nav-content"
-      ></div>
-      <a
-        class="
-          text-xs
-          uppercase
-          font-bold
-          bg-white
-          rounded-full
-          px-10
-          py-2
-          m-4
-          inline-flex
-          items-center
-          justify-center
-          text-gray-800
-          focus:outline-none
-          lg:mx-0
-          tracking-widest
-        "
+      ></div> -->
+      <!-- <a
+        class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
         href="https://resilience.up.edu.ph/give-to-upri-and-noah-center/"
         target="_blank"
       >
         Donate
       </a>
       <a
-        class="
-          text-xs
-          uppercase
-          font-bold
-          bg-white
-          rounded-full
-          px-10
-          py-2
-          m-4
-          inline-flex
-          items-center
-          justify-center
-          text-gray-800
-          focus:outline-none
-          lg:mx-0
-          tracking-widest
-        "
+        class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
         href="https://noahcenter.up.edu.ph/"
         target="_blank"
       >
         Blog
-      </a>
+      </a> -->
       <a
         class="
           text-xs
@@ -141,29 +95,13 @@
       >
         Downloads
       </a>
-      <button
+      <!-- <button
         type="button"
-        class="
-          text-xs
-          uppercase
-          font-bold
-          bg-white
-          rounded-full
-          px-10
-          py-2
-          m-4
-          inline-flex
-          items-center
-          justify-center
-          text-gray-800
-          focus:outline-none
-          lg:mx-0
-          tracking-widest
-        "
+        class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
         (click)="installMobileApp()"
       >
         Install
-      </button>
+      </button> -->
       <button
         type="button"
         class="
@@ -191,10 +129,10 @@
       >
         NOAH Studio
       </button>
-      <noah-login></noah-login>
+      <!-- <noah-login></noah-login> -->
     </div>
   </div>
-  <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
+  <hr class="border-b border-gray-500 opacity-25 my-0 py-0 drop-shadow-2xl" />
 </nav>
 <!-- Navbar -->
 <nav>
@@ -240,7 +178,13 @@
             routerLink="/"
           >
             <div class="flex max-w-xs p-2 items-center">
-              <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
+              <img src="assets/icons/mmda_logo.png" class="z-50 w-20 pr-2" />
+              <div class="flex flex-col items-start text-center gap-4">
+                <span class="text-xs text-gray-500 whitespace-nowrap"
+                  >POWERED BY:</span
+                >
+                <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
+              </div>
             </div>
           </a>
         </div>
@@ -298,10 +242,10 @@
         ease-in-out
       "
     >
-      <div class="px-6 h-full">
+      <div class="px-2 h-full items-center justify-between">
         <div class="flex flex-col justify-between h-full w-full">
           <div>
-            <div class="mt-6 flex w-full items-center justify-between">
+            <div class="mt-2 flex w-full items-center justify-between">
               <div id="cross" class="text-gray-800" (click)="isMenu = false">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -320,166 +264,110 @@
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
               </div>
-              <div class="flex items-center justify-between w-full">
-                <div class="pl-0 flex items-center">
-                  <div
-                    class="
-                      w-full
-                      container
-                      mx-auto
-                      flex flex-wrap
-                      items-center
-                      justify-between
-                      mt-0
-                      py-2
-                    "
-                  >
-                    <div class="flex items-center">
-                      <a
-                        class="
-                          toggleColour
-                          no-underline
-                          hover:no-underline
-                          font-bold
-                          text-2xl
-                          lg:text-4xl
-                        "
-                        routerLink="/"
-                      >
-                        <div class="flex max-w-xs p-2 items-center">
-                          <img
-                            src="assets/icons/noah_logo.png"
-                            class="z-50 w-32"
-                          />
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <ul class="justify-center items-center f-m-m">
-              <button
-                type="button"
-                class="
-                  mt-4
-                  text-xs
-                  uppercase
-                  font-bold
-                  bg-white
-                  rounded-full
-                  px-10
-                  py-2
-                  m-4
-                  inline-flex
-                  items-center
-                  justify-center
-                  text-gray-800
-                  focus:outline-none
-                  lg:mx-0
-                  tracking-widest
-                  border-gray-600 border
-                "
-                routerLink="noah-playground"
-              >
-                NOAH Studio
-              </button>
+            <div class="pl-2 flex">
               <a
                 class="
-                  mt-4
-                  text-xs
-                  uppercase
+                  toggleColour
+                  no-underline
+                  hover:no-underline
                   font-bold
-                  bg-white
-                  rounded-full
-                  px-10
-                  py-2
-                  m-4
-                  inline-flex
-                  items-center
-                  justify-center
-                  text-gray-800
-                  focus:outline-none
-                  lg:mx-0
-                  tracking-widest
+                  text-2xl
+                  lg:text-4xl
                 "
-                href="https://drive.google.com/drive/folders/1ALE4-E9c-4AGjm1fqiPprWHrLUskeY9o"
-                target="_blank"
+                routerLink="/"
               >
-                Downloads
+                <div class="flex max-w-xs p-2 items-center">
+                  <img
+                    src="assets/icons/mmda_logo.png"
+                    class="z-50 w-20 pr-2"
+                  />
+                  <div class="flex flex-col items-start text-center gap-4">
+                    <span class="text-xs text-gray-500 whitespace-nowrap"
+                      >POWERED BY:</span
+                    >
+                    <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
+                  </div>
+                </div>
               </a>
-              <a
-                class="
-                  text-xs
-                  uppercase
-                  font-bold
-                  bg-white
-                  rounded-full
-                  px-10
-                  py-2
-                  m-4
-                  inline-flex
-                  items-center
-                  justify-center
-                  text-gray-800
-                  focus:outline-none
-                  lg:mx-0
-                  tracking-widest
-                "
-                href="https://noahcenter.up.edu.ph/"
-                target="_blank"
-              >
-                Blog
-              </a>
-              <a
-                class="
-                  text-xs
-                  uppercase
-                  font-bold
-                  bg-white
-                  rounded-full
-                  px-10
-                  py-2
-                  m-4
-                  inline-flex
-                  items-center
-                  justify-center
-                  text-gray-800
-                  focus:outline-none
-                  lg:mx-0
-                  tracking-widest
-                "
-                href="https://resilience.up.edu.ph/give-to-upri-and-noah-center/"
-                target="_blank"
-              >
-                Donate
-              </a>
-              <button
-                type="button"
-                class="
-                  text-xs
-                  uppercase
-                  font-bold
-                  bg-white
-                  rounded-full
-                  px-10
-                  py-2
-                  m-4
-                  inline-flex
-                  items-center
-                  justify-center
-                  text-gray-800
-                  focus:outline-none
-                  lg:mx-0
-                  tracking-widest
-                "
-                (click)="installMobileApp()"
-              >
-                Install
-              </button>
-              <noah-login></noah-login>
-            </ul>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <ul class="justify-center items-center f-m-m">
+                <button
+                  type="button"
+                  class="
+                    mt-8
+                    text-xs
+                    uppercase
+                    font-bold
+                    bg-white
+                    rounded-full
+                    px-10
+                    py-2
+                    m-4
+                    inline-flex
+                    items-center
+                    justify-center
+                    text-gray-800
+                    focus:outline-none
+                    lg:mx-0
+                    tracking-widest
+                    border-gray-600 border
+                  "
+                  routerLink="noah-playground"
+                >
+                  NOAH Studio
+                </button>
+                <a
+                  class="
+                    mt-4
+                    text-xs
+                    uppercase
+                    font-bold
+                    bg-white
+                    rounded-full
+                    px-10
+                    py-2
+                    m-4
+                    inline-flex
+                    items-center
+                    justify-center
+                    text-gray-800
+                    focus:outline-none
+                    lg:mx-0
+                    tracking-widest
+                  "
+                  href="https://drive.google.com/drive/folders/1ALE4-E9c-4AGjm1fqiPprWHrLUskeY9o"
+                  target="_blank"
+                >
+                  Downloads
+                </a>
+                <!-- <a
+                  class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
+                  href="https://noahcenter.up.edu.ph/"
+                  target="_blank"
+                >
+                  Blog
+                </a>
+                <a
+                  class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
+                  href="https://resilience.up.edu.ph/give-to-upri-and-noah-center/"
+                  target="_blank"
+                >
+                  Donate
+                </a>
+                <button
+                  type="button"
+                  class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
+                  (click)="installMobileApp()"
+                >
+                  Install
+                </button> -->
+                <!-- <noah-login></noah-login> -->
+              </ul>
+            </div>
           </div>
         </div>
       </div>

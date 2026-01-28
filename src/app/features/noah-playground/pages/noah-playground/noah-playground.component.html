@@ -330,14 +330,40 @@
       (touchstart)="onTouchStart($event)"
       (touchmove)="onTouchMove($event)"
     >
-      <div class="w-full">
-        <img
+      <div class="flex items-center">
+        <a
+          class="
+            toggleColour
+            no-underline
+            hover:no-underline
+            font-bold
+            text-2xl
+            lg:text-4xl
+          "
+          routerLink="/"
+        >
+          <div class="flex max-w-xs p-2 items-center">
+            <img src="assets/icons/mmda_logo.png" class="z-50 w-20 pr-2" />
+            <div class="flex flex-col items-start text-center gap-4">
+              <span class="text-xs text-gray-500 whitespace-nowrap"
+                >POWERED BY:</span
+              >
+              <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
+            </div>
+          </div>
+        </a>
+      </div>
+      <!-- <div class="w-full flex max-w-xs p-2 items-center">
+          <img
+            src="assets/icons/mmda_logo.png"
+            role="button"
+            class="z-50 w-16 pr-2"/>
+          <img
           src="assets/icons/noah_logo.png"
           routerLink="/"
           role="button"
-          class="z-50 w-20"
-        />
-      </div>
+          class="z-50 w-20"/>
+        </div> -->
       <!-- QC IOT ACCOUNT LOCAL   -->
       <img
         class="w-auto h-10 mx-auto"

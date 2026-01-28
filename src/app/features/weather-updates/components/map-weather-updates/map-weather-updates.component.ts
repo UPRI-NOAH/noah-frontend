@@ -44,6 +44,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
 
   ngOnInit(): void {
     this.initMap();
+    this.initGMABoundary();
 
     this.wuService.typhoonTrackShown$
       .pipe(takeUntil(this._unsub))
@@ -301,6 +302,73 @@ export class MapWeatherUpdatesComponent implements OnInit {
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
+    });
+  }
+
+  initGMABoundary() {
+    if (!this.map) return; // make sure map is initialized
+
+    this.map.on('load', () => {
+      // 1️⃣ Add the GeoJSON source
+      if (!this.map.getSource('gma-boundary')) {
+        this.map.addSource('gma-boundary', {
+          type: 'geojson',
+          data: 'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson',
+        });
+      }
+
+      // 2️⃣ Add fill layer
+      // if (!this.map.getLayer('gma-boundary-fill')) {
+      //   this.map.addLayer({
+      //     id: 'gma-boundary-fill',
+      //     type: 'fill',
+      //     source: 'gma-boundary',
+      //     paint: {
+      //       'fill-color': '#0080ff',
+      //       'fill-opacity': 0.3,
+      //     },
+      //   });
+      // }
+
+      // 3️⃣ Add outline layer
+      if (!this.map.getLayer('gma-boundary-outline')) {
+        this.map.addLayer({
+          id: 'gma-boundary-outline',
+          type: 'line',
+          source: 'gma-boundary',
+          paint: {
+            'line-color': '#4B0082',
+            'line-width': 3,
+          },
+        });
+      }
+
+      // 4️⃣ Fit map to MultiPolygon bounds
+      fetch(
+        'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson'
+      )
+        .then((res) => res.json())
+        .then((data: GeoJSON.FeatureCollection) => {
+          const bounds = new mapboxgl.LngLatBounds();
+
+          data.features.forEach((feature) => {
+            if (feature.geometry.type === 'Polygon') {
+              feature.geometry.coordinates[0].forEach((coord) =>
+                bounds.extend(coord as [number, number])
+              );
+            } else if (feature.geometry.type === 'MultiPolygon') {
+              feature.geometry.coordinates.forEach((polygon) =>
+                polygon[0].forEach((coord) =>
+                  bounds.extend(coord as [number, number])
+                )
+              );
+            }
+          });
+
+          if (!bounds.isEmpty()) {
+            this.map.fitBounds(bounds, { padding: 20 });
+          }
+        });
     });
   }
 
