@@ -52,36 +52,55 @@ export class BaseComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    if (this.swiper?.swiperRef) {
-      // 🔹 Handle swipe events → update URL
-      this.swiper.swiperRef.on('slideChange', () => {
-        const activeIndex = this.swiper?.swiperRef.activeIndex ?? 0;
-        this.ngZone.run(() => {
-          if (activeIndex === 0) {
-            this.router.navigateByUrl('/weather-updates/rainfall-contour');
-          } else if (activeIndex === 1) {
-            this.router.navigateByUrl('/weather-updates/typhoon-track');
-          }
-        });
+    if (!this.swiper) return;
+    const swiperRef = this.swiper.swiperRef;
+    if (!swiperRef) return;
+
+    // Ensure swiper is initialized
+    const handleSlideChange = () => {
+      const activeIndex = swiperRef.activeIndex ?? 0;
+      this.ngZone.run(() => {
+        if (activeIndex === 0) {
+          this.router.navigateByUrl('/weather-updates/rainfall-contour');
+        } else if (activeIndex === 1) {
+          this.router.navigateByUrl('/weather-updates/typhoon-track');
+        }
       });
+    };
 
-      // 🔹 Handle URL change → update swiper index
-      this.router.events
-        .pipe(filter((event) => event instanceof NavigationEnd))
-        .subscribe((event: NavigationEnd) => {
-          if (!this.swiper?.swiperRef) return;
+    //Listen for slide changes
+    swiperRef.on('slideChange', handleSlideChange);
 
-          this.ngZone.runOutsideAngular(() => {
-            if (event.url.includes('/weather-updates/typhoon-track')) {
-              this.swiper?.swiperRef.slideTo(1);
-            } else if (
-              event.url.includes('/weather-updates/rainfall-contour')
-            ) {
-              this.swiper?.swiperRef.slideTo(0);
-            }
-          });
-        });
+    // Function to safely move swiper based on URL
+    const updateSwiperFromUrl = (url: string) => {
+      if (!swiperRef || swiperRef.destroyed) return;
+
+      this.ngZone.runOutsideAngular(() => {
+        if (url.includes('/weather-updates/typhoon-track')) {
+          swiperRef.slideTo(1);
+        } else if (url.includes('/weather-updates/rainfall-contour')) {
+          swiperRef.slideTo(0);
+        }
+      });
+    };
+
+    // Wait for initialization before first slideTo
+    // Swiper does not have 'initialized', use 'destroyed' (false when initialized)
+    if (swiperRef.destroyed) {
+      swiperRef.on('init', () => {
+        updateSwiperFromUrl(this.router.url);
+      });
+      swiperRef.init(); // manually init if not already
+    } else {
+      updateSwiperFromUrl(this.router.url);
     }
+
+    // Handle URL changes
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        updateSwiperFromUrl(event.url);
+      });
   }
 
   slideNext() {
