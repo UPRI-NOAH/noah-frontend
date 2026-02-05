@@ -2091,6 +2091,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_inactive.geojson',
       },
     };
+    const volcanoPDZUrl =
+      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcano_pdz.geojson';
 
     const volcanoColorMap: Record<VolcanoType, string> = {
       active: 'red',
@@ -2171,6 +2173,45 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             },
           });
 
+          // pdz only for active volcanoes
+          const pdzSourceId = 'volcano-pdz-source';
+          const pdzFillLayerId = 'volcano-pdz-fill';
+          const pdzLineLayerId = 'volcano-pdz-line';
+
+          if (volcanoType === 'active') {
+            if (!_this.map.getSource(pdzSourceId)) {
+              _this.map.addSource(pdzSourceId, {
+                type: 'geojson',
+                data: volcanoPDZUrl,
+              });
+            }
+
+            if (!_this.map.getLayer(pdzFillLayerId)) {
+              _this.map.addLayer({
+                id: pdzFillLayerId,
+                type: 'fill',
+                source: pdzSourceId,
+                paint: {
+                  'fill-color': '#ff3300',
+                  'fill-opacity': 0,
+                },
+              });
+            }
+
+            if (!_this.map.getLayer(pdzLineLayerId)) {
+              _this.map.addLayer({
+                id: pdzLineLayerId,
+                type: 'line',
+                source: pdzSourceId,
+                paint: {
+                  'line-color': '#ff0000',
+                  'line-width': 2,
+                  'line-opacity': 0,
+                },
+              });
+            }
+          }
+
           const popUp = new mapboxgl.Popup({
             closeButton: true,
             closeOnClick: false,
@@ -2188,6 +2229,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               let newOpacity = 0;
               if (volcano.shown && allShown) {
                 newOpacity = volcano.opacity / 100;
+
                 if (volcanoType === 'active') {
                   const handleClick = (e) => {
                     const name = e.features[0].properties.name;
@@ -2216,11 +2258,47 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                   };
                   this.map.on('click', layerID, handleClick);
                   this.map.on('touchend', layerID, handleClick);
+
+                  // control pdz opacity
+                  const pdzOpacity = volcano.opacity / 100;
+
+                  if (this.map.getLayer(pdzFillLayerId)) {
+                    this.map.setPaintProperty(
+                      pdzFillLayerId,
+                      'fill-opacity',
+                      0.25 * pdzOpacity
+                    );
+                  }
+
+                  if (this.map.getLayer(pdzLineLayerId)) {
+                    this.map.setPaintProperty(
+                      pdzLineLayerId,
+                      'line-opacity',
+                      pdzOpacity
+                    );
+                  }
                 }
               } else {
                 this.map.on('click', layerID, (e) => {
                   popUp.remove();
                 });
+                // hide pdz if active is off
+                if (volcanoType === 'active') {
+                  if (this.map.getLayer(pdzFillLayerId)) {
+                    this.map.setPaintProperty(
+                      pdzFillLayerId,
+                      'fill-opacity',
+                      0
+                    );
+                  }
+                  if (this.map.getLayer(pdzLineLayerId)) {
+                    this.map.setPaintProperty(
+                      pdzLineLayerId,
+                      'line-opacity',
+                      0
+                    );
+                  }
+                }
               }
               popUp.remove();
               this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
