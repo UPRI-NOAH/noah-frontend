@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 @Component({
   selector: 'noah-typhoon-track-group',
   templateUrl: './typhoon-track-group.component.html',
@@ -17,6 +18,11 @@ export class TyphoonTrackGroupComponent implements OnInit {
 
   ngOnInit(): void {
     // Auto-enable typhoon track and himawari satellite if navigating directly to this page
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.autoEnableFeatures();
+      });
     this.autoEnableFeatures();
 
     this.wuService.typhoonTrackShown$.subscribe((shown) => {
@@ -29,14 +35,20 @@ export class TyphoonTrackGroupComponent implements OnInit {
   }
 
   private autoEnableFeatures(): void {
-    //only auto-enable if the current route is exactly '/weather-updates/typhoon-track'
     if (this.router.url === '/weather-updates/typhoon-track') {
       const typhoonTrack = this.wuService.getTyphoonTrack();
       const weatherSatellite = this.wuService.getWeatherSatellites();
-      //only enable if not already enabled
+      const selectedType = this.wuService.getSelectedRainfallContourType();
+      this.wuService.setRainfallContourOpacity(0, selectedType);
+
       if (!typhoonTrack.shown || !weatherSatellite.shown) {
+        this.shown = true; // ✅ sync checkbox UI
         this.wuService.enableTyphoonTrackAndSatellite();
+        this.wuService.triggerZoomToTyphoon();
       }
+    } else {
+      const selectedType = this.wuService.getSelectedRainfallContourType();
+      this.wuService.setRainfallContourOpacity(100, selectedType);
     }
   }
 
@@ -45,7 +57,7 @@ export class TyphoonTrackGroupComponent implements OnInit {
     event.stopImmediatePropagation();
 
     this.shown = !this.shown;
-    this.wuService.toggleTyphoonTrackGroupVisibility();
+    this.wuService.toggleTyphoonTrackGroupVisibility(this.shown);
     this.wuService.toggleWeatherSatelliteVisibility();
 
     const selectedType = this.wuService.getSelectedRainfallContourType();

@@ -154,12 +154,12 @@ export class WeatherUpdatesService {
   }
 
   // Setters for Typhoon Track.
-  toggleTyphoonTrackGroupVisibility(): void {
+  toggleTyphoonTrackGroupVisibility(visible: boolean): void {
     const typhoonTrack = {
       ...this.store.state.typhoonTrack,
     };
 
-    typhoonTrack.shown = !typhoonTrack.shown;
+    typhoonTrack.shown = visible;
     this.store.patch(
       { typhoonTrack },
       `toggle typhoon track visibility ${typhoonTrack.shown}`
@@ -242,7 +242,7 @@ export class WeatherUpdatesService {
   }
 
   // Setters for Weather Satellite.
-  toggleWeatherSatelliteVisibility(): void {
+  toggleWeatherSatelliteVisibility(visible?: boolean): void {
     const currentState = this.store.state.weatherSatellite.shown;
     this.store.patch(
       {
@@ -251,7 +251,7 @@ export class WeatherUpdatesService {
           shown: !currentState,
         },
       },
-      `Weather satellite visibility toggled: ${!currentState}`
+      `Weather satellite visibility toggled: ${!currentState} and visible: ${visible}`
     );
   }
 
