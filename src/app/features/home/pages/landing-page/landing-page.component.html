@@ -1,8 +1,8 @@
 <noah-navigation class="fixed z-50"></noah-navigation>
 
 <app-banner
-  lowResImgUrl="assets/images/landing-bg-min.jpg"
-  hiResImgUrl="assets/images/landing-bg.png"
+  lowResImgUrl="assets/images/bg.png"
+  hiResImgUrl="assets/images/bg.png"
   [hasDarkOverlay]="false"
   [fullHeight]="true"
 >
@@ -23,14 +23,12 @@
         <!-- Outer Form -->
         <form class="p-4 md:p-6 bg-white w-full rounded-lg shadow-xl">
           <div class="text-center pt-3 md:pt-5">
-            <h1 class="text-3xl md:text-4xl font-bold">Know Your Hazards</h1>
+            <h1 class="text-3xl md:text-4xl font-bold">
+              Stay Informed. Stay Safe.
+            </h1>
           </div>
           <div class="mt-2 text-center">
-            <p class="text-sm md:text-base pt-2 md:pt-4">
-              Assess how likely you are to be affected by
-              <b>floods</b>, <b>landslides</b>, and <b>storm surges</b> and what
-              you can do about it.
-            </p>
+            <p class="text-base md:text-lg">Check your hazards now!</p>
           </div>
 
           <!-- Search Component -->
@@ -47,66 +45,7 @@
           </div>
 
           <div class="text-center pt-6 md:pt-5">
-            <h1 class="text-xl font-bold">Check Weather Updates</h1>
-            <div class="flex py-2 space-x-5 justify-center items-center">
-              <div
-                class="
-                  relative
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-offset-2
-                  focus:ring-gray-800
-                "
-              >
-                <div
-                  class="
-                    center
-                    relative
-                    inline-block
-                    whitespace-nowrap
-                    rounded-3xl
-                    bg-blue-100
-                    p-1
-                    align-baseline
-                    font-sans
-                    text-xs
-                    leading-none
-                    tracking-wide
-                  "
-                >
-                  <div class="mx-4 my-1 font-extrabold text-blue-600">
-                    Both are still in BETA
-                  </div>
-                </div>
-                <div
-                  class="
-                    animate-ping
-                    w-2
-                    h-2
-                    bg-red-600
-                    rounded-full
-                    absolute
-                    top-0
-                    -right-1
-                    m-auto
-                    duration-200
-                  "
-                ></div>
-                <div
-                  class="
-                    w-2
-                    h-2
-                    bg-red-600
-                    rounded-full
-                    absolute
-                    top-0
-                    -right-1
-                    m-auto
-                    shadow-lg
-                  "
-                ></div>
-              </div>
-            </div>
+            <h1 class="text-xl font-bold">See Latest Weather</h1>
           </div>
 
           <!-- Buttons (Rainfall and Typhoon Track) -->
@@ -209,17 +148,74 @@
               </a>
             </div>
           </div>
-
-          <div class="mt-2 md:mt-3 text-center">
-            <p class="text-sm md:text-base pt-1 md:pt-2">
-              More hazard insights coming soon!
-            </p>
-          </div>
         </form>
+
+        <div class="items-center space-x-4" style="justify-self: anchor-center">
+          <a
+            class="
+              w-auto
+              text-xs
+              uppercase
+              font-bold
+              bg-primary
+              rounded-full
+              md:px-10
+              px-6
+              py-2
+              my-4
+              inline-flex
+              items-center
+              justify-center
+              text-white
+              focus:outline-none
+              mx-auto
+              lg:mx-0
+              tracking-widest
+              hover:bg-blue-800
+              focus:ring-opacity-50
+              border-primary border-2
+            "
+            href="https://drive.google.com/drive/folders/1ALE4-E9c-4AGjm1fqiPprWHrLUskeY9o"
+            target="_blank"
+          >
+            Downloads
+          </a>
+
+          <button
+            type="button"
+            class="
+              text-xs
+              uppercase
+              w-auto
+              font-bold
+              bg-primary
+              rounded-full
+              md:px-10
+              px-6
+              py-2
+              my-4
+              inline-flex
+              items-center
+              justify-center
+              text-white
+              focus:outline-none
+              mx-auto
+              lg:mx-0
+              tracking-widest
+              hover:bg-blue-800
+              focus:ring-opacity-50
+              border-primary border-2
+            "
+            routerLink="noah-playground"
+          >
+            NOAH Studio
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </app-banner>
+
 <!--
 <section class="bg-white">
   <div class="max-w-5xl px-6 py-16 mx-auto">
@@ -322,7 +318,7 @@
   </div>
 </section> -->
 
-<hr class="mb-6 border-t" />
+<!-- <hr class="mb-6 border-t" />
 
 <section class="bg-white">
   <div class="max-w-5xl px-6 py-24 mx-auto text-center">
@@ -357,7 +353,7 @@
       NOAH Studio
     </button>
   </div>
-</section>
+</section> -->
 
 <!-- <svg
   class="wave-top"
@@ -394,4 +390,4 @@
     </g>
   </g>
 </svg> -->
-<noah-footer></noah-footer>
+<!-- <noah-footer></noah-footer> -->

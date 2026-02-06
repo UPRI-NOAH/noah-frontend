@@ -19,7 +19,7 @@ export class LandingPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('NOAH - Nationwide Operational Assessment of Hazards');
+    this.title.setTitle('MMDA x NOAH');
   }
 
   selectPlace(selectedPlace: any) {

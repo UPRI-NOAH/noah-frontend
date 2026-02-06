@@ -179,6 +179,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private measurementActive: boolean = false;
   screenWidth: number;
   screenHeight: number;
+  private hasInitialized = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -197,43 +198,58 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMap();
-    fromEvent(this.map, 'style.load')
-      .pipe(first(), takeUntil(this._unsub))
-      .subscribe(() => {
-        this.addNavigationControls();
-        this.addGeolocationControls();
-        this.initCenterListener();
-        this.initGeolocationListener();
-        this.initCalculation();
-        this.addCustomTooltips();
-        this.getScreenSize();
-        this.iniScaleControl();
-      });
-    this.initGMABoundary();
-    // this.getScreenSize();
 
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
-        //this.initSensors();
-        this.initQuezonCitySensors();
-        this.initQCCritFac();
-        this.initQCMunicipalBoundary();
-        this.initVolcanoes();
-        this.initBoundaries();
-        this.initWeatherSatelliteLayers();
-        //this.showContourMaps();
-        this.initQcCenterListener();
-        this.initLagunaCenterListener();
-        this.initBarangayBoundary();
-        this.initAffectedExposure();
-        this.initRainForcast();
-        this.initTyphoonTrack();
-        this.initPar();
+        this.initOnce();
+        this.initStyleDependentLayers();
       });
+  }
+
+  private initOnce(): void {
+    if (this.hasInitialized) return;
+    this.hasInitialized = true;
+
+    this.addNavigationControls();
+    this.addGeolocationControls();
+
+    this.initCenterListener();
+    this.initGeolocationListener();
+    this.initCalculation();
+    this.addCustomTooltips();
+
+    this.getScreenSize();
+    this.iniScaleControl();
+    this.initGMABoundary();
+  }
+
+  private initStyleDependentLayers(): void {
+    // Lightweight first (important for perceived speed)
+    this.addExaggerationControl();
+    this.addCriticalFacilityLayers();
+    this.initBoundaries();
+    this.initBarangayBoundary();
+
+    // Medium load
+    this.initHazardLayers();
+    this.initVolcanoes();
+    this.initWeatherSatelliteLayers();
+
+    // Heavy layers (lazy load)
+    requestAnimationFrame(() => {
+      this.initQuezonCitySensors();
+      this.initQCCritFac();
+      this.initQCMunicipalBoundary();
+      this.initAffectedExposure();
+      this.initRainForcast();
+      this.initTyphoonTrack();
+      this.initPar();
+    });
+
+    // Center listeners (cheap)
+    this.initQcCenterListener();
+    this.initLagunaCenterListener();
   }
 
   ngOnDestroy(): void {
@@ -278,6 +294,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.map.flyTo({
           center,
           zoom: 17,
+          pitch: 50,
           essential: true,
         });
 
@@ -300,6 +317,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.flyTo({
                 center: LngLat,
                 zoom: 17,
+                pitch: 50,
                 speed: 1.2,
                 curve: 1,
                 easing: (t) => t,
@@ -2277,6 +2295,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                           <div><b>Elevation: </b>${elevation.toLocaleString()} masl</div>
                           <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} masl</div>
                           <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
+                        <div style="width:1000px; height:498px; overflow:hidden;">
+                        <iframe
+                          src="https://upri-noah.github.io/noah-flood-intelligence/"
+                          style="
+                            border:none;
+                            width:142.85%;
+                            height:142.85%;
+                            transform: scale(0.7);
+                            transform-origin: top left;
+                          "
+                          scrolling="yes"
+                          frameborder="0"
+                          allowfullscreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                        </iframe>
+                      </div>
                         </div>`
                       )
                       .addTo(this.map);
@@ -2929,6 +2963,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       container: 'map',
       style: environment.mapbox.styles.terrain,
       zoom: 5.5,
+      minZoom: 5.5, // can't zoom out further than PH
+      maxZoom: 18, // optional (adjust if needed)
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,

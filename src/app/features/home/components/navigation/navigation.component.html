@@ -1,5 +1,16 @@
-<nav class="w-screen bg-white shadow hidden lg:block">
-  <div class="max-w-7xl mx-auto flex items-center justify-between mt-0 py-2">
+<nav class="w-screen shadow hidden lg:block" style="background-color: #00009e">
+  <svg class="header-waves" viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path
+      class="wave wave1"
+      d="M0,60 C120,90 240,30 360,50 480,70 600,110 720,90 840,70 960,30 1080,40 1200,50 1320,80 1440,60 L1440,120 L0,120 Z"
+    />
+    <path
+      class="wave wave2"
+      d="M0,70 C180,40 360,100 540,80 720,60 900,30 1080,50 1260,70 1440,40 1440,40 L1440,120 L0,120 Z"
+    />
+  </svg>
+
+  <div class="max-w-7xl mx-auto flex mt-0 py-2" style="justify-self: center">
     <div class="flex items-center">
       <div
         class="
@@ -24,12 +35,15 @@
             routerLink="/"
           >
             <div class="flex max-w-xs p-2 items-center">
-              <img src="assets/icons/mmda_logo.png" class="z-50 w-24 pr-2" />
+              <img
+                src="assets/icons/mmda_logo.png"
+                class="z-50 w-24 pr-2 border-indigo-500"
+              />
               <div class="flex flex-col items-start text-center gap-4">
-                <span class="text-xs text-gray-500 whitespace-nowrap"
+                <span class="text-xs text-white whitespace-nowrap"
                   >POWERED BY:</span
                 >
-                <img src="assets/icons/noah_logo.png" class="z-50 w-24" />
+                <img src="assets/icons/noah-logo(1).png" class="z-50 w-24" />
               </div>
             </div>
           </a>
@@ -72,7 +86,7 @@
       >
         Blog
       </a> -->
-      <a
+      <!-- <a
         class="
           text-xs
           uppercase
@@ -94,7 +108,7 @@
         target="_blank"
       >
         Downloads
-      </a>
+      </a> -->
       <!-- <button
         type="button"
         class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
@@ -102,7 +116,7 @@
       >
         Install
       </button> -->
-      <button
+      <!-- <button
         type="button"
         class="
           text-xs
@@ -128,7 +142,7 @@
         routerLink="noah-playground"
       >
         NOAH Studio
-      </button>
+      </button> -->
       <!-- <noah-login></noah-login> -->
     </div>
   </div>
@@ -143,14 +157,14 @@
       w-full
       flex
       lg:hidden
-      justify-between
       items-center
-      bg-white
       fixed
       top-0
       z-40
       shadow
+      justify-center
     "
+    style="background-color: #00009e"
   >
     <div class="pl-0 flex items-center">
       <div
@@ -183,7 +197,7 @@
                 <span class="text-xs text-gray-500 whitespace-nowrap"
                   >POWERED BY:</span
                 >
-                <img src="assets/icons/noah_logo.png" class="z-50 w-20" />
+                <img src="assets/icons/noah-logo(1).png" class="z-50 w-20" />
               </div>
             </div>
           </a>
@@ -191,7 +205,17 @@
       </div>
     </div>
 
-    <div>
+    <svg class="header-waves" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path
+        class="wave wave1"
+        d="M0,60 C120,90 240,30 360,50 480,70 600,110 720,90 840,70 960,30 1080,40 1200,50 1320,80 1440,60 L1440,120 L0,120 Z"
+      />
+      <path
+        class="wave wave2"
+        d="M0,70 C180,40 360,100 540,80 720,60 900,30 1080,50 1260,70 1440,40 1440,40 L1440,120 L0,120 Z"
+      />
+    </svg>
+    <!-- <div>
       <div id="menu" class="text-gray-800" (click)="isMenu = true">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -211,10 +235,10 @@
           <line x1="4" y1="18" x2="20" y2="18" />
         </svg>
       </div>
-    </div>
+    </div> -->
   </div>
   <!--Mobile responsive sidebar-->
-  <div
+  <!-- <div
     *ngIf="isMenu"
     class="w-56 z-40 lg:hidden fixed top-0 bottom-0 right-0"
     id="mobile-nav"
@@ -344,7 +368,7 @@
                 >
                   Downloads
                 </a>
-                <!-- <a
+                <a
                   class="text-xs uppercase font-bold bg-white rounded-full px-10 py-2 m-4 inline-flex items-center justify-center text-gray-800 focus:outline-none lg:mx-0 tracking-widest"
                   href="https://noahcenter.up.edu.ph/"
                   target="_blank"
@@ -364,14 +388,14 @@
                   (click)="installMobileApp()"
                 >
                   Install
-                </button> -->
-                <!-- <noah-login></noah-login> -->
+                </button> 
+                <noah-login></noah-login> 
               </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </nav>
 <!-- Sidebar ends -->
