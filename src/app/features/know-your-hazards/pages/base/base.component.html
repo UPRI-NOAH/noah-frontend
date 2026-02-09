@@ -7,13 +7,23 @@
       lg:py-2
       flex
       items-center
-      bg-white
       shadow
       sticky
       top-0
       lg-hidden
     "
+    style="background-color: #00009e"
   >
+    <svg class="header-waves" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path
+        class="wave wave1"
+        d="M0,60 C120,90 240,30 360,50 480,70 600,110 720,90 840,70 960,30 1080,40 1200,50 1320,80 1440,60 L1440,120 L0,120 Z"
+      />
+      <path
+        class="wave wave2"
+        d="M0,70 C180,40 360,100 540,80 720,60 900,30 1080,50 1260,70 1440,40 1440,40 L1440,120 L0,120 Z"
+      />
+    </svg>
     <a
       class="
         toggleColour
@@ -37,7 +47,7 @@
         <!-- Second Column: Text -->
         <div class="col-span-1">
           <div class="flex flex-col items-start text-center gap-4">
-            <span class="text-xs text-gray-500 whitespace-nowrap"
+            <span class="text-xs text-white whitespace-nowrap"
               >POWERED BY:</span
             >
             <img src="assets/icons/noah_logo.png" class="z-50 w-20 lg:w-20" />
@@ -145,20 +155,19 @@
 <!-- desktop view  -->
 <div class="hidden md:block">
   <div
-    class="
-      sticky
-      top-0
-      z-50
-      px-6
-      md:px-8
-      py-4
-      lg:py-2
-      flex
-      items-center
-      bg-white
-      shadow
-    "
+    class="sticky top-0 z-50 px-6 md:px-8 py-4 lg:py-2 flex items-center shadow"
+    style="background-color: #00009e"
   >
+    <svg class="header-waves" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path
+        class="wave wave1"
+        d="M0,60 C120,90 240,30 360,50 480,70 600,110 720,90 840,70 960,30 1080,40 1200,50 1320,80 1440,60 L1440,120 L0,120 Z"
+      />
+      <path
+        class="wave wave2"
+        d="M0,70 C180,40 360,100 540,80 720,60 900,30 1080,50 1260,70 1440,40 1440,40 L1440,120 L0,120 Z"
+      />
+    </svg>
     <a
       class="
         toggleColour
@@ -177,9 +186,7 @@
           class="z-50 w-20 pr-2"
         />
         <div class="flex flex-col items-start text-center gap-4">
-          <span class="text-xs text-gray-500 whitespace-nowrap"
-            >POWERED BY:</span
-          >
+          <span class="text-xs text-white whitespace-nowrap">POWERED BY:</span>
           <img src="assets/icons/noah_logo.png" class="z-50 w-16 lg:w-20" />
         </div>
       </div>
