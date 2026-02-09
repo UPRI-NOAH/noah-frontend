@@ -179,6 +179,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   private measurementActive: boolean = false;
   screenWidth: number;
   screenHeight: number;
+  private hasInitialized = false;
 
   @ViewChild('selectQc') selectQc: ElementRef;
 
@@ -197,43 +198,58 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initMap();
-    fromEvent(this.map, 'style.load')
-      .pipe(first(), takeUntil(this._unsub))
-      .subscribe(() => {
-        this.addNavigationControls();
-        this.addGeolocationControls();
-        this.initCenterListener();
-        this.initGeolocationListener();
-        this.initCalculation();
-        this.addCustomTooltips();
-        this.getScreenSize();
-        this.iniScaleControl();
-      });
-    // this.getScreenSize();
 
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        // this.getScreenSize();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
-        //this.initSensors();
-        this.initQuezonCitySensors();
-        this.initQCCritFac();
-        this.initQCMunicipalBoundary();
-        this.initVolcanoes();
-        this.initBoundaries();
-        this.initWeatherSatelliteLayers();
-        //this.showContourMaps();
-        this.initQcCenterListener();
-        this.initLagunaCenterListener();
-        this.initBarangayBoundary();
-        this.initAffectedExposure();
-        this.initRainForcast();
-        this.initTyphoonTrack();
-        this.initPar();
+        this.initOnce();
+        this.initStyleDependentLayers();
       });
+  }
+
+  private initOnce(): void {
+    if (this.hasInitialized) return;
+    this.hasInitialized = true;
+
+    this.addNavigationControls();
+    this.addGeolocationControls();
+
+    this.initCenterListener();
+    this.initGeolocationListener();
+    this.initCalculation();
+    this.addCustomTooltips();
+
+    this.getScreenSize();
+    this.iniScaleControl();
+    this.initGMABoundary();
+  }
+
+  private initStyleDependentLayers(): void {
+    // Lightweight first (important for perceived speed)
+    this.addExaggerationControl();
+    this.addCriticalFacilityLayers();
+    this.initBoundaries();
+    this.initBarangayBoundary();
+
+    // Medium load
+    this.initHazardLayers();
+    this.initVolcanoes();
+    this.initWeatherSatelliteLayers();
+
+    // Heavy layers (lazy load)
+    requestAnimationFrame(() => {
+      this.initQuezonCitySensors();
+      this.initQCCritFac();
+      this.initQCMunicipalBoundary();
+      this.initAffectedExposure();
+      this.initRainForcast();
+      this.initTyphoonTrack();
+      this.initPar();
+    });
+
+    // Center listeners (cheap)
+    this.initQcCenterListener();
+    this.initLagunaCenterListener();
   }
 
   ngOnDestroy(): void {
@@ -278,6 +294,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
         this.map.flyTo({
           center,
           zoom: 17,
+          pitch: 50,
           essential: true,
         });
 
@@ -300,6 +317,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
               this.map.flyTo({
                 center: LngLat,
                 zoom: 17,
+                pitch: 50,
                 speed: 1.2,
                 curve: 1,
                 easing: (t) => t,
@@ -1466,6 +1484,73 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     });
   }
 
+  initGMABoundary() {
+    if (!this.map) return; // make sure map is initialized
+
+    this.map.on('load', () => {
+      // 1️⃣ Add the GeoJSON source
+      if (!this.map.getSource('gma-boundary')) {
+        this.map.addSource('gma-boundary', {
+          type: 'geojson',
+          data: 'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson',
+        });
+      }
+
+      // 2️⃣ Add fill layer
+      // if (!this.map.getLayer('gma-boundary-fill')) {
+      //   this.map.addLayer({
+      //     id: 'gma-boundary-fill',
+      //     type: 'fill',
+      //     source: 'gma-boundary',
+      //     paint: {
+      //       'fill-color': '#0080ff',
+      //       'fill-opacity': 0.3,
+      //     },
+      //   });
+      // }
+
+      // 3️⃣ Add outline layer
+      if (!this.map.getLayer('gma-boundary-outline')) {
+        this.map.addLayer({
+          id: 'gma-boundary-outline',
+          type: 'line',
+          source: 'gma-boundary',
+          paint: {
+            'line-color': '#4B0082',
+            'line-width': 3,
+          },
+        });
+      }
+
+      // 4️⃣ Fit map to MultiPolygon bounds
+      fetch(
+        'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson'
+      )
+        .then((res) => res.json())
+        .then((data: GeoJSON.FeatureCollection) => {
+          const bounds = new mapboxgl.LngLatBounds();
+
+          data.features.forEach((feature) => {
+            if (feature.geometry.type === 'Polygon') {
+              feature.geometry.coordinates[0].forEach((coord) =>
+                bounds.extend(coord as [number, number])
+              );
+            } else if (feature.geometry.type === 'MultiPolygon') {
+              feature.geometry.coordinates.forEach((polygon) =>
+                polygon[0].forEach((coord) =>
+                  bounds.extend(coord as [number, number])
+                )
+              );
+            }
+          });
+
+          if (!bounds.isEmpty()) {
+            this.map.fitBounds(bounds, { padding: 20 });
+          }
+        });
+    });
+  }
+
   initQCMunicipalBoundary() {
     QCBoundary.forEach((qcMunicipalBoundary: QuezonCityMunicipalBoundary) => {
       this.qcSensorService
@@ -2210,6 +2295,22 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                           <div><b>Elevation: </b>${elevation.toLocaleString()} masl</div>
                           <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} masl</div>
                           <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
+                        <div style="width:1000px; height:498px; overflow:hidden;">
+                        <iframe
+                          src="https://upri-noah.github.io/noah-flood-intelligence/"
+                          style="
+                            border:none;
+                            width:142.85%;
+                            height:142.85%;
+                            transform: scale(0.7);
+                            transform-origin: top left;
+                          "
+                          scrolling="yes"
+                          frameborder="0"
+                          allowfullscreen
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                        </iframe>
+                      </div>
                         </div>`
                       )
                       .addTo(this.map);
@@ -2230,7 +2331,6 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       );
     });
   }
-
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
@@ -2243,40 +2343,21 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       },
     };
 
-    const getWeatherSatelliteSource = (weatherSatelliteDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
-      switch (weatherSatelliteDetails.type) {
-        case 'video':
-          return {
-            type: 'video',
-            urls: [weatherSatelliteDetails.url],
-            coordinates: [
-              [100.0, 29.25], // top-left
-              [160.0, 29.25], // top-right
-              [160.0, 5.0], // bottom-right
-              [100.0, 5.0], // bottom-left
-            ],
-          };
-        default:
-          throw new Error(
-            '[MapPlayground] Unable to get weather satellite source'
-          );
-      }
-    };
-
     Object.keys(weatherSatelliteImages).forEach(
       (weatherType: WeatherSatelliteType) => {
         const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
 
-        // 1. Add source per weather satellite type
-        this.map.addSource(
-          weatherType,
-          getWeatherSatelliteSource(weatherSatelliteDetails)
-        );
+        this.map.addSource(weatherType, {
+          type: 'video',
+          urls: [weatherSatelliteDetails.url],
+          coordinates: [
+            [100.0, 29.25],
+            [160.0, 29.25],
+            [160.0, 5.0],
+            [100.0, 5.0],
+          ],
+        });
 
-        // 2. Add layer per weather satellite source
         this.map.addLayer({
           id: weatherType,
           type: 'raster',
@@ -2287,25 +2368,15 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
           },
         });
 
-        // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-        //   distinctUntilChanged(),
-        //   tap(() => {
-        //     this.map.flyTo({
-        //       center: PH_DEFAULT_CENTER,
-        //       zoom: 4,
-        //       essential: true,
-        //     });
-        //   }),
-        //   shareReplay(1)
-        // );
-
-        // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
+          distinctUntilChanged(),
           shareReplay(1)
         );
+
         const selectedWeather$ = this.pgService.selectedWeatherSatellite$.pipe(
           shareReplay(1)
         );
+
         const weatherTypeOpacity$ = this.pgService
           .getWeatherSatellite$(weatherType)
           .pipe(
@@ -2313,13 +2384,26 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             distinctUntilChanged()
           );
 
+        let hasZoomed = false;
+
         combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = +(allShown && selectedWeather === weatherType);
-            if (opacity) {
-              opacity = weatherTypeOpacity / 100;
+            // ✅ Zoom only when allShown turns true
+            if (allShown && !hasZoomed) {
+              hasZoomed = true;
+              this.map.flyTo({
+                center: PH_DEFAULT_CENTER,
+                zoom: 5,
+                essential: true,
+              });
             }
+            if (!allShown) {
+              hasZoomed = false;
+            }
+
+            const isVisible = allShown && selectedWeather === weatherType;
+            const opacity = isVisible ? weatherTypeOpacity / 100 : 0;
 
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
@@ -2879,6 +2963,8 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
       container: 'map',
       style: environment.mapbox.styles.terrain,
       zoom: 5.5,
+      minZoom: 5.5, // can't zoom out further than PH
+      maxZoom: 18, // optional (adjust if needed)
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
