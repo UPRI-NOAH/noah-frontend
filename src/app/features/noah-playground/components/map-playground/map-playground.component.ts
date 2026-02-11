@@ -2295,22 +2295,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
                           <div><b>Elevation: </b>${elevation.toLocaleString()} masl</div>
                           <div><b>Peak Elevation: </b>${peak_elevation.toLocaleString()} masl</div>
                           <div>To learn more about ${name}, <i><a href="${infoUrl}" style="color: blue;" target="_blank">click here.</a></i></div>
-                        <div style="width:1000px; height:498px; overflow:hidden;">
-                        <iframe
-                          src="https://upri-noah.github.io/noah-flood-intelligence/"
-                          style="
-                            border:none;
-                            width:142.85%;
-                            height:142.85%;
-                            transform: scale(0.7);
-                            transform-origin: top left;
-                          "
-                          scrolling="yes"
-                          frameborder="0"
-                          allowfullscreen
-                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                        </iframe>
-                      </div>
+                       
                         </div>`
                       )
                       .addTo(this.map);
