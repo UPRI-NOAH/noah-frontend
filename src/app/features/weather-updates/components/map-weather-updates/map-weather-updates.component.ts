@@ -365,8 +365,19 @@ export class MapWeatherUpdatesComponent implements OnInit {
             }
           });
 
+          const typhoonTrack = this.wuService.getTyphoonTrack();
           if (!bounds.isEmpty()) {
-            this.map.fitBounds(bounds, { padding: 20 });
+            if (typhoonTrack.shown) {
+              // Typhoon selected → zoom to PH view
+              this.zoomTyphoon();
+            } else {
+              // Typhoon OFF → zoom to GMA boundary
+              this.map.fitBounds(bounds, {
+                padding: 20,
+                maxZoom: 12, // optional, prevents over-zoom
+                duration: 1000, // smooth animation
+              });
+            }
           }
         });
     });
