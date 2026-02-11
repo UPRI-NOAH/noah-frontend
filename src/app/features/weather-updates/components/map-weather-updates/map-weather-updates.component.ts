@@ -375,23 +375,23 @@ export class MapWeatherUpdatesComponent implements OnInit {
   showRainfallContour() {
     const rainfallContourMapImages = {
       '1hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_mm_latest_rainfall_contour.png',
         type: 'image',
       },
       '3hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_mm_latest_rainfall_contour.png',
         type: 'image',
       },
       '6hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_mm_latest_rainfall_contour.png',
         type: 'image',
       },
       '12hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_mm_latest_rainfall_contour.png',
         type: 'image',
       },
       '24hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_mm_latest_rainfall_contour.png',
         type: 'image',
       },
       forecast: {
@@ -416,10 +416,10 @@ export class MapWeatherUpdatesComponent implements OnInit {
                   [116.855, 5.205], // bottom-left
                 ]
               : [
-                  [115.35, 21.55], // top-left
-                  [128.25, 21.55], // top-right
-                  [128.25, 3.85], // bottom-right
-                  [115.35, 3.85], // bottom-left
+                  [120.7811316796, 14.7864], // top-left
+                  [121.1354301472, 14.7864], // top-right
+                  [121.1354301472, 14.350800000000001], // bottom-right
+                  [120.7811316796, 14.350800000000001], // bottom-left
                 ];
 
           return {
