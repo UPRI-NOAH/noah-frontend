@@ -1,0 +1,49 @@
+.header-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 80px;
+}
+
+.wave {
+  fill: #fff200;
+}
+
+.wave1 {
+  animation: waveMove 14s linear infinite;
+}
+
+.wave2 {
+  fill: #ce1126;
+  animation: waveMoveReverse 10s linear infinite;
+}
+
+/* Animations */
+@keyframes float_header {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes waveMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes waveMoveReverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
