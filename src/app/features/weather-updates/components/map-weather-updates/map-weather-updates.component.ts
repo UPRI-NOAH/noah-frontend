@@ -306,14 +306,17 @@ export class MapWeatherUpdatesComponent implements OnInit {
   }
 
   initGMABoundary() {
-    if (!this.map) return; // make sure map is initialized
+    if (!this.map) return;
 
     this.map.on('load', () => {
+      const geojsonUrl =
+        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/NCR_MrknWShed.geojson';
+
       // 1️⃣ Add the GeoJSON source
       if (!this.map.getSource('gma-boundary')) {
         this.map.addSource('gma-boundary', {
           type: 'geojson',
-          data: 'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson',
+          data: geojsonUrl,
         });
       }
 
@@ -330,23 +333,46 @@ export class MapWeatherUpdatesComponent implements OnInit {
       //   });
       // }
 
-      // 3️⃣ Add outline layer
+      // 3️⃣ Add outline layer with conditional line color
       if (!this.map.getLayer('gma-boundary-outline')) {
         this.map.addLayer({
           id: 'gma-boundary-outline',
           type: 'line',
           source: 'gma-boundary',
           paint: {
-            'line-color': '#4B0082',
             'line-width': 3,
+            'line-color': [
+              'case',
+              ['==', ['get', 'RiverBasin'], 'Pasig-Marikina River Basin'],
+              '#FD3DB5', // 🔴 different color for Pasig-Marikina
+              '#4B0082', // default color for others
+            ],
           },
         });
       }
 
-      // 4️⃣ Fit map to MultiPolygon bounds
-      fetch(
-        'https://upri-noah.s3.amazonaws.com/boundary/Boundary_NCR_Updated.geojson'
-      )
+      // 4️⃣ Add label ONLY for Pasig-Marikina River Basin
+      if (!this.map.getLayer('gma-boundary-label')) {
+        this.map.addLayer({
+          id: 'gma-boundary-label',
+          type: 'symbol',
+          source: 'gma-boundary',
+          filter: ['==', ['get', 'RiverBasin'], 'Pasig-Marikina River Basin'],
+          layout: {
+            'text-field': 'Pasig-Marikina River Basin',
+            'text-size': 14,
+            'text-font': ['Open Sans Bold'],
+          },
+          paint: {
+            'text-color': '#FD3DB5',
+            'text-halo-color': '#FFFFFF',
+            'text-halo-width': 1,
+          },
+        });
+      }
+
+      // 5️⃣ Fit map to bounds
+      fetch(geojsonUrl)
         .then((res) => res.json())
         .then((data: GeoJSON.FeatureCollection) => {
           const bounds = new mapboxgl.LngLatBounds();
@@ -366,16 +392,33 @@ export class MapWeatherUpdatesComponent implements OnInit {
           });
 
           const typhoonTrack = this.wuService.getTyphoonTrack();
+
           if (!bounds.isEmpty()) {
             if (typhoonTrack.shown) {
-              // Typhoon selected → zoom to PH view
+              // 🔍 Typhoon ON → smaller label so it doesn't dominate
+              if (this.map.getLayer('gma-boundary-label')) {
+                this.map.setLayoutProperty(
+                  'gma-boundary-label',
+                  'text-size',
+                  4
+                );
+              }
+
               this.zoomTyphoon();
             } else {
-              // Typhoon OFF → zoom to GMA boundary
+              // Typhoon OFF → normal / bigger label
+              if (this.map.getLayer('gma-boundary-label')) {
+                this.map.setLayoutProperty(
+                  'gma-boundary-label',
+                  'text-size',
+                  14
+                );
+              }
+
               this.map.fitBounds(bounds, {
                 padding: 20,
-                maxZoom: 12, // optional, prevents over-zoom
-                duration: 1000, // smooth animation
+                maxZoom: 12,
+                duration: 1000,
               });
             }
           }
@@ -427,10 +470,10 @@ export class MapWeatherUpdatesComponent implements OnInit {
                   [116.855, 5.205], // bottom-left
                 ]
               : [
-                  [120.7811316796, 14.7864], // top-left
-                  [121.1354301472, 14.7864], // top-right
-                  [121.1354301472, 14.350800000000001], // bottom-right
-                  [120.7811316796, 14.350800000000001], // bottom-left
+                  [120.77107552, 14.8368], // top-left
+                  [121.3277008, 14.8368], // top-right
+                  [121.3277008, 14.350800000000001], // bottom-right
+                  [120.77107552, 14.350800000000001], // bottom-left
                 ];
 
           return {

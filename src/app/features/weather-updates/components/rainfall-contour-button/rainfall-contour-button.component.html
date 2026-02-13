@@ -6,17 +6,7 @@
   >
     <ng-container *ngFor="let rainfallContourType of rainfallContourTypes">
       <div
-        class="
-          bg-white
-          font-semibold
-          text-center
-          rounded-xl
-          border
-          shadow-lg
-          p-2
-          max-w-xs
-          flex-shrink-0
-        "
+        class="bg-white font-semibold text-center rounded-xl border shadow-lg p-2 max-w-xs flex-shrink-0"
         role="button"
         *ngIf="rainfallContourType !== 'forecast'"
         [ngClass]="{
@@ -61,17 +51,7 @@
 </ng-container>
 <div class="flex justify-center md:hidden swiper-no-swiping px-4">
   <div
-    class="
-      bg-white
-      font-semibold
-      text-center
-      rounded-xl
-      border
-      shadow-lg
-      p-2
-      flex-shrink-0
-      w-full
-    "
+    class="bg-white font-semibold text-center rounded-xl border shadow-lg p-2 flex-shrink-0 w-full"
     role="button"
     [ngClass]="{
       'border-primary border-4': activeRainfallContourType === 'forecast',
@@ -100,21 +80,7 @@
   role="button"
 >
   <button
-    class="
-      hidden
-      my-2
-      w-full
-      md:flex
-      p-2
-      bg-white
-      shadow-md
-      hover:shadow-lg
-      rounded-md
-      hover:bg-gray-100
-      items-center
-      justify-between
-      border-b-4 border-primary
-    "
+    class="hidden my-2 w-full md:flex p-2 bg-white shadow-md hover:shadow-lg rounded-md hover:bg-gray-100 items-center justify-between border-b-4 border-primary"
     [ngClass]="{
       'border-primary': activeRainfallContourType === rainfallContourType,
       'border-transparent': activeRainfallContourType !== rainfallContourType
@@ -176,7 +142,7 @@
 
 <div class="pt-2">
   <section class="px-6 md:px-0 mt-2 md:mt-0">
-    <header class="text-lg font-bold leading-tight">Legend</header>
+    <header class="text-xl font-bold leading-tight">Legend</header>
   </section>
 
   <img
@@ -189,7 +155,7 @@
 
 <div class="md:mb-4">
   <section class="px-6 md:px-0 mt-2 md:mt-4">
-    <header class="text-lg font-bold leading-tight">Opacity</header>
+    <header class="text-xl font-bold leading-tight">Opacity</header>
 
     <div class="px-6 mt-4">
       <div class="flex">

@@ -1,20 +1,35 @@
 <div class="absolute top-0 left-0 w-full h-full" id="map-weather-updates"></div>
 <pre id="coordinates" class="coords"></pre>
+<!-- Map Legend -->
+<div
+  class="absolute md:mt-8 bottom-4 left-4 bg-white mt-2 ml-2 shadow-lg rounded-lg p-3 text-sm border border-gray-200 z-40"
+>
+  <div class="font-semibold mb-2">LEGEND</div>
+
+  <!-- Pasig–Marikina River Basin -->
+  <div class="flex items-center mb-1">
+    <span
+      class="w-4 h-4 rounded-sm mr-2 border"
+      style="background-color: #fd3db5"
+    ></span>
+    <span>Pasig–Marikina River Basin</span>
+  </div>
+
+  <!-- Other River Basins -->
+  <div class="flex items-center">
+    <span
+      class="w-4 h-4 rounded-sm mr-2 border"
+      style="background-color: #4b0082"
+    ></span>
+    <span>Metro Manila Municipal Boundary</span>
+  </div>
+</div>
 
 <div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
   <!-- Back Button -->
   <button
     routerLink="/"
-    class="
-      w-10
-      h-10
-      rounded-full
-      bg-white
-      flex
-      items-center
-      justify-center
-      shadow
-    "
+    class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
