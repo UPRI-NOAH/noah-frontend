@@ -29,6 +29,8 @@ export class MapWeatherUpdatesComponent implements OnInit {
   geolocateControl: GeolocateControl;
   mapStyle: MapStyle = 'terrain';
   currentLocation$: Observable<string>;
+  boundLegend: boolean = true;
+  btnLegend: boolean = false;
 
   private _unsub = new Subject();
   private _changeStyle = new Subject();
@@ -154,6 +156,11 @@ export class MapWeatherUpdatesComponent implements OnInit {
       }
     };
     applyPosition();
+  }
+
+  openLegend() {
+    this.btnLegend = !this.btnLegend;
+    this.boundLegend = !this.boundLegend;
   }
 
   zoomTyphoon() {

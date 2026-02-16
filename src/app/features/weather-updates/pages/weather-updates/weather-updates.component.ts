@@ -13,6 +13,12 @@ export class WeatherUpdatesComponent implements OnInit {
 
   constructor(private title: Title) {}
 
+  boundLegend: boolean = true;
+  btnLegend: boolean = false;
+  legendHideSide: boolean = false;
+  btnHideSide: boolean = false;
+  minimizeLegendSide: boolean = false;
+
   ngOnInit(): void {
     this.title.setTitle('NOAH - Weather Updates');
     this.updateSideBarState();
@@ -26,11 +32,38 @@ export class WeatherUpdatesComponent implements OnInit {
   hideSideBar() {
     this.sideBarMobile = false;
     this.btnShowSideBar = true;
+    this.boundLegend = false;
+    this.btnLegend = true;
+    this.btnHideSide = true;
   }
 
   showSideBarMobile() {
     this.sideBarMobile = true;
     this.btnShowSideBar = false;
+
+    this.boundLegend = true;
+    this.btnLegend = false;
+
+    this.legendHideSide = false;
+    this.minimizeLegendSide = false;
+    this.btnHideSide = false;
+  }
+
+  openLegend() {
+    this.btnLegend = !this.btnLegend;
+    this.boundLegend = !this.boundLegend;
+  }
+
+  openLegendHideSide() {
+    this.legendHideSide = true;
+    this.minimizeLegendSide = true;
+    this.btnHideSide = false;
+  }
+
+  hideLegendSide() {
+    this.legendHideSide = false;
+    this.btnHideSide = true;
+    this.minimizeLegendSide = false;
   }
 
   private updateSideBarState() {

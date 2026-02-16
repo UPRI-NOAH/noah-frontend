@@ -1,29 +1,5 @@
 <div class="absolute top-0 left-0 w-full h-full" id="map-weather-updates"></div>
 <pre id="coordinates" class="coords"></pre>
-<!-- Map Legend -->
-<div
-  class="absolute md:mt-8 bottom-4 left-4 bg-white mt-2 ml-2 shadow-lg rounded-lg p-3 text-sm border border-gray-200 z-40"
->
-  <div class="font-semibold mb-2">LEGEND</div>
-
-  <!-- Pasig–Marikina River Basin -->
-  <div class="flex items-center mb-1">
-    <span
-      class="w-4 h-4 rounded-sm mr-2 border"
-      style="background-color: #fd3db5"
-    ></span>
-    <span>Pasig–Marikina River Basin</span>
-  </div>
-
-  <!-- Other River Basins -->
-  <div class="flex items-center">
-    <span
-      class="w-4 h-4 rounded-sm mr-2 border"
-      style="background-color: #4b0082"
-    ></span>
-    <span>Metro Manila Municipal Boundary</span>
-  </div>
-</div>
 
 <div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
   <!-- Back Button -->
@@ -65,3 +41,64 @@
   (selectedStyleChange)="switchMapStyle($event)"
 >
 </noah-change-style-button>
+
+<button
+  class="opacity-80 bg-white text-gray-800 font-bold py-1 px-1 ml-2 items-end absolute justify-end md:bottom-8 bottom-96 md:mb-0 mb-2 right-0 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 mr-2 sm:text-sm text-xs hidden md:block"
+  (click)="openLegend()"
+  *ngIf="btnLegend"
+>
+  BOUNDARY LEGEND
+</button>
+
+<div
+  class="absolute md:bottom-8 md:end-0 bottom-96 mt-10 mr-2 items-end right-0 hidden md:block"
+  *ngIf="boundLegend"
+>
+  <div class="flex items-center justify-center">
+    <div class="rounded shadow-lg py-3 px-4 bg-white bg-opacity-80">
+      <div
+        class="cursor-pointer absolute -top-3.5 -right-3 mb-2 mt-2 mr-2 dark:text-gray-100 text-black transition duration-150 ease-in-out rounded-xl bg-gray-200 hover:bg-gray-400"
+        (click)="openLegend()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          class="icon icon-tabler icon-tabler-x pt-0.5"
+          viewBox="0 0 700 700"
+          stroke-width="2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M490 294H210a14 14 0 0 1 0-28h280a14 14 0 0 1 0 28z" />
+        </svg>
+      </div>
+      <h1 class="text-sm font-bold leading-3 mt-2 text-gray-800">
+        BOUNDARY LEGEND
+      </h1>
+      <div>
+        <div class="flex items-center justify-between pt-3">
+          <div class="flex items-center">
+            <div
+              class="xl:w-4 xl:h-4 h-4 w-4"
+              style="background-color: #fd3db5"
+            ></div>
+            <p class="leading-3 text-base pl-2">Pasig–Marikina River Basin</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-between pt-3">
+          <div class="flex items-center">
+            <div
+              class="xl:w-4 xl:h-4 h-4 w-4"
+              style="background-color: #4b0082"
+            ></div>
+            <p class="leading-3 text-base pl-2">
+              Metro Manila Municipal Boundary
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
