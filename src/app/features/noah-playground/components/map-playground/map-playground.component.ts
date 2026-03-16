@@ -2241,23 +2241,30 @@ export class MapPlaygroundComponent
     const weatherSatelliteImages = {
       himawari: {
         url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        urlMp4:
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
         type: 'video',
       },
       'himawari-GSMAP': {
         url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        urlMp4:
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.mp4',
         type: 'video',
       },
     };
 
     const getWeatherSatelliteSource = (weatherSatelliteDetails: {
       url: string;
+      urlMp4?: string;
       type: string;
     }): AnySourceData => {
       switch (weatherSatelliteDetails.type) {
         case 'video':
           return {
             type: 'video',
-            urls: [weatherSatelliteDetails.url],
+            urls: weatherSatelliteDetails.urlMp4
+              ? [weatherSatelliteDetails.url, weatherSatelliteDetails.urlMp4]
+              : [weatherSatelliteDetails.url],
             coordinates: [
               [100.0, 29.25], // top-left
               [160.0, 29.25], // top-right
@@ -2282,7 +2289,30 @@ export class MapPlaygroundComponent
           getWeatherSatelliteSource(weatherSatelliteDetails)
         );
 
-        // 2. Add layer per weather satellite source
+        // 2. Fix for mobile (iOS): intercept the video property assignment on
+        //    the VideoSource so playsinline is set before Mapbox calls .play().
+        //    videoSource.video is assigned asynchronously (on onloadstart), so
+        //    we use defineProperty to hook into the assignment.
+        //    We also append the video element to the DOM (hidden) because iOS
+        //    Safari requires a DOM-attached video to render it as a WebGL texture.
+        const videoSource = this.map.getSource(weatherType) as any;
+        Object.defineProperty(videoSource, 'video', {
+          configurable: true,
+          set(el: HTMLVideoElement) {
+            el.setAttribute('playsinline', '');
+            el.setAttribute('webkit-playsinline', '');
+            el.style.cssText =
+              'position:absolute;width:0;height:0;opacity:0;pointer-events:none;';
+            document.body.appendChild(el);
+            Object.defineProperty(videoSource, 'video', {
+              value: el,
+              writable: true,
+              configurable: true,
+            });
+          },
+        });
+
+        // 3. Add layer per weather satellite source
         this.map.addLayer({
           id: weatherType,
           type: 'raster',
@@ -2292,14 +2322,6 @@ export class MapPlaygroundComponent
             'raster-opacity': 0,
           },
         });
-
-        // 3. Fix for mobile (iOS): set playsinline so the video renders
-        //    inline on the map canvas instead of as a native fullscreen player
-        const videoSource = this.map.getSource(weatherType) as any;
-        if (videoSource?.video instanceof HTMLVideoElement) {
-          videoSource.video.setAttribute('playsinline', '');
-          videoSource.video.setAttribute('webkit-playsinline', '');
-        }
 
         // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
         //   distinctUntilChanged(),
