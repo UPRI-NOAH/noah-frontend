@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
@@ -24,7 +24,7 @@ import {
   templateUrl: './map-weather-updates.component.html',
   styleUrls: ['./map-weather-updates.component.scss'],
 })
-export class MapWeatherUpdatesComponent implements OnInit {
+export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   map!: Map;
   geolocateControl: GeolocateControl;
   mapStyle: MapStyle = 'terrain';
@@ -42,7 +42,9 @@ export class MapWeatherUpdatesComponent implements OnInit {
     private wuService: WeatherUpdatesService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
     this.initMap();
 
     this.wuService.typhoonTrackShown$
@@ -56,6 +58,7 @@ export class MapWeatherUpdatesComponent implements OnInit {
       .subscribe((shown) => {
         // Only initialize these controls once
         if (!this.isInitialized) {
+          this.map.resize();
           this.initGeocoder();
           this.initGeolocation();
           this.initAttribution();
@@ -807,6 +810,14 @@ export class MapWeatherUpdatesComponent implements OnInit {
             'raster-opacity': 0,
           },
         });
+
+        // Fix for mobile (iOS): set playsinline so the video renders
+        // inline on the map canvas instead of as a native fullscreen player
+        const videoSource = this.map.getSource(weatherSatelliteType) as any;
+        if (videoSource?.video instanceof HTMLVideoElement) {
+          videoSource.video.setAttribute('playsinline', '');
+          videoSource.video.setAttribute('webkit-playsinline', '');
+        }
 
         // Combine observables for visibility and opacity
         combineLatest([

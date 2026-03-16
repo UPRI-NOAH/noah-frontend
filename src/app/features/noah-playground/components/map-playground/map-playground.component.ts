@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   OnDestroy,
   OnInit,
@@ -154,7 +155,9 @@ Accessbility(Highcharts);
   styleUrls: ['./map-playground.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class MapPlaygroundComponent implements OnInit, OnDestroy {
+export class MapPlaygroundComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   map!: Map;
 
   geolocateControl!: GeolocateControl;
@@ -195,11 +198,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     // this.getScreenSize();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
     this.initMap();
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
+        this.map.resize();
         this.addNavigationControls();
         this.addGeolocationControls();
         this.initCenterListener();
@@ -2286,6 +2292,14 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
             'raster-opacity': 0,
           },
         });
+
+        // 3. Fix for mobile (iOS): set playsinline so the video renders
+        //    inline on the map canvas instead of as a native fullscreen player
+        const videoSource = this.map.getSource(weatherType) as any;
+        if (videoSource?.video instanceof HTMLVideoElement) {
+          videoSource.video.setAttribute('playsinline', '');
+          videoSource.video.setAttribute('webkit-playsinline', '');
+        }
 
         // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
         //   distinctUntilChanged(),
