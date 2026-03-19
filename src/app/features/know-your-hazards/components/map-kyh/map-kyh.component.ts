@@ -67,7 +67,7 @@ export class MapKyhComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 
@@ -457,7 +457,7 @@ export class MapKyhComponent implements OnInit {
       this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
+      this._changeStyle.next(null);
     }
     if (this.centerMarker) {
       this.centerMarker.remove();

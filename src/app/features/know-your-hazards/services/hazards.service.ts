@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable, ɵCodegenComponentFactoryResolver } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { Feature, FeatureCollection } from 'geojson';
 import { LngLatLike } from 'mapbox-gl';

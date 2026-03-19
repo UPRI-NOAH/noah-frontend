@@ -237,9 +237,9 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
-    this._changeStyle.next();
+    this._changeStyle.next(null);
     this._changeStyle.complete();
   }
 
@@ -3201,7 +3201,7 @@ export class MapPlaygroundComponent implements OnInit, OnDestroy {
     if (style in environment.mapbox.styles) {
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
+      this._changeStyle.next(null);
     }
   }
 

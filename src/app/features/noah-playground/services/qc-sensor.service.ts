@@ -6,7 +6,8 @@ import {
   QuezonCityMunicipalBoundary,
   QuezonCitySensorType,
 } from '../store/noah-playground.store';
-import { forkJoin } from 'rxjs';
+// import { forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 export const QCSENSORS: QuezonCitySensorType[] = ['flood', 'rain'];
@@ -39,15 +40,18 @@ interface ResponseData {
 })
 export class QcSensorService {
   private QCBASE_URL = 'https://iot-noah.up.edu.ph';
-  loadOnceDisclaimer$ = forkJoin(this.getLoadOnceDisclaimer()).pipe(
-    shareReplay(1)
-  );
+  loadOnceDisclaimer$ = this.setLoadOnceDisclaimer().pipe(shareReplay(1));
 
   private UPRI_S3_BASE_URL =
     'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
   // old link for qc 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson'
 
   constructor(private http: HttpClient) {}
+
+  setLoadOnceDisclaimer() {
+    localStorage.setItem('disclaimerStatus', 'true');
+    return of(true);
+  }
 
   getQcSensors(type: QuezonCitySensorType) {
     const param = type ? `iot_type=${type}` : '';
