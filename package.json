@@ -31,7 +31,7 @@
     "@angular/service-worker": "13.4.0",
 
     "mapbox-gl": "2.15.0",
-    "@mapbox/mapbox-gl-draw": "1.5.0",
+    "@mapbox/mapbox-gl-draw": "1.4.3",
     "@mapbox/mapbox-gl-geocoder": "4.7.4",
 
     "@turf/turf": "6.5.0",
