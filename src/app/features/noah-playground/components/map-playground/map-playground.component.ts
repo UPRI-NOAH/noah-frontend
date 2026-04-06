@@ -16,10 +16,9 @@ import mapboxgl, {
   Map,
   Marker,
 } from 'mapbox-gl';
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
 import { environment } from '@env/environment';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
   combineLatest,
   from,
@@ -52,7 +51,6 @@ import {
 } from '@shared/mocks/critical-facilities';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {
   SENSORS,
   SensorService,
@@ -67,8 +65,6 @@ import HC_exporting from 'highcharts/modules/exporting';
 import HC_Data from 'highcharts/modules/export-data';
 import Accessbility from 'highcharts/modules/accessibility';
 import { SensorChartService } from '@features/noah-playground/services/sensor-chart.service';
-
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import {
   QcSensorService,
@@ -243,9 +239,9 @@ export class MapPlaygroundComponent
   }
 
   ngOnDestroy(): void {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
-    this._changeStyle.next();
+    this._changeStyle.next(null);
     this._changeStyle.complete();
   }
 
@@ -3237,7 +3233,7 @@ export class MapPlaygroundComponent
     if (style in environment.mapbox.styles) {
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
+      this._changeStyle.next(null);
     }
   }
 

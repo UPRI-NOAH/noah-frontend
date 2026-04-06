@@ -51,7 +51,7 @@ export class WeatherSatelliteComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 }

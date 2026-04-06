@@ -80,7 +80,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.closeAllTyphoonPopups();
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 
@@ -188,7 +188,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     }
 
     this.map.setStyle(mapboxStyle);
-    this._changeStyle.next();
+    this._changeStyle.next(null);
   }
 
   initAttribution() {
