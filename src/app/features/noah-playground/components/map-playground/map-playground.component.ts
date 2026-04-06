@@ -2412,6 +2412,9 @@ export class MapPlaygroundComponent
           type: 'fill',
           source: boundariesMapSource,
           'source-layer': boundariesObjData.sourceLayer,
+          layout: {
+            visibility: 'none',
+          },
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
@@ -2441,6 +2444,9 @@ export class MapPlaygroundComponent
           type: 'line',
           source: boundariesMapSource,
           'source-layer': boundariesObjData.sourceLayer,
+          layout: {
+            visibility: 'none',
+          },
           paint: linePaint,
           interactive: false,
         });
@@ -2455,6 +2461,7 @@ export class MapPlaygroundComponent
             source: boundariesMapSource,
             'source-layer': boundariesObjData.sourceLayer,
             layout: {
+              visibility: 'none',
               'text-field': [
                 'get',
                 boundariesType === 'municipal' ? 'Mun_Name' : 'Pro_Name',
