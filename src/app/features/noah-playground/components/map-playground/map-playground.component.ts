@@ -1483,6 +1483,9 @@ export class MapPlaygroundComponent
               type: 'geojson',
               data,
             },
+            layout: {
+              visibility: 'none',
+            },
             paint: {
               'fill-color': '#000000', // white fill
               'fill-opacity': 0.01,
@@ -1494,6 +1497,9 @@ export class MapPlaygroundComponent
             source: {
               type: 'geojson',
               data,
+            },
+            layout: {
+              visibility: 'none',
             },
             paint: {
               'line-color': '#000', // black line
@@ -1509,17 +1515,16 @@ export class MapPlaygroundComponent
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              const fillColor =
-                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
-              this.map.setPaintProperty(
+              const visibility = groupShown && soloShown ? 'visible' : 'none';
+              this.map.setLayoutProperty(
                 'qc_muni_boundary',
-                'fill-color',
-                fillColor
+                'visibility',
+                visibility
               );
-              this.map.setPaintProperty(
+              this.map.setLayoutProperty(
                 'qc_muni_boudline',
-                'line-opacity',
-                +(groupShown && soloShown)
+                'visibility',
+                visibility
               );
             });
         })
@@ -1546,6 +1551,9 @@ export class MapPlaygroundComponent
               type: 'geojson',
               data,
             },
+            layout: {
+              visibility: 'none',
+            },
             paint: {
               'fill-color': '#000000', // white fill
               'fill-opacity': 0.01,
@@ -1557,6 +1565,9 @@ export class MapPlaygroundComponent
             source: {
               type: 'geojson',
               data,
+            },
+            layout: {
+              visibility: 'none',
             },
             paint: {
               'line-color': '#000', // black line
@@ -1573,17 +1584,16 @@ export class MapPlaygroundComponent
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              const fillColor =
-                groupShown && soloShown ? '#000000' : 'rgba(0,0,0,0)';
-              this.map.setPaintProperty(
+              const visibility = groupShown && soloShown ? 'visible' : 'none';
+              this.map.setLayoutProperty(
                 'brgy-boundary',
-                'fill-color',
-                fillColor
+                'visibility',
+                visibility
               );
-              this.map.setPaintProperty(
+              this.map.setLayoutProperty(
                 'brgy_boundline',
-                'line-opacity',
-                +(groupShown && soloShown)
+                'visibility',
+                visibility
               );
             });
         })
@@ -2361,10 +2371,6 @@ export class MapPlaygroundComponent
 
   // start of boundaries
   initBoundaries() {
-    // Define variables to hold popup and layer IDs
-    let popup;
-    let layerID;
-
     // 0 - declare the source json files
     const boundariesSourceFiles: Record<
       BoundariesType,
@@ -2397,6 +2403,7 @@ export class MapPlaygroundComponent
     Object.keys(boundariesSourceFiles).forEach(
       (boundariesType: BoundariesType) => {
         const boundariesObjData = boundariesSourceFiles[boundariesType];
+        let popup;
 
         const boundariesMapSource = `${boundariesType}-map-source`;
         // 2 - add source
@@ -2405,7 +2412,7 @@ export class MapPlaygroundComponent
           url: boundariesObjData.url,
         });
         // 3 - add layer
-        layerID = `${boundariesType}-map-layer`;
+        const layerID = `${boundariesType}-map-layer`;
 
         this.map.addLayer({
           id: layerID,
@@ -2507,6 +2514,7 @@ export class MapPlaygroundComponent
               newOpacity = boundaries.opacity / 100;
               // Enable interactivity when shown
               this.map.setLayoutProperty(layerID, 'visibility', 'visible');
+              this.map.setLayoutProperty(lineLayerID, 'visibility', 'visible');
               this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
               this.map.setPaintProperty(
                 lineLayerID,
