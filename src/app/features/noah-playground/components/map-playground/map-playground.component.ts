@@ -1189,196 +1189,107 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          // add layer to map
-          this.map.addLayer({
-            id: 'private_school',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+          const critFacLayers = [
+            {
+              id: 'private_school',
+              type: 'fill',
+              color: '#FF87CA',
+              filter: 'Private School',
             },
-            paint: {
-              'fill-color': '#FF87CA', // PINK color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'barangay',
+              type: 'fill',
+              color: '#9EA9F0',
+              filter: 'Barangay',
             },
-            filter: ['==', 'CF Type', 'Private School'],
-          });
-          this.map.addLayer({
-            id: 'barangay',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'qc_hospitals',
+              type: 'fill',
+              color: '#CD5D7D',
+              filter: 'Hospital',
             },
-            paint: {
-              'fill-color': '#9EA9F0', // BLUE color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'health_center',
+              type: 'fill',
+              color: '#F7D59C',
+              filter: 'Health Center',
             },
-            filter: ['==', 'CF Type', 'Barangay'],
-          });
-          this.map.addLayer({
-            id: 'qc_hospitals',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'university',
+              type: 'fill',
+              color: '#54BAB9',
+              filter: 'University',
             },
-            paint: {
-              'fill-color': '#CD5D7D', // GREEN color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'elem_school',
+              type: 'fill',
+              color: '#B983FF',
+              filter: 'Elementary School',
             },
-            filter: ['==', 'CF Type', 'Hospital'],
-          });
-          this.map.addLayer({
-            id: 'health_center',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'high_school',
+              type: 'fill',
+              color: '#6E85B7',
+              filter: 'High School',
             },
-            paint: {
-              'fill-color': '#F7D59C', // YELLOW color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'ps_outline',
+              type: 'line',
+              color: '#FF87CA',
+              filter: 'Private School',
             },
-            filter: ['==', 'CF Type', 'Health Center'],
-          });
-          this.map.addLayer({
-            id: 'university',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'b_outline',
+              type: 'line',
+              color: '#9EA9F0',
+              filter: 'Barangay',
             },
-            paint: {
-              'fill-color': '#54BAB9', // TEAL color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'h_outline',
+              type: 'line',
+              color: '#CD5D7D',
+              filter: 'Hospital',
             },
-            filter: ['==', 'CF Type', 'University'],
-          });
-          this.map.addLayer({
-            id: 'elem_school',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'hc_outline',
+              type: 'line',
+              color: '#F7D59C',
+              filter: 'Health Center',
             },
-            paint: {
-              'fill-color': '#B983FF', // purple color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'u_outline',
+              type: 'line',
+              color: '#54BAB9',
+              filter: 'University',
             },
-            filter: ['==', 'CF Type', 'Elementary School'],
-          });
-          this.map.addLayer({
-            id: 'high_school',
-            type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
+            {
+              id: 'es_outline',
+              type: 'line',
+              color: '#B983FF',
+              filter: 'Elementary School',
             },
-            paint: {
-              'fill-color': '#6E85B7', // LIGHT BLUE color fill
-              'fill-opacity': 0.75,
+            {
+              id: 'hs_outline',
+              type: 'line',
+              color: '#6E85B7',
+              filter: 'High School',
             },
-            filter: ['==', 'CF Type', 'High School'],
-          });
-          // 4 - add a outline around the polygon
-          this.map.addLayer({
-            id: 'ps_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#FF87CA', // PINK LINE fill
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'Private School'],
-          });
-          this.map.addLayer({
-            id: 'b_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#9EA9F0', // BLUE LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'Barangay'],
-          });
-          this.map.addLayer({
-            id: 'h_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#CD5D7D', // red LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'Hospital'],
-          });
-          this.map.addLayer({
-            id: 'hc_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#F7D59C', // YELLOW LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'Health Center'],
-          });
-          this.map.addLayer({
-            id: 'u_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#54BAB9', // TEAL LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'University'],
-          });
-          this.map.addLayer({
-            id: 'es_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#B983FF', // purple LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'Elementary School'],
-          });
-          this.map.addLayer({
-            id: 'hs_outline',
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
-            paint: {
-              'line-color': '#6E85B7', // LIGHT BLUE LINE color
-              'line-width': 3,
-              'line-opacity': 1,
-            },
-            filter: ['==', 'CF Type', 'High School'],
+          ];
+
+          // add layers to map
+          critFacLayers.forEach(({ id, type, color, filter }) => {
+            const paint: any =
+              type === 'fill'
+                ? { 'fill-color': color, 'fill-opacity': 0.75 }
+                : { 'line-color': color, 'line-width': 3, 'line-opacity': 1 };
+            this.map.addLayer({
+              id,
+              type: type as any,
+              source: { type: 'geojson', data },
+              layout: { visibility: 'none' },
+              paint,
+              filter: ['==', 'CF Type', filter],
+            });
           });
 
           // add show/hide listeners
@@ -1388,76 +1299,10 @@ export class MapPlaygroundComponent
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, soloShown]) => {
-              this.map.setPaintProperty(
-                'private_school',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'barangay',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'qc_hospitals',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'health_center',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'university',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'elem_school',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'high_school',
-                'fill-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'ps_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'b_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'h_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'hc_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'u_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'es_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
-              this.map.setPaintProperty(
-                'hs_outline',
-                'line-opacity',
-                +(groupShown && soloShown)
-              );
+              const visibility = groupShown && soloShown ? 'visible' : 'none';
+              critFacLayers.forEach(({ id }) => {
+                this.map.setLayoutProperty(id, 'visibility', visibility);
+              });
             });
         })
         .catch(() =>
