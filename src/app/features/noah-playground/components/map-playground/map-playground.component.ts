@@ -1460,6 +1460,7 @@ export class MapPlaygroundComponent
       id: 'par-outline-layer',
       type: 'line',
       source: 'par-outline',
+      layout: { visibility: 'none' },
       paint: {
         'line-color': [
           'case',
@@ -1499,8 +1500,12 @@ export class MapPlaygroundComponent
     combineLatest([allShown$, groupShown$])
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
       .subscribe(([allShown, groupShown]) => {
-        const opacity = +(allShown || groupShown);
-        this.map.setPaintProperty('par-outline-layer', 'line-opacity', opacity);
+        const visibility = allShown || groupShown ? 'visible' : 'none';
+        this.map.setLayoutProperty(
+          'par-outline-layer',
+          'visibility',
+          visibility
+        );
       });
   }
 
@@ -1591,7 +1596,7 @@ export class MapPlaygroundComponent
         source: rainType,
         paint: {
           'raster-fade-duration': 0,
-          'raster-opacity': 1,
+          'raster-opacity': 0,
         },
       });
 
@@ -1683,6 +1688,7 @@ export class MapPlaygroundComponent
         type: 'symbol',
         source: typhoonMapSource,
         layout: {
+          visibility: 'none',
           'icon-image': ['concat', 'custom-marker-', ['get', 'typhoon_type']],
           'icon-allow-overlap': true,
           'icon-size': ['interpolate', ['linear'], ['zoom'], 4, 0.03],
@@ -1700,6 +1706,7 @@ export class MapPlaygroundComponent
         id: 'typhoon-track-line',
         type: 'line',
         source: typhoonMapSource,
+        layout: { visibility: 'none' },
         filter: ['==', ['get', 'type'], 'track_line'],
         paint: {
           'line-width': 2,
@@ -1714,6 +1721,7 @@ export class MapPlaygroundComponent
         id: 'typhoon-forecast-circles-fill',
         type: 'fill',
         source: typhoonMapSource,
+        layout: { visibility: 'none' },
         paint: {
           'fill-color': 'rgba(96,96,96,0.5)',
           'fill-opacity': 1,
@@ -1729,6 +1737,7 @@ export class MapPlaygroundComponent
         id: 'typhoon-forecast-circles-outline',
         type: 'line',
         source: typhoonMapSource,
+        layout: { visibility: 'none' },
         paint: {
           'line-color': '#606060',
           'line-width': 0.9,
@@ -1996,6 +2005,7 @@ export class MapPlaygroundComponent
               'text-halo-blur': 0.5,
             },
             layout: {
+              visibility: 'none',
               'icon-image': volcanoType,
               'icon-allow-overlap': true,
               'text-optional': true,
@@ -2042,9 +2052,8 @@ export class MapPlaygroundComponent
           combineLatest([allShown$, volcano$])
             .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
             .subscribe(([allShown, volcano]) => {
-              let newOpacity = 0;
+              const visibility = volcano.shown && allShown ? 'visible' : 'none';
               if (volcano.shown && allShown) {
-                newOpacity = volcano.opacity / 100;
                 if (volcanoType === 'active') {
                   const handleClick = (e) => {
                     const name = e.features[0].properties.name;
@@ -2080,8 +2089,7 @@ export class MapPlaygroundComponent
                 });
               }
               popUp.remove();
-              this.map.setPaintProperty(layerID, 'icon-opacity', newOpacity);
-              this.map.setPaintProperty(layerID, 'text-opacity', newOpacity);
+              this.map.setLayoutProperty(layerID, 'visibility', visibility);
             });
         }
       );
@@ -2926,6 +2934,7 @@ export class MapPlaygroundComponent
               type: 'fill',
               source: sourceLayer,
               'source-layer': sourceLayer,
+              layout: { visibility: 'none' },
               paint: {
                 'fill-color': [
                   'case',
@@ -2979,14 +2988,14 @@ export class MapPlaygroundComponent
             combineLatest([allShown$, groupShown$, populationAffected$])
               .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
               .subscribe(([allShown, groupShown, populationAffected]) => {
-                let newOpacity = 0;
-                if (populationAffected.shown && allShown && groupShown) {
-                  newOpacity = populationAffected.opacity / 100;
-                }
-                this.map.setPaintProperty(
+                const visibility =
+                  populationAffected.shown && allShown && groupShown
+                    ? 'visible'
+                    : 'none';
+                this.map.setLayoutProperty(
                   sourceLayer,
-                  'fill-opacity',
-                  newOpacity
+                  'visibility',
+                  visibility
                 );
               });
           })
@@ -3213,6 +3222,7 @@ export class MapPlaygroundComponent
       type: 'fill',
       source: sourceID,
       'source-layer': sourceLayer,
+      layout: { visibility: 'none' },
       paint: {
         'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
         'fill-opacity': 0.75,
@@ -3238,6 +3248,7 @@ export class MapPlaygroundComponent
         type: 'line',
         source: sourceID,
         'source-layer': layerName,
+        layout: { visibility: 'none' },
         paint: {
           'line-width': 2,
           'line-color': [
@@ -3258,6 +3269,7 @@ export class MapPlaygroundComponent
         type: 'fill',
         source: sourceID,
         'source-layer': layerName,
+        layout: { visibility: 'none' },
         paint: {
           'fill-color': [
             'interpolate',
@@ -3379,12 +3391,9 @@ export class MapPlaygroundComponent
         )
       )
       .subscribe(([hazardTypeValue, hazardLevelValue]) => {
-        let newOpacity = 0;
-        if (hazardTypeValue.shown && hazardLevelValue.shown) {
-          newOpacity = hazardLevelValue.opacity / 100;
-        }
-
-        this.map.setPaintProperty(layerID, 'fill-opacity', newOpacity);
+        const visibility =
+          hazardTypeValue.shown && hazardLevelValue.shown ? 'visible' : 'none';
+        this.map.setLayoutProperty(layerID, 'visibility', visibility);
       });
   }
 
@@ -3416,16 +3425,9 @@ export class MapPlaygroundComponent
         )
       )
       .subscribe(([hazardTypeValue, hazardLevelValue]) => {
-        let newOpacity = 0;
-        if (hazardTypeValue.shown && hazardLevelValue.shown) {
-          newOpacity = hazardLevelValue.opacity / 100;
-        }
-
-        if (lh2Subtype === 'af') {
-          this.map.setPaintProperty(layerName, 'line-opacity', newOpacity);
-          return;
-        }
-        this.map.setPaintProperty(layerName, 'fill-opacity', newOpacity);
+        const visibility =
+          hazardTypeValue.shown && hazardLevelValue.shown ? 'visible' : 'none';
+        this.map.setLayoutProperty(layerName, 'visibility', visibility);
       });
   }
 
@@ -3494,32 +3496,9 @@ export class MapPlaygroundComponent
       combineLatest([allShown$, facility$])
         .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
         .subscribe(([allShown, facility]) => {
-          let newOpacity = 0;
-
-          if (facility.shown && allShown) {
-            newOpacity = facility.opacity / 100;
-          }
-
-          this.map.setPaintProperty(
-            `${name}-image`,
-            'icon-opacity',
-            newOpacity
-          );
-          this.map.setPaintProperty(
-            `${name}-image`,
-            'text-opacity',
-            newOpacity
-          );
-          this.map.setPaintProperty(
-            `${name}-cluster`,
-            'circle-opacity',
-            newOpacity
-          );
-
-          this.map.setPaintProperty(
-            `${name}-cluster-text`,
-            'text-opacity',
-            newOpacity
+          const visibility = facility.shown && allShown ? 'visible' : 'none';
+          [`${name}-image`, `${name}-cluster`, `${name}-cluster-text`].forEach(
+            (id) => this.map.setLayoutProperty(id, 'visibility', visibility)
           );
         });
     });
