@@ -17,26 +17,17 @@
       flex flex-col
       w-full
       pointer-events-auto
-      bg-white bg-clip-padding
+      bg-gray-300 bg-clip-padding
       rounded-md
       outline-none
       text-xl
       overflow-y-auto overflow-x-hidden
     "
   >
-    <div
-      class="
-        flex flex-shrink-0
-        items-center
-        justify-between
-        p-2
-        border-b border-gray-200
-        rounded-t-md
-      "
-    >
+    <div class="flex flex-shrink-0 items-center justify-between">
       <!-- Modal Header -->
 
-      <div class="relative w-full r p-2 dark:bg-gray-800">
+      <div class="relative w-full dark:bg-gray-800">
         <div
           class="
             cursor-pointer
@@ -113,88 +104,306 @@
             </svg>
           </button>
         </div>
-        <p
-          class="
-            lg:text-2xl
-            md:text-lg
-            font-bold
-            leading-none
-            whitespace-pre-line
-            md:mt-2
-            mt-6
-            pt-6
-            text-gray-800
-            dark:text-gray-100
-          "
-        >
-          In a large flood event, how many people might be affected and would
-          need evacuation?
-        </p>
-        <div class="py-2 italic lg:text-lg text-sm">
-          <span>As of {{ dateDataText }}</span>
-        </div>
+
+        <!-- Top Header -->
+        <header class="bg-gray-300 pt-3">
+          <div class="px-6 py-4">
+            <div class="flex items-center justify-between gap-6">
+              <!-- LEFT SIDE -->
+              <div>
+                <h1 class="text-3xl font-semibold text-gray-900">
+                  Large Flood Event Analysis
+                </h1>
+                <p class="text-gray-600 text-base mt-1">
+                  As of {{ dateDataText }}
+                </p>
+              </div>
+
+              <!-- RIGHT SIDE (3 CARDS) -->
+              <div class="flex items-stretch gap-4">
+                <!-- Search -->
+                <div class="relative">
+                  <div
+                    class="
+                      absolute
+                      inset-y-0
+                      left-0
+                      flex
+                      items-center
+                      pl-3
+                      pointer-events-none
+                    "
+                  >
+                    <svg
+                      class="w-5 h-5 text-black dark:text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+
+                  <input
+                    [(ngModel)]="searchValue"
+                    type="search"
+                    id="table-search"
+                    class="
+                      bg-gray-50
+                      border border-gray-300
+                      text-gray-900 text-sm
+                      rounded-2xl
+                      focus:ring-blue-500 focus:border-blue-500
+                      block
+                      w-80
+                      pl-10
+                      p-2.5
+                      dark:bg-gray-700 dark:border-gray-600 dark:text-white
+                      disabled:cursor-not-allowed
+                    "
+                    placeholder="Search Location"
+                    (input)="loadData(1, searchValue)"
+                    [disabled]="errorMsg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
       </div>
 
       <!-- ... Your existing header content ... -->
     </div>
-    <div class="flex-auto p-2">
-      <div class="mb-2 bg-white">
-        <label for="table-search" class="sr-only">Search</label>
-        <div class="relative">
-          <div
-            class="
-              absolute
-              inset-y-0
-              left-0
-              flex
-              items-center
-              pl-3
-              pointer-events-none
-            "
-          >
-            <svg
-              class="w-5 h-5 text-gray-500 dark:text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
+
+    <div>
+      <div
+        class="flex items-stretch gap-4 justify-self-center bg-gray-300"
+        style="justify-self: center"
+      >
+        <div
+          class="
+            p-5
+            rounded-2xl
+            shadow-sm
+            bg-gradient-to-r
+            from-blue-800
+            to-blue-600
+          "
+        >
+          <div class="flex items-center space-x-4">
+            <div>
+              <div
+                class="
+                  flex
+                  items-center
+                  justify-center
+                  w-12
+                  h-12
+                  rounded-full
+                  bg-fuchsia-50
+                  text-blue-400
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="71"
+                  height="76"
+                  fill="none"
+                  viewBox="0 0 71 76"
+                >
+                  <g fill="#fff" clip-path="url(#a)">
+                    <path
+                      d="M29.583 15.834c0-4.2-1.558-8.227-4.332-11.197S18.715 0 14.79 0c-3.923 0-7.685 1.668-10.46 4.637C1.559 7.607 0 11.634 0 15.834S1.558 24.06 4.332 27.03s6.536 4.637 10.46 4.637c3.922-.001 7.683-1.67 10.457-4.64 2.774-2.968 4.333-6.994 4.334-11.193M14.792 26.917c-.393 0-.769-.167-1.046-.464a1.64 1.64 0 0 1-.434-1.12c0-.42.156-.822.434-1.119a1.43 1.43 0 0 1 1.045-.464c.393 0 .769.167 1.046.464.278.297.434.7.434 1.12-.001.42-.158.821-.435 1.118a1.44 1.44 0 0 1-1.045.465M16.27 19c0 .566-.282 1.088-.74 1.372a1.4 1.4 0 0 1-1.479 0 1.61 1.61 0 0 1-.74-1.372V6.334c0-.566.282-1.089.74-1.372a1.4 1.4 0 0 1 1.48 0c.457.283.739.806.739 1.372z"
+                    />
+                    <path
+                      d="M68.042 9.5H33.089c.62 2.046.934 4.183.932 6.333A22 22 0 0 1 33.799 19h3.18c.392.001.768.169 1.045.465s.433.699.434 1.118V33.25c-.001.42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.917a1.44 1.44 0 0 1-1.044-.465 1.65 1.65 0 0 1-.435-1.118v-4.275a19.4 19.4 0 0 1-5.916 5.114V47.5H71V12.667a3.3 3.3 0 0 0-.87-2.237 2.87 2.87 0 0 0-2.088-.93M51.77 33.25c-.001.42-.157.822-.435 1.118a1.44 1.44 0 0 1-1.044.465h-5.917a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.434-1.118V20.583c.001-.42.157-.821.434-1.118A1.44 1.44 0 0 1 44.375 19h5.917c.392.001.767.169 1.044.465.278.297.434.699.435 1.118zm13.312 0c0 .42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.916a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.435-1.118V20.583c.002-.42.158-.821.435-1.118A1.44 1.44 0 0 1 57.688 19h5.916c.392.001.768.169 1.045.465s.433.699.434 1.118zM32.542 6.333h29.583A2.8 2.8 0 0 0 64.21 5.4a3.2 3.2 0 0 0 .873-2.232A3.3 3.3 0 0 0 64.214.93a2.87 2.87 0 0 0-2.09-.93H32.542a2.8 2.8 0 0 0-2.085.934 3.12 3.12 0 0 0-.843 1.79 21.2 21.2 0 0 1 2.189 3.499c.24.076.49.114.74.11M23.667 76h17.75V60.167c.002-.84.314-1.643.868-2.236a2.87 2.87 0 0 1 2.09-.93h5.916a2.87 2.87 0 0 1 2.09.93 3.3 3.3 0 0 1 .869 2.236V76H71V50.667H23.667z"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="a">
+                      <path fill="#fff" d="M0 0h71v76H0z" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-white text-base capitalize">TOTAL BARANGAYS</div>
+              <div class="text-3xl font-bold text-white">850</div>
+            </div>
           </div>
-          <input
-            [(ngModel)]="searchValue"
-            type="search"
-            id="table-search"
-            class="
-              bg-gray-50
-              border border-gray-300
-              text-gray-900 text-sm
-              rounded-lg
-              focus:ring-blue-500 focus:border-blue-500
-              block
-              w-80
-              pl-10
-              p-2.5
-              dark:bg-gray-700
-              dark:border-gray-600
-              dark:placeholder-gray-400
-              dark:text-white
-              dark:focus:ring-blue-500
-              dark:focus:border-blue-500
-              disabled:cursor-not-allowed
-            "
-            placeholder="Search Location"
-            (input)="loadData(1, searchValue)"
-            [disabled]="errorMsg"
-          />
+        </div>
+
+        <!-- Card 2 -->
+        <div
+          class="
+            p-5
+            rounded-2xl
+            shadow-sm
+            bg-gradient-to-r
+            from-blue-800
+            to-blue-600
+            capitalize
+          "
+        >
+          <div class="flex items-center space-x-4">
+            <div>
+              <div
+                class="
+                  flex
+                  items-center
+                  justify-center
+                  w-12
+                  h-12
+                  rounded-full
+                  bg-fuchsia-50
+                  text-blue-400
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="71"
+                  height="76"
+                  fill="none"
+                  viewBox="0 0 71 76"
+                >
+                  <g fill="#fff" clip-path="url(#a)">
+                    <path
+                      d="M29.583 15.834c0-4.2-1.558-8.227-4.332-11.197S18.715 0 14.79 0c-3.923 0-7.685 1.668-10.46 4.637C1.559 7.607 0 11.634 0 15.834S1.558 24.06 4.332 27.03s6.536 4.637 10.46 4.637c3.922-.001 7.683-1.67 10.457-4.64 2.774-2.968 4.333-6.994 4.334-11.193M14.792 26.917c-.393 0-.769-.167-1.046-.464a1.64 1.64 0 0 1-.434-1.12c0-.42.156-.822.434-1.119a1.43 1.43 0 0 1 1.045-.464c.393 0 .769.167 1.046.464.278.297.434.7.434 1.12-.001.42-.158.821-.435 1.118a1.44 1.44 0 0 1-1.045.465M16.27 19c0 .566-.282 1.088-.74 1.372a1.4 1.4 0 0 1-1.479 0 1.61 1.61 0 0 1-.74-1.372V6.334c0-.566.282-1.089.74-1.372a1.4 1.4 0 0 1 1.48 0c.457.283.739.806.739 1.372z"
+                    />
+                    <path
+                      d="M68.042 9.5H33.089c.62 2.046.934 4.183.932 6.333A22 22 0 0 1 33.799 19h3.18c.392.001.768.169 1.045.465s.433.699.434 1.118V33.25c-.001.42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.917a1.44 1.44 0 0 1-1.044-.465 1.65 1.65 0 0 1-.435-1.118v-4.275a19.4 19.4 0 0 1-5.916 5.114V47.5H71V12.667a3.3 3.3 0 0 0-.87-2.237 2.87 2.87 0 0 0-2.088-.93M51.77 33.25c-.001.42-.157.822-.435 1.118a1.44 1.44 0 0 1-1.044.465h-5.917a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.434-1.118V20.583c.001-.42.157-.821.434-1.118A1.44 1.44 0 0 1 44.375 19h5.917c.392.001.767.169 1.044.465.278.297.434.699.435 1.118zm13.312 0c0 .42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.916a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.435-1.118V20.583c.002-.42.158-.821.435-1.118A1.44 1.44 0 0 1 57.688 19h5.916c.392.001.768.169 1.045.465s.433.699.434 1.118zM32.542 6.333h29.583A2.8 2.8 0 0 0 64.21 5.4a3.2 3.2 0 0 0 .873-2.232A3.3 3.3 0 0 0 64.214.93a2.87 2.87 0 0 0-2.09-.93H32.542a2.8 2.8 0 0 0-2.085.934 3.12 3.12 0 0 0-.843 1.79 21.2 21.2 0 0 1 2.189 3.499c.24.076.49.114.74.11M23.667 76h17.75V60.167c.002-.84.314-1.643.868-2.236a2.87 2.87 0 0 1 2.09-.93h5.916a2.87 2.87 0 0 1 2.09.93 3.3 3.3 0 0 1 .869 2.236V76H71V50.667H23.667z"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="a">
+                      <path fill="#fff" d="M0 0h71v76H0z" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-white text-base capitalize">
+                TOTAL AFFECTED MUNICIPAL
+              </div>
+              <div class="text-3xl font-bold text-white">8500</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div
+          class="
+            p-5
+            rounded-2xl
+            shadow-sm
+            bg-gradient-to-r
+            from-blue-800
+            to-blue-600
+          "
+        >
+          <div class="flex items-center space-x-4">
+            <div>
+              <div
+                class="
+                  flex
+                  items-center
+                  justify-center
+                  w-12
+                  h-12
+                  rounded-full
+                  bg-fuchsia-50
+                  text-blue-400
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="71"
+                  height="76"
+                  fill="none"
+                  viewBox="0 0 71 76"
+                >
+                  <g fill="#fff" clip-path="url(#a)">
+                    <path
+                      d="M29.583 15.834c0-4.2-1.558-8.227-4.332-11.197S18.715 0 14.79 0c-3.923 0-7.685 1.668-10.46 4.637C1.559 7.607 0 11.634 0 15.834S1.558 24.06 4.332 27.03s6.536 4.637 10.46 4.637c3.922-.001 7.683-1.67 10.457-4.64 2.774-2.968 4.333-6.994 4.334-11.193M14.792 26.917c-.393 0-.769-.167-1.046-.464a1.64 1.64 0 0 1-.434-1.12c0-.42.156-.822.434-1.119a1.43 1.43 0 0 1 1.045-.464c.393 0 .769.167 1.046.464.278.297.434.7.434 1.12-.001.42-.158.821-.435 1.118a1.44 1.44 0 0 1-1.045.465M16.27 19c0 .566-.282 1.088-.74 1.372a1.4 1.4 0 0 1-1.479 0 1.61 1.61 0 0 1-.74-1.372V6.334c0-.566.282-1.089.74-1.372a1.4 1.4 0 0 1 1.48 0c.457.283.739.806.739 1.372z"
+                    />
+                    <path
+                      d="M68.042 9.5H33.089c.62 2.046.934 4.183.932 6.333A22 22 0 0 1 33.799 19h3.18c.392.001.768.169 1.045.465s.433.699.434 1.118V33.25c-.001.42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.917a1.44 1.44 0 0 1-1.044-.465 1.65 1.65 0 0 1-.435-1.118v-4.275a19.4 19.4 0 0 1-5.916 5.114V47.5H71V12.667a3.3 3.3 0 0 0-.87-2.237 2.87 2.87 0 0 0-2.088-.93M51.77 33.25c-.001.42-.157.822-.435 1.118a1.44 1.44 0 0 1-1.044.465h-5.917a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.434-1.118V20.583c.001-.42.157-.821.434-1.118A1.44 1.44 0 0 1 44.375 19h5.917c.392.001.767.169 1.044.465.278.297.434.699.435 1.118zm13.312 0c0 .42-.157.822-.434 1.118a1.44 1.44 0 0 1-1.045.465h-5.916a1.44 1.44 0 0 1-1.045-.465 1.65 1.65 0 0 1-.435-1.118V20.583c.002-.42.158-.821.435-1.118A1.44 1.44 0 0 1 57.688 19h5.916c.392.001.768.169 1.045.465s.433.699.434 1.118zM32.542 6.333h29.583A2.8 2.8 0 0 0 64.21 5.4a3.2 3.2 0 0 0 .873-2.232A3.3 3.3 0 0 0 64.214.93a2.87 2.87 0 0 0-2.09-.93H32.542a2.8 2.8 0 0 0-2.085.934 3.12 3.12 0 0 0-.843 1.79 21.2 21.2 0 0 1 2.189 3.499c.24.076.49.114.74.11M23.667 76h17.75V60.167c.002-.84.314-1.643.868-2.236a2.87 2.87 0 0 1 2.09-.93h5.916a2.87 2.87 0 0 1 2.09.93 3.3 3.3 0 0 1 .869 2.236V76H71V50.667H23.667z"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="a">
+                      <path fill="#fff" d="M0 0h71v76H0z" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-white text-base capitalize">
+                TOTAL AFFECTED PROVINCE
+              </div>
+              <div class="text-3xl font-bold text-white">1250</div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="flex-auto p-2">
+      <div class="mb-2 bg-gray-300 flex items-center gap-4 justify-between">
+        <span class="px-4" *ngIf="activeTab === 1"
+          >how many people might be affected and would need evacuation?</span
+        >
+        <span class="px-4" *ngIf="activeTab === 2"
+          >how many DepEd schools might be affected?</span
+        >
+
+        <div class="space-y-1">
+          <span class="text-base text-gray-600"> FILTER: </span>
+          <button
+            (click)="setTab(1)"
+            [ngClass]="
+              activeTab === 1
+                ? 'border-primary w-auto text-primary'
+                : 'border-gray-300'
+            "
+            class="relative bg-white border rounded-2xl px-4 py-2 text-sm mr-2"
+          >
+            Barangay Level
+            <div
+              *ngIf="activeTab === 1"
+              class="absolute bottom-0 left-0 w-full h-1"
+            ></div>
+          </button>
+
+          <button
+            (click)="setTab(2)"
+            [ngClass]="
+              activeTab === 2
+                ? 'border-primary text-primary'
+                : 'border-gray-300'
+            "
+            class="relative bg-white border rounded-2xl px-4 py-2 text-sm mr-2"
+          >
+            DepEd Schools
+            <div
+              *ngIf="activeTab === 2"
+              class="absolute bottom-0 left-0 w-full h-1"
+            ></div>
+          </button>
+        </div>
+      </div>
+
       <!-- Modal Content -->
-      <div class="table-wrp block flex-grow max-h-full" style="height: 50vh">
+      <div
+        class="table-wrp block flex-grow max-h-full bg-white rounded-lg"
+        style="height: 50vh"
+        *ngIf="activeTab === 1"
+      >
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
         >
@@ -203,7 +412,7 @@
               sticky
               top-0
               text-xs
-              md:text-base
+              md:text-sm
               text-gray-700
               uppercase
               bg-blue-200
@@ -255,118 +464,152 @@
               </div>
             </div>
           </div>
-
           <ng-container>
             <div *ngIf="errorMsg; else dataAvailable">
               <div
                 class="flex items-center absolute justify-center w-full py-6"
               >
-                <div
-                  class="
-                    bg-white
-                    flex
-                    items-center
-                    justify-center
-                    mx-4
-                    md:w-2/3
-                  "
-                >
-                  <div class="flex flex-col items-center py-4">
-                    <p
-                      class="
-                        px-4
-                        pb-10
-                        text-base
-                        md:text-xl
-                        leading-none
-                        text-center text-gray-600
-                      "
-                    >
-                      No forecast that meets pre-determined thresholds for large
-                      floods
-                    </p>
+                <div class="flex items-center justify-center mx-4 md:w-2/3">
+                  <div
+                    class="
+                      p-5
+                      rounded-2xl
+                      shadow-sm
+                      bg-gradient-to-r
+                      from-blue-400
+                      to-blue-200
+                    "
+                  >
+                    <div class="flex items-center space-x-4">
+                      <div>
+                        <div
+                          class="
+                            flex
+                            items-center
+                            justify-center
+                            w-12
+                            h-12
+                            rounded-full
+                            bg-fuchsia-50
+                            text-blue-400
+                          "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="71"
+                            height="71"
+                            fill="none"
+                            viewBox="0 0 71 71"
+                          >
+                            <circle
+                              cx="35.5"
+                              cy="35.5"
+                              r="35.5"
+                              fill="#0166ff"
+                            />
+                            <path
+                              fill="#fff"
+                              d="M55.46 17.58c-.634-.624-1.662-.76-2.447-.33-10.588 5.868-15.766 13.122-20.403 20.692-2.851-4.29-7.966-6.752-12.991-6.169-1.092.13-2.034.783-2.457 1.711a1.7 1.7 0 0 0-.162.728c0 .54.259 1.064.731 1.425 3.253 2.489 8.692 8.583 11.398 11.788.847 1 2.115 1.575 3.485 1.575h.028c1.39-.009 2.663-.601 3.506-1.624.01-.014.02-.023.025-.036 1.643-2.489 3.096-4.859 4.504-7.153 3.972-6.462 7.722-12.563 14.83-20.131a1.744 1.744 0 0 0-.047-2.476"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="text-black text-base capitalize">
+                          No forecast that meets pre-determined thresholds for
+                          large floods
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </ng-container>
           <ng-template #dataAvailable>
-            <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
-              <tr
-                *ngFor="
-                  let data of affectedData
-                    | sort: sortField:sortDirection
-                    | searchRiskAffected: searchValue
-                "
-                class="
-                  bg-white
-                  border-b
-                  transition
-                  duration-300
-                  ease-in-out
-                  dark:bg-gray-800 dark:border-gray-700
-                  hover:bg-gray-50
-                  dark:hover:bg-gray-600
-                  text-xs
-                  md:text-base
-                "
-              >
-                <td
+            <div class="bg-white">
+              <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
+                <tr
+                  *ngFor="
+                    let data of affectedData
+                      | sort: sortField:sortDirection
+                      | searchRiskAffected: searchValue
+                  "
                   class="
-                    p-1
-                    text-sm text-gray-900
-                    font-light
-                    px-6
-                    py-4
-                    whitespace-nowrap
+                    bg-white
+                    border-b
+                    transition
+                    duration-300
+                    ease-in-out
+                    dark:bg-gray-800 dark:border-gray-700
+                    hover:bg-gray-50
+                    dark:hover:bg-gray-600
+                    text-xs
+                    md:text-base
                   "
                 >
-                  {{ data.brgy }}
-                </td>
-                <td
-                  class="
-                    p-1
-                    text-sm text-gray-900
-                    font-light
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                  "
-                >
-                  {{ data.muni }}
-                </td>
-                <td
-                  class="
-                    p-1
-                    text-sm text-gray-900
-                    font-light
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                  "
-                >
-                  {{ data.prov }}
-                </td>
-                <td class="p-3">
-                  {{ data.total_pop | number: '1.0-0' }}
-                </td>
-                <td class="p-3">
-                  {{ data.total_aff_pop | number: '1.0-0' }}
-                </td>
-                <td class="p-3">
-                  {{ data.exposed_medhigh | number: '1.0-0' }}
-                </td>
-                <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
-              </tr>
-            </tbody>
+                  <td
+                    class="
+                      p-1
+                      text-sm text-gray-900
+                      font-light
+                      px-6
+                      py-4
+                      whitespace-nowrap
+                    "
+                  >
+                    {{ data.brgy }}
+                  </td>
+                  <td
+                    class="
+                      p-1
+                      text-sm text-gray-900
+                      font-light
+                      px-6
+                      py-4
+                      whitespace-nowrap
+                    "
+                  >
+                    {{ data.muni }}
+                  </td>
+                  <td
+                    class="
+                      p-1
+                      text-sm text-gray-900
+                      font-light
+                      px-6
+                      py-4
+                      whitespace-nowrap
+                    "
+                  >
+                    {{ data.prov }}
+                  </td>
+                  <td class="p-3">
+                    {{ data.total_pop | number: '1.0-0' }}
+                  </td>
+                  <td class="p-3">
+                    {{ data.total_aff_pop | number: '1.0-0' }}
+                  </td>
+                  <td class="p-3">
+                    {{ data.exposed_medhigh | number: '1.0-0' }}
+                  </td>
+                  <td class="p-3">{{ data.perc_aff_medhigh }}%</td>
+                </tr>
+              </tbody>
+            </div>
           </ng-template>
         </table>
       </div>
+
+      <div *ngIf="activeTab === 2">
+        <!-- DepEd Content -->
+        <p>DepEd data and stats here</p>
+      </div>
       <!-- ... Your existing content ... -->
     </div>
-    <div class="flex-shrink-0 p-1 md:p-4 border-t border-gray-200 rounded-b-md">
+    <div class="flex-shrink-0 p-1 rounded-b-md">
       <!-- Modal Footer -->
-      <div class="flex items-center pb-2 justify-center">
+      <div class="flex items-center justify-center" *ngIf="activeTab === 1">
         <div class="lg:w-3/5 w-full flex items-center justify-between">
           <button
             class="
@@ -982,7 +1225,7 @@
     >
       <div
         class="
-          p-8
+          p-2
           flex
           items-center
           justify-center
@@ -992,7 +1235,56 @@
           h-screen
         "
       >
-        No forecast that meets pre-determined thresholds for large floods
+        <div
+          class="
+            p-5
+            rounded-2xl
+            shadow-sm
+            bg-gradient-to-r
+            from-blue-400
+            to-blue-200
+          "
+        >
+          <div class="flex items-center space-x-2">
+            <div>
+              <div
+                class="
+                  flex
+                  items-center
+                  justify-center
+                  w-12
+                  h-12
+                  rounded-full
+                  bg-fuchsia-50
+                  text-blue-400
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="71"
+                  height="71"
+                  fill="none"
+                  viewBox="0 0 71 71"
+                >
+                  <circle cx="35.5" cy="35.5" r="35.5" fill="#0166ff" />
+                  <path
+                    fill="#fff"
+                    d="M55.46 17.58c-.634-.624-1.662-.76-2.447-.33-10.588 5.868-15.766 13.122-20.403 
+                        20.692-2.851-4.29-7.966-6.752-12.991-6.169-1.092.13-2.034.783-2.457 1.711a1.7 1.7 0 0 0-.162.728c0 .54.259 1.064.731 1.425 
+                        3.253 2.489 8.692 8.583 11.398 11.788.847 1 2.115 1.575 3.485 1.575h.028c1.39-.009 2.663-.601 3.506-1.624.01-.014.02-.023.025-.036 
+                        1.643-2.489 3.096-4.859 4.504-7.153 3.972-6.462 7.722-12.563 14.83-20.131a1.744 1.744 0 0 0-.047-2.476"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-black text-base capitalize">
+                No forecast that meets pre-determined thresholds for large
+                floods
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- End of No Forecast -->
@@ -1136,7 +1428,6 @@
           </div>
         </div>
       </div>
-      <hr />
       <div class="text-gray-700 pt-1 text-[8px] italic">
         Disclaimer: Calculation affected are for affected to Medium and High
         Hazard
