@@ -54,7 +54,7 @@ export abstract class StoreService<T> {
    * Should be called by the component's ngOnDestroy lifecycle hook.
    */
   destroy(event: string = 'destroy state') {
-    this._unsubscribeAll.next();
+    this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
     console.groupCollapsed(`[${this.store} store] [destroy] [event: ${event}]`);
   }

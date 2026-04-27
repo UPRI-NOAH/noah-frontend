@@ -41,7 +41,7 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 

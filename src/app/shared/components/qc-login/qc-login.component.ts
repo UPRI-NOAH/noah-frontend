@@ -157,6 +157,6 @@ export class QcLoginComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.destroy.next();
+    this.destroy.next(null);
   }
 }

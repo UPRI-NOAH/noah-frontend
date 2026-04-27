@@ -6,7 +6,6 @@ import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
@@ -67,7 +66,7 @@ export class MapKyhComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 
@@ -457,7 +456,7 @@ export class MapKyhComponent implements OnInit {
       this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
       this.map.setStyle(environment.mapbox.styles[style]);
-      this._changeStyle.next();
+      this._changeStyle.next(null);
     }
     if (this.centerMarker) {
       this.centerMarker.remove();

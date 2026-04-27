@@ -40,7 +40,7 @@ export class SensorSoloComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._unsub.next();
+    this._unsub.next(null);
     this._unsub.complete();
   }
 

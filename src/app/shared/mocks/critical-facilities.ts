@@ -36,6 +36,7 @@ export const getSymbolLayer = (
   },
   filter: ['!', ['has', 'point_count']],
   layout: {
+    visibility: 'none',
     'icon-image': sourceName,
     'icon-allow-overlap': true,
     'text-allow-overlap': true,
@@ -61,6 +62,7 @@ export const getCircleLayer = (sourceName: string): CircleLayer => {
     type: 'circle',
     source: sourceName,
     filter: ['has', 'point_count'],
+    layout: { visibility: 'none' },
     paint: {
       'circle-color': circleColors[sourceName],
       'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
@@ -82,6 +84,7 @@ export const getClusterTextCount = (sourceName: string): SymbolLayer => {
     source: sourceName,
     filter: ['has', 'point_count'],
     layout: {
+      visibility: 'none',
       'text-field': `{point_count_abbreviated}\n${facilityNames[sourceName]}`,
       'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
       'text-size': 12,
