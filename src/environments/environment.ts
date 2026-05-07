@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  ibffSummaryUrl: 'http://localhost:8080/api/forecast-summary/',
+  ibffSummaryUrl: '/api/forecast-summary/',
   mapbox: {
     accessToken:
       'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZXc1am1hbzBkZ3Yzc280dHVrdHFpZ2MifQ.J13CArZfpEsGLzxXGOJQ7w',
