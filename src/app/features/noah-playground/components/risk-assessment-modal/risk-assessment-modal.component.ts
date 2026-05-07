@@ -192,41 +192,30 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.summaryPanelOpen = !this.summaryPanelOpen;
   }
 
-  async generateSummary() {
+  generateSummary() {
     this.summaryLoading = true;
     this.summaryError = null;
     this.summaryPanelOpen = true;
 
-    try {
-      const response: any = await this.riskAssessment
-        .getAllAffectedForSummary()
-        .pipe(first())
-        .toPromise();
+    const input = this.buildSummaryInput(
+      this.affectedData,
+      this.totalDataCount
+    );
 
-      const records: AffectedData[] = response?.results ?? this.affectedData;
-      const input = this.buildSummaryInput(
-        records,
-        response?.count ?? this.totalDataCount
-      );
-
-      this.ibffSummary
-        .generateSummary(input)
-        .pipe(first())
-        .subscribe({
-          next: (result) => {
-            this.summaryResult = result;
-            this.summaryLoading = false;
-          },
-          error: () => {
-            this.summaryError =
-              'Unable to reach the summarization service. Please ensure the backend is running.';
-            this.summaryLoading = false;
-          },
-        });
-    } catch {
-      this.summaryError = 'Failed to load forecast data for summarization.';
-      this.summaryLoading = false;
-    }
+    this.ibffSummary
+      .generateSummary(input)
+      .pipe(first())
+      .subscribe({
+        next: (result) => {
+          this.summaryResult = result;
+          this.summaryLoading = false;
+        },
+        error: () => {
+          this.summaryError =
+            'Unable to reach the summarization service. Please ensure the backend is running on http://localhost:8080.';
+          this.summaryLoading = false;
+        },
+      });
   }
 
   private buildSummaryInput(
