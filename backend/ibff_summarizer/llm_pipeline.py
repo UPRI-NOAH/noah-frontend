@@ -76,6 +76,9 @@ OUTPUT (valid JSON only, no extra text):"""
 
 def build_llm_prompt(summary_json: dict) -> str:
     """Return a constrained prompt string for the local LLM."""
+    # Skip LLM for zero-data case — fallback handles it clearly
+    if summary_json.get('affected_barangays') == 0:
+        return ''
     return PROMPT_TEMPLATE.format(
         summary_json=json.dumps(summary_json, indent=2)
     )
@@ -233,6 +236,25 @@ def build_fallback_summary(summary_json: dict) -> dict:
     prov = summary_json.get('affected_provinces', 'not available')
     hazard = summary_json.get('highest_hazard_level', 'not available')
 
+    # No active forecast — return a clear no-data summary
+    if brgy == 0:
+        notes = summary_json.get('notes', [])
+        caveat = notes[0] if notes else (
+            'Boundaries used are indicative.'
+        )
+        return {
+            'executive_summary': (
+                f'As of the {ts} forecast (model run {run}), '
+                'no barangays currently meet the pre-determined thresholds '
+                'for large flood exposure. No affected areas are displayed.'
+            ),
+            'key_insights': [
+                'No barangays meet the current flood exposure threshold.',
+                'This may indicate no significant rainfall forecast for the next 24 hours.',
+            ],
+            'caveat': caveat,
+        }
+
     top_areas = summary_json.get('top_areas', [])
     top_area_text = 'not available'
     if top_areas:
@@ -296,6 +318,12 @@ def generate_forecast_summary(
     and optionally _source ('llm' | 'fallback').
     """
     prompt = build_llm_prompt(summary_json)
+
+    # Short-circuit for no-data case — LLM adds no value here
+    if not prompt:
+        result = build_fallback_summary(summary_json)
+        result['_source'] = 'fallback'
+        return result
 
     try:
         raw_output = call_ollama(prompt, model_name=model_name, endpoint=endpoint)
