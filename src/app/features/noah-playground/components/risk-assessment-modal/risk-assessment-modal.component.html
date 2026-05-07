@@ -137,6 +137,172 @@
 
       <!-- ... Your existing header content ... -->
     </div>
+    <!-- AI Summary Panel (Desktop) -->
+    <div class="px-2 pt-2">
+      <div class="rounded-lg border border-indigo-200 overflow-hidden">
+        <!-- Panel header / toggle -->
+        <button
+          class="
+            w-full
+            flex
+            items-center
+            justify-between
+            px-4
+            py-2
+            bg-indigo-50
+            hover:bg-indigo-100
+            transition
+            duration-150
+          "
+          (click)="toggleSummaryPanel()"
+        >
+          <span
+            class="
+              flex
+              items-center
+              gap-2
+              text-sm
+              font-semibold
+              text-indigo-700
+            "
+          >
+            <svg
+              class="w-4 h-4 flex-shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 3L13.5 8H19L14.5 11.5L16 16.5L12 13L8 16.5L9.5 11.5L5 8H10.5L12 3Z"
+                fill="currentColor"
+              />
+            </svg>
+            AI Executive Summary
+            <span
+              *ngIf="summaryResult"
+              class="
+                px-1.5
+                py-0.5
+                rounded
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-wide
+              "
+              [ngClass]="
+                summaryResult._source === 'llm'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'bg-gray-100 text-gray-600'
+              "
+            >
+              {{ summaryResult._source === 'llm' ? 'AI' : 'Auto' }}
+            </span>
+          </span>
+          <button
+            *ngIf="!summaryLoading"
+            class="
+              flex
+              items-center
+              gap-1
+              px-3
+              py-1
+              rounded
+              text-xs
+              font-semibold
+              bg-indigo-600
+              hover:bg-indigo-700
+              text-white
+              transition
+              duration-150
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
+            [disabled]="errorMsg"
+            (click)="generateSummary(); $event.stopPropagation()"
+          >
+            <svg
+              class="w-3 h-3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            {{ summaryResult ? 'Regenerate' : 'Generate Summary' }}
+          </button>
+          <span
+            *ngIf="summaryLoading"
+            class="flex items-center gap-1 text-xs text-indigo-600"
+          >
+            <svg
+              class="w-3 h-3 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              />
+            </svg>
+            Generating…
+          </span>
+        </button>
+
+        <!-- Error state -->
+        <div
+          *ngIf="summaryError && summaryPanelOpen"
+          class="px-4 py-3 bg-red-50 text-red-700 text-sm"
+        >
+          {{ summaryError }}
+        </div>
+
+        <!-- Loading skeleton -->
+        <div
+          *ngIf="summaryLoading && summaryPanelOpen"
+          class="px-4 py-4 space-y-2 animate-pulse"
+        >
+          <div class="h-3 bg-indigo-100 rounded w-3/4"></div>
+          <div class="h-3 bg-indigo-100 rounded w-full"></div>
+          <div class="h-3 bg-indigo-100 rounded w-5/6"></div>
+        </div>
+
+        <!-- Results -->
+        <div
+          *ngIf="summaryResult && summaryPanelOpen && !summaryLoading"
+          class="px-4 py-4 bg-white text-sm text-gray-700 space-y-3"
+        >
+          <p class="leading-relaxed">{{ summaryResult.executive_summary }}</p>
+          <ul class="space-y-1 pl-1">
+            <li
+              *ngFor="let insight of summaryResult.key_insights"
+              class="flex items-start gap-2"
+            >
+              <span class="text-indigo-500 mt-0.5 flex-shrink-0">•</span>
+              <span>{{ insight }}</span>
+            </li>
+          </ul>
+          <p class="text-xs italic text-gray-400 border-t border-gray-100 pt-2">
+            {{ summaryResult.caveat }}
+          </p>
+        </div>
+      </div>
+    </div>
+
     <div class="flex-auto p-2">
       <div class="mb-2 bg-white">
         <label for="table-search" class="sr-only">Search</label>
@@ -917,6 +1083,165 @@
         </div>
       </div>
       <hr class="pb-2" />
+
+      <!-- AI Summary Panel (Mobile) -->
+      <div class="rounded-lg border border-indigo-200 overflow-hidden mb-3">
+        <button
+          class="
+            w-full
+            flex
+            items-center
+            justify-between
+            px-3
+            py-2
+            bg-indigo-50
+            transition
+            duration-150
+          "
+          (click)="toggleSummaryPanel()"
+        >
+          <span
+            class="
+              flex
+              items-center
+              gap-1.5
+              text-xs
+              font-semibold
+              text-indigo-700
+            "
+          >
+            <svg
+              class="w-3.5 h-3.5 flex-shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 3L13.5 8H19L14.5 11.5L16 16.5L12 13L8 16.5L9.5 11.5L5 8H10.5L12 3Z"
+                fill="currentColor"
+              />
+            </svg>
+            AI Executive Summary
+            <span
+              *ngIf="summaryResult"
+              class="px-1 py-0.5 rounded text-[9px] font-bold uppercase"
+              [ngClass]="
+                summaryResult._source === 'llm'
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'bg-gray-100 text-gray-600'
+              "
+            >
+              {{ summaryResult._source === 'llm' ? 'AI' : 'Auto' }}
+            </span>
+          </span>
+          <button
+            *ngIf="!summaryLoading"
+            class="
+              flex
+              items-center
+              gap-1
+              px-2
+              py-1
+              rounded
+              text-[11px]
+              font-semibold
+              bg-indigo-600
+              hover:bg-indigo-700
+              text-white
+              transition
+              duration-150
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
+            [disabled]="errorMsg"
+            (click)="generateSummary(); $event.stopPropagation()"
+          >
+            <svg
+              class="w-3 h-3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            {{ summaryResult ? 'Regenerate' : 'Generate' }}
+          </button>
+          <span
+            *ngIf="summaryLoading"
+            class="flex items-center gap-1 text-[11px] text-indigo-600"
+          >
+            <svg
+              class="w-3 h-3 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              />
+            </svg>
+            Generating…
+          </span>
+        </button>
+
+        <div
+          *ngIf="summaryError && summaryPanelOpen"
+          class="px-3 py-2 bg-red-50 text-red-700 text-xs"
+        >
+          {{ summaryError }}
+        </div>
+
+        <div
+          *ngIf="summaryLoading && summaryPanelOpen"
+          class="px-3 py-3 space-y-2 animate-pulse"
+        >
+          <div class="h-2.5 bg-indigo-100 rounded w-3/4"></div>
+          <div class="h-2.5 bg-indigo-100 rounded w-full"></div>
+          <div class="h-2.5 bg-indigo-100 rounded w-5/6"></div>
+        </div>
+
+        <div
+          *ngIf="summaryResult && summaryPanelOpen && !summaryLoading"
+          class="px-3 py-3 bg-white text-xs text-gray-700 space-y-2"
+        >
+          <p class="leading-relaxed">{{ summaryResult.executive_summary }}</p>
+          <ul class="space-y-1 pl-1">
+            <li
+              *ngFor="let insight of summaryResult.key_insights"
+              class="flex items-start gap-1.5"
+            >
+              <span class="text-indigo-500 flex-shrink-0">•</span>
+              <span>{{ insight }}</span>
+            </li>
+          </ul>
+          <p
+            class="
+              text-[10px]
+              italic
+              text-gray-400
+              border-t border-gray-100
+              pt-2
+            "
+          >
+            {{ summaryResult.caveat }}
+          </p>
+        </div>
+      </div>
     </header>
     <!-- End of Header -->
 

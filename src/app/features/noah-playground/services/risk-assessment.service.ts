@@ -62,4 +62,10 @@ export class RiskAssessmentService {
   archiveData(): Observable<any> {
     return this.http.get(`${this.API_BASE_URL}/api/latest-results/`);
   }
+
+  getAllAffectedForSummary(): Observable<any> {
+    return this.http.get(
+      `${this.API_BASE_URL}/affected_brgy/?affected=yes&page_size=10000`
+    );
+  }
 }

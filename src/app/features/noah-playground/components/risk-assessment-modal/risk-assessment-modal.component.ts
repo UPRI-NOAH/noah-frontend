@@ -1,8 +1,13 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AffectedData,
   RiskAssessmentService,
 } from '@features/noah-playground/services/risk-assessment.service';
+import {
+  IbffSummaryService,
+  ForecastSummaryOutput,
+  ForecastSummaryInput,
+} from '@features/noah-playground/services/ibff-summary.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { first } from 'rxjs/operators';
@@ -35,8 +40,14 @@ export class RiskAssessmentModalComponent implements OnInit {
   archieveDownload: string;
   dropdown: string[] = [];
 
+  summaryLoading: boolean = false;
+  summaryResult: ForecastSummaryOutput | null = null;
+  summaryError: string | null = null;
+  summaryPanelOpen: boolean = false;
+
   constructor(
     private riskAssessment: RiskAssessmentService,
+    private ibffSummary: IbffSummaryService,
     private modalServices: ModalService,
     private pgService: NoahPlaygroundService
   ) {}
@@ -177,7 +188,96 @@ export class RiskAssessmentModalComponent implements OnInit {
     }
   }
 
+  toggleSummaryPanel() {
+    this.summaryPanelOpen = !this.summaryPanelOpen;
+  }
+
+  async generateSummary() {
+    this.summaryLoading = true;
+    this.summaryError = null;
+    this.summaryPanelOpen = true;
+
+    try {
+      const response: any = await this.riskAssessment
+        .getAllAffectedForSummary()
+        .pipe(first())
+        .toPromise();
+
+      const records: AffectedData[] = response?.results ?? this.affectedData;
+      const input = this.buildSummaryInput(
+        records,
+        response?.count ?? this.totalDataCount
+      );
+
+      this.ibffSummary
+        .generateSummary(input)
+        .pipe(first())
+        .subscribe({
+          next: (result) => {
+            this.summaryResult = result;
+            this.summaryLoading = false;
+          },
+          error: () => {
+            this.summaryError =
+              'Unable to reach the summarization service. Please ensure the backend is running.';
+            this.summaryLoading = false;
+          },
+        });
+    } catch {
+      this.summaryError = 'Failed to load forecast data for summarization.';
+      this.summaryLoading = false;
+    }
+  }
+
+  private buildSummaryInput(
+    records: AffectedData[],
+    totalCount: number
+  ): ForecastSummaryInput {
+    const provinceMap = new Map<string, number>();
+    const municipalitySet = new Set<string>();
+
+    for (const item of records) {
+      if (item.prov) {
+        provinceMap.set(item.prov, (provinceMap.get(item.prov) ?? 0) + 1);
+      }
+      if (item.muni && item.prov) {
+        municipalitySet.add(`${item.muni}||${item.prov}`);
+      }
+    }
+
+    const topAreas = Array.from(provinceMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([province, count]) => ({ province, affected_barangays: count }));
+
+    return {
+      forecast_timestamp: this.dateDataText || 'not available',
+      model_run: this.parseModelRun(this.dateDataText),
+      affected_barangays: totalCount,
+      affected_municipalities: municipalitySet.size,
+      affected_provinces: provinceMap.size,
+      top_areas: topAreas,
+      highest_hazard_level: 'High',
+      notes: [
+        'Counts exclude barangays tagged Little to None.',
+        'Exposure is based on intersection with NOAH flood hazard layers.',
+      ],
+    };
+  }
+
+  private parseModelRun(dateText: string): string {
+    if (!dateText) return 'Latest';
+    const match = dateText.match(/(\d{2}):(\d{2})/);
+    if (!match) return 'Latest';
+    const hour = parseInt(match[1], 10);
+    const utcHour = (hour - 8 + 24) % 24;
+    return `${String(utcHour).padStart(2, '0')}Z`;
+  }
+
   closeModal() {
+    this.summaryResult = null;
+    this.summaryError = null;
+    this.summaryPanelOpen = false;
     this.modalServices.closeRiskModal();
     this.modalServices.closeBtnRiskAssessment();
     this.modalServices.hideLegend();
