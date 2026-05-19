@@ -93,6 +93,7 @@ import {
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
   BoundariesType,
+  TemperatureType,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -235,6 +236,7 @@ export class MapPlaygroundComponent
         this.initRainForcast();
         this.initTyphoonTrack();
         this.initPar();
+        this.initTemperature();
       });
   }
 
@@ -2096,12 +2098,94 @@ export class MapPlaygroundComponent
     });
   }
 
+  initTemperature() {
+    const temperatureImages = {
+      heat_index: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        type: 'image',
+      },
+      max_temperature: {
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+    };
+
+    const getTemperatureSource = (temperatureDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (temperatureDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: temperatureDetails.url,
+            coordinates: [
+              [116.855, 19.402],
+              [127.055, 19.402],
+              [127.055, 5.205],
+              [116.855, 5.205],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Temperature');
+      }
+    };
+    Object.keys(temperatureImages).forEach(
+      (temperatureType: TemperatureType) => {
+        const temperatureDetails = temperatureImages[temperatureType];
+        this.map.addSource(
+          temperatureType,
+          getTemperatureSource(temperatureDetails)
+        );
+
+        this.map.addLayer({
+          id: temperatureType,
+          type: 'raster',
+          source: temperatureType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        const soloShown$ = this.pgService.temperatureShown$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedTemperature$ = this.pgService.selectedTemperature$.pipe(
+          shareReplay(1)
+        );
+
+        const temperatureOpacity$ = this.pgService
+          .getTemperature$(temperatureType)
+          .pipe(
+            map((temperature) => temperature.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([soloShown$, selectedTemperature$, temperatureOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([soloShown, groupShown, temperatureOpacity]) => {
+            let newOpacity = +(soloShown && groupShown === temperatureType);
+            if (newOpacity) {
+              newOpacity = temperatureOpacity / 100;
+            }
+            this.map.setPaintProperty(
+              temperatureType,
+              'raster-opacity',
+              newOpacity
+            );
+          });
+      }
+    );
+  }
+
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
+        url: 'https://webgis-static.up.edu.ph/api/upri-noah/sat_webm/ph_himawari.mp4',
         urlMp4:
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
+          'https://webgis-static.up.edu.ph/api/upri-noah/sat_webm/ph_himawari.mp4',
         type: 'video',
       },
       'himawari-GSMAP': {
