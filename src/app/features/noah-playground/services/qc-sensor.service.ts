@@ -42,9 +42,8 @@ export class QcSensorService {
   private QCBASE_URL = 'https://iot-noah.up.edu.ph';
   loadOnceDisclaimer$ = this.setLoadOnceDisclaimer().pipe(shareReplay(1));
 
-  private UPRI_S3_BASE_URL =
-    'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
-  // old link for qc 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/boundary/QC_Bound.geojson'
+  private UPRI_S3_BASE_URL = 'https://webgis-static.up.edu.ph/api';
+  // old link for qc 'https://webgis-static.up.edu.ph/api/boundary/QC_Bound.geojson'
 
   constructor(private http: HttpClient) {}
 
