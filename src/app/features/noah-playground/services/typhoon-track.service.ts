@@ -26,7 +26,7 @@ export const TYPHOON: TyphoonTrackType[] = [
   providedIn: 'root',
 })
 export class TyphoonTrackService {
-  private BASE_URL = 'https://upri-noah.s3.amazonaws.com';
+  private BASE_URL = 'https://webgis-static.up.edu.ph/api';
 
   private noTyphoon = new BehaviorSubject<boolean>(false);
   private noData = new BehaviorSubject<boolean>(false);

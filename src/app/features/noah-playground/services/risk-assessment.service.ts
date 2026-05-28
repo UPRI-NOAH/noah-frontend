@@ -21,7 +21,7 @@ export class RiskAssessmentService {
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
-  private S3_BASE_URL = 'https://upri-noah.s3.ap-southeast-1.amazonaws.com';
+  private S3_BASE_URL = 'https://webgis-static.up.edu.ph/api';
 
   // Track the search term
   private currentSearchTerm: string | null = null;

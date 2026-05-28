@@ -310,27 +310,27 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   showRainfallContour() {
     const rainfallContourMapImages = {
       '1hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '3hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/contours/3hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '6hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/contours/6hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '12hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/contours/12hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '24hr': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
         type: 'image',
       },
       forecast: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
         type: 'image',
       },
     };
@@ -473,9 +473,9 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   initTyphoonTrackLayers() {
     // 0 - declare the source json files
     const typhoonLayerSourceFile: string =
-      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
+      'https://webgis-static.up.edu.ph/api/typhoon_track/pagasa_typhoon.geojson';
     const parOutlineSourceFile: string =
-      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson';
+      'https://webgis-static.up.edu.ph/api/par/par_outline.geojson';
 
     // 1 - load typhoon track layers icons
     const _this = this;
@@ -760,9 +760,8 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   initWeatherSatellite() {
     const weatherSatelliteMapImage = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
-        urlMp4:
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
+        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
+        urlMp4: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.mp4',
         type: 'video',
       },
     };

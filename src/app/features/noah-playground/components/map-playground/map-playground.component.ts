@@ -1453,7 +1453,7 @@ export class MapPlaygroundComponent
   initPar() {
     this.map.addSource('par-outline', {
       type: 'geojson',
-      data: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/par/par_outline.geojson',
+      data: 'https://webgis-static.up.edu.ph/api/par/par_outline.geojson',
     });
 
     this.map.addLayer({
@@ -1561,7 +1561,7 @@ export class MapPlaygroundComponent
   initRainForcast() {
     const rainForcastImage = {
       'rain-forecast': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
         type: 'image',
       },
     };
@@ -1625,7 +1625,7 @@ export class MapPlaygroundComponent
 
   async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
-      'https://upri-noah.s3.amazonaws.com/typhoon_track/pagasa_typhoon.geojson';
+      'https://webgis-static.up.edu.ph/api/typhoon_track/pagasa_typhoon.geojson';
 
     // Legends
     const typhoonLegend = {
@@ -1948,13 +1948,13 @@ export class MapPlaygroundComponent
     // 0 - declare the source json files
     const volcanoSourceFiles: Record<VolcanoType, { url: string }> = {
       active: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/active_volcano_rad.geojson',
+        url: 'https://webgis-static.up.edu.ph/api/volcanoes/active_volcano_rad.geojson',
       },
       'potentially-active': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_potentially_active.geojson',
+        url: 'https://webgis-static.up.edu.ph/api/volcanoes/volcanoes_potentially_active.geojson',
       },
       inactive: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/volcanoes/volcanoes_inactive.geojson',
+        url: 'https://webgis-static.up.edu.ph/api/volcanoes/volcanoes_inactive.geojson',
       },
     };
 
@@ -2099,15 +2099,14 @@ export class MapPlaygroundComponent
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.webm',
-        urlMp4:
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
+        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
+        urlMp4: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.mp4',
         type: 'video',
       },
       'himawari-GSMAP': {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.webm',
+        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.webm',
         urlMp4:
-          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_hima_gsmap.mp4',
+          'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.mp4',
         type: 'video',
       },
     };
@@ -2910,7 +2909,7 @@ export class MapPlaygroundComponent
   async initAffectedExposure() {
     const PH_AFFECTED_DATA = await this.pgService.getAffectedPopulationData();
     const response = await fetch(
-      'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/affected_psgc.json'
+      'https://webgis-static.up.edu.ph/api/4As/affected_psgc.json'
     );
     const affectedData = await response.json();
 
@@ -3007,27 +3006,27 @@ export class MapPlaygroundComponent
   // showContourMaps() {
   //   const contourMapImages = {
   //     '1hr': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/1hr_latest_rainfall_contour.png',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
   //       type: 'image',
   //     },
   //     '3hr': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/3hr_latest_rainfall_contour.png',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/3hr_latest_rainfall_contour.png',
   //       type: 'image',
   //     },
   //     '6hr': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/6hr_latest_rainfall_contour.png',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/6hr_latest_rainfall_contour.png',
   //       type: 'image',
   //     },
   //     '12hr': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/12hr_latest_rainfall_contour.png',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/12hr_latest_rainfall_contour.png',
   //       type: 'image',
   //     },
   //     '24hr': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
   //       type: 'image',
   //     },
   //     '24hr-lapse': {
-  //       url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/ph_contour.webm',
+  //       url: 'https://webgis-static.up.edu.ph/api/contours/ph_contour.webm',
   //       type: 'video',
   //     },
   //   };
