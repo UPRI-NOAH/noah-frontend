@@ -94,6 +94,7 @@ import {
   LAGUNA_DEFAULT_CENTER,
   BoundariesType,
   TemperatureType,
+  TemperatureForecastDay,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -2101,24 +2102,32 @@ export class MapPlaygroundComponent
   initTemperature() {
     const temperatureImages = {
       heat_index: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/rainfall/rainmap_gtif_day1.png',
+        urlPrefix: 'HI',
         type: 'image',
       },
       max_temperature: {
-        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/contours/24hr_latest_rainfall_contour.png',
+        urlPrefix: 't2m',
         type: 'image',
       },
     };
 
+    const getTemperatureUrl = (
+      temperatureType: TemperatureType,
+      day: TemperatureForecastDay
+    ): string => {
+      const { urlPrefix } = temperatureImages[temperatureType];
+      return `https://webgis-static.up.edu.ph/api/temperature/${urlPrefix}_${day}.png`;
+    };
+
     const getTemperatureSource = (temperatureDetails: {
-      url: string;
+      urlPrefix: string;
       type: string;
     }): AnySourceData => {
       switch (temperatureDetails.type) {
         case 'image':
           return {
             type: 'image',
-            url: temperatureDetails.url,
+            url: `https://webgis-static.up.edu.ph/api/temperature/${temperatureDetails.urlPrefix}_1.png`,
             coordinates: [
               [116.855, 19.402],
               [127.055, 19.402],
@@ -2156,6 +2165,12 @@ export class MapPlaygroundComponent
           shareReplay(1)
         );
 
+        const selectedForecastDay$ =
+          this.pgService.selectedTemperatureForecastDay$.pipe(
+            distinctUntilChanged(),
+            shareReplay(1)
+          );
+
         const temperatureOpacity$ = this.pgService
           .getTemperature$(temperatureType)
           .pipe(
@@ -2176,6 +2191,26 @@ export class MapPlaygroundComponent
               newOpacity
             );
           });
+
+        selectedForecastDay$
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe((forecastDay) => {
+            const source = this.map.getSource(temperatureType) as any;
+
+            if (!source || typeof source.updateImage !== 'function') {
+              return;
+            }
+
+            source.updateImage({
+              url: getTemperatureUrl(temperatureType, forecastDay),
+              coordinates: [
+                [116.855, 19.402],
+                [127.055, 19.402],
+                [127.055, 5.205],
+                [116.855, 5.205],
+              ],
+            });
+          });
       }
     );
   }
@@ -2183,9 +2218,9 @@ export class MapPlaygroundComponent
   initWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://webgis-static.up.edu.ph/api/upri-noah/sat_webm/ph_himawari.mp4',
+        url: 'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
         urlMp4:
-          'https://webgis-static.up.edu.ph/api/upri-noah/sat_webm/ph_himawari.mp4',
+          'https://upri-noah.s3.ap-southeast-1.amazonaws.com/sat_webm/ph_himawari.mp4',
         type: 'video',
       },
       'himawari-GSMAP': {

@@ -35,6 +35,7 @@ import {
   TemperatureType,
   TemperatureTypeState,
   TemperatureState,
+  TemperatureForecastDay,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -239,6 +240,12 @@ export class NoahPlaygroundService {
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
+    );
+  }
+
+  get selectedTemperatureForecastDay$(): Observable<TemperatureForecastDay> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.selectedForecastDay)
     );
   }
 
@@ -505,6 +512,18 @@ export class NoahPlaygroundService {
 
     temperature.selectedType = tempType;
     this.store.patch({ temperature }, `Select Temperature Type: ${tempType}`);
+  }
+
+  selectTemperatureForecastDay(day: TemperatureForecastDay): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.selectedForecastDay = day;
+    this.store.patch(
+      { temperature },
+      `Select Temperature Forecast Day: ${day}`
+    );
   }
 
   toggleTemperatureGroupExpansion(): void {

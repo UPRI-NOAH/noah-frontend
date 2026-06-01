@@ -66,10 +66,22 @@ export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
 
 export type TemperatureType = typeof TEMPERATURE[number];
 
+export const TEMPERATURE_FORECAST_DAYS = [
+  { label: 'Today', value: 1 },
+  { label: '+1D', value: 2 },
+  { label: '+2D', value: 3 },
+  { label: '+3D', value: 4 },
+  { label: '+4D', value: 5 },
+] as const;
+
+export type TemperatureForecastDay =
+  typeof TEMPERATURE_FORECAST_DAYS[number]['value'];
+
 export type TemperatureState = {
   shown: boolean;
   expanded: boolean;
   selectedType: TemperatureType;
+  selectedForecastDay: TemperatureForecastDay;
   types: TemperatureTypesState;
 };
 
@@ -609,6 +621,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
     expanded: false,
     selectedType: 'heat_index',
+    selectedForecastDay: 1,
     types: {
       heat_index: {
         opacity: 80,
