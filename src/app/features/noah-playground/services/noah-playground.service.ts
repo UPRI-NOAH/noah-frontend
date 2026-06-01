@@ -252,7 +252,7 @@ export class NoahPlaygroundService {
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/hazards/ph_combined_tileset.json'
+        'https://webgis-static.up.edu.ph/api/hazards/ph_combined_tileset.json'
       )
       .pipe(first())
       .toPromise();
@@ -263,7 +263,7 @@ export class NoahPlaygroundService {
   > {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
-        'https://upri-noah.s3.ap-southeast-1.amazonaws.com/4As/combined_fl_bgy.json'
+        'https://webgis-static.up.edu.ph/api/4As/combined_fl_bgy.json'
       )
       .pipe(first())
       .toPromise();

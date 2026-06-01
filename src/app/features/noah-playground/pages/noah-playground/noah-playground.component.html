@@ -129,6 +129,7 @@
       transition
       duration-300
       ease-in-out
+      flex flex-col
     "
     [ngClass]="{ block: !isVisible }"
     [ngStyle]="{ 'height.px': isVisible ? height : null }"
@@ -480,7 +481,8 @@
     <div
       class="
         overflow-y-auto
-        max-h-full
+        flex-1
+        min-h-0
         relative
         pr-2
         md:pb-[129px]
