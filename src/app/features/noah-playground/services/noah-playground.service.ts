@@ -32,6 +32,9 @@ import {
   BoundariesGroupState,
   BoundariesType,
   BoundariesState,
+  LightningState,
+  LightningType,
+  LightningTypeState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -223,6 +226,18 @@ export class NoahPlaygroundService {
 
   get typhoonTrackGroupExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.typhoonTrack.expanded));
+  }
+
+  get lightningGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.shown));
+  }
+
+  get lightningGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.expanded));
+  }
+
+  get selectedLightning$(): Observable<LightningType> {
+    return this.store.state$.pipe(map((state) => state.lightning.selectedType));
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -1111,6 +1126,76 @@ export class NoahPlaygroundService {
     this.store.patch(
       { typhoonTrack },
       `update typhoon track state expanded to ${!expanded}`
+    );
+  }
+
+  getLightningType(): LightningState {
+    return this.store.state.lightning;
+  }
+
+  getLightningTypes(type: LightningType): LightningTypeState {
+    return this.store.state.lightning.types[type];
+  }
+
+  getLightningType$(type: LightningType): Observable<LightningTypeState> {
+    return this.store.state$.pipe(map((state) => state.lightning.types[type]));
+  }
+
+  getLightningTypeOpacity(type: LightningType): number {
+    return this.store.state.lightning.types[type].opacity;
+  }
+
+  setLightningTypeOpacity(opacity: number, type: LightningType) {
+    const lightning: LightningState = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.types[type].opacity = opacity;
+    this.store.patch(
+      { lightning },
+      `Lightning - update ${type}'s opacity to ${opacity}`
+    );
+  }
+
+  toggleLightningGroupShown(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.shown = !lightning.shown;
+
+    this.store.patch(
+      {
+        lightning,
+      },
+      `Lightning Group State shown to ${lightning.shown}`
+    );
+  }
+
+  toggleLightningGroupExpanded(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    const { expanded } = lightning;
+    lightning.expanded = !expanded;
+
+    this.store.patch(
+      { lightning },
+      `update lightning state expanded to ${!expanded}`
+    );
+  }
+
+  setLightningType(lightningType: LightningType): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.selectedType = lightningType;
+
+    this.store.patch(
+      { lightning },
+      `Select lightning type to ${lightningType}`
     );
   }
 }

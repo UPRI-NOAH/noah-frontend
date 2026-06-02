@@ -20,6 +20,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
 import { environment } from '@env/environment';
 import {
+  BehaviorSubject,
   combineLatest,
   from,
   fromEvent,
@@ -93,6 +94,7 @@ import {
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
   BoundariesType,
+  LightningTypes,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -235,6 +237,7 @@ export class MapPlaygroundComponent
         this.initRainForcast();
         this.initTyphoonTrack();
         this.initPar();
+        this.initLightning();
       });
   }
 
@@ -2217,6 +2220,127 @@ export class MapPlaygroundComponent
 
             this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
           });
+      }
+    );
+  }
+
+  initLightning() {
+    const lightningSourceFile = {
+      'realtime-lightning': {
+        url: 'https://webgis-static.up.edu.ph/api/lightning/realtime_lightning.geojson',
+        type: 'geojson',
+      },
+      '10mins-lightning': {
+        url: 'https://webgis-static.up.edu.ph/api/lightning/lightning_test.geojson',
+        type: 'geojson',
+      },
+    };
+
+    const lightningColorMap: Record<LightningTypes, string> = {
+      'realtime-lightning': '#800000', // Maroon for real-time lightning
+      '10mins-lightning': '#000000', // Default/fallback for 10-minute lightning
+    };
+
+    const getLightningSource = (lightningDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (lightningDetails.type) {
+        case 'geojson':
+          return {
+            type: 'geojson',
+            data: lightningDetails.url,
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get lightning source');
+      }
+    };
+
+    Object.keys(lightningSourceFile).forEach(
+      (lightningType: LightningTypes) => {
+        const lightningObjData = lightningSourceFile[lightningType];
+
+        // 1 - add source
+        this.map.addSource(lightningType, getLightningSource(lightningObjData));
+
+        // Track whether this lightning source has valid data
+        const dataAvailable$ = new BehaviorSubject<boolean>(false);
+
+        // Fetch and validate data availability
+        fetch(lightningObjData.url)
+          .then((response) => {
+            if (!response.ok) throw new Error('Unable to fetch');
+            return response.json();
+          })
+          .then((data: any) => {
+            const features = Array.isArray(data?.features) ? data.features : [];
+            const validFeatures = features.filter((f) => f?.geometry);
+            dataAvailable$.next(validFeatures.length > 0);
+          })
+          .catch(() => dataAvailable$.next(false));
+
+        // 2 - add layer
+        this.map.addLayer({
+          id: lightningType,
+          type: 'circle',
+          source: lightningType,
+          paint: {
+            'circle-color':
+              lightningType === '10mins-lightning'
+                ? [
+                    'case',
+                    ['==', ['get', 'strike_type'], 'Cloud to Cloud'],
+                    '#ff69b4',
+                    ['==', ['get', 'strike_type'], 'Cloud to Ground'],
+                    '#ffff00',
+                    '#000000',
+                  ]
+                : lightningColorMap[lightningType],
+            'circle-radius': 6,
+            'circle-opacity': 0.8,
+          },
+        });
+
+        const allShown$ = this.pgService.lightningGroupShown$.pipe(
+          distinctUntilChanged()
+        );
+
+        const selectedLightning$ = this.pgService.selectedLightning$.pipe(
+          shareReplay(1)
+        );
+
+        const lightningOpacity$ = this.pgService
+          .getLightningType$(lightningType)
+          .pipe(
+            map((lightning) => lightning.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([
+          allShown$,
+          selectedLightning$,
+          lightningOpacity$,
+          dataAvailable$,
+        ])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(
+            ([allShown, selectedLightning, lightningOpacity, hasData]) => {
+              // Only show if data is available AND selected AND group is shown
+              let opacity = +(
+                allShown &&
+                selectedLightning === lightningType &&
+                hasData
+              );
+              if (opacity) {
+                opacity = lightningOpacity / 100;
+              }
+              this.map.setPaintProperty(
+                lightningType,
+                'circle-opacity',
+                opacity
+              );
+            }
+          );
       }
     );
   }
