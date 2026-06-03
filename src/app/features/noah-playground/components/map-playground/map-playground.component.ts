@@ -181,6 +181,17 @@ export class MapPlaygroundComponent
   screenWidth: number;
   screenHeight: number;
 
+  private realtimeLightningSocket: WebSocket | null = null;
+  private realtimeLightningResetTimer: number | null = null;
+  private realtimeLightningKeepAlive: number | null = null;
+  private isRealtimeLightningRunning = false;
+  private realtimeLightningFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point> =
+    {
+      type: 'FeatureCollection',
+      features: [],
+    };
+  private realtimeLightningDataAvailable$ = new BehaviorSubject<boolean>(false);
+
   @ViewChild('selectQc') selectQc: ElementRef;
 
   constructor(
@@ -2227,7 +2238,7 @@ export class MapPlaygroundComponent
   initLightning() {
     const lightningSourceFile = {
       'realtime-lightning': {
-        url: 'https://webgis-static.up.edu.ph/api/lightning/realtime_lightning.geojson',
+        url: '',
         type: 'geojson',
       },
       '10mins-lightning': {
@@ -2241,15 +2252,18 @@ export class MapPlaygroundComponent
       '10mins-lightning': '#000000', // Default/fallback for 10-minute lightning
     };
 
-    const getLightningSource = (lightningDetails: {
-      url: string;
-      type: string;
-    }): AnySourceData => {
+    const getLightningSource = (
+      lightningDetails: { url: string; type: string },
+      lightningType: LightningTypes
+    ): AnySourceData => {
       switch (lightningDetails.type) {
         case 'geojson':
           return {
             type: 'geojson',
-            data: lightningDetails.url,
+            data:
+              lightningType === 'realtime-lightning'
+                ? this.realtimeLightningFeatureCollection
+                : lightningDetails.url,
           };
         default:
           throw new Error('[MapPlayground] Unable to get lightning source');
@@ -2261,10 +2275,16 @@ export class MapPlaygroundComponent
         const lightningObjData = lightningSourceFile[lightningType];
 
         // 1 - add source
-        this.map.addSource(lightningType, getLightningSource(lightningObjData));
+        this.map.addSource(
+          lightningType,
+          getLightningSource(lightningObjData, lightningType)
+        );
 
         // Track whether this lightning source has valid data
-        const dataAvailable$ = new BehaviorSubject<boolean>(false);
+        const dataAvailable$ =
+          lightningType === 'realtime-lightning'
+            ? this.realtimeLightningDataAvailable$
+            : new BehaviorSubject<boolean>(false);
 
         // Fetch and validate data availability
         fetch(lightningObjData.url)
@@ -2286,7 +2306,8 @@ export class MapPlaygroundComponent
           source: lightningType,
           paint: {
             'circle-color':
-              lightningType === '10mins-lightning'
+              lightningType === '10mins-lightning' ||
+              lightningType === 'realtime-lightning'
                 ? [
                     'case',
                     ['==', ['get', 'strike_type'], 'Cloud to Cloud'],
@@ -2343,6 +2364,138 @@ export class MapPlaygroundComponent
           );
       }
     );
+
+    this.initRealtimeLightning();
+  }
+
+  private initRealtimeLightning(): void {
+    this.startRealtimeLightning().catch((err) => {
+      console.error(
+        '[MapPlayground] Failed to initialize realtime lightning',
+        err
+      );
+    });
+  }
+
+  private async startRealtimeLightning(): Promise<void> {
+    this.resetRealtimeLightningLayer();
+
+    try {
+      await fetch(
+        'https://61b1-136-158-11-127.ngrok-free.app/api/lightning/start/'
+      );
+    } catch (error) {
+      console.error('[MapPlayground] realtime lightning start failed', error);
+    }
+
+    this.realtimeLightningSocket = new WebSocket(
+      'wss://61b1-136-158-11-127.ngrok-free.app/ws/'
+    );
+
+    this.realtimeLightningSocket.onopen = () => {
+      console.log('Connected to Django relay');
+
+      this.realtimeLightningKeepAlive = window.setInterval(() => {
+        if (
+          this.realtimeLightningSocket &&
+          this.realtimeLightningSocket.readyState === WebSocket.OPEN
+        ) {
+          this.realtimeLightningSocket.send('ping');
+        }
+      }, 30000);
+    };
+
+    this.realtimeLightningSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const strikeType =
+        data.icHeight === 0 ? 'Cloud to Ground' : 'Cloud to Cloud';
+
+      const feature: GeoJSON.Feature<GeoJSON.Point> = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [data.longitude, data.latitude],
+        },
+        properties: {
+          strike_type: strikeType,
+          icHeight: data.icHeight,
+          timestamp: data.timestamp || null,
+          raw: data,
+        },
+      };
+
+      this.realtimeLightningFeatureCollection.features.push(feature);
+      const source = this.map.getSource(
+        'realtime-lightning'
+      ) as mapboxgl.GeoJSONSource;
+      if (source) {
+        source.setData(this.realtimeLightningFeatureCollection);
+      }
+
+      if (!this.realtimeLightningDataAvailable$.value) {
+        this.realtimeLightningDataAvailable$.next(true);
+      }
+    };
+
+    this.realtimeLightningSocket.onerror = (error) => {
+      console.error('[MapPlayground] realtime lightning socket error', error);
+    };
+
+    this.realtimeLightningSocket.onclose = () => {
+      console.log('Realtime lightning relay disconnected');
+    };
+
+    this.isRealtimeLightningRunning = true;
+    // this.realtimeLightningResetTimer = window.setTimeout(
+    //   () => this.resetRealtimeLightningLayer(),
+    //   60000
+    // );
+  }
+
+  private async stopRealtimeLightning(): Promise<void> {
+    try {
+      await fetch(
+        'https://61b1-136-158-11-127.ngrok-free.app/api/lightning/stop/'
+      );
+    } catch (error) {
+      console.error('[MapPlayground] realtime lightning stop failed', error);
+    }
+
+    this.resetRealtimeLightningLayer();
+    this.isRealtimeLightningRunning = false;
+  }
+
+  private resetRealtimeLightningLayer(): void {
+    if (this.realtimeLightningSocket) {
+      this.realtimeLightningSocket.close();
+      this.realtimeLightningSocket = null;
+    }
+
+    if (this.realtimeLightningKeepAlive) {
+      window.clearInterval(this.realtimeLightningKeepAlive);
+      this.realtimeLightningKeepAlive = null;
+    }
+
+    if (this.realtimeLightningResetTimer) {
+      window.clearTimeout(this.realtimeLightningResetTimer);
+      this.realtimeLightningResetTimer = null;
+    }
+
+    this.realtimeLightningFeatureCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+
+    const source = this.map.getSource('realtime-lightning') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (source) {
+      source.setData(this.realtimeLightningFeatureCollection);
+    }
+
+    this.realtimeLightningDataAvailable$.next(false);
+
+    console.log('Realtime lightning layer reset');
   }
 
   // start of boundaries
