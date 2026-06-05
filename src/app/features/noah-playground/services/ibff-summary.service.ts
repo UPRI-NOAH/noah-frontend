@@ -21,7 +21,6 @@ export interface ExposedFacilities {
 
 export interface ForecastSummaryInput {
   forecast_timestamp: string;
-  model_run: string;
   affected_barangays: number;
   affected_municipalities: number;
   affected_provinces: number;

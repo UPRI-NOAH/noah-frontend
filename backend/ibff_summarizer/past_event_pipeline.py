@@ -475,7 +475,7 @@ def generate_past_event_summary(event) -> dict:
         import requests as _requests
         raw_output = call_ollama(prompt, model_name=model_name)
     except Exception as exc:
-        logger.warning('Ollama failed for past event %s: %s — using fallback', event.name, exc)
+        logger.warning('Ollama failed for past event %s: %s — using fallback', event.event_name, exc)
         result = build_historical_fallback(summary_json)
         return _save_and_return(result, 'fallback', False)
 

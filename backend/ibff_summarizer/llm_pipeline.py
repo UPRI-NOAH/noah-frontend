@@ -244,7 +244,7 @@ def build_fallback_summary(summary_json: dict) -> dict:
         )
         return {
             'executive_summary': (
-                f'As of the {ts} forecast (model run {run}), '
+                f'As of the {ts} forecast, '
                 'no barangays currently meet the pre-determined thresholds '
                 'for large flood exposure. No affected areas are displayed.'
             ),
@@ -292,7 +292,7 @@ def build_fallback_summary(summary_json: dict) -> dict:
 
     return {
         'executive_summary': (
-            f'As of the {ts} forecast (model run {run}), '
+            f'As of the {ts} forecast, '
             f'{brgy} barangays across {muni} municipalities in {prov} provinces '
             f'are within the affected area. '
             f'The highest recorded hazard level is {hazard}.'

@@ -416,7 +416,6 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
 
     return {
       forecast_timestamp: this.dateDataText || 'not available',
-      model_run: this.parseModelRun(this.dateDataText),
       affected_barangays: seen.size,
       affected_municipalities: municipalitySet.size,
       affected_provinces: provinceMap.size,
@@ -428,15 +427,6 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
         'Exposure is based on intersection with NOAH flood hazard layers.',
       ],
     };
-  }
-
-  private parseModelRun(dateText: string): string {
-    if (!dateText) return 'Latest';
-    const match = dateText.match(/(\d{2}):(\d{2})/);
-    if (!match) return 'Latest';
-    const hour = parseInt(match[1], 10);
-    const utcHour = (hour - 8 + 24) % 24;
-    return `${String(utcHour).padStart(2, '0')}Z`;
   }
 
   closeModal() {
