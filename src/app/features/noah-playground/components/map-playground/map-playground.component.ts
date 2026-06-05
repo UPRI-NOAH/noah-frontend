@@ -2322,6 +2322,81 @@ export class MapPlaygroundComponent
           },
         });
 
+        const lightningPopup = new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: true,
+        });
+
+        const handleLightningClick = (e: any) => {
+          const feature = e.features && e.features[0];
+          if (!feature) {
+            lightningPopup.remove();
+            return;
+          }
+
+          const raw = feature.properties?.raw;
+          const rawData =
+            typeof raw === 'string'
+              ? (() => {
+                  try {
+                    return JSON.parse(raw);
+                  } catch {
+                    return null;
+                  }
+                })()
+              : raw;
+
+          const realtimeTime = rawData?.observed_at ?? raw?.observed_at;
+
+          const props = feature.properties || {};
+          const type = props.strike_type ?? rawData?.strike_type ?? 'Unknown';
+          const amplitude = props.amplitude ?? rawData?.amplitude ?? 'N/A';
+          const height = props.height ?? 'N/A';
+          const observedAt = props.observed_at ?? rawData?.observed_at ?? null;
+
+          const date = observedAt
+            ? new Date(observedAt).toLocaleString()
+            : 'Unknown';
+
+          const realtimeDate = realtimeTime
+            ? new Date(realtimeTime).toLocaleString()
+            : null;
+
+          const content = `
+            <div style="color: #333333; font-size: 13px; line-height: 1.5;">
+              <div><strong>Type:</strong> ${type}</div>
+              <div><strong>Amplitude:</strong> ${amplitude}</div>
+              <div><strong>Height:</strong> ${height}</div>
+              ${
+                lightningType === 'realtime-lightning'
+                  ? realtimeDate
+                    ? `<div><strong>Date:</strong> ${realtimeDate}</div>`
+                    : `<div><strong>Date:</strong> Unknown</div>`
+                  : `<div><strong>Date:</strong> ${date}</div>`
+              }
+            </div>
+          `;
+
+          const coordinates = (feature.geometry as any).coordinates.slice();
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          lightningPopup
+            .setLngLat(coordinates)
+            .setHTML(content)
+            .addTo(this.map);
+        };
+
+        this.map.on('click', lightningType, handleLightningClick);
+        this.map.on('touchend', lightningType, handleLightningClick);
+        this.map.on('mouseenter', lightningType, () => {
+          this.map.getCanvas().style.cursor = 'pointer';
+        });
+        this.map.on('mouseleave', lightningType, () => {
+          this.map.getCanvas().style.cursor = '';
+        });
+
         const allShown$ = this.pgService.lightningGroupShown$.pipe(
           distinctUntilChanged()
         );
@@ -2382,14 +2457,14 @@ export class MapPlaygroundComponent
 
     try {
       await fetch(
-        'https://61b1-136-158-11-127.ngrok-free.app/api/lightning/start/'
+        'https://b4a3-202-92-140-138.ngrok-free.app/api/lightning/start/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning start failed', error);
     }
 
     this.realtimeLightningSocket = new WebSocket(
-      'wss://61b1-136-158-11-127.ngrok-free.app/ws/'
+      'wss://b4a3-202-92-140-138.ngrok-free.app/ws/'
     );
 
     this.realtimeLightningSocket.onopen = () => {
@@ -2408,7 +2483,7 @@ export class MapPlaygroundComponent
     this.realtimeLightningSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const strikeType =
-        data.icHeight === 0 ? 'Cloud to Ground' : 'Cloud to Cloud';
+        data.height === 0 ? 'Cloud to Ground' : 'Cloud to Cloud';
 
       const feature: GeoJSON.Feature<GeoJSON.Point> = {
         type: 'Feature',
@@ -2455,7 +2530,7 @@ export class MapPlaygroundComponent
   private async stopRealtimeLightning(): Promise<void> {
     try {
       await fetch(
-        'https://61b1-136-158-11-127.ngrok-free.app/api/lightning/stop/'
+        'https://b4a3-202-92-140-138.ngrok-free.app/api/lightning/stop/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning stop failed', error);
