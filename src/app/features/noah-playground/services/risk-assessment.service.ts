@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, EMPTY } from 'rxjs';
+import { tap, expand, reduce } from 'rxjs/operators';
 
 export type AffectedData = {
   prov: string;
@@ -17,7 +17,7 @@ export type AffectedData = {
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-  private API_BASE_URL = 'https://panahon.up.edu.ph';
+  private API_BASE_URL = '/ngrok-api';
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
@@ -50,6 +50,21 @@ export class RiskAssessmentService {
         this.nextPageUrl = response.next;
         this.previousPageUrl = response.previous;
       })
+    );
+  }
+
+  getAllAffectedData(): Observable<any[]> {
+    const rewriteUrl = (url: string) =>
+      url.replace('https://panahon.up.edu.ph', this.API_BASE_URL);
+
+    return this.http.get<any>(this.defaultUrl).pipe(
+      expand((response: any) =>
+        response.next ? this.http.get<any>(rewriteUrl(response.next)) : EMPTY
+      ),
+      reduce(
+        (acc: any[], response: any) => [...acc, ...(response.results || [])],
+        []
+      )
     );
   }
 

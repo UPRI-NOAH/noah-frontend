@@ -8,6 +8,11 @@ export interface TopArea {
   affected_barangays: number;
 }
 
+export interface TopCity {
+  city: string;
+  affected_barangays: number;
+}
+
 export interface ExposedFacilities {
   schools: number;
   health_facilities: number;
@@ -21,6 +26,7 @@ export interface ForecastSummaryInput {
   affected_municipalities: number;
   affected_provinces: number;
   top_areas: TopArea[];
+  top_cities: TopCity[];
   exposed_facilities?: ExposedFacilities;
   highest_hazard_level?: string;
   notes?: string[];
@@ -28,9 +34,11 @@ export interface ForecastSummaryInput {
 
 export interface ForecastSummaryOutput {
   executive_summary: string;
-  key_insights: string[];
+  area_summary: string;
   caveat: string;
   _source: 'llm' | 'fallback';
+  _model: string;
+  _generated_at: string;
 }
 
 @Injectable({

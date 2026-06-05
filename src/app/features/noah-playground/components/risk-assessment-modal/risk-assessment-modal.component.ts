@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   AffectedData,
   RiskAssessmentService,
@@ -8,15 +8,21 @@ import {
   ForecastSummaryOutput,
   ForecastSummaryInput,
 } from '@features/noah-playground/services/ibff-summary.service';
+import {
+  PastEventService,
+  PastEventListItem,
+} from '@features/noah-playground/services/past-event.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { first } from 'rxjs/operators';
+import { first, switchMap, catchError } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+
 @Component({
   selector: 'noah-risk-assessment-modal',
   templateUrl: './risk-assessment-modal.component.html',
   styleUrls: ['./risk-assessment-modal.component.scss'],
 })
-export class RiskAssessmentModalComponent implements OnInit {
+export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
   affectedData: AffectedData[] = [];
   riskModal = false;
   searchValue: string;
@@ -40,47 +46,43 @@ export class RiskAssessmentModalComponent implements OnInit {
   archieveDownload: string;
   dropdown: string[] = [];
 
+  // Forecast summary state
   summaryLoading: boolean = false;
   summaryResult: ForecastSummaryOutput | null = null;
   summaryError: string | null = null;
   summaryPanelOpen: boolean = false;
+  typedSummary: string = '';
+  areaSummary: string = '';
+  isTyping: boolean = false;
+  private _typingTimer: ReturnType<typeof setInterval> | null = null;
+
+  // Past events state
+  summaryMode: 'forecast' | 'past-events' = 'forecast';
+  pastEventsLoading: boolean = false;
+  pastEventsLoaded: boolean = false;
+  pastEvents: PastEventListItem[] = [];
+  pastEventsError: string | null = null;
+  selectedEvent: PastEventListItem | null = null;
+  pastEventSummaryLoading: boolean = false;
+  pastEventResult: ForecastSummaryOutput | null = null;
+  pastEventError: string | null = null;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
     private ibffSummary: IbffSummaryService,
+    private pastEventService: PastEventService,
     private modalServices: ModalService,
     private pgService: NoahPlaygroundService
   ) {}
 
   columns = [
-    {
-      key: 'brgy',
-      header: 'Barangay',
-    },
-    {
-      key: 'muni',
-      header: 'Municipality',
-    },
-    {
-      key: 'prov',
-      header: 'Provincial',
-    },
-    {
-      key: 'total_pop',
-      header: 'Total Population',
-    },
-    {
-      key: 'total_aff_pop',
-      header: 'Total Affected Population',
-    },
-    {
-      key: 'exposed_medhigh',
-      header: 'Exposed to Med-High Hazard',
-    },
-    {
-      key: 'perc_aff_medhigh',
-      header: 'Percentage of Exposed to Med-High',
-    },
+    { key: 'brgy', header: 'Barangay' },
+    { key: 'muni', header: 'Municipality' },
+    { key: 'prov', header: 'Provincial' },
+    { key: 'total_pop', header: 'Total Population' },
+    { key: 'total_aff_pop', header: 'Total Affected Population' },
+    { key: 'exposed_medhigh', header: 'Exposed to Med-High Hazard' },
+    { key: 'perc_aff_medhigh', header: 'Percentage of Exposed to Med-High' },
   ];
 
   ngOnInit(): void {
@@ -95,7 +97,6 @@ export class RiskAssessmentModalComponent implements OnInit {
   showSelectDate() {
     this.showSelect = !this.showSelect;
   }
-
   showSortDropdown() {
     this.showSort = !this.showSort;
   }
@@ -106,15 +107,12 @@ export class RiskAssessmentModalComponent implements OnInit {
         .archiveData()
         .pipe(first())
         .toPromise();
-      if (response && response.results) {
+      if (response?.results) {
         const selectedResult = response.results.find(
           (result: any) => result.datetime === selectedDate
         );
-
-        if (selectedResult && selectedResult.s3_link) {
+        if (selectedResult?.s3_link) {
           window.open(selectedResult.s3_link, '_blank');
-        } else {
-          console.error('Selected date not found or missing s3_link');
         }
       }
     } catch (error) {
@@ -135,9 +133,8 @@ export class RiskAssessmentModalComponent implements OnInit {
       .archiveData()
       .pipe(first())
       .toPromise();
-    if (response && response.results) {
-      const datetimes = response.results.map((result: any) => result.datetime);
-      this.dropdown = datetimes;
+    if (response?.results) {
+      this.dropdown = response.results.map((r: any) => r.datetime);
     }
   }
 
@@ -146,11 +143,11 @@ export class RiskAssessmentModalComponent implements OnInit {
       this.dateDataText = data;
     });
   }
+
   async loadData(page: number, searchTerm?: string) {
     try {
       const response: any = await this.riskAssessment
         .getAffectedPopulations(page, searchTerm)
-        //.getAffectedPopulations(page, searchTerm)
         .pipe(first())
         .toPromise();
 
@@ -163,25 +160,21 @@ export class RiskAssessmentModalComponent implements OnInit {
         this.errorMsg = true;
         this.noResult = false;
       } else {
-        const raData = response.results.map((a) => {
-          return {
-            brgy: a.brgy,
-            muni: a.muni,
-            prov: a.prov,
-            total_pop: a.total_pop,
-            total_aff_pop: a.total_aff_pop,
-            exposed_medhigh: a.exposed_medhigh,
-            perc_aff_medhigh: a.perc_aff_medhigh,
-          };
-        });
         this.currentPage = page;
-        this.affectedData = raData;
+        this.affectedData = response.results.map((a) => ({
+          brgy: a.brgy,
+          muni: a.muni,
+          prov: a.prov,
+          total_pop: a.total_pop,
+          total_aff_pop: a.total_aff_pop,
+          exposed_medhigh: a.exposed_medhigh,
+          perc_aff_medhigh: a.perc_aff_medhigh,
+        }));
         this.totalDataCount = response.count;
         this.errorMsg = false;
         this.noResult = false;
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
+    } catch {
       this.affectedData = [];
       this.errorMsg = true;
       this.noResult = false;
@@ -192,45 +185,219 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.summaryPanelOpen = !this.summaryPanelOpen;
   }
 
+  // ── Forecast summary ──────────────────────────────────────────────────────
+
   generateSummary() {
+    if (this._typingTimer) {
+      clearInterval(this._typingTimer);
+      this._typingTimer = null;
+    }
+    this.summaryMode = 'forecast';
     this.summaryLoading = true;
     this.summaryError = null;
     this.summaryPanelOpen = true;
+    this.typedSummary = '';
+    this.areaSummary = '';
+    this.isTyping = false;
 
-    const input = this.buildSummaryInput(
-      this.affectedData,
-      this.totalDataCount
-    );
-
-    this.ibffSummary
-      .generateSummary(input)
-      .pipe(first())
+    forkJoin([
+      this.riskAssessment.getAllAffectedData().pipe(
+        first(),
+        catchError(() => of([]))
+      ),
+      this.riskAssessment.getDateText().pipe(
+        first(),
+        catchError(() => of(''))
+      ),
+    ])
+      .pipe(
+        switchMap(([allRecords, dateText]: [any[], string]) => {
+          this.dateDataText = dateText;
+          const mapped: AffectedData[] = allRecords.map((a: any) => ({
+            brgy: a.brgy,
+            muni: a.muni,
+            prov: a.prov,
+            total_pop: a.total_pop,
+            total_aff_pop: a.total_aff_pop,
+            exposed_medhigh: a.exposed_medhigh,
+            perc_aff_medhigh: a.perc_aff_medhigh,
+          }));
+          const records = mapped.length ? mapped : this.affectedData;
+          const input = this.buildSummaryInput(records, records.length);
+          return this.ibffSummary.generateSummary(input);
+        })
+      )
       .subscribe({
         next: (result) => {
           this.summaryResult = result;
           this.summaryLoading = false;
+          this._startTypewriter(result);
         },
         error: () => {
           this.summaryError =
-            'Unable to reach the summarization service. Please ensure the backend is running on http://localhost:8080.';
+            'Unable to reach the summarization service. Please ensure the backend is running.';
           this.summaryLoading = false;
         },
       });
   }
 
+  // ── Past events ───────────────────────────────────────────────────────────
+
+  openPastEvents() {
+    this.summaryPanelOpen = true;
+    this.summaryMode = 'past-events';
+    this.selectedEvent = null;
+    this.pastEventResult = null;
+    this.pastEventError = null;
+    if (this._typingTimer) {
+      clearInterval(this._typingTimer);
+      this._typingTimer = null;
+    }
+
+    if (this.pastEventsLoaded) return;
+
+    this.pastEventsLoading = true;
+    this.pastEventsError = null;
+    this.pastEventService.listEvents().subscribe({
+      next: (events) => {
+        this.pastEvents = events;
+        this.pastEventsLoaded = true;
+        this.pastEventsLoading = false;
+      },
+      error: () => {
+        this.pastEventsError =
+          'Unable to load past events. Check backend connection.';
+        this.pastEventsLoading = false;
+      },
+    });
+  }
+
+  onEventDropdownChange(value: string) {
+    const event = this.pastEvents.find((e) => e.id === +value);
+    if (event) this.selectEvent(event);
+  }
+
+  selectEvent(event: PastEventListItem) {
+    this.selectedEvent = event;
+    this.pastEventResult = null;
+    this.pastEventError = null;
+    this.pastEventSummaryLoading = true;
+    this.typedSummary = '';
+    this.areaSummary = '';
+    this.isTyping = false;
+    if (this._typingTimer) {
+      clearInterval(this._typingTimer);
+      this._typingTimer = null;
+    }
+
+    const request$ = event.has_summary
+      ? this.pastEventService.getSummary(event.id)
+      : this.pastEventService.generateSummary(event.id);
+
+    request$.subscribe({
+      next: (result) => {
+        this.pastEventResult = result;
+        this.pastEventSummaryLoading = false;
+        event.has_summary = true;
+        this._startTypewriter(result);
+      },
+      error: () => {
+        this.pastEventError =
+          'Unable to generate summary. Ensure the backend is running.';
+        this.pastEventSummaryLoading = false;
+      },
+    });
+  }
+
+  closePastEventsMode() {
+    this.summaryMode = 'forecast';
+    this.selectedEvent = null;
+    this.pastEventResult = null;
+    this.typedSummary = '';
+    this.areaSummary = '';
+    if (this._typingTimer) {
+      clearInterval(this._typingTimer);
+      this._typingTimer = null;
+    }
+  }
+
+  eventDateLabel(event: PastEventListItem): string {
+    const fmt = (d: string) => {
+      const [y, m, day] = d.split('-').map(Number);
+      return new Date(y, m - 1, day).toLocaleDateString('en-PH', {
+        month: 'short',
+        day: 'numeric',
+      });
+    };
+    const fmtFull = (d: string) => {
+      const [y, m, day] = d.split('-').map(Number);
+      return new Date(y, m - 1, day).toLocaleDateString('en-PH', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    };
+    if (!event.date_end || event.date_end === event.date_start)
+      return fmtFull(event.date_start);
+    return `${fmt(event.date_start)}–${fmtFull(event.date_end)}`;
+  }
+
+  // ── Shared typewriter ─────────────────────────────────────────────────────
+
+  private _startTypewriter(result: ForecastSummaryOutput) {
+    this.typedSummary = '';
+    this.areaSummary = '';
+    this.isTyping = true;
+    const text = result.executive_summary;
+    let i = 0;
+    this._typingTimer = setInterval(() => {
+      if (i < text.length) {
+        this.typedSummary += text[i++];
+      } else {
+        clearInterval(this._typingTimer!);
+        this._typingTimer = null;
+        this.areaSummary = result.area_summary;
+        this.isTyping = false;
+      }
+    }, 15);
+  }
+
+  ngOnDestroy() {
+    if (this._typingTimer) clearInterval(this._typingTimer);
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  private _toTitleCase(s: string): string {
+    return s
+      .replace(/\s*\(Not a Province\)/gi, '')
+      .trim()
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
   private buildSummaryInput(
     records: AffectedData[],
-    totalCount: number
+    _totalCount: number
   ): ForecastSummaryInput {
     const provinceMap = new Map<string, number>();
+    const cityMap = new Map<string, number>();
     const municipalitySet = new Set<string>();
+    const seen = new Set<string>();
 
     for (const item of records) {
+      const dedupeKey = `${item.brgy}||${item.muni}||${item.prov}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+
       if (item.prov) {
-        provinceMap.set(item.prov, (provinceMap.get(item.prov) ?? 0) + 1);
-      }
-      if (item.muni && item.prov) {
-        municipalitySet.add(`${item.muni}||${item.prov}`);
+        const prov = this._toTitleCase(item.prov);
+        provinceMap.set(prov, (provinceMap.get(prov) ?? 0) + 1);
+        if (item.muni) {
+          municipalitySet.add(`${item.muni}||${prov}`);
+          const cityKey = `${this._toTitleCase(item.muni)}||${prov}`;
+          cityMap.set(cityKey, (cityMap.get(cityKey) ?? 0) + 1);
+        }
       }
     }
 
@@ -239,13 +406,22 @@ export class RiskAssessmentModalComponent implements OnInit {
       .slice(0, 5)
       .map(([province, count]) => ({ province, affected_barangays: count }));
 
+    const topCities = Array.from(cityMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([key, count]) => ({
+        city: key.split('||')[0],
+        affected_barangays: count,
+      }));
+
     return {
       forecast_timestamp: this.dateDataText || 'not available',
       model_run: this.parseModelRun(this.dateDataText),
-      affected_barangays: totalCount,
+      affected_barangays: seen.size,
       affected_municipalities: municipalitySet.size,
       affected_provinces: provinceMap.size,
       top_areas: topAreas,
+      top_cities: topCities,
       highest_hazard_level: 'High',
       notes: [
         'Counts exclude barangays tagged Little to None.',
@@ -267,6 +443,12 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.summaryResult = null;
     this.summaryError = null;
     this.summaryPanelOpen = false;
+    this.summaryMode = 'forecast';
+    this.pastEventsLoaded = false;
+    this.pastEvents = [];
+    this.selectedEvent = null;
+    this.pastEventResult = null;
+    this.pastEventError = null;
     this.modalServices.closeRiskModal();
     this.modalServices.closeBtnRiskAssessment();
     this.modalServices.hideLegend();

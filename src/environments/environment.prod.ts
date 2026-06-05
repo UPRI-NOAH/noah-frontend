@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   ibffSummaryUrl: '/api/forecast-summary/',
+  pastEventsUrl: '/api/past-events/',
   mapbox: {
     accessToken:
       'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
