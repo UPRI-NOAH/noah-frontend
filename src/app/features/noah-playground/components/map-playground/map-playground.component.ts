@@ -93,6 +93,8 @@ import {
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
   BoundariesType,
+  TemperatureType,
+  TemperatureForecastDay,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -235,6 +237,7 @@ export class MapPlaygroundComponent
         this.initRainForcast();
         this.initTyphoonTrack();
         this.initPar();
+        this.initTemperature();
       });
   }
 
@@ -2094,6 +2097,122 @@ export class MapPlaygroundComponent
         }
       );
     });
+  }
+
+  initTemperature() {
+    const temperatureImages = {
+      heat_index: {
+        urlPrefix: 'HI',
+        type: 'image',
+      },
+      max_temperature: {
+        urlPrefix: 't2m',
+        type: 'image',
+      },
+    };
+
+    const getTemperatureUrl = (
+      temperatureType: TemperatureType,
+      day: TemperatureForecastDay
+    ): string => {
+      const { urlPrefix } = temperatureImages[temperatureType];
+      return `https://webgis-static.up.edu.ph/api/temperature/${urlPrefix}_${day}.png`;
+    };
+
+    const getTemperatureSource = (temperatureDetails: {
+      urlPrefix: string;
+      type: string;
+    }): AnySourceData => {
+      switch (temperatureDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: `https://webgis-static.up.edu.ph/api/temperature/${temperatureDetails.urlPrefix}_1.png`,
+            coordinates: [
+              [116.855, 19.402],
+              [127.055, 19.402],
+              [127.055, 5.205],
+              [116.855, 5.205],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Temperature');
+      }
+    };
+    Object.keys(temperatureImages).forEach(
+      (temperatureType: TemperatureType) => {
+        const temperatureDetails = temperatureImages[temperatureType];
+        this.map.addSource(
+          temperatureType,
+          getTemperatureSource(temperatureDetails)
+        );
+
+        this.map.addLayer({
+          id: temperatureType,
+          type: 'raster',
+          source: temperatureType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        const soloShown$ = this.pgService.temperatureShown$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedTemperature$ = this.pgService.selectedTemperature$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedForecastDay$ =
+          this.pgService.selectedTemperatureForecastDay$.pipe(
+            distinctUntilChanged(),
+            shareReplay(1)
+          );
+
+        const temperatureOpacity$ = this.pgService
+          .getTemperature$(temperatureType)
+          .pipe(
+            map((temperature) => temperature.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([soloShown$, selectedTemperature$, temperatureOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([soloShown, groupShown, temperatureOpacity]) => {
+            let newOpacity = +(soloShown && groupShown === temperatureType);
+            if (newOpacity) {
+              newOpacity = temperatureOpacity / 100;
+            }
+            this.map.setPaintProperty(
+              temperatureType,
+              'raster-opacity',
+              newOpacity
+            );
+          });
+
+        selectedForecastDay$
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe((forecastDay) => {
+            const source = this.map.getSource(temperatureType) as any;
+
+            if (!source || typeof source.updateImage !== 'function') {
+              return;
+            }
+
+            source.updateImage({
+              url: getTemperatureUrl(temperatureType, forecastDay),
+              coordinates: [
+                [116.855, 19.402],
+                [127.055, 19.402],
+                [127.055, 5.205],
+                [116.855, 5.205],
+              ],
+            });
+          });
+      }
+    );
   }
 
   initWeatherSatelliteLayers() {
