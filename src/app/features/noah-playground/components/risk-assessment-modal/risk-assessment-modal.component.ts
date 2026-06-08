@@ -129,12 +129,16 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
   }
 
   async archiveData() {
-    const response: any = await this.riskAssessment
-      .archiveData()
-      .pipe(first())
-      .toPromise();
-    if (response?.results) {
-      this.dropdown = response.results.map((r: any) => r.datetime);
+    try {
+      const response: any = await this.riskAssessment
+        .archiveData()
+        .pipe(first())
+        .toPromise();
+      if (response?.results) {
+        this.dropdown = response.results.map((r: any) => r.datetime);
+      }
+    } catch {
+      // archive endpoint unavailable — dropdown stays empty
     }
   }
 
