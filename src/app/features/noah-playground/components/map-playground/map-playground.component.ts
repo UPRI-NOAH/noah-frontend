@@ -2457,14 +2457,14 @@ export class MapPlaygroundComponent
 
     try {
       await fetch(
-        'https://b4a3-202-92-140-138.ngrok-free.app/api/lightning/start/'
+        'https://f021-136-158-11-127.ngrok-free.app/api/lightning/start/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning start failed', error);
     }
 
     this.realtimeLightningSocket = new WebSocket(
-      'wss://b4a3-202-92-140-138.ngrok-free.app/ws/'
+      'wss://f021-136-158-11-127.ngrok-free.app/ws/'
     );
 
     this.realtimeLightningSocket.onopen = () => {
@@ -2530,7 +2530,7 @@ export class MapPlaygroundComponent
   private async stopRealtimeLightning(): Promise<void> {
     try {
       await fetch(
-        'https://b4a3-202-92-140-138.ngrok-free.app/api/lightning/stop/'
+        'https://f021-136-158-11-127.ngrok-free.app/api/lightning/stop/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning stop failed', error);
