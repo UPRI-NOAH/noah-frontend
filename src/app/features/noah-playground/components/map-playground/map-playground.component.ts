@@ -192,6 +192,44 @@ export class MapPlaygroundComponent
     };
   private realtimeLightningDataAvailable$ = new BehaviorSubject<boolean>(false);
 
+  private pruneRealtimeLightningFeatures(): void {
+    const cutoff = Date.now() - 60000;
+    const filteredFeatures =
+      this.realtimeLightningFeatureCollection.features.filter((feature) => {
+        const createdAt = feature.properties?.createdAt;
+        if (typeof createdAt === 'number') {
+          return createdAt >= cutoff;
+        }
+
+        const timestamp = feature.properties?.timestamp;
+        if (typeof timestamp === 'number') {
+          return timestamp >= cutoff;
+        }
+        if (typeof timestamp === 'string') {
+          const parsed = Date.parse(timestamp);
+          return !isNaN(parsed) ? parsed >= cutoff : true;
+        }
+
+        return true;
+      });
+
+    if (
+      filteredFeatures.length ===
+      this.realtimeLightningFeatureCollection.features.length
+    ) {
+      return;
+    }
+
+    this.realtimeLightningFeatureCollection.features = filteredFeatures;
+    const source = this.map.getSource('realtime-lightning') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (source) {
+      source.setData(this.realtimeLightningFeatureCollection);
+    }
+    this.realtimeLightningDataAvailable$.next(filteredFeatures.length > 0);
+  }
+
   @ViewChild('selectQc') selectQc: ElementRef;
 
   constructor(
@@ -2247,10 +2285,45 @@ export class MapPlaygroundComponent
       },
     };
 
-    const lightningColorMap: Record<LightningTypes, string> = {
-      'realtime-lightning': '#800000', // Maroon for real-time lightning
-      '10mins-lightning': '#000000', // Default/fallback for 10-minute lightning
-    };
+    const lightningIconMap = {
+      'Cloud to Cloud': 'noah-lightning-ctc',
+      'Cloud to Ground': 'noah-lightning-ctg',
+    } as const;
+
+    const loadMapboxImage = (
+      imageName: string,
+      imageUrl: string
+    ): Promise<void> =>
+      new Promise((resolve, reject) => {
+        if (this.map.hasImage(imageName)) {
+          resolve();
+          return;
+        }
+
+        this.map.loadImage(imageUrl, (error, image) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (image) {
+            this.map.addImage(imageName, image);
+          }
+          resolve();
+        });
+      });
+
+    Promise.all([
+      loadMapboxImage(
+        'noah-lightning-ctc',
+        'assets/legends/lightning/noah-lightning-ctc.png'
+      ),
+      loadMapboxImage(
+        'noah-lightning-ctg',
+        'assets/legends/lightning/noah-lightning-ctg.png'
+      ),
+    ]).catch((error) =>
+      console.error('[MapPlayground] Failed to load lightning icons', error)
+    );
 
     const getLightningSource = (
       lightningDetails: { url: string; type: string },
@@ -2299,26 +2372,24 @@ export class MapPlaygroundComponent
           })
           .catch(() => dataAvailable$.next(false));
 
-        // 2 - add layer
+        // 2 - add layer using symbol icons instead of colored circles
         this.map.addLayer({
           id: lightningType,
-          type: 'circle',
+          type: 'symbol',
           source: lightningType,
+          layout: {
+            visibility: 'visible',
+            'icon-image': [
+              'case',
+              ['==', ['get', 'strike_type'], 'Cloud to Cloud'],
+              lightningIconMap['Cloud to Cloud'],
+              lightningIconMap['Cloud to Ground'],
+            ],
+            'icon-size': 0.5,
+            'icon-allow-overlap': true,
+          },
           paint: {
-            'circle-color':
-              lightningType === '10mins-lightning' ||
-              lightningType === 'realtime-lightning'
-                ? [
-                    'case',
-                    ['==', ['get', 'strike_type'], 'Cloud to Cloud'],
-                    '#ff69b4',
-                    ['==', ['get', 'strike_type'], 'Cloud to Ground'],
-                    '#ffff00',
-                    '#000000',
-                  ]
-                : lightningColorMap[lightningType],
-            'circle-radius': 6,
-            'circle-opacity': 0.8,
+            'icon-opacity': 0.8,
           },
         });
 
@@ -2398,10 +2469,12 @@ export class MapPlaygroundComponent
         });
 
         const allShown$ = this.pgService.lightningGroupShown$.pipe(
-          distinctUntilChanged()
+          distinctUntilChanged(),
+          shareReplay(1)
         );
 
         const selectedLightning$ = this.pgService.selectedLightning$.pipe(
+          distinctUntilChanged(),
           shareReplay(1)
         );
 
@@ -2430,26 +2503,48 @@ export class MapPlaygroundComponent
               if (opacity) {
                 opacity = lightningOpacity / 100;
               }
-              this.map.setPaintProperty(
-                lightningType,
-                'circle-opacity',
-                opacity
-              );
+              this.map.setPaintProperty(lightningType, 'icon-opacity', opacity);
             }
           );
       }
     );
 
-    this.initRealtimeLightning();
+    const realtimeLayerVisibility$ = combineLatest([
+      this.pgService.lightningGroupShown$.pipe(distinctUntilChanged()),
+      this.pgService.selectedLightning$.pipe(distinctUntilChanged()),
+    ])
+      .pipe(
+        map(
+          ([allShown, selectedLightning]) =>
+            allShown && selectedLightning === 'realtime-lightning'
+        ),
+        distinctUntilChanged(),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe((shouldRunRealtime) => {
+        if (shouldRunRealtime && !this.isRealtimeLightningRunning) {
+          this.startRealtimeLightning().catch((err) => {
+            console.error(
+              '[MapPlayground] Failed to initialize realtime lightning',
+              err
+            );
+          });
+        }
+
+        if (!shouldRunRealtime && this.isRealtimeLightningRunning) {
+          this.stopRealtimeLightning().catch((err) => {
+            console.error(
+              '[MapPlayground] Failed to stop realtime lightning',
+              err
+            );
+          });
+        }
+      });
   }
 
   private initRealtimeLightning(): void {
-    this.startRealtimeLightning().catch((err) => {
-      console.error(
-        '[MapPlayground] Failed to initialize realtime lightning',
-        err
-      );
-    });
+    // Real-time lightning should only start when the layer is visible.
   }
 
   private async startRealtimeLightning(): Promise<void> {
@@ -2457,14 +2552,14 @@ export class MapPlaygroundComponent
 
     try {
       await fetch(
-        'https://f021-136-158-11-127.ngrok-free.app/api/lightning/start/'
+        'https://a9ae-136-158-11-127.ngrok-free.app/api/lightning/start/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning start failed', error);
     }
 
     this.realtimeLightningSocket = new WebSocket(
-      'wss://f021-136-158-11-127.ngrok-free.app/ws/'
+      'wss://a9ae-136-158-11-127.ngrok-free.app/ws/'
     );
 
     this.realtimeLightningSocket.onopen = () => {
@@ -2478,6 +2573,10 @@ export class MapPlaygroundComponent
           this.realtimeLightningSocket.send('ping');
         }
       }, 30000);
+
+      this.realtimeLightningResetTimer = window.setInterval(() => {
+        this.pruneRealtimeLightningFeatures();
+      }, 1000);
     };
 
     this.realtimeLightningSocket.onmessage = (event) => {
@@ -2496,10 +2595,13 @@ export class MapPlaygroundComponent
           icHeight: data.icHeight,
           timestamp: data.timestamp || null,
           raw: data,
+          createdAt: Date.now(),
         },
       };
 
       this.realtimeLightningFeatureCollection.features.push(feature);
+      this.pruneRealtimeLightningFeatures();
+
       const source = this.map.getSource(
         'realtime-lightning'
       ) as mapboxgl.GeoJSONSource;
@@ -2510,10 +2612,6 @@ export class MapPlaygroundComponent
       if (!this.realtimeLightningDataAvailable$.value) {
         this.realtimeLightningDataAvailable$.next(true);
       }
-    };
-
-    this.realtimeLightningSocket.onerror = (error) => {
-      console.error('[MapPlayground] realtime lightning socket error', error);
     };
 
     this.realtimeLightningSocket.onclose = () => {
@@ -2530,7 +2628,7 @@ export class MapPlaygroundComponent
   private async stopRealtimeLightning(): Promise<void> {
     try {
       await fetch(
-        'https://f021-136-158-11-127.ngrok-free.app/api/lightning/stop/'
+        'https://a9ae-136-158-11-127.ngrok-free.app/api/lightning/stop/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning stop failed', error);
