@@ -2494,15 +2494,15 @@ export class MapPlaygroundComponent
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(
             ([allShown, selectedLightning, lightningOpacity, hasData]) => {
-              // Only show if data is available AND selected AND group is shown
-              let opacity = +(
-                allShown &&
-                selectedLightning === lightningType &&
-                hasData
+              const visible =
+                allShown && selectedLightning === lightningType && hasData;
+              const opacity = visible ? lightningOpacity / 100 : 0;
+
+              this.map.setLayoutProperty(
+                lightningType,
+                'visibility',
+                visible ? 'visible' : 'none'
               );
-              if (opacity) {
-                opacity = lightningOpacity / 100;
-              }
               this.map.setPaintProperty(lightningType, 'icon-opacity', opacity);
             }
           );
