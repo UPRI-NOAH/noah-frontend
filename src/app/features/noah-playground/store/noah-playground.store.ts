@@ -67,7 +67,7 @@ export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
 export type TemperatureType = typeof TEMPERATURE[number];
 
 export const TEMPERATURE_FORECAST_DAYS = [
-  { label: 'Today', value: 1 },
+  { label: 'Latest', value: 1 },
   { label: '+1D', value: 2 },
   { label: '+2D', value: 3 },
   { label: '+3D', value: 4 },
