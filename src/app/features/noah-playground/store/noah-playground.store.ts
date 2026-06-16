@@ -297,6 +297,11 @@ export type TyphoonTrackState = {
   types: Record<TyphoonTrackType, TyphoonTrackTypeState>;
 };
 
+export type WeatherUpdates = {
+  shown: boolean;
+  expanded: boolean;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -327,6 +332,7 @@ type NoahPlaygroundState = {
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
   typhoonTrack: TyphoonTrackState;
+  weatherUpdates: WeatherUpdates;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -482,7 +488,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: false,
   },
   weatherSatellite: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: 'himawari',
     types: {
@@ -584,7 +590,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     selectedType: '1hr',
   },
   typhoonTrack: {
-    shown: false,
+    shown: true,
     expanded: false,
     types: {
       pagasa: {
@@ -618,7 +624,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   temperature: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: 'heat_index',
     selectedForecastDay: 1,
@@ -632,6 +638,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
         fetched: false,
       },
     },
+  },
+  weatherUpdates: {
+    shown: false,
+    expanded: false,
   },
 });
 

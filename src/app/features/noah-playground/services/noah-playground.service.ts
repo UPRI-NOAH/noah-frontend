@@ -249,6 +249,16 @@ export class NoahPlaygroundService {
     );
   }
 
+  get weatherUpdatesGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.weatherUpdates.shown));
+  }
+
+  get weatherUpdatesGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherUpdates.expanded)
+    );
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
@@ -1210,6 +1220,34 @@ export class NoahPlaygroundService {
     this.store.patch(
       { typhoonTrack },
       `update typhoon track state expanded to ${!expanded}`
+    );
+  }
+
+  toggleWeatherUpdatesGroupShown(): void {
+    const weatherUpdates = {
+      ...this.store.state.weatherUpdates,
+    };
+
+    const { shown } = weatherUpdates;
+    weatherUpdates.shown = !shown;
+
+    this.store.patch(
+      { weatherUpdates },
+      `Weather Updates Group State shown to ${!shown}`
+    );
+  }
+
+  toggleWeatherUpdatesGroupExpanded(): void {
+    const weatherUpdates = {
+      ...this.store.state.weatherUpdates,
+    };
+
+    const { expanded } = weatherUpdates;
+    weatherUpdates.expanded = !expanded;
+
+    this.store.patch(
+      { weatherUpdates },
+      `update Weather Updates state expanded to ${!expanded}`
     );
   }
 }
