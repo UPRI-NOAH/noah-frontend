@@ -2280,7 +2280,7 @@ export class MapPlaygroundComponent
         type: 'geojson',
       },
       '10mins-lightning': {
-        url: 'https://webgis-static.up.edu.ph/api/lightning/lightning_test.geojson',
+        url: 'https://webgis-static.up.edu.ph/api/lightning/lightning.geojson',
         type: 'geojson',
       },
     };
@@ -2552,14 +2552,14 @@ export class MapPlaygroundComponent
 
     try {
       await fetch(
-        'https://a9ae-136-158-11-127.ngrok-free.app/api/lightning/start/'
+        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/start/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning start failed', error);
     }
 
     this.realtimeLightningSocket = new WebSocket(
-      'wss://a9ae-136-158-11-127.ngrok-free.app/ws/'
+      'wss://0019-136-158-11-7.ngrok-free.app/ws/'
     );
 
     this.realtimeLightningSocket.onopen = () => {
@@ -2628,7 +2628,7 @@ export class MapPlaygroundComponent
   private async stopRealtimeLightning(): Promise<void> {
     try {
       await fetch(
-        'https://a9ae-136-158-11-127.ngrok-free.app/api/lightning/stop/'
+        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/stop/'
       );
     } catch (error) {
       console.error('[MapPlayground] realtime lightning stop failed', error);
