@@ -1493,10 +1493,6 @@ export class MapPlaygroundComponent
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
     });
 
-    const weatherUpdatesShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
-      shareReplay(1)
-    );
-
     const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
       shareReplay(1)
     );
@@ -1507,14 +1503,24 @@ export class MapPlaygroundComponent
     combineLatest([
       this.pgService.weatherSatellitesShown$,
       this.pgService.typhoonTrackGroupShown$,
+      this.pgService.weatherUpdatesGroupShown$,
     ])
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([groupShown, soloShown]) => {
+      .subscribe(([groupShown, soloShown, weatherUpdatesShown]) => {
         const visibility = groupShown || soloShown ? 'visible' : 'none';
+        const visibilityForWeatherUpdates = weatherUpdatesShown
+          ? 'visible'
+          : 'none';
+
+        const finalVisibility =
+          visibility === 'visible' && visibilityForWeatherUpdates === 'visible'
+            ? 'visible'
+            : 'none';
+
         this.map.setLayoutProperty(
           'par-outline-layer',
           'visibility',
-          visibility
+          finalVisibility
         );
       });
   }

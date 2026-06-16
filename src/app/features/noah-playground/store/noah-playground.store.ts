@@ -641,7 +641,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   weatherUpdates: {
     shown: false,
-    expanded: false,
+    expanded: true,
   },
 });
 
