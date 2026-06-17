@@ -72,7 +72,7 @@
       <button
         *ngFor="let day of forecastDays"
         type="button"
-        class="px-2 py-1 rounded-md border text-sm focus:outline-none"
+        class="px-1 py-1 rounded-md border text-sm focus:outline-none"
         [ngClass]="
           (selectedForecastDay$ | async) === day.value
             ? 'bg-primary text-white border-primary'

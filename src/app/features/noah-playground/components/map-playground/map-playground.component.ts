@@ -238,6 +238,7 @@ export class MapPlaygroundComponent
         this.initTyphoonTrack();
         this.initPar();
         this.initTemperature();
+        this.initWeatherUpdates();
       });
   }
 
@@ -1493,13 +1494,6 @@ export class MapPlaygroundComponent
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
     });
 
-    const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-      shareReplay(1)
-    );
-    const groupShown$ = this.pgService.typhoonTrackGroupShown$.pipe(
-      shareReplay(1)
-    );
-
     combineLatest([
       this.pgService.weatherSatellitesShown$,
       this.pgService.typhoonTrackGroupShown$,
@@ -2249,6 +2243,41 @@ export class MapPlaygroundComponent
           });
       }
     );
+  }
+
+  initWeatherUpdates() {
+    const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+      distinctUntilChanged(),
+      shareReplay(1)
+    );
+
+    combineLatest([weatherUpdateShown$])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([weatherUpdateShown]) => {
+        const visibility = weatherUpdateShown ? 'visible' : 'none';
+
+        if (weatherUpdateShown) {
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 4,
+            essential: true,
+          });
+        } else {
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 5.5,
+            essential: true,
+          });
+        }
+
+        if (this.map.getLayer('weather-updates-layer')) {
+          this.map.setLayoutProperty(
+            'weather-updates-layer',
+            'visibility',
+            visibility
+          );
+        }
+      });
   }
 
   initWeatherSatelliteLayers() {
