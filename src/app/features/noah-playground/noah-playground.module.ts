@@ -37,6 +37,8 @@ import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typ
 import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
 import { LightningComponent } from './components/lightning-solo/lightning.component';
 import { LightningGroupComponent } from './components/lightning-group/lightning-group.component';
+import { TemperatureComponent } from './components/temperature/temperature.component';
+import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +73,8 @@ import { LightningGroupComponent } from './components/lightning-group/lightning-
     TyphoonTrackSoloComponent,
     LightningComponent,
     LightningGroupComponent,
+    TemperatureComponent,
+    TemperatureSoloComponent,
   ],
   imports: [
     CommonModule,

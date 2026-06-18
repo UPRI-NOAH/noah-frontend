@@ -35,6 +35,10 @@ import {
   LightningState,
   LightningType,
   LightningTypeState,
+  TemperatureType,
+  TemperatureTypeState,
+  TemperatureState,
+  TemperatureForecastDay,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -238,6 +242,25 @@ export class NoahPlaygroundService {
 
   get selectedLightning$(): Observable<LightningType> {
     return this.store.state$.pipe(map((state) => state.lightning.selectedType));
+  }
+  get temperatureShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.temperature.shown));
+  }
+
+  get temperatureExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.temperature.expanded));
+  }
+
+  get selectedTemperature$(): Observable<TemperatureType> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.selectedType)
+    );
+  }
+
+  get selectedTemperatureForecastDay$(): Observable<TemperatureForecastDay> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.selectedForecastDay)
+    );
   }
 
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
@@ -461,6 +484,81 @@ export class NoahPlaygroundService {
   ): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.barangayBoundary.types[barangayBoundary].shown)
+    );
+  }
+
+  getTemperature(type: TemperatureType): TemperatureTypeState {
+    return this.store.state.temperature.types[type];
+  }
+
+  getTemperature$(type: TemperatureType): Observable<TemperatureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.types[type])
+    );
+  }
+
+  getTemperatureOpacity(tempType: TemperatureType): number {
+    return this.store.state.temperature.types[tempType].opacity;
+  }
+
+  getTemperatureFetched$(tempType: TemperatureType): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.types[tempType].fetched)
+    );
+  }
+
+  setTemperatureOpacity(opacity: number, tempType: TemperatureType) {
+    const temperature: TemperatureState = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.types[tempType].opacity = opacity;
+    this.store.patch(
+      { temperature },
+      `Temperature - set to ${tempType} and Opacity to ${opacity}`
+    );
+  }
+
+  selectTemperatureType(tempType: TemperatureType): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.selectedType = tempType;
+    this.store.patch({ temperature }, `Select Temperature Type: ${tempType}`);
+  }
+
+  selectTemperatureForecastDay(day: TemperatureForecastDay): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.selectedForecastDay = day;
+    this.store.patch(
+      { temperature },
+      `Select Temperature Forecast Day: ${day}`
+    );
+  }
+
+  toggleTemperatureGroupExpansion(): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.expanded = !temperature.expanded;
+    this.store.patch({ temperature }, `toggle temperature expansion`);
+  }
+
+  toggleTemperatureGroupVisibility(): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+    const { shown } = temperature;
+
+    temperature.shown = !shown;
+    this.store.patch(
+      { temperature },
+      `toggle Temperature Visibility ${!shown}`
     );
   }
 
