@@ -35,6 +35,8 @@ import { BoundariesGroupComponent } from './components/boundaries-group/boundari
 import { BoundariesSoloComponent } from './components/boundaries-solo/boundaries-solo.component';
 import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typhoon-track-group.component';
 import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
+import { LightningComponent } from './components/lightning-solo/lightning.component';
+import { LightningGroupComponent } from './components/lightning-group/lightning-group.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
 
@@ -69,6 +71,8 @@ import { TemperatureSoloComponent } from './components/temperature-solo/temperat
     BoundariesSoloComponent,
     TyphoonTrackGroupComponent,
     TyphoonTrackSoloComponent,
+    LightningComponent,
+    LightningGroupComponent,
     TemperatureComponent,
     TemperatureSoloComponent,
   ],

@@ -20,6 +20,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as turf from '@turf/turf';
 import { environment } from '@env/environment';
 import {
+  BehaviorSubject,
   combineLatest,
   from,
   fromEvent,
@@ -93,6 +94,7 @@ import {
   BarangayBoundary,
   LAGUNA_DEFAULT_CENTER,
   BoundariesType,
+  LightningTypes,
   TemperatureType,
   TemperatureForecastDay,
 } from '@features/noah-playground/store/noah-playground.store';
@@ -181,6 +183,55 @@ export class MapPlaygroundComponent
   screenWidth: number;
   screenHeight: number;
 
+  private realtimeLightningSocket: WebSocket | null = null;
+  private realtimeLightningResetTimer: number | null = null;
+  private realtimeLightningKeepAlive: number | null = null;
+  private isRealtimeLightningRunning = false;
+  private realtimeLightningFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point> =
+    {
+      type: 'FeatureCollection',
+      features: [],
+    };
+  private realtimeLightningDataAvailable$ = new BehaviorSubject<boolean>(false);
+
+  private pruneRealtimeLightningFeatures(): void {
+    const cutoff = Date.now() - 60000;
+    const filteredFeatures =
+      this.realtimeLightningFeatureCollection.features.filter((feature) => {
+        const createdAt = feature.properties?.createdAt;
+        if (typeof createdAt === 'number') {
+          return createdAt >= cutoff;
+        }
+
+        const timestamp = feature.properties?.timestamp;
+        if (typeof timestamp === 'number') {
+          return timestamp >= cutoff;
+        }
+        if (typeof timestamp === 'string') {
+          const parsed = Date.parse(timestamp);
+          return !isNaN(parsed) ? parsed >= cutoff : true;
+        }
+
+        return true;
+      });
+
+    if (
+      filteredFeatures.length ===
+      this.realtimeLightningFeatureCollection.features.length
+    ) {
+      return;
+    }
+
+    this.realtimeLightningFeatureCollection.features = filteredFeatures;
+    const source = this.map.getSource('realtime-lightning') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (source) {
+      source.setData(this.realtimeLightningFeatureCollection);
+    }
+    this.realtimeLightningDataAvailable$.next(filteredFeatures.length > 0);
+  }
+
   @ViewChild('selectQc') selectQc: ElementRef;
 
   constructor(
@@ -237,6 +288,7 @@ export class MapPlaygroundComponent
         this.initRainForcast();
         this.initTyphoonTrack();
         this.initPar();
+        this.initLightning();
         this.initTemperature();
       });
   }
@@ -2338,6 +2390,404 @@ export class MapPlaygroundComponent
           });
       }
     );
+  }
+
+  initLightning() {
+    const lightningSourceFile = {
+      'realtime-lightning': {
+        url: '',
+        type: 'geojson',
+      },
+      '10mins-lightning': {
+        url: 'https://webgis-static.up.edu.ph/api/lightning/lightning.geojson',
+        type: 'geojson',
+      },
+    };
+
+    const lightningIconMap = {
+      'Cloud to Cloud': 'noah-lightning-ctc',
+      'Cloud to Ground': 'noah-lightning-ctg',
+    } as const;
+
+    const loadMapboxImage = (
+      imageName: string,
+      imageUrl: string
+    ): Promise<void> =>
+      new Promise((resolve, reject) => {
+        if (this.map.hasImage(imageName)) {
+          resolve();
+          return;
+        }
+
+        this.map.loadImage(imageUrl, (error, image) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (image) {
+            this.map.addImage(imageName, image);
+          }
+          resolve();
+        });
+      });
+
+    Promise.all([
+      loadMapboxImage(
+        'noah-lightning-ctc',
+        'assets/legends/lightning/noah-lightning-ctc.png'
+      ),
+      loadMapboxImage(
+        'noah-lightning-ctg',
+        'assets/legends/lightning/noah-lightning-ctg.png'
+      ),
+    ]).catch((error) =>
+      console.error('[MapPlayground] Failed to load lightning icons', error)
+    );
+
+    const getLightningSource = (
+      lightningDetails: { url: string; type: string },
+      lightningType: LightningTypes
+    ): AnySourceData => {
+      switch (lightningDetails.type) {
+        case 'geojson':
+          return {
+            type: 'geojson',
+            data:
+              lightningType === 'realtime-lightning'
+                ? this.realtimeLightningFeatureCollection
+                : lightningDetails.url,
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get lightning source');
+      }
+    };
+
+    Object.keys(lightningSourceFile).forEach(
+      (lightningType: LightningTypes) => {
+        const lightningObjData = lightningSourceFile[lightningType];
+
+        // 1 - add source
+        this.map.addSource(
+          lightningType,
+          getLightningSource(lightningObjData, lightningType)
+        );
+
+        // Track whether this lightning source has valid data
+        const dataAvailable$ =
+          lightningType === 'realtime-lightning'
+            ? this.realtimeLightningDataAvailable$
+            : new BehaviorSubject<boolean>(false);
+
+        // Fetch and validate data availability
+        fetch(lightningObjData.url)
+          .then((response) => {
+            if (!response.ok) throw new Error('Unable to fetch');
+            return response.json();
+          })
+          .then((data: any) => {
+            const features = Array.isArray(data?.features) ? data.features : [];
+            const validFeatures = features.filter((f) => f?.geometry);
+            dataAvailable$.next(validFeatures.length > 0);
+          })
+          .catch(() => dataAvailable$.next(false));
+
+        // 2 - add layer using symbol icons instead of colored circles
+        this.map.addLayer({
+          id: lightningType,
+          type: 'symbol',
+          source: lightningType,
+          layout: {
+            visibility: 'visible',
+            'icon-image': [
+              'case',
+              ['==', ['get', 'strike_type'], 'Cloud to Cloud'],
+              lightningIconMap['Cloud to Cloud'],
+              lightningIconMap['Cloud to Ground'],
+            ],
+            'icon-size': 0.5,
+            'icon-allow-overlap': true,
+          },
+          paint: {
+            'icon-opacity': 0.8,
+          },
+        });
+
+        const lightningPopup = new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: true,
+        });
+
+        const handleLightningClick = (e: any) => {
+          const feature = e.features && e.features[0];
+          if (!feature) {
+            lightningPopup.remove();
+            return;
+          }
+
+          const raw = feature.properties?.raw;
+          const rawData =
+            typeof raw === 'string'
+              ? (() => {
+                  try {
+                    return JSON.parse(raw);
+                  } catch {
+                    return null;
+                  }
+                })()
+              : raw;
+
+          const realtimeTime = rawData?.observed_at ?? raw?.observed_at;
+
+          const props = feature.properties || {};
+          const type = props.strike_type ?? rawData?.strike_type ?? 'Unknown';
+          const amplitude = props.amplitude ?? rawData?.amplitude ?? 'N/A';
+          const height = props.height ?? 'N/A';
+          const observedAt = props.observed_at ?? rawData?.observed_at ?? null;
+
+          const date = observedAt
+            ? new Date(observedAt).toLocaleString()
+            : 'Unknown';
+
+          const realtimeDate = realtimeTime
+            ? new Date(realtimeTime).toLocaleString()
+            : null;
+
+          const content = `
+            <div style="color: #333333; font-size: 13px; line-height: 1.5;">
+              <div><strong>Type:</strong> ${type}</div>
+              <div><strong>Amplitude:</strong> ${amplitude}</div>
+              <div><strong>Height:</strong> ${height}</div>
+              ${
+                lightningType === 'realtime-lightning'
+                  ? realtimeDate
+                    ? `<div><strong>Date:</strong> ${realtimeDate}</div>`
+                    : `<div><strong>Date:</strong> Unknown</div>`
+                  : `<div><strong>Date:</strong> ${date}</div>`
+              }
+            </div>
+          `;
+
+          const coordinates = (feature.geometry as any).coordinates.slice();
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          lightningPopup
+            .setLngLat(coordinates)
+            .setHTML(content)
+            .addTo(this.map);
+        };
+
+        this.map.on('click', lightningType, handleLightningClick);
+        this.map.on('touchend', lightningType, handleLightningClick);
+        this.map.on('mouseenter', lightningType, () => {
+          this.map.getCanvas().style.cursor = 'pointer';
+        });
+        this.map.on('mouseleave', lightningType, () => {
+          this.map.getCanvas().style.cursor = '';
+        });
+
+        const allShown$ = this.pgService.lightningGroupShown$.pipe(
+          distinctUntilChanged(),
+          shareReplay(1)
+        );
+
+        const selectedLightning$ = this.pgService.selectedLightning$.pipe(
+          distinctUntilChanged(),
+          shareReplay(1)
+        );
+
+        const lightningOpacity$ = this.pgService
+          .getLightningType$(lightningType)
+          .pipe(
+            map((lightning) => lightning.opacity),
+            distinctUntilChanged()
+          );
+
+        combineLatest([
+          allShown$,
+          selectedLightning$,
+          lightningOpacity$,
+          dataAvailable$,
+        ])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(
+            ([allShown, selectedLightning, lightningOpacity, hasData]) => {
+              const visible =
+                allShown && selectedLightning === lightningType && hasData;
+              const opacity = visible ? lightningOpacity / 100 : 0;
+
+              this.map.setLayoutProperty(
+                lightningType,
+                'visibility',
+                visible ? 'visible' : 'none'
+              );
+              this.map.setPaintProperty(lightningType, 'icon-opacity', opacity);
+            }
+          );
+      }
+    );
+
+    const realtimeLayerVisibility$ = combineLatest([
+      this.pgService.lightningGroupShown$.pipe(distinctUntilChanged()),
+      this.pgService.selectedLightning$.pipe(distinctUntilChanged()),
+    ])
+      .pipe(
+        map(
+          ([allShown, selectedLightning]) =>
+            allShown && selectedLightning === 'realtime-lightning'
+        ),
+        distinctUntilChanged(),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe((shouldRunRealtime) => {
+        if (shouldRunRealtime && !this.isRealtimeLightningRunning) {
+          this.startRealtimeLightning().catch((err) => {
+            console.error(
+              '[MapPlayground] Failed to initialize realtime lightning',
+              err
+            );
+          });
+        }
+
+        if (!shouldRunRealtime && this.isRealtimeLightningRunning) {
+          this.stopRealtimeLightning().catch((err) => {
+            console.error(
+              '[MapPlayground] Failed to stop realtime lightning',
+              err
+            );
+          });
+        }
+      });
+  }
+
+  private initRealtimeLightning(): void {
+    // Real-time lightning should only start when the layer is visible.
+  }
+
+  private async startRealtimeLightning(): Promise<void> {
+    this.resetRealtimeLightningLayer();
+
+    try {
+      await fetch(
+        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/start/'
+      );
+    } catch (error) {
+      console.error('[MapPlayground] realtime lightning start failed', error);
+    }
+
+    this.realtimeLightningSocket = new WebSocket(
+      'wss://0019-136-158-11-7.ngrok-free.app/ws/'
+    );
+
+    this.realtimeLightningSocket.onopen = () => {
+      console.log('Connected to Django relay');
+
+      this.realtimeLightningKeepAlive = window.setInterval(() => {
+        if (
+          this.realtimeLightningSocket &&
+          this.realtimeLightningSocket.readyState === WebSocket.OPEN
+        ) {
+          this.realtimeLightningSocket.send('ping');
+        }
+      }, 30000);
+
+      this.realtimeLightningResetTimer = window.setInterval(() => {
+        this.pruneRealtimeLightningFeatures();
+      }, 1000);
+    };
+
+    this.realtimeLightningSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const strikeType =
+        data.height === 0 ? 'Cloud to Ground' : 'Cloud to Cloud';
+
+      const feature: GeoJSON.Feature<GeoJSON.Point> = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [data.longitude, data.latitude],
+        },
+        properties: {
+          strike_type: strikeType,
+          icHeight: data.icHeight,
+          timestamp: data.timestamp || null,
+          raw: data,
+          createdAt: Date.now(),
+        },
+      };
+
+      this.realtimeLightningFeatureCollection.features.push(feature);
+      this.pruneRealtimeLightningFeatures();
+
+      const source = this.map.getSource(
+        'realtime-lightning'
+      ) as mapboxgl.GeoJSONSource;
+      if (source) {
+        source.setData(this.realtimeLightningFeatureCollection);
+      }
+
+      if (!this.realtimeLightningDataAvailable$.value) {
+        this.realtimeLightningDataAvailable$.next(true);
+      }
+    };
+
+    this.realtimeLightningSocket.onclose = () => {
+      console.log('Realtime lightning relay disconnected');
+    };
+
+    this.isRealtimeLightningRunning = true;
+    // this.realtimeLightningResetTimer = window.setTimeout(
+    //   () => this.resetRealtimeLightningLayer(),
+    //   60000
+    // );
+  }
+
+  private async stopRealtimeLightning(): Promise<void> {
+    try {
+      await fetch(
+        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/stop/'
+      );
+    } catch (error) {
+      console.error('[MapPlayground] realtime lightning stop failed', error);
+    }
+
+    this.resetRealtimeLightningLayer();
+    this.isRealtimeLightningRunning = false;
+  }
+
+  private resetRealtimeLightningLayer(): void {
+    if (this.realtimeLightningSocket) {
+      this.realtimeLightningSocket.close();
+      this.realtimeLightningSocket = null;
+    }
+
+    if (this.realtimeLightningKeepAlive) {
+      window.clearInterval(this.realtimeLightningKeepAlive);
+      this.realtimeLightningKeepAlive = null;
+    }
+
+    if (this.realtimeLightningResetTimer) {
+      window.clearTimeout(this.realtimeLightningResetTimer);
+      this.realtimeLightningResetTimer = null;
+    }
+
+    this.realtimeLightningFeatureCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+
+    const source = this.map.getSource('realtime-lightning') as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+    if (source) {
+      source.setData(this.realtimeLightningFeatureCollection);
+    }
+
+    this.realtimeLightningDataAvailable$.next(false);
+
+    console.log('Realtime lightning layer reset');
   }
 
   // start of boundaries

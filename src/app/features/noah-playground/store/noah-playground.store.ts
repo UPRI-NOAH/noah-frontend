@@ -60,6 +60,15 @@ export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
+export const LIGHTNING_GROUP_ARR = [
+  'realtime-lightning',
+  '10mins-lightning',
+] as const;
+
+export type LightningType = 'realtime-lightning' | '10mins-lightning';
+
+export type LightningTypes = typeof LIGHTNING_GROUP_ARR[number];
+
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
 export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
@@ -297,6 +306,22 @@ export type TyphoonTrackState = {
   types: Record<TyphoonTrackType, TyphoonTrackTypeState>;
 };
 
+export type LightningState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: LightningTypes;
+  types: LightningTypesState;
+};
+
+export type LightningTypeState = {
+  opacity: number;
+};
+
+export type LightningTypesState = {
+  'realtime-lightning': LightningTypeState;
+  '10mins-lightning': LightningTypeState;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -327,6 +352,7 @@ type NoahPlaygroundState = {
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
   typhoonTrack: TyphoonTrackState;
+  lightning: LightningState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -614,6 +640,19 @@ const createInitialValue = (): NoahPlaygroundState => ({
       kma: {
         fetched: false,
         shown: false,
+      },
+    },
+  },
+  lightning: {
+    shown: false,
+    expanded: false,
+    selectedType: 'realtime-lightning',
+    types: {
+      'realtime-lightning': {
+        opacity: 100,
+      },
+      '10mins-lightning': {
+        opacity: 100,
       },
     },
   },
