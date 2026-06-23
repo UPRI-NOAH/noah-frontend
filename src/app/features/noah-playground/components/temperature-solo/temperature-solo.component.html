@@ -1,0 +1,29 @@
+<div class="pl-0 mt-3">
+  <div class="flex items-center">
+    <div class="inline-flex items-center radio">
+      <input
+        type="radio"
+        class="radio h-5 w-5 text-blue-600"
+        id="selected-weather-satellite-{{ tempName }}"
+        [checked]="(selectedTemperature$ | async) === tempName"
+        (click)="selectTemperature(tempName)"
+      />
+    </div>
+    <div class="flex flex-col ml-3">
+      <label
+        for="selected-weather-satellite-{{ tempName }}"
+        class="text-base f-f-r capitalize"
+        >{{ displayName }}</label
+      >
+    </div>
+  </div>
+  <div class="flex items-center pt-4">
+    <noah-slider
+      label="Opacity"
+      [initialValue]="initialOpacityValue"
+      [min]="0"
+      [max]="100"
+      (valueChange)="changeOpacity($event)"
+    ></noah-slider>
+  </div>
+</div>

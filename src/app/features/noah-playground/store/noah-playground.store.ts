@@ -62,6 +62,39 @@ export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
+export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
+
+export type TemperatureType = typeof TEMPERATURE[number];
+
+export const TEMPERATURE_FORECAST_DAYS = [
+  { label: 'Latest', value: 1 },
+  { label: '+1D', value: 2 },
+  { label: '+2D', value: 3 },
+  { label: '+3D', value: 4 },
+  { label: '+4D', value: 5 },
+] as const;
+
+export type TemperatureForecastDay =
+  typeof TEMPERATURE_FORECAST_DAYS[number]['value'];
+
+export type TemperatureState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: TemperatureType;
+  selectedForecastDay: TemperatureForecastDay;
+  types: TemperatureTypesState;
+};
+
+export type TemperatureTypeState = {
+  opacity: number;
+  fetched: boolean;
+};
+
+export type TemperatureTypesState = {
+  heat_index: TemperatureTypeState;
+  max_temperature: TemperatureTypeState;
+};
+
 export type HazardLevel =
   | FloodReturnPeriod
   | StormSurgeAdvisory
@@ -273,6 +306,7 @@ type NoahPlaygroundState = {
   riskAssessment: RiskAssessmentGroupState;
   criticalFacilities: CriticalFacilitiesState;
   weatherSatellite: WeatherSatelliteState;
+  temperature: TemperatureState;
   center: { lng: number; lat: number };
   qcCenter: { lng: number; lat: number };
   btnCalculateRisk: CalculateRiskButton;
@@ -580,6 +614,22 @@ const createInitialValue = (): NoahPlaygroundState => ({
       kma: {
         fetched: false,
         shown: false,
+      },
+    },
+  },
+  temperature: {
+    shown: false,
+    expanded: false,
+    selectedType: 'heat_index',
+    selectedForecastDay: 1,
+    types: {
+      heat_index: {
+        opacity: 80,
+        fetched: true,
+      },
+      max_temperature: {
+        opacity: 80,
+        fetched: false,
       },
     },
   },
