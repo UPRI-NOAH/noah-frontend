@@ -1457,7 +1457,7 @@ export class MapPlaygroundComponent
   initPar() {
     this.map.addSource('par-outline', {
       type: 'geojson',
-      data: 'https://webgis-static.up.edu.ph/api/par/par_outline.geojson',
+      data: 'https://webgis-static.up.edu.ph/api/par/par_outline.json',
     });
 
     this.map.addLayer({
