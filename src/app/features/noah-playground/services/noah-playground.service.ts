@@ -36,6 +36,7 @@ import {
   TemperatureTypeState,
   TemperatureState,
   TemperatureForecastDay,
+  WindState,
 } from '../store/noah-playground.store';
 import { NoahColor } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -235,6 +236,14 @@ export class NoahPlaygroundService {
 
   get temperatureExpanded$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.temperature.expanded));
+  }
+
+  get windShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.shown));
+  }
+
+  get windExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.expanded));
   }
 
   get selectedTemperature$(): Observable<TemperatureType> {
@@ -556,6 +565,25 @@ export class NoahPlaygroundService {
       { temperature },
       `toggle Temperature Visibility ${!shown}`
     );
+  }
+
+  toggleWindGroupExpansion(): void {
+    const wind: WindState = {
+      ...this.store.state.wind,
+    };
+
+    wind.expanded = !wind.expanded;
+    this.store.patch({ wind }, `toggle wind expansion`);
+  }
+
+  toggleWindGroupVisibility(): void {
+    const wind: WindState = {
+      ...this.store.state.wind,
+    };
+    const { shown } = wind;
+
+    wind.shown = !shown;
+    this.store.patch({ wind }, `toggle Wind Visibility ${!shown}`);
   }
 
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {

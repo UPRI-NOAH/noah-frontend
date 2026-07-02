@@ -302,6 +302,13 @@ export type WeatherUpdates = {
   expanded: boolean;
 };
 
+// wind
+
+export type WindState = {
+  shown: boolean;
+  expanded: boolean;
+};
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -333,6 +340,7 @@ type NoahPlaygroundState = {
   boundaries: BoundariesGroupState;
   typhoonTrack: TyphoonTrackState;
   weatherUpdates: WeatherUpdates;
+  wind: WindState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -642,6 +650,11 @@ const createInitialValue = (): NoahPlaygroundState => ({
   weatherUpdates: {
     shown: false,
     expanded: true,
+  },
+
+  wind: {
+    shown: false,
+    expanded: false,
   },
 });
 
