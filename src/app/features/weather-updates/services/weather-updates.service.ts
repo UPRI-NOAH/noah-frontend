@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import {
   RainfallContourState,
   RainfallContourTypes,
+  TemperatureForecastDay,
+  TemperatureState,
+  TemperatureType,
+  TemperatureTypesState,
+  TemperatureTypeState,
   TyphoonTrackState,
   WeatherSatelliteState,
   WeatherSatelliteType,
@@ -56,14 +61,50 @@ export class WeatherUpdatesService {
     );
   }
 
+  get temperatureShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.temperature.shown));
+  }
+
+  get temperatureExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.temperature.expanded));
+  }
+
+  get selectedTemperature$(): Observable<TemperatureType> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.selectedType)
+    );
+  }
+
+  get selectedTemperatureForecastDay$(): Observable<TemperatureForecastDay> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.selectedForecastDay)
+    );
+  }
+
   getSelectedRainfallContourType(): RainfallContourTypes {
     return this.store.state.rainfallContourTypes.selectedType;
+  }
+
+  getTemperatureType(): TemperatureType {
+    return this.store.state.temperature.selectedType;
+  }
+
+  getTemperatureShown(): boolean {
+    return this.store.state.temperature.shown;
+  }
+
+  getRainfallContourShown(): boolean {
+    return this.store.state.rainfallContourTypes.shown;
   }
 
   selectRainfallContourType(newType: RainfallContourTypes): void {
     const state = this.store.state.rainfallContourTypes;
     const prevType = state.selectedType;
     const fade = { ...state.fade };
+    const temperature = {
+      ...this.store.state.temperature,
+      shown: false,
+    };
     //sync opacity: copy from previous type to new type, fallback to 100 if undefined
     const prevOpacity = fade[prevType]?.opacity ?? 100;
     fade[newType] = { opacity: prevOpacity };
@@ -71,9 +112,11 @@ export class WeatherUpdatesService {
       {
         rainfallContourTypes: {
           ...state,
+          shown: true,
           selectedType: newType,
           fade,
         },
+        temperature,
       },
       `Selected Rainfall Contour Type: ${newType} (opacity synced from ${prevType})`
     );
@@ -282,6 +325,16 @@ export class WeatherUpdatesService {
     );
   }
 
+  enableTemperature(): void {
+    const temperature = {
+      ...this.store.state.temperature,
+      shown: true,
+      expanded: true,
+    };
+
+    this.store.patch({ temperature }, `Enable Temperature from landing page`);
+  }
+
   //explicitly set typhoon track visibility
   setTyphoonTrackVisibility(visible: boolean): void {
     const typhoonTrack = {
@@ -291,6 +344,21 @@ export class WeatherUpdatesService {
     this.store.patch(
       { typhoonTrack },
       `Set typhoon track visibility to ${visible}`
+    );
+  }
+
+  setTemperatureVisibility(visible: boolean): void {
+    const temperature = {
+      ...this.store.state.temperature,
+      shown: visible,
+    };
+    const rainfallContourTypes = {
+      ...this.store.state.rainfallContourTypes,
+      shown: !visible,
+    };
+    this.store.patch(
+      { temperature, rainfallContourTypes },
+      `Set Temperature visibility to ${visible}`
     );
   }
 
@@ -308,5 +376,97 @@ export class WeatherUpdatesService {
 
   triggerZoomToTyphoon(): void {
     this.zoomTyphoon.next();
+  }
+
+  // TEMPERATURE
+
+  getTemperatures(): TemperatureState {
+    return this.store.state.temperature;
+  }
+  getTemperature(type: TemperatureType): TemperatureTypeState {
+    return this.store.state.temperature.types[type];
+  }
+
+  getTemperature$(type: TemperatureType): Observable<TemperatureTypeState> {
+    return this.store.state$.pipe(
+      map((state) => state.temperature.types[type])
+    );
+  }
+
+  getTemperatureOpacity(type: TemperatureType): number {
+    return this.store.state.temperature.types[type].opacity;
+  }
+
+  setTemperatureOpacity(opacity: number, type: TemperatureType) {
+    const temperature: TemperatureState = {
+      ...this.store.state.temperature,
+      types: {
+        ...this.store.state.temperature.types,
+        [type]: {
+          ...this.store.state.temperature.types[type],
+          opacity,
+        },
+      },
+    };
+
+    this.store.patch(
+      { temperature },
+      `Temperature - set to ${type} and Opacity to ${opacity}`
+    );
+  }
+
+  selectTemperatureType(tempType: TemperatureType): void {
+    const temperature = {
+      ...this.store.state.temperature,
+      shown: true,
+    };
+    const rainfallContourTypes = {
+      ...this.store.state.rainfallContourTypes,
+      shown: false,
+    };
+
+    temperature.selectedType = tempType;
+    this.store.patch(
+      { temperature, rainfallContourTypes },
+      `Select Temperature Type: ${tempType}`
+    );
+  }
+
+  selectTemperatureForecastDay(day: TemperatureForecastDay): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.selectedForecastDay = day;
+    this.store.patch(
+      { temperature },
+      `Select Temperature Forecast Day: ${day}`
+    );
+  }
+
+  toggleTemperatureGroupExpansion(): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+
+    temperature.expanded = !temperature.expanded;
+    this.store.patch({ temperature }, `toggle temperature expansion`);
+  }
+
+  toggleTemperatureGroupVisibility(): void {
+    const temperature = {
+      ...this.store.state.temperature,
+    };
+    const { shown } = temperature;
+    const rainfallContourTypes = {
+      ...this.store.state.rainfallContourTypes,
+      shown,
+    };
+
+    temperature.shown = !shown;
+    this.store.patch(
+      { temperature, rainfallContourTypes },
+      `toggle Temperature Visibility ${!shown}`
+    );
   }
 }

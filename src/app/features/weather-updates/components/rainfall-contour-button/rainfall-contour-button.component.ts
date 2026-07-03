@@ -1,9 +1,16 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
-import { RainfallContourTypes } from '@features/weather-updates/store/weather-updates.store';
+import {
+  RainfallContourTypes,
+  TemperatureForecastDay,
+  TemperatureType,
+  TEMPERATURE,
+  TEMPERATURE_FORECAST_DAYS,
+} from '@features/weather-updates/store/weather-updates.store';
 import { Observable, Subject } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'noah-rainfall-contour-button',
@@ -37,11 +44,26 @@ export class RainfallContourButtonComponent implements OnInit {
   shown$: Observable<boolean>;
   selectedRainfallContourType$: Observable<RainfallContourTypes>;
   weatherTypes = [];
+  temperatureTypes = TEMPERATURE;
+  isTemperatureActive = false;
+  activeTemperatureType: TemperatureType = 'heat_index';
 
   caption$: Observable<string>;
   isLoading$: Observable<boolean>;
 
-  constructor(private wuService: WeatherUpdatesService) {}
+  // Temperature observables
+  selectedTemperature$: Observable<TemperatureType>;
+  selectedTemperatureForecastDay$: Observable<TemperatureForecastDay>;
+  temperatureShown$: Observable<boolean>;
+  temperatureExpanded$: Observable<boolean>;
+
+  // Forecast days for temperature
+  temperatureForecastDays = TEMPERATURE_FORECAST_DAYS;
+
+  constructor(
+    private wuService: WeatherUpdatesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.sliderCtrl = new FormControl(this.initialValue);
@@ -60,23 +82,59 @@ export class RainfallContourButtonComponent implements OnInit {
 
     // --- Make slider reactive to store changes ---
     this.selectedRainfallContourType$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((type) => {
-        this.wuService
-          .getRainfallContour$(type)
-          .pipe(takeUntil(this._unsub))
-          .subscribe((state) => {
-            this.sliderCtrl.setValue(state.opacity, { emitEvent: false });
-          });
+      .pipe(
+        switchMap((type) =>
+          this.wuService
+            .getRainfallContour$(type)
+            .pipe(map((state) => ({ type, opacity: state.opacity })))
+        ),
+        takeUntil(this._unsub)
+      )
+      .subscribe(({ type, opacity }) => {
+        this.activeRainfallContourType = type;
+        if (!this.isTemperatureActive) {
+          this.sliderCtrl.setValue(opacity, { emitEvent: false });
+        }
       });
+
+    // Initialize temperature observables
+    this.selectedTemperature$ = this.wuService.selectedTemperature$;
+    this.selectedTemperatureForecastDay$ =
+      this.wuService.selectedTemperatureForecastDay$;
+    this.temperatureShown$ = this.wuService.temperatureShown$;
+    this.temperatureExpanded$ = this.wuService.temperatureExpanded$;
+
+    this.temperatureShown$.pipe(takeUntil(this._unsub)).subscribe((shown) => {
+      this.isTemperatureActive = shown;
+      if (shown) {
+        this.sliderCtrl.setValue(
+          this.wuService.getTemperatureOpacity(this.activeTemperatureType),
+          { emitEvent: false }
+        );
+      }
+    });
+
+    this.selectedTemperature$.pipe(takeUntil(this._unsub)).subscribe((type) => {
+      this.activeTemperatureType = type;
+      if (this.isTemperatureActive) {
+        this.sliderCtrl.setValue(this.wuService.getTemperatureOpacity(type), {
+          emitEvent: false,
+        });
+      }
+    });
   }
 
   selectRainfallContourType(type: RainfallContourTypes) {
+    this.router.navigateByUrl('/weather-updates/rainfall-contour');
+    this.isTemperatureActive = false;
     this.activeRainfallContourType = type;
     this.wuService.selectRainfallContourType(type);
+    const selectedType = this.wuService.getSelectedRainfallContourType();
+    this.wuService.setRainfallContourOpacity(80, selectedType);
   }
 
   selectActiveRainfallContourType(type: RainfallContourTypes) {
+    this.isTemperatureActive = false;
     this.activeRainfallContourType = type;
     this.wuService.selectRainfallContourType(type);
   }
@@ -100,6 +158,12 @@ export class RainfallContourButtonComponent implements OnInit {
   changeOpacity(event: Event): void {
     const input = event.target as HTMLInputElement;
     const opacity = Number(input.value);
+
+    if (this.isTemperatureActive) {
+      this.wuService.setTemperatureOpacity(opacity, this.activeTemperatureType);
+      return;
+    }
+
     this.wuService.setRainfallContourOpacity(
       opacity,
       this.activeRainfallContourType
@@ -115,5 +179,56 @@ export class RainfallContourButtonComponent implements OnInit {
   }
   getContourIcon(type: RainfallContourTypes): string {
     return `assets/images/rainfall-contour/final-rf-${type}.svg`;
+  }
+
+  // Temperature-related methods
+  /**
+   * Toggle temperature group visibility when forecast is selected
+   */
+  toggleTemperatureVisibility(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    }
+    this.wuService.toggleTemperatureGroupVisibility();
+  }
+
+  /**
+   * Select temperature forecast day
+   */
+  selectTemperatureForecastDay(day: TemperatureForecastDay): void {
+    this.wuService.selectTemperatureForecastDay(day);
+  }
+
+  /**
+   * Select temperature type (heat_index or max_temperature)
+   */
+  selectTemperatureType(tempType: TemperatureType): void {
+    this.router.navigateByUrl('/weather-updates/temperature');
+    this.wuService.enableTemperature();
+    const tempSelected = this.wuService.getTemperatureType();
+    this.wuService.setTemperatureOpacity(80, tempSelected);
+    this.isTemperatureActive = true;
+    this.activeTemperatureType = tempType;
+    this.wuService.selectTemperatureType(tempType);
+    this.sliderCtrl.setValue(this.wuService.getTemperatureOpacity(tempType), {
+      emitEvent: false,
+    });
+  }
+
+  /**
+   * Get temperature display label
+   */
+  getTemperatureLabel(tempType: TemperatureType): string {
+    return tempType.replace(/_/g, ' ');
+  }
+
+  /**
+   * Show temperature when forecast rainfall is selected
+   */
+  onForecastRainfallSelected(): void {
+    this.selectRainfallContourType('forecast');
+    // Auto-show temperature when forecast is selected
+    this.wuService.toggleTemperatureGroupVisibility();
   }
 }
