@@ -116,6 +116,17 @@ import {
 
 type MapStyle = 'terrain' | 'satellite';
 
+type WindGrid = {
+  uGrid: number[][];
+  vGrid: number[][];
+};
+
+type WindParticle = {
+  lng: number;
+  lat: number;
+  age: number;
+};
+
 type LayerSettingsParam = {
   layerID: string;
   sourceID: string;
@@ -182,6 +193,28 @@ export class MapPlaygroundComponent
   screenHeight: number;
 
   @ViewChild('selectQc') selectQc: ElementRef;
+  @ViewChild('windCanvas') windCanvas: ElementRef<HTMLCanvasElement>;
+
+  private readonly windGridBounds = {
+    west: 115,
+    east: 128,
+    south: 4,
+    north: 21,
+  };
+  private readonly windGridCols = 12;
+  private readonly windGridRows = 10;
+  private readonly windSettings = {
+    count: 600,
+    speed: 0.5,
+    maxAge: 70,
+  };
+  private windGrid: WindGrid | null = null;
+  private windReady = false;
+  private windParticles: WindParticle[] = [];
+  private windAnimationFrame: number | null = null;
+  private windLastTimestamp: number | null = null;
+  private windVisible = false;
+  private windResizeListener: (() => void) | null = null;
 
   constructor(
     private mapService: MapService,
@@ -239,10 +272,13 @@ export class MapPlaygroundComponent
         this.initPar();
         this.initTemperature();
         this.initWeatherUpdates();
+        this.initWind();
       });
   }
 
   ngOnDestroy(): void {
+    this.stopWindAnimation();
+    this.removeWindResizeListener();
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
@@ -2981,6 +3017,284 @@ export class MapPlaygroundComponent
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
     });
+  }
+
+  initWind(): void {
+    this.resizeWindCanvas();
+    this.initWindParticles();
+    this.fetchWindGrid();
+
+    this.removeWindResizeListener();
+    this.windResizeListener = () => {
+      this.resizeWindCanvas();
+      this.initWindParticles();
+    };
+    window.addEventListener('resize', this.windResizeListener);
+
+    this.pgService.windShown$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((shown) => {
+        this.windVisible = shown;
+
+        if (shown) {
+          this.resizeWindCanvas();
+          this.initWindParticles();
+          this.startWindAnimation();
+        } else {
+          this.stopWindAnimation();
+          this.clearWindCanvas();
+        }
+      });
+
+    this.pgService.windParticleCount$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((particleCount) => {
+        this.windSettings.count = particleCount;
+        this.initWindParticles();
+      });
+
+    this.pgService.windSpeed$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((speed) => {
+        this.windSettings.speed = speed;
+      });
+  }
+
+  private resizeWindCanvas(): void {
+    const canvas = this.windCanvas?.nativeElement;
+    const mapCanvas = this.map?.getCanvas();
+
+    if (!canvas || !mapCanvas) return;
+
+    canvas.width = mapCanvas.clientWidth;
+    canvas.height = mapCanvas.clientHeight;
+  }
+
+  private removeWindResizeListener(): void {
+    if (!this.windResizeListener) return;
+
+    window.removeEventListener('resize', this.windResizeListener);
+    this.windResizeListener = null;
+  }
+
+  private metDirToUV(
+    speedMs: number,
+    dirFromDeg: number
+  ): { u: number; v: number } {
+    const rad = (dirFromDeg * Math.PI) / 180;
+
+    return {
+      u: -speedMs * Math.sin(rad),
+      v: -speedMs * Math.cos(rad),
+    };
+  }
+
+  private async fetchWindGrid(): Promise<void> {
+    const url = 'https://webgis-static.up.edu.ph/api/wind/wind_grid_cache.json';
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`wind API returned ${res.status}`);
+
+      const data = await res.json();
+      const points = data.points || [];
+      const uGrid: number[][] = [];
+      const vGrid: number[][] = [];
+      let idx = 0;
+
+      for (let r = 0; r < this.windGridRows; r++) {
+        const uRow: number[] = [];
+        const vRow: number[] = [];
+
+        for (let c = 0; c < this.windGridCols; c++) {
+          const entry = points[idx++];
+          const speed = entry?.speed ?? 0;
+          const direction = entry?.direction ?? 0;
+          const { u, v } = this.metDirToUV(speed, direction);
+
+          uRow.push(u);
+          vRow.push(v);
+        }
+
+        uGrid.push(uRow);
+        vGrid.push(vRow);
+      }
+
+      this.windGrid = { uGrid, vGrid };
+      this.windReady = true;
+    } catch (err) {
+      console.error('Wind fetch failed, using calm fallback:', err);
+      this.windGrid = null;
+      this.windReady = false;
+    }
+  }
+
+  private windAt(lng: number, lat: number): { u: number; v: number } {
+    if (!this.windReady || !this.windGrid) return { u: 0, v: 0 };
+
+    const bounds = this.windGridBounds;
+    const clampedLng = Math.max(bounds.west, Math.min(bounds.east, lng));
+    const clampedLat = Math.max(bounds.south, Math.min(bounds.north, lat));
+    const colF =
+      ((clampedLng - bounds.west) / (bounds.east - bounds.west)) *
+      (this.windGridCols - 1);
+    const rowF =
+      ((clampedLat - bounds.south) / (bounds.north - bounds.south)) *
+      (this.windGridRows - 1);
+    const c0 = Math.floor(colF);
+    const c1 = Math.min(c0 + 1, this.windGridCols - 1);
+    const r0 = Math.floor(rowF);
+    const r1 = Math.min(r0 + 1, this.windGridRows - 1);
+    const fc = colF - c0;
+    const fr = rowF - r0;
+    const { uGrid, vGrid } = this.windGrid;
+    const u00 = uGrid[r0][c0];
+    const u10 = uGrid[r0][c1];
+    const u01 = uGrid[r1][c0];
+    const u11 = uGrid[r1][c1];
+    const v00 = vGrid[r0][c0];
+    const v10 = vGrid[r0][c1];
+    const v01 = vGrid[r1][c0];
+    const v11 = vGrid[r1][c1];
+
+    return {
+      u:
+        u00 * (1 - fc) * (1 - fr) +
+        u10 * fc * (1 - fr) +
+        u01 * (1 - fc) * fr +
+        u11 * fc * fr,
+      v:
+        v00 * (1 - fc) * (1 - fr) +
+        v10 * fc * (1 - fr) +
+        v01 * (1 - fc) * fr +
+        v11 * fc * fr,
+    };
+  }
+
+  private randomWindParticle(): WindParticle {
+    const bounds = this.map.getBounds();
+
+    return {
+      lng:
+        bounds.getWest() +
+        Math.random() * (bounds.getEast() - bounds.getWest()),
+      lat:
+        bounds.getSouth() +
+        Math.random() * (bounds.getNorth() - bounds.getSouth()),
+      age: Math.floor(Math.random() * this.windSettings.maxAge),
+    };
+  }
+
+  private initWindParticles(): void {
+    this.windParticles = [];
+
+    for (let i = 0; i < this.windSettings.count; i++) {
+      this.windParticles.push(this.randomWindParticle());
+    }
+  }
+
+  private startWindAnimation(): void {
+    if (this.windAnimationFrame !== null) return;
+
+    this.windLastTimestamp = null;
+    this.windAnimationFrame = requestAnimationFrame((timestamp) =>
+      this.stepWind(timestamp)
+    );
+  }
+
+  private stopWindAnimation(): void {
+    if (this.windAnimationFrame === null) return;
+
+    cancelAnimationFrame(this.windAnimationFrame);
+    this.windAnimationFrame = null;
+    this.windLastTimestamp = null;
+  }
+
+  private clearWindCanvas(): void {
+    const canvas = this.windCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+
+    if (!canvas || !ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  private stepWind(timestamp: number): void {
+    const canvas = this.windCanvas?.nativeElement;
+    const ctx = canvas?.getContext('2d');
+
+    if (!this.windVisible || !canvas || !ctx) {
+      this.windAnimationFrame = null;
+      return;
+    }
+
+    if (this.windLastTimestamp === null) this.windLastTimestamp = timestamp;
+
+    const dt = (timestamp - this.windLastTimestamp) / 1000;
+    this.windLastTimestamp = timestamp;
+    const timeScale = Math.min(dt, 0.1) * 60;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.95)';
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineWidth = 0.3;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#DCDCDC';
+
+    const bounds = this.map.getBounds();
+    const dashLengthPx = 5;
+
+    for (const particle of this.windParticles) {
+      const prevPx = this.map.project([particle.lng, particle.lat]);
+      const { u, v } = this.windAt(particle.lng, particle.lat);
+      const speedMs = Math.sqrt(u * u + v * v);
+      const magnitude = Math.max(speedMs, 0.001);
+      const dirX = u / magnitude;
+      const dirY = -v / magnitude;
+      const stepPx =
+        (0.4 + Math.min(speedMs, 20) * 0.1) *
+        this.windSettings.speed *
+        timeScale;
+      const nextPxRaw = {
+        x: prevPx.x + dirX * stepPx,
+        y: prevPx.y + dirY * stepPx,
+      };
+      const nextLngLat = this.map.unproject([nextPxRaw.x, nextPxRaw.y]);
+
+      particle.lng = nextLngLat.lng;
+      particle.lat = nextLngLat.lat;
+      particle.age += timeScale;
+
+      const offscreen =
+        nextPxRaw.x < 0 ||
+        nextPxRaw.x > canvas.width ||
+        nextPxRaw.y < 0 ||
+        nextPxRaw.y > canvas.height;
+      const outOfBounds =
+        particle.lng < bounds.getWest() ||
+        particle.lng > bounds.getEast() ||
+        particle.lat < bounds.getSouth() ||
+        particle.lat > bounds.getNorth();
+
+      if (particle.age > this.windSettings.maxAge || outOfBounds || offscreen) {
+        Object.assign(particle, this.randomWindParticle());
+        continue;
+      }
+
+      ctx.globalAlpha = 0.95;
+      ctx.beginPath();
+      ctx.moveTo(prevPx.x, prevPx.y);
+      ctx.lineTo(
+        prevPx.x + dirX * dashLengthPx,
+        prevPx.y + dirY * dashLengthPx
+      );
+      ctx.stroke();
+    }
+
+    this.windAnimationFrame = requestAnimationFrame((nextTimestamp) =>
+      this.stepWind(nextTimestamp)
+    );
   }
 
   private addTyphoonPopups(source: string) {

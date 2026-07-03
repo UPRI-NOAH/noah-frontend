@@ -10,12 +10,16 @@ import { Observable } from 'rxjs';
 export class WindComponent implements OnInit {
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
+  initialParticleCountValue: number = 600;
+  initialSpeedValue: number = 0.5;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
     this.expanded$ = this.pgService.windExpanded$;
     this.shown$ = this.pgService.windShown$;
+    this.initialParticleCountValue = this.pgService.getWindParticleCount();
+    this.initialSpeedValue = this.pgService.getWindSpeed();
   }
 
   toggleShown(event: Event) {
@@ -27,5 +31,13 @@ export class WindComponent implements OnInit {
 
   toggleExpanded() {
     this.pgService.toggleWindGroupExpansion();
+  }
+
+  changeParticleCount(particleCount: number) {
+    this.pgService.setWindParticleCount(particleCount);
+  }
+
+  changeSpeed(speed: number) {
+    this.pgService.setWindSpeed(speed);
   }
 }

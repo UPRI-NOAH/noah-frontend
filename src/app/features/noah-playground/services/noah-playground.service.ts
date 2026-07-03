@@ -246,6 +246,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.wind.expanded));
   }
 
+  get windParticleCount$(): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.wind.particleCount));
+  }
+
+  get windSpeed$(): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.wind.speed));
+  }
+
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
@@ -584,6 +592,37 @@ export class NoahPlaygroundService {
 
     wind.shown = !shown;
     this.store.patch({ wind }, `toggle Wind Visibility ${!shown}`);
+  }
+
+  getWindParticleCount(): number {
+    return this.store.state.wind.particleCount;
+  }
+
+  getWindSpeed(): number {
+    return this.store.state.wind.speed;
+  }
+
+  setWindParticleCount(particleCount: number): void {
+    const wind: WindState = {
+      ...this.store.state.wind,
+    };
+    const nextParticleCount = Number(particleCount);
+
+    wind.particleCount = nextParticleCount;
+    this.store.patch(
+      { wind },
+      `Wind Particle Count set to ${nextParticleCount}`
+    );
+  }
+
+  setWindSpeed(speed: number): void {
+    const wind: WindState = {
+      ...this.store.state.wind,
+    };
+    const nextSpeed = Number(speed);
+
+    wind.speed = nextSpeed;
+    this.store.patch({ wind }, `Wind Speed set to ${nextSpeed}`);
   }
 
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {

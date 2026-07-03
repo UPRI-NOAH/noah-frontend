@@ -307,6 +307,8 @@ export type WeatherUpdates = {
 export type WindState = {
   shown: boolean;
   expanded: boolean;
+  particleCount: number;
+  speed: number;
 };
 
 type NoahPlaygroundState = {
@@ -655,6 +657,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
   wind: {
     shown: false,
     expanded: false,
+    particleCount: 600,
+    speed: 0.5,
   },
 });
 
