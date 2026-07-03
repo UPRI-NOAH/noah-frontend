@@ -607,7 +607,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     const typhoonLayerSourceFile: string =
       'https://webgis-static.up.edu.ph/api/typhoon_track/pagasa_typhoon.geojson';
     const parOutlineSourceFile: string =
-      'https://webgis-static.up.edu.ph/api/par/par_outline.geojson';
+      'https://webgis-static.up.edu.ph/api/par/par_outline.json';
 
     // 1 - load typhoon track layers icons
     const _this = this;
