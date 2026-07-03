@@ -584,10 +584,24 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardLevel: HazardLevel
   ): void {
+    const currentHazard = this.store.state[hazardType];
+    const currentLevels = currentHazard.levels as Record<
+      HazardLevel,
+      HazardLevelState
+    >;
+    const currentLevel = currentLevels[hazardLevel];
     const hazard: FloodState | LandslideState | StormSurgeState = {
-      ...this.store.state[hazardType],
-    };
-    hazard.levels[hazardLevel].color = color;
+      ...currentHazard,
+      levels: {
+        ...currentLevels,
+        [hazardLevel]: {
+          ...currentLevel,
+          color,
+          colorRevision: (currentLevel.colorRevision ?? 0) + 1,
+        },
+      },
+    } as FloodState | LandslideState | StormSurgeState;
+
     this.store.patch(
       { [hazardType]: hazard },
       `color ${color}, ${hazardType}, ${hazardLevel}`

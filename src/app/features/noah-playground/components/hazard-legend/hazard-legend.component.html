@@ -5,7 +5,7 @@
       <label class="inline-flex items-center">
         <div
           class="h-6 w-6 mx-auto rounded-md"
-          ngClass="bg-{{ selectedColor }}-{{ level }}"
+          [ngStyle]="{ 'background-color': getColor(selectedColor, level) }"
         ></div>
       </label>
       <div class="flex flex-col ml-3">
@@ -21,21 +21,57 @@
         class="
           grid
           gap-1
-          grid-cols-3
-          sm:grid-cols-6
-          md:grid-cols-6
-          lg:grid-cols-6
+          grid-cols-4
+          sm:grid-cols-7
+          md:grid-cols-7
+          lg:grid-cols-7
         "
       >
         <div *ngFor="let noahColor of noahColors">
           <button
             class="h-6 w-6 mx-auto rounded-md"
-            ngClass="bg-{{ noahColor }}-high"
+            [ngStyle]="{ 'background-color': getColor(noahColor, 'high') }"
             [class.selected]="selectedColor === noahColor"
             (click)="this.selectColor(noahColor)"
             role="button"
           ></button>
         </div>
+        <label
+          class="
+            h-6
+            w-6
+            mx-auto
+            rounded-md
+            cursor-pointer
+            border-2 border-gray-700
+            relative
+            overflow-hidden
+            flex
+            items-center
+            justify-center
+          "
+          [class.selected]="selectedColor === customColor"
+          [ngStyle]="{
+            'background-color': getColor(customColor, 'high')
+          }"
+        >
+          <span
+            class="
+              text-white text-xs
+              leading-none
+              font-bold
+              drop-shadow
+              select-none
+            "
+            >+</span
+          >
+          <input
+            class="sr-only"
+            type="color"
+            [value]="customPalette.high"
+            (input)="updateCustomColor($event)"
+          />
+        </label>
       </div>
     </div>
   </div>

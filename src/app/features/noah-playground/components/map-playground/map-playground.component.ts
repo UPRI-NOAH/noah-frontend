@@ -3491,7 +3491,9 @@ export class MapPlaygroundComponent
         takeUntil(this._unsub),
         takeUntil(this._changeStyle),
         filter((level) => !!level),
-        distinctUntilChanged((x, y) => x.color !== y.color)
+        distinctUntilChanged(
+          (x, y) => x.color === y.color && x.colorRevision === y.colorRevision
+        )
       )
       .subscribe((level) =>
         this.map.setPaintProperty(
@@ -3513,7 +3515,9 @@ export class MapPlaygroundComponent
         takeUntil(this._unsub),
         takeUntil(this._changeStyle),
         filter((level) => !!level),
-        distinctUntilChanged((x, y) => x.color !== y.color)
+        distinctUntilChanged(
+          (x, y) => x.color === y.color && x.colorRevision === y.colorRevision
+        )
       )
       .subscribe((level) =>
         this.map.setPaintProperty(layerName, 'fill-color', [
