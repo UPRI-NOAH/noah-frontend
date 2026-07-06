@@ -196,15 +196,15 @@ export class MapPlaygroundComponent
   @ViewChild('windCanvas') windCanvas: ElementRef<HTMLCanvasElement>;
 
   private readonly windGridBounds = {
-    west: 115,
-    east: 128,
-    south: 4,
-    north: 21,
+    west: 105,
+    east: 145,
+    south: -5,
+    north: 30,
   };
-  private readonly windGridCols = 12;
-  private readonly windGridRows = 10;
+  private readonly windGridCols = 22;
+  private readonly windGridRows = 18;
   private readonly windSettings = {
-    count: 600,
+    count: 1000,
     speed: 0.5,
     maxAge: 70,
   };
@@ -215,6 +215,9 @@ export class MapPlaygroundComponent
   private windLastTimestamp: number | null = null;
   private windVisible = false;
   private windResizeListener: (() => void) | null = null;
+  private windMapMoving = false;
+  private windMoveStartListener: (() => void) | null = null;
+  private windMoveEndListener: (() => void) | null = null;
 
   constructor(
     private mapService: MapService,
@@ -279,6 +282,7 @@ export class MapPlaygroundComponent
   ngOnDestroy(): void {
     this.stopWindAnimation();
     this.removeWindResizeListener();
+    this.removeWindMoveListeners();
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
@@ -3030,6 +3034,7 @@ export class MapPlaygroundComponent
       this.initWindParticles();
     };
     window.addEventListener('resize', this.windResizeListener);
+    this.initWindMoveListeners();
 
     this.pgService.windShown$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
@@ -3039,7 +3044,9 @@ export class MapPlaygroundComponent
         if (shown) {
           this.resizeWindCanvas();
           this.initWindParticles();
-          this.startWindAnimation();
+          if (!this.windMapMoving) {
+            this.startWindAnimation();
+          }
         } else {
           this.stopWindAnimation();
           this.clearWindCanvas();
@@ -3075,6 +3082,47 @@ export class MapPlaygroundComponent
 
     window.removeEventListener('resize', this.windResizeListener);
     this.windResizeListener = null;
+  }
+
+  private initWindMoveListeners(): void {
+    this.removeWindMoveListeners();
+
+    this.windMoveStartListener = () => {
+      this.windMapMoving = true;
+      this.stopWindAnimation();
+      this.clearWindCanvas();
+    };
+
+    this.windMoveEndListener = () => {
+      this.windMapMoving = false;
+
+      if (!this.windVisible) return;
+
+      this.resizeWindCanvas();
+      this.initWindParticles();
+      this.startWindAnimation();
+    };
+
+    this.map.on('movestart', this.windMoveStartListener);
+    this.map.on('moveend', this.windMoveEndListener);
+  }
+
+  private removeWindMoveListeners(): void {
+    const map = this.map;
+
+    if (this.windMoveStartListener) {
+      if (map) {
+        map.off('movestart', this.windMoveStartListener);
+      }
+      this.windMoveStartListener = null;
+    }
+
+    if (this.windMoveEndListener) {
+      if (map) {
+        map.off('moveend', this.windMoveEndListener);
+      }
+      this.windMoveEndListener = null;
+    }
   }
 
   private metDirToUV(
@@ -3223,7 +3271,7 @@ export class MapPlaygroundComponent
     const canvas = this.windCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
 
-    if (!this.windVisible || !canvas || !ctx) {
+    if (!this.windVisible || this.windMapMoving || !canvas || !ctx) {
       this.windAnimationFrame = null;
       return;
     }
@@ -3238,10 +3286,14 @@ export class MapPlaygroundComponent
     ctx.globalCompositeOperation = 'destination-in';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'source-over';
-    ctx.lineWidth = 0.3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#DCDCDC';
 
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = 'round';
+    /*
+    ctx.lineWidth = 0.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#FF1F80';
+    */
     const bounds = this.map.getBounds();
     const dashLengthPx = 5;
 
@@ -3282,14 +3334,32 @@ export class MapPlaygroundComponent
         continue;
       }
 
+      const tailLengthPx = 4;
+      const headLengthPx = 2;
+
+      const headX = prevPx.x + dirX * headLengthPx;
+      const headY = prevPx.y + dirY * headLengthPx;
+      const tailX = prevPx.x - dirX * tailLengthPx;
+      const tailY = prevPx.y - dirY * tailLengthPx;
+
+      const gradient = ctx.createLinearGradient(tailX, tailY, headX, headY);
+      gradient.addColorStop(0, 'rgba(255, 255, 0, 0)');
+      gradient.addColorStop(0.65, 'rgba(255, 255, 0, 0.45)');
+      gradient.addColorStop(1, 'rgba(103, 255, 1, 0.95)');
+
+      ctx.strokeStyle = gradient;
+
       ctx.globalAlpha = 0.95;
+
       ctx.beginPath();
-      ctx.moveTo(prevPx.x, prevPx.y);
-      ctx.lineTo(
-        prevPx.x + dirX * dashLengthPx,
-        prevPx.y + dirY * dashLengthPx
-      );
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(headX, headY);
       ctx.stroke();
+
+      ctx.fillStyle = 'rgba(103, 255, 1, 0.9)';
+      ctx.beginPath();
+      ctx.arc(headX, headY, 1.1, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     this.windAnimationFrame = requestAnimationFrame((nextTimestamp) =>

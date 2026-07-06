@@ -657,7 +657,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   wind: {
     shown: false,
     expanded: false,
-    particleCount: 600,
+    particleCount: 1000,
     speed: 0.5,
   },
 });
