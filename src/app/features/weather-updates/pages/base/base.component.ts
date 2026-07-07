@@ -19,6 +19,10 @@ export class BaseComponent implements OnInit {
   config: SwiperOptions = {
     slidesPerView: 1,
   };
+
+  private suppressRouteOnNextSlideChange = false;
+  private temperatureShown = false;
+
   constructor(
     private wuService: WeatherUpdatesService,
     private router: Router,
@@ -28,6 +32,9 @@ export class BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentLocation$ = this.wuService.currentLocation$;
+    this.wuService.temperatureShown$.subscribe((shown) => {
+      this.temperatureShown = shown;
+    });
   }
 
   selectPlace(selectedPlace) {
@@ -58,10 +65,18 @@ export class BaseComponent implements OnInit {
 
     // Ensure swiper is initialized
     const handleSlideChange = () => {
+      if (this.suppressRouteOnNextSlideChange) {
+        this.suppressRouteOnNextSlideChange = false;
+        return;
+      }
+
       const activeIndex = swiperRef.activeIndex ?? 0;
       this.ngZone.run(() => {
         if (activeIndex === 0) {
-          this.router.navigateByUrl('/weather-updates/rainfall-contour');
+          const url = this.temperatureShown
+            ? '/weather-updates/temperature'
+            : '/weather-updates/rainfall-contour';
+          this.router.navigateByUrl(url);
         } else if (activeIndex === 1) {
           this.router.navigateByUrl('/weather-updates/typhoon-track');
         }
@@ -77,8 +92,14 @@ export class BaseComponent implements OnInit {
 
       this.ngZone.runOutsideAngular(() => {
         if (url.includes('/weather-updates/typhoon-track')) {
+          this.suppressRouteOnNextSlideChange = true;
           swiperRef.slideTo(1);
-        } else if (url.includes('/weather-updates/rainfall-contour')) {
+        } else if (
+          url.includes('/weather-updates/rainfall-contour') ||
+          url.includes('/weather-updates/temperature')
+        ) {
+          // Temperature UI is shown within the rainfall slide on mobile.
+          this.suppressRouteOnNextSlideChange = true;
           swiperRef.slideTo(0);
         }
       });
@@ -101,6 +122,16 @@ export class BaseComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         updateSwiperFromUrl(event.url);
       });
+
+    const updateRouterFromUrl = (url: string) => {
+      if (url.includes('/weather-updates/temperature')) {
+        this.suppressRouteOnNextSlideChange = true;
+        swiperRef.slideTo(0);
+        this.router.navigateByUrl('/weather-updates/temperature', {
+          skipLocationChange: false,
+        });
+      }
+    };
   }
 
   slideNext() {

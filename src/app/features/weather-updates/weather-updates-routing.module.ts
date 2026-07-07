@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { WeatherUpdatesComponent } from './pages/weather-updates/weather-updates.component';
 import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typhoon-track-group.component';
+import { WuTemperatureGroupComponent } from './components/wu-temperature-group/wu-temperature-group.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
       {
         path: 'typhoon-track',
         component: TyphoonTrackGroupComponent,
+      },
+      {
+        path: 'temperature',
+        component: WuTemperatureGroupComponent,
       },
     ],
   },

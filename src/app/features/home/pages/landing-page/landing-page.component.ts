@@ -84,6 +84,7 @@ export class LandingPageComponent implements OnInit {
     //disable typhoon track and weather satellite overlays
     this.wuService.setTyphoonTrackVisibility(false);
     this.wuService.setWeatherSatelliteVisibility(false);
+    this.wuService.setTemperatureVisibility(false);
   }
 
   typhoonTrack() {
@@ -91,5 +92,12 @@ export class LandingPageComponent implements OnInit {
     const selectedType = this.wuService.getSelectedRainfallContourType();
     this.wuService.setRainfallContourOpacity(0, selectedType);
     this.wuService.enableTyphoonTrackAndSatellite();
+    this.wuService.setTemperatureVisibility(false);
+  }
+
+  temperature() {
+    this.wuService.enableTemperature();
+    this.wuService.setTyphoonTrackVisibility(false);
+    this.wuService.setWeatherSatelliteVisibility(false);
   }
 }
