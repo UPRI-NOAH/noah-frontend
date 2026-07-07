@@ -47,6 +47,9 @@ export class NoahPlaygroundComponent implements OnInit {
   private initialHeight = this.height;
   isVisible = false;
 
+  expanded$: Observable<boolean>;
+  shown$: Observable<boolean>;
+
   constructor(
     private pgService: NoahPlaygroundService,
     private title: Title,
@@ -56,6 +59,9 @@ export class NoahPlaygroundComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.expanded$ = this.pgService.weatherUpdatesGroupExpanded$;
+    this.shown$ = this.pgService.weatherUpdatesGroupShown$;
+
     this.currentLocationPg$ = this.pgService.currentLocation$;
     this.title.setTitle('NOAH Studio');
     this.LoginStatus$ = this.qcLoginService.isLoggesIn;
@@ -110,6 +116,16 @@ export class NoahPlaygroundComponent implements OnInit {
 
     this.updateVisibility();
     window.addEventListener('resize', this.updateVisibility.bind(this));
+  }
+
+  toggleShown(event: Event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    this.pgService.toggleWeatherUpdatesGroupShown();
+  }
+
+  toggleExpanded() {
+    this.pgService.toggleWeatherUpdatesGroupExpanded();
   }
 
   updateVisibility() {

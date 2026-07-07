@@ -291,6 +291,7 @@ export class MapPlaygroundComponent
         this.initPar();
         this.initLightning();
         this.initTemperature();
+        this.initWeatherUpdates();
       });
   }
 
@@ -1546,21 +1547,27 @@ export class MapPlaygroundComponent
       filter: ['==', ['geometry-type'], 'LineString'], // Show only LineString geometries
     });
 
-    const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
-      shareReplay(1)
-    );
-    const groupShown$ = this.pgService.typhoonTrackGroupShown$.pipe(
-      shareReplay(1)
-    );
-
-    combineLatest([allShown$, groupShown$])
+    combineLatest([
+      this.pgService.weatherSatellitesShown$,
+      this.pgService.typhoonTrackGroupShown$,
+      this.pgService.weatherUpdatesGroupShown$,
+    ])
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([allShown, groupShown]) => {
-        const visibility = allShown || groupShown ? 'visible' : 'none';
+      .subscribe(([groupShown, soloShown, weatherUpdatesShown]) => {
+        const visibility = groupShown || soloShown ? 'visible' : 'none';
+        const visibilityForWeatherUpdates = weatherUpdatesShown
+          ? 'visible'
+          : 'none';
+
+        const finalVisibility =
+          visibility === 'visible' && visibilityForWeatherUpdates === 'visible'
+            ? 'visible'
+            : 'none';
+
         this.map.setLayoutProperty(
           'par-outline-layer',
           'visibility',
-          visibility
+          finalVisibility
         );
       });
   }
@@ -1819,11 +1826,13 @@ export class MapPlaygroundComponent
 
     combineLatest([
       this.pgService.typhoonTrackGroupShown$,
+      this.pgService.weatherUpdatesGroupShown$,
       this.pgService.getTyphoonTrackShown$('pagasa'), // PAGASA ONLY
     ])
       .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-      .subscribe(([groupShown, soloShown]) => {
-        const visibility = groupShown && soloShown ? 'visible' : 'none';
+      .subscribe(([groupShown, weatherUpdatesShown, soloShown]) => {
+        const visibility =
+          groupShown && weatherUpdatesShown && soloShown ? 'visible' : 'none';
         [
           'typhoon-track-icon',
           'typhoon-track-line',
@@ -1952,11 +1961,13 @@ export class MapPlaygroundComponent
 
           combineLatest([
             this.pgService.typhoonTrackGroupShown$,
+            this.pgService.weatherUpdatesGroupShown$,
             this.pgService.getTyphoonTrackShown$(agencyType),
           ])
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-            .subscribe(([groupShown, soloShown]) => {
-              const visibleByToggle = groupShown && soloShown && hasFeatures;
+            .subscribe(([groupShown, weatherUpdatesShown, soloShown]) => {
+              const visibleByToggle =
+                groupShown && weatherUpdatesShown && soloShown && hasFeatures;
 
               // Apply PAGASA hide condition
               const finalVisibility =
@@ -2210,6 +2221,9 @@ export class MapPlaygroundComponent
           },
         });
 
+        const weatherUpdateShown$ =
+          this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1));
+
         const soloShown$ = this.pgService.temperatureShown$.pipe(
           shareReplay(1)
         );
@@ -2231,19 +2245,35 @@ export class MapPlaygroundComponent
             distinctUntilChanged()
           );
 
-        combineLatest([soloShown$, selectedTemperature$, temperatureOpacity$])
+        combineLatest([
+          soloShown$,
+          selectedTemperature$,
+          temperatureOpacity$,
+          weatherUpdateShown$,
+        ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(([soloShown, groupShown, temperatureOpacity]) => {
-            let newOpacity = +(soloShown && groupShown === temperatureType);
-            if (newOpacity) {
-              newOpacity = temperatureOpacity / 100;
+          .subscribe(
+            ([
+              soloShown,
+              groupShown,
+              temperatureOpacity,
+              weatherUpdateShown,
+            ]) => {
+              let newOpacity = +(
+                soloShown &&
+                weatherUpdateShown &&
+                groupShown === temperatureType
+              );
+              if (newOpacity) {
+                newOpacity = temperatureOpacity / 100;
+              }
+              this.map.setPaintProperty(
+                temperatureType,
+                'raster-opacity',
+                newOpacity
+              );
             }
-            this.map.setPaintProperty(
-              temperatureType,
-              'raster-opacity',
-              newOpacity
-            );
-          });
+          );
 
         selectedForecastDay$
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
@@ -2266,6 +2296,41 @@ export class MapPlaygroundComponent
           });
       }
     );
+  }
+
+  initWeatherUpdates() {
+    const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+      distinctUntilChanged(),
+      shareReplay(1)
+    );
+
+    combineLatest([weatherUpdateShown$])
+      .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+      .subscribe(([weatherUpdateShown]) => {
+        const visibility = weatherUpdateShown ? 'visible' : 'none';
+
+        if (weatherUpdateShown) {
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 4,
+            essential: true,
+          });
+        } else {
+          this.map.flyTo({
+            center: PH_DEFAULT_CENTER,
+            zoom: 5.5,
+            essential: true,
+          });
+        }
+
+        if (this.map.getLayer('weather-updates-layer')) {
+          this.map.setLayoutProperty(
+            'weather-updates-layer',
+            'visibility',
+            visibility
+          );
+        }
+      });
   }
 
   initWeatherSatelliteLayers() {
@@ -2365,6 +2430,10 @@ export class MapPlaygroundComponent
         //   shareReplay(1)
         // );
 
+        const groupShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+          shareReplay(1)
+        );
+
         // 3. Check for group and individual visibility and opacity
         const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
           shareReplay(1)
@@ -2379,16 +2448,27 @@ export class MapPlaygroundComponent
             distinctUntilChanged()
           );
 
-        combineLatest([allShown$, selectedWeather$, weatherTypeOpacity$])
+        combineLatest([
+          allShown$,
+          selectedWeather$,
+          weatherTypeOpacity$,
+          groupShown$,
+        ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(([allShown, selectedWeather, weatherTypeOpacity]) => {
-            let opacity = +(allShown && selectedWeather === weatherType);
-            if (opacity) {
-              opacity = weatherTypeOpacity / 100;
-            }
+          .subscribe(
+            ([allShown, selectedWeather, weatherTypeOpacity, groupShown]) => {
+              let opacity = +(
+                allShown &&
+                groupShown &&
+                selectedWeather === weatherType
+              );
+              if (opacity) {
+                opacity = weatherTypeOpacity / 100;
+              }
 
-            this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
-          });
+              this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
+            }
+          );
       }
     );
   }
