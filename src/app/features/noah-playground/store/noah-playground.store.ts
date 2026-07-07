@@ -304,12 +304,26 @@ export type WeatherUpdates = {
 
 // wind
 
+export type WindType = 'wind';
+
+export type WindGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<WindType, WindState>;
+};
+
+export type WindState = {
+  particleCount: number;
+  speed: number;
+};
+/*
 export type WindState = {
   shown: boolean;
   expanded: boolean;
   particleCount: number;
   speed: number;
 };
+*/
 
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
@@ -342,7 +356,7 @@ type NoahPlaygroundState = {
   boundaries: BoundariesGroupState;
   typhoonTrack: TyphoonTrackState;
   weatherUpdates: WeatherUpdates;
-  wind: WindState;
+  wind: WindGroupState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -657,8 +671,13 @@ const createInitialValue = (): NoahPlaygroundState => ({
   wind: {
     shown: false,
     expanded: false,
-    particleCount: 1000,
-    speed: 0.5,
+    types: {
+      wind: {
+        // shown: true,
+        particleCount: 1000,
+        speed: 0.5,
+      },
+    },
   },
 });
 

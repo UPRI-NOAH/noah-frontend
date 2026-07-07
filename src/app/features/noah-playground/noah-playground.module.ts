@@ -37,7 +37,8 @@ import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typ
 import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
-import { WindComponent } from './components/wind/wind.component';
+import { WindGroupComponent } from './components/wind-group/wind-group.component';
+import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { WindComponent } from './components/wind/wind.component';
     TyphoonTrackSoloComponent,
     TemperatureComponent,
     TemperatureSoloComponent,
-    WindComponent,
+    WindGroupComponent,
+    WindSoloComponent,
   ],
   imports: [
     CommonModule,

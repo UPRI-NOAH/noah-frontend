@@ -3053,14 +3053,16 @@ export class MapPlaygroundComponent
         }
       });
 
-    this.pgService.windParticleCount$
+    this.pgService
+      .getWindParticleCount$('wind')
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe((particleCount) => {
         this.windSettings.count = particleCount;
         this.initWindParticles();
       });
 
-    this.pgService.windSpeed$
+    this.pgService
+      .getWindSpeed$('wind')
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe((speed) => {
         this.windSettings.speed = speed;

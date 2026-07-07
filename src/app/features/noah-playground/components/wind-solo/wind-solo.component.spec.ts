@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WindComponent } from './wind.component';
+import { WindSoloComponent } from './wind-solo.component';
 
-describe('WindComponent', () => {
-  let component: WindComponent;
-  let fixture: ComponentFixture<WindComponent>;
+describe('WindSoloComponent', () => {
+  let component: WindSoloComponent;
+  let fixture: ComponentFixture<WindSoloComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WindComponent],
+      declarations: [WindSoloComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WindComponent);
+    fixture = TestBed.createComponent(WindSoloComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
