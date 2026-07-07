@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
 import { TyphoonTrackType } from '../services/typhoon-track.service';
 /**
@@ -126,6 +126,7 @@ export type ExaggerationState = {
 export type HazardLevelState = {
   opacity: number;
   color: NoahColor;
+  customPalette?: NoahColorPalette;
   colorRevision?: number;
   shown: boolean;
 };

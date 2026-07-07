@@ -3,6 +3,7 @@ import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-tra
 import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 
 export type NoahColorLevel = 'low' | 'medium' | 'high';
+export type NoahColorPalette = Record<NoahColorLevel, string>;
 
 export type NoahColor =
   | 'noah-red'
@@ -13,7 +14,12 @@ export type NoahColor =
   | 'noah-black'
   | 'noah-custom';
 
-export const NOAH_COLORS: Record<NoahColor, Record<NoahColorLevel, string>> = {
+export type NoahColorSelection = {
+  color: NoahColor;
+  customPalette?: NoahColorPalette;
+};
+
+export const NOAH_COLORS: Record<NoahColor, NoahColorPalette> = {
   'noah-red': {
     low: '#F2C94C',
     medium: '#F2994A',

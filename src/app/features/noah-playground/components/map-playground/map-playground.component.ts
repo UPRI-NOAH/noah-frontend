@@ -3499,7 +3499,12 @@ export class MapPlaygroundComponent
         this.map.setPaintProperty(
           layerID,
           'fill-color',
-          getHazardColor(hazardType, level.color, hazardLevel)
+          getHazardColor(
+            hazardType,
+            level.color,
+            hazardLevel,
+            level.customPalette
+          )
         )
       );
   }
@@ -3525,7 +3530,7 @@ export class MapPlaygroundComponent
           ['linear'],
           ['get', 'ALLUVIAL'],
           3,
-          NOAH_COLORS[level.color].high,
+          level.customPalette?.high ?? NOAH_COLORS[level.color].high,
         ])
       );
   }

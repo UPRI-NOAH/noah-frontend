@@ -37,7 +37,7 @@ import {
   TemperatureState,
   TemperatureForecastDay,
 } from '../store/noah-playground.store';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
@@ -335,6 +335,13 @@ export class NoahPlaygroundService {
     return this.store.state[hazardType].levels[hazardLevel].color;
   }
 
+  getHazardLevel(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): HazardLevelState {
+    return this.store.state[hazardType].levels[hazardLevel];
+  }
+
   getExaggeration(): ExaggerationState {
     return this.store.state.exaggeration;
   }
@@ -582,7 +589,8 @@ export class NoahPlaygroundService {
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
-    hazardLevel: HazardLevel
+    hazardLevel: HazardLevel,
+    customPalette?: NoahColorPalette
   ): void {
     const currentHazard = this.store.state[hazardType];
     const currentLevels = currentHazard.levels as Record<
@@ -597,6 +605,10 @@ export class NoahPlaygroundService {
         [hazardLevel]: {
           ...currentLevel,
           color,
+          customPalette:
+            color === 'noah-custom' && customPalette
+              ? { ...customPalette }
+              : undefined,
           colorRevision: (currentLevel.colorRevision ?? 0) + 1,
         },
       },
