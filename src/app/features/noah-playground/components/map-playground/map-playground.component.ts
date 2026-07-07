@@ -115,6 +115,7 @@ import {
   TyphoonTrackService,
   TyphoonTrackType,
 } from '@features/noah-playground/services/typhoon-track.service';
+import { url } from 'inspector';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -2667,19 +2668,16 @@ export class MapPlaygroundComponent
   }
 
   private async startRealtimeLightning(): Promise<void> {
+    const url = 'ulap-api.up.edu.ph';
     this.resetRealtimeLightningLayer();
 
     try {
-      await fetch(
-        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/start/'
-      );
+      await fetch(`https://${url}/api/lightning/start/`);
     } catch (error) {
       console.error('[MapPlayground] realtime lightning start failed', error);
     }
 
-    this.realtimeLightningSocket = new WebSocket(
-      'wss://0019-136-158-11-7.ngrok-free.app/ws/'
-    );
+    this.realtimeLightningSocket = new WebSocket(`wss://${url}/ws/`);
 
     this.realtimeLightningSocket.onopen = () => {
       console.log('Connected to Django relay');
@@ -2745,10 +2743,9 @@ export class MapPlaygroundComponent
   }
 
   private async stopRealtimeLightning(): Promise<void> {
+    const url = 'ulap-api.up.edu.ph';
     try {
-      await fetch(
-        'https://0019-136-158-11-7.ngrok-free.app/api/lightning/stop/'
-      );
+      await fetch(`https://${url}/api/lightning/stop/`);
     } catch (error) {
       console.error('[MapPlayground] realtime lightning stop failed', error);
     }
