@@ -631,8 +631,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, expanded: hazardState.expanded } },
       `expanded ${hazardState.expanded}, ${hazardType}`
     );
   }
@@ -641,8 +643,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, shown: hazardState.shown } },
       `shown ${hazardState.shown}, ${hazardType}`
     );
   }
