@@ -45,7 +45,6 @@ export class WuTemperatureGroupComponent implements OnInit {
 
   private autoEnableFeatures(): void {
     if (this.router.url === '/weather-updates/temperature') {
-      this.wuService.enableTemperature();
       this.wuService.getTemperatures();
     }
   }
