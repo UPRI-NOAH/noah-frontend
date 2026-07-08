@@ -94,6 +94,7 @@ type WeatherUpdatesState = {
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
+  overlayOpacity: number;
   rainfallContourTypes: RainfallContourState;
   typhoonTrack: TyphoonTrackState;
   weatherSatellite: WeatherSatelliteState;
@@ -106,6 +107,7 @@ const createInitialValue = (): WeatherUpdatesState => {
     center: null,
     currentCoords: PH_DEFAULT_CENTER,
     currentLocation: '',
+    overlayOpacity: 80,
     rainfallContourTypes: {
       shown: true,
       selectedType: '1hr',
