@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   ibffSummaryUrl: '/api/forecast-summary/',
   pastEventsUrl: '/api/past-events/',
+  riskAssessmentApiUrl: '/ngrok-api',
   mapbox: {
     accessToken:
       'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZXc1am1hbzBkZ3Yzc280dHVrdHFpZ2MifQ.J13CArZfpEsGLzxXGOJQ7w',

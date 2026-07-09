@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, EMPTY } from 'rxjs';
 import { tap, expand, reduce } from 'rxjs/operators';
+import { environment } from '@env/environment';
 
 export type AffectedData = {
   prov: string;
@@ -17,7 +18,7 @@ export type AffectedData = {
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-  private API_BASE_URL = '/ngrok-api';
+  private API_BASE_URL = environment.riskAssessmentApiUrl;
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;

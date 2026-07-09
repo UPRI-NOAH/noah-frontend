@@ -1,5 +1,8 @@
 export const environment = {
   production: true,
+  ibffSummaryUrl: 'https://iot-noah.up.edu.ph/llm-api/api/forecast-summary/',
+  pastEventsUrl: 'https://iot-noah.up.edu.ph/llm-api/api/past-events/',
+  riskAssessmentApiUrl: 'https://panahon.up.edu.ph',
   mapbox: {
     accessToken:
       'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
