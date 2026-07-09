@@ -3,6 +3,7 @@ import { TourDefinition } from '@shared/components/tour/tour.models';
 export const NOAH_STUDIO_TOUR: TourDefinition = {
   id: 'noah-studio',
   title: 'NOAH Studio',
+  startEvent: 'noah-studio-playground-reset',
   welcome: {
     title: 'Welcome to',
     accentTitle: 'NOAH Studio',
@@ -16,67 +17,53 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
   },
   sections: [
     {
-      id: 'location',
-      label: 'Location',
+      id: 'welcome',
+      label: 'Welcome',
       steps: [
         {
-          id: 'search-location',
-          title: 'Search for a location',
-          text: 'Find a place to center the map and begin exploring available information for that area.',
+          id: 'welcome',
+          title: 'Welcome!',
+          text: 'This is the beginning of the NOAH Studio tutorial. This walkthrough will guide you through the main tools, navigation, and features you can use to explore hazard maps, weather data, and disaster risk information across the Philippines.',
+        },
+      ],
+    },
+    {
+      id: 'map-navigation',
+      label: 'Map Navigation',
+      steps: [
+        {
+          id: 'pan-around-map',
+          title: 'Pan Around the Map',
+          text: 'Left-click and drag anywhere on the map to move around and explore different locations.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTarget: '#sidebar',
+          placement: 'bottom-right',
+        },
+        {
+          id: 'rotate-and-tilt-view',
+          title: 'Rotate and Tilt View',
+          text: 'Right-click and drag on the map to rotate your view or tilt the map for a different perspective.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTarget: '#sidebar',
+          placement: 'bottom-right',
+        },
+        {
+          id: 'search-bar',
+          title: 'Search Bar',
+          text: 'Use the Search Location bar to jump to any city, municipality, or barangay in the Philippines. Just type a name, choose from the searched locations, and the map will travel there instantly.',
           target: '[data-tour-id="location-search"]',
+          spotlightTargets: ['[data-tour-id="location-search-options"]'],
+          advanceOnEvent: 'noah-tour-location-selected',
+          nextEvent: 'noah-tour-location-search-skipped',
           placement: 'right',
         },
-      ],
-    },
-    {
-      id: 'hazards',
-      label: 'Hazards',
-      steps: [
         {
-          id: 'explore-hazards',
-          title: 'Explore hazard layers',
-          text: 'Turn hazard layers on or off and adjust the available settings for the selected hazard.',
-          target: '[data-tour-id="hazard-layers"]',
-          placement: 'right',
-        },
-      ],
-    },
-    {
-      id: 'weather',
-      label: 'Weather',
-      steps: [
-        {
-          id: 'view-weather',
-          title: 'View weather updates',
-          text: 'Open weather layers to review satellite, typhoon, and temperature information.',
-          target: '[data-tour-id="weather-updates"]',
-          placement: 'right',
-        },
-      ],
-    },
-    {
-      id: 'risk',
-      label: 'Risk',
-      steps: [
-        {
-          id: 'assess-risk',
-          title: 'Assess risk',
-          text: 'Use the risk assessment tools to combine hazard and exposure information for your selected area.',
-          target: '[data-tour-id="risk-assessment"]',
-          placement: 'right',
-        },
-      ],
-    },
-    {
-      id: 'map',
-      label: 'Map',
-      steps: [
-        {
-          id: 'change-map-view',
-          title: 'Change the map view',
-          text: 'Switch between terrain and satellite views using the map control.',
-          target: '[data-tour-id="map-style"]',
-          placement: 'left',
+          id: 'explore-location',
+          title: 'Explore a Location',
+          text: 'After searching for a location, move the pin to any point on the map to view available hazard, weather, and disaster risk data for that place.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTarget: '#sidebar',
+          placement: 'bottom-right',
         },
       ],
     },
