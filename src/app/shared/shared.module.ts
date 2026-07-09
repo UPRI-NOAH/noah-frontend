@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PortalModule } from '@angular/cdk/portal';
 import { SearchComponent } from './components/search/search.component';
 import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
@@ -16,6 +18,9 @@ import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 import { TourComponent } from './components/tour/tour.component';
+import { TourStepComponent } from './components/tour-step/tour-step.component';
+import { TourWelcomeComponent } from './components/tour-welcome/tour-welcome.component';
+import { TourNavbarComponent } from './components/tour-navbar/tour-navbar.component';
 
 const modules = [CommonModule, FormsModule, ReactiveFormsModule];
 const components = [
@@ -33,8 +38,15 @@ const components = [
 const directives = [];
 const pipes = [ReplacePipe, SortPipe, SearchfilterPipe, SearchRiskAffectedPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
-  imports: [...modules],
+  declarations: [
+    ...components,
+    ...directives,
+    ...pipes,
+    TourStepComponent,
+    TourWelcomeComponent,
+    TourNavbarComponent,
+  ],
+  imports: [...modules, OverlayModule, PortalModule],
   exports: [...modules, ...components, ...directives, ...pipes],
 })
 export class SharedModule {}
