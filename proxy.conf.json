@@ -1,21 +1,21 @@
 {
   "/api/past-events": {
-    "target": "http://localhost:8083",
+    "target": "http://127.0.0.1:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "info"
   },
   "/api/forecast-summary": {
-    "target": "http://localhost:8083",
+    "target": "http://127.0.0.1:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "info"
   },
   "/ngrok-api": {
-    "target": "https://webgis-static.up.edu.ph",
+    "target": "https://panahon.up.edu.ph",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "info",
-    "pathRewrite": { "^/ngrok-api": "/api" }
+    "pathRewrite": { "^/ngrok-api": "" }
   }
 }

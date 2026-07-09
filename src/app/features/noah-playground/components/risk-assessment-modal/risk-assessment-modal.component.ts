@@ -53,6 +53,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
   summaryPanelOpen: boolean = false;
   typedSummary: string = '';
   areaSummary: string = '';
+  keyInsights: string[] = [];
   isTyping: boolean = false;
   private _typingTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -202,6 +203,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
     this.summaryPanelOpen = true;
     this.typedSummary = '';
     this.areaSummary = '';
+    this.keyInsights = [];
     this.isTyping = false;
 
     forkJoin([
@@ -288,6 +290,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
     this.pastEventSummaryLoading = true;
     this.typedSummary = '';
     this.areaSummary = '';
+    this.keyInsights = [];
     this.isTyping = false;
     if (this._typingTimer) {
       clearInterval(this._typingTimer);
@@ -319,6 +322,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
     this.pastEventResult = null;
     this.typedSummary = '';
     this.areaSummary = '';
+    this.keyInsights = [];
     if (this._typingTimer) {
       clearInterval(this._typingTimer);
       this._typingTimer = null;
@@ -351,6 +355,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
   private _startTypewriter(result: ForecastSummaryOutput) {
     this.typedSummary = '';
     this.areaSummary = '';
+    this.keyInsights = [];
     this.isTyping = true;
     const text = result.executive_summary;
     let i = 0;
@@ -360,7 +365,8 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
       } else {
         clearInterval(this._typingTimer!);
         this._typingTimer = null;
-        this.areaSummary = result.area_summary;
+        this.areaSummary = result.area_summary ?? '';
+        this.keyInsights = result.key_insights ?? [];
         this.isTyping = false;
       }
     }, 15);
@@ -425,7 +431,6 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
       affected_provinces: provinceMap.size,
       top_areas: topAreas,
       top_cities: topCities,
-      highest_hazard_level: 'High',
       notes: [
         'Counts exclude barangays tagged Little to None.',
         'Exposure is based on intersection with NOAH flood hazard layers.',

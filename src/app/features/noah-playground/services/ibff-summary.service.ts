@@ -33,11 +33,13 @@ export interface ForecastSummaryInput {
 
 export interface ForecastSummaryOutput {
   executive_summary: string;
-  area_summary: string;
+  // forecast summaries return key_insights; past-event summaries return area_summary
+  key_insights?: string[];
+  area_summary?: string;
   caveat: string;
   _source: 'llm' | 'fallback';
-  _model: string;
-  _generated_at: string;
+  _model?: string;
+  _generated_at?: string;
 }
 
 @Injectable({
