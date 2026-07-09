@@ -5,7 +5,7 @@ export const environment = {
   riskAssessmentApiUrl: 'https://panahon.up.edu.ph',
   mapbox: {
     accessToken:
-      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
+      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNsZHh1OGlkZTBpMmszb29hd3Q2NGxndTQifQ.nv4guJwtP9MN7eSAnm_E0Q',
     styles: {
       terrain: 'mapbox://styles/upri-noah/ckupb1t4ybxq517s530madpso',
       satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
