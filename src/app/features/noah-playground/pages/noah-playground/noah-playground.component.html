@@ -99,6 +99,7 @@
     <!-- Search Input Container -->
     <div
       class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl"
+      data-tour-id="location-search"
     >
       <noah-search
         class="flex-1 z-20"
@@ -470,7 +471,7 @@
       <!-- <noah-login></noah-login> -->
     </div>
 
-    <div class="relative z-50">
+    <div class="relative z-50" data-tour-id="location-search">
       <noah-search
         class="w-auto hidden md:block relative mb-2"
         [searchTerm]="searchTerm"
@@ -491,20 +492,23 @@
         scroll-smooth
       "
     >
-      <noah-exaggeration class="w-full"></noah-exaggeration>
+      <div data-tour-id="hazard-layers">
+        <noah-exaggeration class="w-full"></noah-exaggeration>
 
-      <ng-container *ngFor="let hazard of hazardTypes">
-        <noah-hazard-type
-          *ngIf="hazard.type === 'flood'"
-          class="w-full"
-          [hazard]="hazard"
-        >
-        </noah-hazard-type>
-      </ng-container>
+        <ng-container *ngFor="let hazard of hazardTypes">
+          <noah-hazard-type
+            *ngIf="hazard.type === 'flood'"
+            class="w-full"
+            [hazard]="hazard"
+          >
+          </noah-hazard-type>
+        </ng-container>
+      </div>
 
       <!-- WEATHER UPDATES SIDEPANEL -->
       <div
         class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6"
+        data-tour-id="weather-updates"
       >
         <div
           (click)="toggleExpanded()"
@@ -579,7 +583,9 @@
 
       <!-- END WEATHER UPDATES SIDEPANEL -->
 
-      <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+      <div data-tour-id="risk-assessment">
+        <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
+      </div>
       <noah-lightning-group class="w-full"></noah-lightning-group>
       <!-- <noah-dengue-risk-group class="w-full"></noah-dengue-risk-group> -->
 

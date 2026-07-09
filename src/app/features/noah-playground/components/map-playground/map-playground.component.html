@@ -1,4 +1,5 @@
-<div id="map"></div>
+<div id="map" data-tour-id="map-canvas"></div>
+<canvas #windCanvas id="wind-canvas"></canvas>
 
 <div id="distance" class="distance-container"></div>
 <div id="area" class="area-container my-2"></div>
@@ -21,10 +22,10 @@
 ></div>
 
 <div
-  class="map-icon absolute z-10 right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
+  class="map-icon absolute z-[60] right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
 >
   <div class="p-2">
-    <div class="dropdown inline-block relative">
+    <div class="dropdown inline-block relative" data-tour-id="map-style">
       <button
         class="
           bg-white
@@ -117,7 +118,7 @@
       </ul>
     </div>
     <div class="ml-2 mt-2">
-      <noah-tour></noah-tour>
+      <noah-tour [definition]="tourDefinition"></noah-tour>
     </div>
   </div>
 </div>

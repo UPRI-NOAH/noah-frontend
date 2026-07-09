@@ -115,6 +115,7 @@ import {
   TyphoonTrackService,
   TyphoonTrackType,
 } from '@features/noah-playground/services/typhoon-track.service';
+import { NOAH_STUDIO_TOUR } from '@features/noah-playground/tour/noah-studio-tour.config';
 import { url } from 'inspector';
 
 type MapStyle = 'terrain' | 'satellite';
@@ -159,6 +160,8 @@ Accessbility(Highcharts);
 export class MapPlaygroundComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  readonly tourDefinition = NOAH_STUDIO_TOUR;
+
   map!: Map;
 
   geolocateControl!: GeolocateControl;
@@ -440,7 +443,7 @@ export class MapPlaygroundComponent
 
     const applyPosition = () => {
       const helpButton = document.querySelector(
-        'noah-tour button'
+        '[data-tour-trigger="noah-studio"]'
       ) as HTMLButtonElement | null;
 
       if (helpButton) {
