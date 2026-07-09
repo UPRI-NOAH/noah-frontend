@@ -71,13 +71,20 @@ export class BaseComponent implements OnInit {
       }
 
       const activeIndex = swiperRef.activeIndex ?? 0;
+
       this.ngZone.run(() => {
         if (activeIndex === 0) {
-          const url = this.temperatureShown
-            ? '/weather-updates/temperature'
-            : '/weather-updates/rainfall-contour';
-          this.router.navigateByUrl(url);
-        } else if (activeIndex === 1) {
+          if (this.temperatureShown) {
+            this.wuService.activateTemperature();
+            this.router.navigateByUrl('/weather-updates/temperature');
+          } else {
+            this.wuService.activateRainfall();
+            this.router.navigateByUrl('/weather-updates/rainfall-contour');
+          }
+        } else {
+          this.wuService.activateTyphoonTrack();
+          this.wuService.triggerZoomToTyphoon();
+
           this.router.navigateByUrl('/weather-updates/typhoon-track');
         }
       });
@@ -88,19 +95,35 @@ export class BaseComponent implements OnInit {
 
     // Function to safely move swiper based on URL
     const updateSwiperFromUrl = (url: string) => {
-      if (!swiperRef || swiperRef.destroyed) return;
+      if (!swiperRef || swiperRef.destroyed) {
+        return;
+      }
 
       this.ngZone.runOutsideAngular(() => {
+        let targetIndex = 0;
+
         if (url.includes('/weather-updates/typhoon-track')) {
-          this.suppressRouteOnNextSlideChange = true;
-          swiperRef.slideTo(1);
+          targetIndex = 1;
         } else if (
           url.includes('/weather-updates/rainfall-contour') ||
           url.includes('/weather-updates/temperature')
         ) {
-          // Temperature UI is shown within the rainfall slide on mobile.
+          // Rainfall and Temperature share the first slide on mobile.
+          targetIndex = 0;
+        } else {
+          return;
+        }
+        // Mobile only: when returning to the Rainfall/Temperature slide,
+        // restore the default overlay opacity.
+        // if (window.innerWidth < 768 && targetIndex === 0) {
+        //   this.ngZone.run(() => {
+        //     this.wuService.restoreWeatherOverlays();
+        //   });
+        // }
+        // Only move if the swiper is not already on the correct slide.
+        if (swiperRef.activeIndex !== targetIndex) {
           this.suppressRouteOnNextSlideChange = true;
-          swiperRef.slideTo(0);
+          swiperRef.slideTo(targetIndex);
         }
       });
     };
@@ -120,6 +143,9 @@ export class BaseComponent implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
+        if (!event.urlAfterRedirects.startsWith('/weather-updates')) {
+          return;
+        }
         updateSwiperFromUrl(event.url);
       });
 
@@ -134,11 +160,29 @@ export class BaseComponent implements OnInit {
     };
   }
 
-  slideNext() {
-    this.swiper?.swiperRef.slideNext();
+  slideNext(): void {
+    this.swiper?.swiperRef.slideTo(1);
+
+    this.wuService.activateTyphoonTrack();
+    this.wuService.triggerZoomToTyphoon();
+
+    this.router.navigateByUrl('/weather-updates/typhoon-track');
   }
 
-  slidePrev() {
-    this.swiper?.swiperRef.slidePrev();
+  slidePrev(): void {
+    this.swiper?.swiperRef.slideTo(0);
+
+    if (this.temperatureShown) {
+      this.wuService.activateTemperature();
+      this.router.navigateByUrl('/weather-updates/temperature');
+    } else {
+      this.wuService.activateRainfall();
+      this.router.navigateByUrl('/weather-updates/rainfall-contour');
+    }
+  }
+
+  goHome(): void {
+    this.wuService.resetWeatherUpdates();
+    this.router.navigateByUrl('/');
   }
 }

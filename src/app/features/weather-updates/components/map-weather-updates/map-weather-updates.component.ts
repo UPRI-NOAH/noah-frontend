@@ -394,12 +394,9 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           },
         });
 
-        const rainfallOpacity$ = this.wuService
-          .getRainfallContour$(rainfallContourType)
-          .pipe(
-            map((rainfall) => rainfall.opacity),
-            distinctUntilChanged()
-          );
+        const overlayOpacity$ = this.wuService.overlayOpacity$.pipe(
+          distinctUntilChanged()
+        );
 
         const selectedRainfallContour$ =
           this.wuService.selectedRainfallContourType$.pipe(
@@ -411,21 +408,18 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         );
 
         combineLatest([
-          rainfallOpacity$,
+          overlayOpacity$,
           selectedRainfallContour$,
           rainfallShown$,
         ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(
-            ([rainfallOpacity, selectedRainfallContour, rainfallShown]) => {
-              let opacity = +(
-                rainfallShown &&
-                rainfallOpacity &&
-                selectedRainfallContour === rainfallContourType
-              );
-              if (opacity) {
-                opacity = rainfallOpacity / 100;
-              }
+            ([overlayOpacity, selectedRainfallContour, rainfallShown]) => {
+              const opacity =
+                rainfallShown && selectedRainfallContour === rainfallContourType
+                  ? overlayOpacity / 100
+                  : 0;
+
               this.map.setPaintProperty(
                 rainfallContourType,
                 'raster-opacity',
@@ -509,24 +503,22 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
             shareReplay(1)
           );
 
-        const temperatureOpacity$ = this.wuService
-          .getTemperature$(temperatureType)
-          .pipe(
-            map((temperature) => temperature.opacity),
-            distinctUntilChanged()
-          );
+        const overlayOpacity$ = this.wuService.overlayOpacity$.pipe(
+          distinctUntilChanged()
+        );
 
-        combineLatest([soloShown$, selectedTemperature$, temperatureOpacity$])
+        combineLatest([soloShown$, selectedTemperature$, overlayOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(([soloShown, groupShown, temperatureOpacity]) => {
-            let newOpacity = +(soloShown && groupShown === temperatureType);
-            if (newOpacity) {
-              newOpacity = temperatureOpacity / 100;
-            }
+          .subscribe(([soloShown, selectedTemperature, overlayOpacity]) => {
+            const opacity =
+              soloShown && selectedTemperature === temperatureType
+                ? overlayOpacity / 100
+                : 0;
+
             this.map.setPaintProperty(
               temperatureType,
               'raster-opacity',
-              newOpacity
+              opacity
             );
           });
 

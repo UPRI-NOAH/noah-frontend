@@ -76,28 +76,15 @@ export class LandingPageComponent implements OnInit {
       behavior: 'smooth',
     });
   }
-  weatherUpdate() {
-    //reset rainfall contour opacity to 100 for all types
-    ['1hr', '3hr', '6hr', '12hr', '24hr'].forEach((type) => {
-      this.wuService.setRainfallContourOpacity(100, type as any);
-    });
-    //disable typhoon track and weather satellite overlays
-    this.wuService.setTyphoonTrackVisibility(false);
-    this.wuService.setWeatherSatelliteVisibility(false);
-    this.wuService.setTemperatureVisibility(false);
+  weatherUpdate(): void {
+    this.wuService.activateRainfall();
   }
 
-  typhoonTrack() {
-    // Automatically enable typhoon track and himawari satellite when navigating from landing page
-    const selectedType = this.wuService.getSelectedRainfallContourType();
-    this.wuService.setRainfallContourOpacity(0, selectedType);
-    this.wuService.enableTyphoonTrackAndSatellite();
-    this.wuService.setTemperatureVisibility(false);
+  typhoonTrack(): void {
+    this.wuService.activateTyphoonTrack();
   }
 
-  temperature() {
-    this.wuService.enableTemperature();
-    this.wuService.setTyphoonTrackVisibility(false);
-    this.wuService.setWeatherSatelliteVisibility(false);
+  temperature(): void {
+    this.wuService.activateTemperature();
   }
 }

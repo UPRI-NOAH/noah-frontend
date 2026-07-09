@@ -125,12 +125,12 @@ export class RainfallContourButtonComponent implements OnInit {
   }
 
   selectRainfallContourType(type: RainfallContourTypes) {
-    this.router.navigateByUrl('/weather-updates/rainfall-contour');
+    if (!this.wuService.getTyphoonTrack().shown) {
+      this.router.navigateByUrl('/weather-updates/rainfall-contour');
+    }
     this.isTemperatureActive = false;
     this.activeRainfallContourType = type;
     this.wuService.selectRainfallContourType(type);
-    const selectedType = this.wuService.getSelectedRainfallContourType();
-    this.wuService.setRainfallContourOpacity(80, selectedType);
   }
 
   selectActiveRainfallContourType(type: RainfallContourTypes) {
@@ -155,19 +155,17 @@ export class RainfallContourButtonComponent implements OnInit {
     return `${label}`;
   }
 
-  changeOpacity(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const opacity = Number(input.value);
+  changeOpacity(): void {
+    const opacity = Number(this.sliderCtrl.value);
 
     if (this.isTemperatureActive) {
       this.wuService.setTemperatureOpacity(opacity, this.activeTemperatureType);
-      return;
+    } else {
+      this.wuService.setRainfallContourOpacity(
+        opacity,
+        this.activeRainfallContourType
+      );
     }
-
-    this.wuService.setRainfallContourOpacity(
-      opacity,
-      this.activeRainfallContourType
-    );
   }
   getMobileIcon(type: RainfallContourTypes): string {
     // e.g. 1hr -> 1hr.svg
@@ -204,16 +202,14 @@ export class RainfallContourButtonComponent implements OnInit {
    * Select temperature type (heat_index or max_temperature)
    */
   selectTemperatureType(tempType: TemperatureType): void {
-    this.router.navigateByUrl('/weather-updates/temperature');
-    this.wuService.enableTemperature();
-    const tempSelected = this.wuService.getTemperatureType();
-    this.wuService.setTemperatureOpacity(80, tempSelected);
+    if (!this.wuService.getTyphoonTrack().shown) {
+      this.router.navigateByUrl('/weather-updates/temperature');
+    }
+
     this.isTemperatureActive = true;
     this.activeTemperatureType = tempType;
+
     this.wuService.selectTemperatureType(tempType);
-    this.sliderCtrl.setValue(this.wuService.getTemperatureOpacity(tempType), {
-      emitEvent: false,
-    });
   }
 
   /**

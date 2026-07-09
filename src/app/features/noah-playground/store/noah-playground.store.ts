@@ -650,8 +650,6 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
   lightning: {
     shown: false,
-  temperature: {
-    shown: true,
     expanded: false,
     selectedType: 'realtime-lightning',
     types: {

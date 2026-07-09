@@ -35,67 +35,64 @@ export class TyphoonTrackGroupComponent implements OnInit {
   }
 
   private autoEnableFeatures(): void {
-    if (this.router.url === '/weather-updates/typhoon-track') {
-      const typhoonTrack = this.wuService.getTyphoonTrack();
-      const weatherSatellite = this.wuService.getWeatherSatellites();
-      const selectedType = this.wuService.getSelectedRainfallContourType();
-      this.wuService.setRainfallContourOpacity(0, selectedType);
-      const tempType = this.wuService.getTemperatureType();
-      this.wuService.setTemperatureOpacity(0, tempType);
-
-      if (!typhoonTrack.shown || !weatherSatellite.shown) {
-        this.shown = true; // ✅ sync checkbox UI
-        this.wuService.enableTyphoonTrackAndSatellite();
-        this.wuService.triggerZoomToTyphoon();
-      }
-    } else if (this.router.url === '/weather-updates/rainfall-contour') {
-      const selectedType = this.wuService.getSelectedRainfallContourType();
-      this.wuService.setRainfallContourOpacity(80, selectedType);
-    } else if (this.router.url === '/weather-updates/temperature') {
-      this.wuService.enableTemperature();
-      const selectedType = this.wuService.getSelectedRainfallContourType();
-      this.wuService.setRainfallContourOpacity(0, selectedType);
+    if (!this.router.url.startsWith('/weather-updates')) {
+      return;
     }
+    const typhoonShown = this.wuService.getTyphoonTrack().shown;
+
+    switch (this.router.url) {
+      case '/weather-updates/typhoon-track':
+        if (!typhoonShown) {
+          this.wuService.activateTyphoonTrack();
+          this.wuService.triggerZoomToTyphoon();
+        }
+        break;
+
+      case '/weather-updates/rainfall-contour':
+        this.wuService.activateRainfall();
+
+        // Keep Typhoon checkbox in sync
+        this.shown = typhoonShown;
+        break;
+
+      case '/weather-updates/temperature':
+        this.wuService.activateTemperature();
+
+        // Keep Typhoon checkbox in sync
+        this.shown = typhoonShown;
+        break;
+
+      default:
+        // If Typhoon Track is off but URL is still /typhoon-track,
+        // redirect to the current active weather overlay.
+        if (!typhoonShown) {
+          this.router.navigateByUrl(
+            this.wuService.getTemperatureShown()
+              ? '/weather-updates/temperature'
+              : '/weather-updates/rainfall-contour'
+          );
+        }
+        break;
+    }
+    this.shown = typhoonShown;
   }
 
-  toggleShown(event: Event) {
+  toggleShown(event: Event): void {
     event.stopPropagation();
     event.stopImmediatePropagation();
 
-    this.shown = !this.shown;
-    this.wuService.toggleTyphoonTrackGroupVisibility(this.shown);
-    this.wuService.toggleWeatherSatelliteVisibility();
-
-    const selectedType = this.wuService.getSelectedRainfallContourType();
-    const tempType = this.wuService.getTemperatureType();
-    // Zoom when shown
-    if (this.shown) {
+    if (!this.shown) {
+      // Turn ON Typhoon Track
+      this.wuService.activateTyphoonTrack();
       this.wuService.triggerZoomToTyphoon();
-    }
-
-    // Update opacity based on route
-    if (
-      this.router.url === '/weather-updates/typhoon-track' ||
-      this.router.url === '/weather-updates/temperature' ||
-      this.router.url === '/weather-updates/rainfall-contour'
-    ) {
-      if (this.shown) {
-        this.wuService.setRainfallContourOpacity(0, selectedType);
-        this.wuService.setTemperatureOpacity(0, tempType);
-      } else {
-        this.wuService.setRainfallContourOpacity(0, selectedType);
-        this.wuService.setTemperatureOpacity(80, tempType);
-      }
-    }
-
-    // ✅ Update URL based on checkbox state
-    if (this.shown) {
       this.router.navigateByUrl('/weather-updates/typhoon-track');
     } else {
-      const activeView = this.wuService.getTemperatureShown()
-        ? '/weather-updates/temperature'
-        : '/weather-updates/rainfall-contour';
-      this.router.navigateByUrl(activeView);
+      // Turn OFF Typhoon Track
+      this.wuService.setTyphoonTrackVisibility(false);
+      this.wuService.setWeatherSatelliteVisibility(false);
+
+      // Navigate back to the active weather overlay
+      this.router.navigateByUrl(this.wuService.getActiveWeatherRoute());
     }
   }
 
@@ -104,12 +101,12 @@ export class TyphoonTrackGroupComponent implements OnInit {
     this.wuService.toggleTyphoonTrackGroupExpansion();
   }
 
-  typhoonTrack() {
-    // Set opacity to 0 for all rainfall contour types
-    ['1hr', '3hr', '6hr', '12hr', '24hr'].forEach((type) => {
-      this.wuService.setRainfallContourOpacity(0, type as any);
-    });
-    this.wuService.enableTyphoonTrackAndSatellite();
-    this.router.navigate(['weather-updates/typhoon-track']);
+  typhoonTrack(): void {
+    this.shown = true;
+
+    this.wuService.activateTyphoonTrack();
+    this.wuService.triggerZoomToTyphoon();
+
+    this.router.navigateByUrl('/weather-updates/typhoon-track');
   }
 }

@@ -81,6 +81,18 @@ export class WeatherUpdatesService {
     );
   }
 
+  get overlayOpacity$(): Observable<number> {
+    return this.store.state$.pipe(
+      map((state) => state.overlayOpacity),
+      distinctUntilChanged(),
+      shareReplay(1)
+    );
+  }
+
+  getOverlayOpacity(): number {
+    return this.store.state.overlayOpacity;
+  }
+
   getSelectedRainfallContourType(): RainfallContourTypes {
     return this.store.state.rainfallContourTypes.selectedType;
   }
@@ -162,25 +174,28 @@ export class WeatherUpdatesService {
     opacity: number,
     rainfallContourType: RainfallContourTypes
   ): void {
-    const rainfallContourTypes: RainfallContourState = {
-      ...this.store.state.rainfallContourTypes,
-      fade: {
-        ...this.store.state.rainfallContourTypes.fade,
-        [rainfallContourType]: { opacity },
-      },
-    };
+    this.setOverlayOpacity(opacity);
+  }
+
+  setOverlayOpacity(opacity: number): void {
+    console.trace('setOverlayOpacity', opacity);
+
     this.store.patch(
-      { rainfallContourTypes },
-      `Rainfall Contour - update ${rainfallContourType}'s opacity to ${opacity}`
+      {
+        overlayOpacity: opacity,
+      },
+      `Overlay opacity set to ${opacity}`
     );
+  }
+
+  hideWeatherOverlays(): void {
+    this.setOverlayOpacity(0);
   }
 
   getRainfallContour$(
     rainfallContourType: RainfallContourTypes
   ): Observable<{ opacity: number }> {
-    return this.store.state$.pipe(
-      map((state) => state.rainfallContourTypes.fade[rainfallContourType])
-    );
+    return this.overlayOpacity$.pipe(map((opacity) => ({ opacity })));
   }
 
   // Getters for Typhoon Track.
@@ -299,40 +314,56 @@ export class WeatherUpdatesService {
   }
 
   // Enable both typhoon track and himawari satellite
-  enableTyphoonTrackAndSatellite(): void {
-    // Enable typhoon track
-    const typhoonTrack = {
-      ...this.store.state.typhoonTrack,
-      shown: true,
-      expanded: true,
-    };
-
-    // Enable weather satellite (himawari)
-    const weatherSatellite = {
-      ...this.store.state.weatherSatellite,
-      shown: true,
-      expanded: true,
-      selectedType: 'himawari' as WeatherSatelliteType,
-    };
-
-    // Update both states
+  activateTyphoonTrack(): void {
     this.store.patch(
       {
-        typhoonTrack,
-        weatherSatellite,
+        typhoonTrack: {
+          ...this.store.state.typhoonTrack,
+          shown: true,
+          expanded: true,
+        },
+
+        weatherSatellite: {
+          ...this.store.state.weatherSatellite,
+          shown: true,
+          expanded: true,
+        },
       },
-      'Enable typhoon track and himawari satellite from landing page'
+      'Activate Typhoon Track and Himawari Satellite'
     );
   }
 
-  enableTemperature(): void {
-    const temperature = {
-      ...this.store.state.temperature,
-      shown: true,
-      expanded: true,
-    };
+  activateRainfall(): void {
+    this.store.patch(
+      {
+        rainfallContourTypes: {
+          ...this.store.state.rainfallContourTypes,
+          shown: true,
+        },
+        temperature: {
+          ...this.store.state.temperature,
+          shown: false,
+        },
+      },
+      'Activate Rainfall'
+    );
+  }
 
-    this.store.patch({ temperature }, `Enable Temperature from landing page`);
+  activateTemperature(): void {
+    this.store.patch(
+      {
+        rainfallContourTypes: {
+          ...this.store.state.rainfallContourTypes,
+          shown: false,
+        },
+        temperature: {
+          ...this.store.state.temperature,
+          shown: true,
+          expanded: true,
+        },
+      },
+      'Activate Temperature'
+    );
   }
 
   //explicitly set typhoon track visibility
@@ -344,21 +375,6 @@ export class WeatherUpdatesService {
     this.store.patch(
       { typhoonTrack },
       `Set typhoon track visibility to ${visible}`
-    );
-  }
-
-  setTemperatureVisibility(visible: boolean): void {
-    const temperature = {
-      ...this.store.state.temperature,
-      shown: visible,
-    };
-    const rainfallContourTypes = {
-      ...this.store.state.rainfallContourTypes,
-      shown: !visible,
-    };
-    this.store.patch(
-      { temperature, rainfallContourTypes },
-      `Set Temperature visibility to ${visible}`
     );
   }
 
@@ -378,6 +394,39 @@ export class WeatherUpdatesService {
     this.zoomTyphoon.next();
   }
 
+  resetWeatherUpdates(): void {
+    this.store.patch(
+      {
+        typhoonTrack: {
+          ...this.store.state.typhoonTrack,
+          shown: false,
+          expanded: false,
+        },
+
+        weatherSatellite: {
+          ...this.store.state.weatherSatellite,
+          shown: false,
+          expanded: false,
+        },
+
+        rainfallContourTypes: {
+          ...this.store.state.rainfallContourTypes,
+          shown: true,
+        },
+
+        temperature: {
+          ...this.store.state.temperature,
+          shown: false,
+        },
+      },
+      'Reset Weather Updates'
+    );
+  }
+
+  // restoreWeatherOverlays(): void {
+  //   this.setOverlayOpacity(80);
+  // }
+
   // TEMPERATURE
 
   getTemperatures(): TemperatureState {
@@ -388,48 +437,46 @@ export class WeatherUpdatesService {
   }
 
   getTemperature$(type: TemperatureType): Observable<TemperatureTypeState> {
-    return this.store.state$.pipe(
-      map((state) => state.temperature.types[type])
+    return this.overlayOpacity$.pipe(
+      map((opacity) => ({
+        opacity,
+        fetched: this.store.state.temperature.types[type].fetched,
+      }))
     );
   }
 
   getTemperatureOpacity(type: TemperatureType): number {
-    return this.store.state.temperature.types[type].opacity;
+    return this.store.state.overlayOpacity;
   }
 
-  setTemperatureOpacity(opacity: number, type: TemperatureType) {
-    const temperature: TemperatureState = {
-      ...this.store.state.temperature,
-      types: {
-        ...this.store.state.temperature.types,
-        [type]: {
-          ...this.store.state.temperature.types[type],
-          opacity,
-        },
-      },
-    };
+  getActiveWeatherRoute(): string {
+    return this.getTemperatureShown()
+      ? '/weather-updates/temperature'
+      : '/weather-updates/rainfall-contour';
+  }
 
-    this.store.patch(
-      { temperature },
-      `Temperature - set to ${type} and Opacity to ${opacity}`
-    );
+  setTemperatureOpacity(opacity: number, type: TemperatureType): void {
+    this.setOverlayOpacity(opacity);
   }
 
   selectTemperatureType(tempType: TemperatureType): void {
-    const temperature = {
-      ...this.store.state.temperature,
-      shown: true,
-    };
-    const rainfallContourTypes = {
-      ...this.store.state.rainfallContourTypes,
-      shown: false,
-    };
-
-    temperature.selectedType = tempType;
+    console.log('Before patch:', this.store.state);
     this.store.patch(
-      { temperature, rainfallContourTypes },
+      {
+        temperature: {
+          ...this.store.state.temperature,
+          shown: true,
+          expanded: true,
+          selectedType: tempType,
+        },
+        rainfallContourTypes: {
+          ...this.store.state.rainfallContourTypes,
+          shown: false,
+        },
+      },
       `Select Temperature Type: ${tempType}`
     );
+    console.log('After patch:', this.store.state);
   }
 
   selectTemperatureForecastDay(day: TemperatureForecastDay): void {

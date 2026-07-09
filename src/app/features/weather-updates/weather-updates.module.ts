@@ -13,6 +13,8 @@ import { RainfallContourButtonComponent } from './components/rainfall-contour-bu
 import { TyphoonTrackGroupComponent } from './components/typhoon-track-group/typhoon-track-group.component';
 import { TyphoonTrackSoloComponent } from './components/typhoon-track-solo/typhoon-track-solo.component';
 import { WeatherSatelliteComponent } from './components/weather-satellite/weather-satellite.component';
+import { WuTemperatureGroupComponent } from './components/wu-temperature-group/wu-temperature-group.component';
+import { WuTemperatureSoloComponent } from './components/wu-temperature-solo/wu-temperature-solo.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { WeatherSatelliteComponent } from './components/weather-satellite/weathe
     TyphoonTrackGroupComponent,
     TyphoonTrackSoloComponent,
     WeatherSatelliteComponent,
+    WuTemperatureGroupComponent,
+    WuTemperatureSoloComponent,
   ],
   imports: [
     CommonModule,
