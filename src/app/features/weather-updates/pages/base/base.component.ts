@@ -19,6 +19,10 @@ export class BaseComponent implements OnInit {
   config: SwiperOptions = {
     slidesPerView: 1,
   };
+
+  private suppressRouteOnNextSlideChange = false;
+  private temperatureShown = false;
+
   constructor(
     private wuService: WeatherUpdatesService,
     private router: Router,
@@ -28,6 +32,9 @@ export class BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentLocation$ = this.wuService.currentLocation$;
+    this.wuService.temperatureShown$.subscribe((shown) => {
+      this.temperatureShown = shown;
+    });
   }
 
   selectPlace(selectedPlace) {
@@ -58,11 +65,26 @@ export class BaseComponent implements OnInit {
 
     // Ensure swiper is initialized
     const handleSlideChange = () => {
+      if (this.suppressRouteOnNextSlideChange) {
+        this.suppressRouteOnNextSlideChange = false;
+        return;
+      }
+
       const activeIndex = swiperRef.activeIndex ?? 0;
+
       this.ngZone.run(() => {
         if (activeIndex === 0) {
-          this.router.navigateByUrl('/weather-updates/rainfall-contour');
-        } else if (activeIndex === 1) {
+          if (this.temperatureShown) {
+            this.wuService.activateTemperature();
+            this.router.navigateByUrl('/weather-updates/temperature');
+          } else {
+            this.wuService.activateRainfall();
+            this.router.navigateByUrl('/weather-updates/rainfall-contour');
+          }
+        } else {
+          this.wuService.activateTyphoonTrack();
+          this.wuService.triggerZoomToTyphoon();
+
           this.router.navigateByUrl('/weather-updates/typhoon-track');
         }
       });
@@ -73,13 +95,35 @@ export class BaseComponent implements OnInit {
 
     // Function to safely move swiper based on URL
     const updateSwiperFromUrl = (url: string) => {
-      if (!swiperRef || swiperRef.destroyed) return;
+      if (!swiperRef || swiperRef.destroyed) {
+        return;
+      }
 
       this.ngZone.runOutsideAngular(() => {
+        let targetIndex = 0;
+
         if (url.includes('/weather-updates/typhoon-track')) {
-          swiperRef.slideTo(1);
-        } else if (url.includes('/weather-updates/rainfall-contour')) {
-          swiperRef.slideTo(0);
+          targetIndex = 1;
+        } else if (
+          url.includes('/weather-updates/rainfall-contour') ||
+          url.includes('/weather-updates/temperature')
+        ) {
+          // Rainfall and Temperature share the first slide on mobile.
+          targetIndex = 0;
+        } else {
+          return;
+        }
+        // Mobile only: when returning to the Rainfall/Temperature slide,
+        // restore the default overlay opacity.
+        // if (window.innerWidth < 768 && targetIndex === 0) {
+        //   this.ngZone.run(() => {
+        //     this.wuService.restoreWeatherOverlays();
+        //   });
+        // }
+        // Only move if the swiper is not already on the correct slide.
+        if (swiperRef.activeIndex !== targetIndex) {
+          this.suppressRouteOnNextSlideChange = true;
+          swiperRef.slideTo(targetIndex);
         }
       });
     };
@@ -99,15 +143,46 @@ export class BaseComponent implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
+        if (!event.urlAfterRedirects.startsWith('/weather-updates')) {
+          return;
+        }
         updateSwiperFromUrl(event.url);
       });
+
+    const updateRouterFromUrl = (url: string) => {
+      if (url.includes('/weather-updates/temperature')) {
+        this.suppressRouteOnNextSlideChange = true;
+        swiperRef.slideTo(0);
+        this.router.navigateByUrl('/weather-updates/temperature', {
+          skipLocationChange: false,
+        });
+      }
+    };
   }
 
-  slideNext() {
-    this.swiper?.swiperRef.slideNext();
+  slideNext(): void {
+    this.swiper?.swiperRef.slideTo(1);
+
+    this.wuService.activateTyphoonTrack();
+    this.wuService.triggerZoomToTyphoon();
+
+    this.router.navigateByUrl('/weather-updates/typhoon-track');
   }
 
-  slidePrev() {
-    this.swiper?.swiperRef.slidePrev();
+  slidePrev(): void {
+    this.swiper?.swiperRef.slideTo(0);
+
+    if (this.temperatureShown) {
+      this.wuService.activateTemperature();
+      this.router.navigateByUrl('/weather-updates/temperature');
+    } else {
+      this.wuService.activateRainfall();
+      this.router.navigateByUrl('/weather-updates/rainfall-contour');
+    }
+  }
+
+  goHome(): void {
+    this.wuService.resetWeatherUpdates();
+    this.router.navigateByUrl('/');
   }
 }

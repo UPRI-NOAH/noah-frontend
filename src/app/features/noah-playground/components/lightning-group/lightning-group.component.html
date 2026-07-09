@@ -24,9 +24,7 @@
         />
       </label>
       <div class="flex flex-col ml-3">
-        <div class="text-base leading-none font-bold">
-          Weather Satellite Image
-        </div>
+        <div class="text-xl leading-none font-bold">Lightning Data</div>
       </div>
     </div>
     <div class="cursor-pointer">
@@ -70,16 +68,51 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="pl-3">
-      <div class="items-center">
-        <!-- CRITICAL FACILITY START -->
-        <noah-weather
-          *ngFor="let weatherSat of weatherSatellite"
-          [name]="weatherSat"
-        ></noah-weather>
-        <!-- CRITICAL FACILITY END -->
-        <hr class="p-2" />
-      </div>
+    <div class="items-center">
+      <noah-lightning
+        *ngFor="let lightningType of lightningTypes"
+        [lightningType]="lightningType"
+        class="pt-4"
+      ></noah-lightning>
     </div>
+
+    <section class="px-5 md:px-0 mb-1">
+      <div class="text-base tracking-wide mb-2">
+        <span class="font-bold">Legend:</span>
+        <div class="pl-6">
+          <div class="flex items-center mt-1">
+            <label class="inline-flex items-center" for="redCheckBox">
+              <div
+                class="h-6 w-6 mx-auto rounded-md"
+                style="background-color: #eb5757"
+              ></div>
+              <span class="ml-2">Cloud to Cloud</span>
+            </label>
+          </div>
+          <div class="flex items-center mt-1">
+            <label class="inline-flex items-center" for="redCheckBox">
+              <div
+                class="h-6 w-6 mx-auto rounded-md"
+                style="background-color: #f2c94c"
+              ></div>
+              <span class="ml-2">Cloud to Ground</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 mt-2 md:px-0 mb-1">
+      <p class="italic text-xs tracking-wide mb-2">
+        <span class="font-bold">Source:</span>
+        <a
+          href="https://www.panahon.gov.ph/"
+          target="_blank"
+          class="text-primary"
+        >
+          PANaHON (DOST-PAGASA)
+        </a>
+      </p>
+    </section>
   </div>
 </div>

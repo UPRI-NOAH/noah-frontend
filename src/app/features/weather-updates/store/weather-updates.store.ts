@@ -22,6 +22,21 @@ export type MapStyle = 'terrain' | 'satellite';
 
 export type RainfallContourTypes = typeof RainfallContourType[number];
 
+export const TEMPERATURE_FORECAST_DAYS = [
+  { label: 'Latest', value: 1 },
+  { label: '+1D', value: 2 },
+  { label: '+2D', value: 3 },
+  { label: '+3D', value: 4 },
+  { label: '+4D', value: 5 },
+] as const;
+
+export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
+
+export type TemperatureType = typeof TEMPERATURE[number];
+
+export type TemperatureForecastDay =
+  typeof TEMPERATURE_FORECAST_DAYS[number]['value'];
+
 export type RainfallContourState = {
   shown: boolean;
   selectedType: RainfallContourTypes;
@@ -35,6 +50,24 @@ export type RainfallContourTypeState = {
 export type TyphoonTrackState = {
   shown: boolean;
   expanded: boolean;
+};
+
+export type TemperatureState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: TemperatureType;
+  selectedForecastDay: TemperatureForecastDay;
+  types: TemperatureTypesState;
+};
+
+export type TemperatureTypesState = {
+  heat_index: TemperatureTypeState;
+  max_temperature: TemperatureTypeState;
+};
+
+export type TemperatureTypeState = {
+  opacity: number;
+  fetched: boolean;
 };
 
 export const WEATHER_SATELLITE_ARR = ['himawari'] as const;
@@ -61,9 +94,11 @@ type WeatherUpdatesState = {
   center: { lng: number; lat: number };
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
+  overlayOpacity: number;
   rainfallContourTypes: RainfallContourState;
   typhoonTrack: TyphoonTrackState;
   weatherSatellite: WeatherSatelliteState;
+  temperature: TemperatureState;
 };
 
 const createInitialValue = (): WeatherUpdatesState => {
@@ -72,6 +107,7 @@ const createInitialValue = (): WeatherUpdatesState => {
     center: null,
     currentCoords: PH_DEFAULT_CENTER,
     currentLocation: '',
+    overlayOpacity: 80,
     rainfallContourTypes: {
       shown: true,
       selectedType: '1hr',
@@ -95,6 +131,22 @@ const createInitialValue = (): WeatherUpdatesState => {
       types: {
         himawari: {
           opacity: 60,
+        },
+      },
+    },
+    temperature: {
+      shown: false,
+      expanded: false,
+      selectedType: 'heat_index',
+      selectedForecastDay: 1,
+      types: {
+        heat_index: {
+          opacity: 80,
+          fetched: false,
+        },
+        max_temperature: {
+          opacity: 80,
+          fetched: false,
         },
       },
     },

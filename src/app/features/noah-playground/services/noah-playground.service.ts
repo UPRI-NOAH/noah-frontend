@@ -32,6 +32,9 @@ import {
   BoundariesGroupState,
   BoundariesType,
   BoundariesState,
+  LightningState,
+  LightningType,
+  LightningTypeState,
   TemperatureType,
   TemperatureTypeState,
   TemperatureState,
@@ -229,6 +232,17 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.typhoonTrack.expanded));
   }
 
+  get lightningGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.shown));
+  }
+
+  get lightningGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.expanded));
+  }
+
+  get selectedLightning$(): Observable<LightningType> {
+    return this.store.state$.pipe(map((state) => state.lightning.selectedType));
+  }
   get temperatureShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.temperature.shown));
   }
@@ -246,6 +260,16 @@ export class NoahPlaygroundService {
   get selectedTemperatureForecastDay$(): Observable<TemperatureForecastDay> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedForecastDay)
+    );
+  }
+
+  get weatherUpdatesGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.weatherUpdates.shown));
+  }
+
+  get weatherUpdatesGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherUpdates.expanded)
     );
   }
 
@@ -1210,6 +1234,103 @@ export class NoahPlaygroundService {
     this.store.patch(
       { typhoonTrack },
       `update typhoon track state expanded to ${!expanded}`
+    );
+  }
+
+  getLightningType(): LightningState {
+    return this.store.state.lightning;
+  }
+
+  getLightningTypes(type: LightningType): LightningTypeState {
+    return this.store.state.lightning.types[type];
+  }
+
+  getLightningType$(type: LightningType): Observable<LightningTypeState> {
+    return this.store.state$.pipe(map((state) => state.lightning.types[type]));
+  }
+
+  getLightningTypeOpacity(type: LightningType): number {
+    return this.store.state.lightning.types[type].opacity;
+  }
+
+  setLightningTypeOpacity(opacity: number, type: LightningType) {
+    const lightning: LightningState = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.types[type].opacity = opacity;
+    this.store.patch(
+      { lightning },
+      `Lightning - update ${type}'s opacity to ${opacity}`
+    );
+  }
+
+  toggleLightningGroupShown(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.shown = !lightning.shown;
+
+    this.store.patch(
+      {
+        lightning,
+      },
+      `Lightning Group State shown to ${lightning.shown}`
+    );
+  }
+
+  toggleLightningGroupExpanded(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    const { expanded } = lightning;
+    lightning.expanded = !expanded;
+
+    this.store.patch(
+      { lightning },
+      `update lightning state expanded to ${!expanded}`
+    );
+  }
+
+  setLightningType(lightningType: LightningType): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.selectedType = lightningType;
+
+    this.store.patch(
+      { lightning },
+      `Select lightning type to ${lightningType}`
+    );
+  }
+  toggleWeatherUpdatesGroupShown(): void {
+    const weatherUpdates = {
+      ...this.store.state.weatherUpdates,
+    };
+
+    const { shown } = weatherUpdates;
+    weatherUpdates.shown = !shown;
+
+    this.store.patch(
+      { weatherUpdates },
+      `Weather Updates Group State shown to ${!shown}`
+    );
+  }
+
+  toggleWeatherUpdatesGroupExpanded(): void {
+    const weatherUpdates = {
+      ...this.store.state.weatherUpdates,
+    };
+
+    const { expanded } = weatherUpdates;
+    weatherUpdates.expanded = !expanded;
+
+    this.store.patch(
+      { weatherUpdates },
+      `update Weather Updates state expanded to ${!expanded}`
     );
   }
 }
