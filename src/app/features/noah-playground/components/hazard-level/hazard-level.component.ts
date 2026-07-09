@@ -2,9 +2,14 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import {
   HazardLevel,
+  HazardLevelState,
   HazardType,
 } from '@features/noah-playground/store/noah-playground.store';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import {
+  NoahColor,
+  NoahColorPalette,
+  NoahColorSelection,
+} from '@shared/mocks/noah-colors';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -18,6 +23,7 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   @Input() type: HazardType;
 
   initialColorValue: NoahColor = 'noah-red';
+  initialCustomPalette?: NoahColorPalette;
   initialOpacityValue: number = 75;
   shown = false;
 
@@ -31,13 +37,15 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
-    this.initialColorValue = this.pgService.getHazardColor(this.type, this.id);
-    this.initialOpacityValue = this.pgService.getHazardLevelOpacity(
+    const initialLevel: HazardLevelState = this.pgService.getHazardLevel(
       this.type,
       this.id
     );
 
-    this.shown = this.pgService.getHazardLevelShown(this.type, this.id);
+    this.initialColorValue = initialLevel.color;
+    this.initialCustomPalette = initialLevel.customPalette;
+    this.initialOpacityValue = initialLevel.opacity;
+    this.shown = initialLevel.shown;
   }
 
   ngOnDestroy() {
@@ -45,8 +53,13 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
     this._unsub.complete();
   }
 
-  changeColor(color: NoahColor) {
-    this.pgService.setHazardTypeColor(color, this.type, this.id);
+  changeColor(selection: NoahColorSelection) {
+    this.pgService.setHazardTypeColor(
+      selection.color,
+      this.type,
+      this.id,
+      selection.customPalette
+    );
   }
 
   changeOpacity(opacity: number) {
