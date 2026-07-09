@@ -1,0 +1,74 @@
+<section
+  class="tour-welcome"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="tour-welcome-title"
+  aria-describedby="tour-welcome-text"
+>
+  <button
+    type="button"
+    class="tour-welcome__close"
+    aria-label="Close tour"
+    (click)="close.emit()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+
+  <div class="tour-welcome__body">
+    <div
+      *ngIf="content?.logoUrl || content?.brandLabel"
+      class="tour-welcome__brand"
+    >
+      <img
+        *ngIf="content?.logoUrl"
+        class="tour-welcome__logo"
+        [src]="content.logoUrl"
+        [alt]="content.logoAlt || ''"
+      />
+      <span *ngIf="content?.brandLabel" class="tour-welcome__brand-label">
+        {{ content.brandLabel }}
+      </span>
+    </div>
+
+    <h2 id="tour-welcome-title" class="tour-welcome__title" tabindex="-1">
+      <span>{{ content?.title }}</span>
+      <span *ngIf="content?.accentTitle" class="tour-welcome__title-accent">
+        {{ content.accentTitle }}
+      </span>
+    </h2>
+
+    <p id="tour-welcome-text" class="tour-welcome__text">
+      {{ content?.text }}
+    </p>
+
+    <p *ngIf="content?.prompt" class="tour-welcome__prompt">
+      {{ content.prompt }}
+    </p>
+
+    <div class="tour-welcome__actions">
+      <button
+        type="button"
+        class="tour-welcome__button tour-welcome__start"
+        (click)="start.emit()"
+      >
+        <span class="tour-welcome__start-icon" aria-hidden="true"></span>
+        <span>Take a Tour</span>
+      </button>
+
+      <button
+        type="button"
+        class="tour-welcome__button tour-welcome__skip"
+        (click)="close.emit()"
+      >
+        Skip
+      </button>
+    </div>
+  </div>
+
+  <img
+    *ngIf="content?.imageUrl"
+    class="tour-welcome__image"
+    [src]="content.imageUrl"
+    [alt]="content.imageAlt || ''"
+  />
+</section>
