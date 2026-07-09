@@ -116,6 +116,25 @@ describe('TourComponent', () => {
     expect(pane?.style.pointerEvents).toBe('none');
   });
 
+  it('emits the configured start event only when the tour starts', fakeAsync(() => {
+    definition.startEvent = 'test-tour-start';
+    const dispatchEventSpy = spyOn(window, 'dispatchEvent').and.callThrough();
+
+    component.openWelcome();
+    fixture.detectChanges();
+
+    expect(dispatchEventSpy).not.toHaveBeenCalled();
+
+    component.startTour();
+    tick(16);
+
+    expect(dispatchEventSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({ type: 'test-tour-start' })
+    );
+
+    delete definition.startEvent;
+  }));
+
   it('starts at the first step and advances across sections', fakeAsync(() => {
     component.openWelcome();
     component.startTour();
@@ -133,6 +152,39 @@ describe('TourComponent', () => {
 
     expect(component.currentFlatStep?.step.title).toBe('Last step');
     expect(component.activeSectionId).toBe('last');
+  }));
+
+  it('emits the configured event when Next is clicked', fakeAsync(() => {
+    const firstStep = definition.sections[0].steps[0];
+    firstStep.nextEvent = 'test-tour-next';
+    const dispatchEventSpy = spyOn(window, 'dispatchEvent').and.callThrough();
+
+    component.startTour();
+    tick(16);
+    component.showNextStep();
+
+    expect(dispatchEventSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({ type: 'test-tour-next' })
+    );
+
+    delete firstStep.nextEvent;
+  }));
+
+  it('does not emit the manual Next event when auto-advancing', fakeAsync(() => {
+    const firstStep = definition.sections[0].steps[0];
+    firstStep.nextEvent = 'test-tour-next';
+    firstStep.advanceOnEvent = 'test-tour-auto-advance';
+    const dispatchEventSpy = spyOn(window, 'dispatchEvent').and.callThrough();
+
+    component.startTour();
+    tick(16);
+    component.handleTourAdvanceEvent(new Event('test-tour-auto-advance'));
+
+    expect(component.currentStepIndex).toBe(1);
+    expect(dispatchEventSpy).not.toHaveBeenCalled();
+
+    delete firstStep.nextEvent;
+    delete firstStep.advanceOnEvent;
   }));
 
   it('jumps to the first step of a selected section', fakeAsync(() => {

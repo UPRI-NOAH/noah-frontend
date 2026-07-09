@@ -1,4 +1,13 @@
-export type TourPlacement = 'top' | 'right' | 'bottom' | 'left';
+export type TourPlacement =
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'left'
+  | 'upper-left'
+  | 'upper-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'center';
 
 export interface TourWelcomeContent {
   title: string;
@@ -17,6 +26,13 @@ export interface TourStep {
   title: string;
   text: string;
   target?: string;
+  spotlightTargets?: string[];
+  dimTarget?: string;
+  advanceOnEvent?: string;
+  nextEvent?: string;
+  interactionInsets?: Partial<
+    Record<'top' | 'right' | 'bottom' | 'left', number>
+  >;
   placement?: TourPlacement;
 }
 
@@ -29,6 +45,7 @@ export interface TourSection {
 export interface TourDefinition {
   id: string;
   title: string;
+  startEvent?: string;
   welcome: TourWelcomeContent;
   sections: TourSection[];
 }

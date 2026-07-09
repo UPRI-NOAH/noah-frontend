@@ -50,9 +50,29 @@
 
     <ng-container *ngIf="phase === 'tour' && currentFlatStep">
       <div
+        *ngFor="let blockerStyle of interactionBlockerStyles"
+        class="tour-interaction-blocker"
+        [ngStyle]="blockerStyle"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        *ngIf="!targetHighlightStyle"
+        class="tour-overlay"
+        aria-hidden="true"
+      ></div>
+
+      <div
         *ngIf="targetHighlightStyle"
         class="tour-target-highlight"
         [ngStyle]="targetHighlightStyle"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        *ngIf="targetDimStyle"
+        class="tour-target-dim"
+        [ngStyle]="targetDimStyle"
         aria-hidden="true"
       ></div>
 
