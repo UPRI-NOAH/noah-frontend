@@ -4,8 +4,14 @@
   </div>
   <div class="flex">
     <div class="w-10/12">
-      <input class="w-full" type="range" [min]="min" [max]="max" [step]="step"
-      //[value] = "initialValue" [formControl]="sliderCtrl" />
+      <input
+        class="w-full"
+        type="range"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [formControl]="sliderCtrl"
+      />
 
       <div class="flex justify-between text-xs text-gray-600 mx-1">
         <span class="w-8 text-left">{{ min }}</span>
