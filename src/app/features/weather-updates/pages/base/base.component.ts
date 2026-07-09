@@ -115,11 +115,11 @@ export class BaseComponent implements OnInit {
         }
         // Mobile only: when returning to the Rainfall/Temperature slide,
         // restore the default overlay opacity.
-        if (window.innerWidth < 768 && targetIndex === 0) {
-          this.ngZone.run(() => {
-            this.wuService.restoreWeatherOverlays();
-          });
-        }
+        // if (window.innerWidth < 768 && targetIndex === 0) {
+        //   this.ngZone.run(() => {
+        //     this.wuService.restoreWeatherOverlays();
+        //   });
+        // }
         // Only move if the swiper is not already on the correct slide.
         if (swiperRef.activeIndex !== targetIndex) {
           this.suppressRouteOnNextSlideChange = true;

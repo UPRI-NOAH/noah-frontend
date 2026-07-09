@@ -317,8 +317,6 @@ export class WeatherUpdatesService {
   activateTyphoonTrack(): void {
     this.store.patch(
       {
-        overlayOpacity: 0,
-
         typhoonTrack: {
           ...this.store.state.typhoonTrack,
           shown: true,
@@ -420,15 +418,14 @@ export class WeatherUpdatesService {
           ...this.store.state.temperature,
           shown: false,
         },
-
-        overlayOpacity: 80,
       },
       'Reset Weather Updates'
     );
   }
-  restoreWeatherOverlays(): void {
-    this.setOverlayOpacity(80);
-  }
+
+  // restoreWeatherOverlays(): void {
+  //   this.setOverlayOpacity(80);
+  // }
 
   // TEMPERATURE
 
