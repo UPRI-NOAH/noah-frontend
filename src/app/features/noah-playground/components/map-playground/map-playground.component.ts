@@ -405,9 +405,8 @@ export class MapPlaygroundComponent
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
+    container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -440,13 +439,20 @@ export class MapPlaygroundComponent
     }
 
     const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '423px';
-      } else {
-        container.style.top = '359px';
+      const helpButton = document.querySelector(
+        'noah-tour button'
+      ) as HTMLButtonElement | null;
+
+      if (helpButton) {
+        const mapRect = this.map.getContainer().getBoundingClientRect();
+        const helpButtonRect = helpButton.getBoundingClientRect();
+        container.style.top = `${helpButtonRect.bottom - mapRect.top + 8}px`;
       }
     };
     applyPosition();
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(applyPosition);
   }
 
   /**
