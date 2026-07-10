@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store-service.service';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { SensorType } from '../services/sensor.service';
 import { TyphoonTrackType } from '../services/typhoon-track.service';
 /**
@@ -59,6 +59,15 @@ export type LandslideHazards =
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
 export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
+
+export const LIGHTNING_GROUP_ARR = [
+  'realtime-lightning',
+  '10mins-lightning',
+] as const;
+
+export type LightningType = 'realtime-lightning' | '10mins-lightning';
+
+export type LightningTypes = typeof LIGHTNING_GROUP_ARR[number];
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
 
@@ -126,6 +135,8 @@ export type ExaggerationState = {
 export type HazardLevelState = {
   opacity: number;
   color: NoahColor;
+  customPalette?: NoahColorPalette;
+  colorRevision?: number;
   shown: boolean;
 };
 
@@ -297,6 +308,21 @@ export type TyphoonTrackState = {
   types: Record<TyphoonTrackType, TyphoonTrackTypeState>;
 };
 
+export type LightningState = {
+  shown: boolean;
+  expanded: boolean;
+  selectedType: LightningTypes;
+  types: LightningTypesState;
+};
+
+export type LightningTypeState = {
+  opacity: number;
+};
+
+export type LightningTypesState = {
+  'realtime-lightning': LightningTypeState;
+  '10mins-lightning': LightningTypeState;
+};
 export type WeatherUpdates = {
   shown: boolean;
   expanded: boolean;
@@ -332,6 +358,7 @@ type NoahPlaygroundState = {
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
   typhoonTrack: TyphoonTrackState;
+  lightning: LightningState;
   weatherUpdates: WeatherUpdates;
 };
 
@@ -620,6 +647,19 @@ const createInitialValue = (): NoahPlaygroundState => ({
       kma: {
         fetched: false,
         shown: false,
+      },
+    },
+  },
+  lightning: {
+    shown: false,
+    expanded: false,
+    selectedType: 'realtime-lightning',
+    types: {
+      'realtime-lightning': {
+        opacity: 100,
+      },
+      '10mins-lightning': {
+        opacity: 100,
       },
     },
   },

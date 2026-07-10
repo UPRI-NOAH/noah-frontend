@@ -6,6 +6,8 @@ import {
   MapStyle,
   PH_DEFAULT_CENTER,
   RainfallContourTypes,
+  TemperatureForecastDay,
+  TemperatureType,
 } from '@features/weather-updates/store/weather-updates.store';
 import mapboxgl, { AnySourceData, GeolocateControl, Map } from 'mapbox-gl';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
@@ -16,6 +18,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  shareReplay,
   take,
   takeUntil,
 } from 'rxjs/operators';
@@ -75,6 +78,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         this.showRainfallContour();
         this.initWeatherSatellite();
         this.initTyphoonTrackLayers();
+        this.initTemperature();
       });
   }
 
@@ -390,32 +394,152 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           },
         });
 
-        const rainfallOpacity$ = this.wuService
-          .getRainfallContour$(rainfallContourType)
-          .pipe(
-            map((rainfall) => rainfall.opacity),
-            distinctUntilChanged()
-          );
+        const overlayOpacity$ = this.wuService.overlayOpacity$.pipe(
+          distinctUntilChanged()
+        );
 
         const selectedRainfallContour$ =
           this.wuService.selectedRainfallContourType$.pipe(
             distinctUntilChanged()
           );
 
-        combineLatest([rainfallOpacity$, selectedRainfallContour$])
+        const rainfallShown$ = this.wuService.rainfallContourShown$.pipe(
+          distinctUntilChanged()
+        );
+
+        combineLatest([
+          overlayOpacity$,
+          selectedRainfallContour$,
+          rainfallShown$,
+        ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(([rainfallOpacity, selectedRainfallContour]) => {
-            let opacity = +(
-              rainfallOpacity && selectedRainfallContour === rainfallContourType
-            );
-            if (opacity) {
-              opacity = rainfallOpacity / 100;
+          .subscribe(
+            ([overlayOpacity, selectedRainfallContour, rainfallShown]) => {
+              const opacity =
+                rainfallShown && selectedRainfallContour === rainfallContourType
+                  ? overlayOpacity / 100
+                  : 0;
+
+              this.map.setPaintProperty(
+                rainfallContourType,
+                'raster-opacity',
+                opacity
+              );
             }
+          );
+      }
+    );
+  }
+
+  initTemperature() {
+    const temperatureImages = {
+      heat_index: {
+        urlPrefix: 'HI',
+        type: 'image',
+      },
+      max_temperature: {
+        urlPrefix: 't2m',
+        type: 'image',
+      },
+    };
+
+    const getTemperatureUrl = (
+      temperatureType: TemperatureType,
+      day: TemperatureForecastDay
+    ): string => {
+      const { urlPrefix } = temperatureImages[temperatureType];
+      return `https://webgis-static.up.edu.ph/api/temperature/${urlPrefix}_${day}.png`;
+    };
+
+    const getTemperatureSource = (temperatureDetails: {
+      urlPrefix: string;
+      type: string;
+    }): AnySourceData => {
+      switch (temperatureDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: `https://webgis-static.up.edu.ph/api/temperature/${temperatureDetails.urlPrefix}_1.png`,
+            coordinates: [
+              [116.855, 19.402],
+              [127.055, 19.402],
+              [127.055, 5.205],
+              [116.855, 5.205],
+            ],
+          };
+        default:
+          throw new Error('[Map Playground] Unable to get Temperature');
+      }
+    };
+    Object.keys(temperatureImages).forEach(
+      (temperatureType: TemperatureType) => {
+        const temperatureDetails = temperatureImages[temperatureType];
+        this.map.addSource(
+          temperatureType,
+          getTemperatureSource(temperatureDetails)
+        );
+
+        this.map.addLayer({
+          id: temperatureType,
+          type: 'raster',
+          source: temperatureType,
+          paint: {
+            'raster-fade-duration': 0,
+            'raster-opacity': 0,
+          },
+        });
+
+        const soloShown$ = this.wuService.temperatureShown$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedTemperature$ = this.wuService.selectedTemperature$.pipe(
+          shareReplay(1)
+        );
+
+        const selectedForecastDay$ =
+          this.wuService.selectedTemperatureForecastDay$.pipe(
+            distinctUntilChanged(),
+            shareReplay(1)
+          );
+
+        const overlayOpacity$ = this.wuService.overlayOpacity$.pipe(
+          distinctUntilChanged()
+        );
+
+        combineLatest([soloShown$, selectedTemperature$, overlayOpacity$])
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe(([soloShown, selectedTemperature, overlayOpacity]) => {
+            const opacity =
+              soloShown && selectedTemperature === temperatureType
+                ? overlayOpacity / 100
+                : 0;
+
             this.map.setPaintProperty(
-              rainfallContourType,
+              temperatureType,
               'raster-opacity',
               opacity
             );
+          });
+
+        selectedForecastDay$
+          .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+          .subscribe((forecastDay) => {
+            const source = this.map.getSource(temperatureType) as any;
+
+            if (!source || typeof source.updateImage !== 'function') {
+              return;
+            }
+
+            source.updateImage({
+              url: getTemperatureUrl(temperatureType, forecastDay),
+              coordinates: [
+                [116.855, 19.402],
+                [127.055, 19.402],
+                [127.055, 5.205],
+                [116.855, 5.205],
+              ],
+            });
           });
       }
     );

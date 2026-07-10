@@ -21,8 +21,10 @@
         *ngIf="rainfallContourType !== 'forecast'"
         [ngClass]="{
           'border-primary border-4':
+            !isTemperatureActive &&
             activeRainfallContourType === rainfallContourType,
           'border-transparent':
+            isTemperatureActive ||
             activeRainfallContourType !== rainfallContourType
         }"
         (click)="selectRainfallContourType(rainfallContourType)"
@@ -74,8 +76,10 @@
     "
     role="button"
     [ngClass]="{
-      'border-primary border-4': activeRainfallContourType === 'forecast',
-      'border-transparent': activeRainfallContourType !== 'forecast'
+      'border-primary border-4':
+        !isTemperatureActive && activeRainfallContourType === 'forecast',
+      'border-transparent':
+        isTemperatureActive || activeRainfallContourType !== 'forecast'
     }"
     (click)="selectRainfallContourType('forecast')"
   >
@@ -89,10 +93,79 @@
       </div>
       <div class="flex flex-col text-left ml-3">
         <h1 class="text-lg text-gray-700">Rainfall for Tomorrow</h1>
+        <p class="text-xs text-gray-600">+ Temperature</p>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Temperature section for forecast (MOBILE) -->
+<ng-container>
+  <section class="px-5 md:px-0 md:block">
+    <p class="mt-5 text-lg tracking-wide">
+      <span class="font-bold">Temperature</span>
+    </p>
+    <p class="italic text-xs tracking-wide">
+      <span class="font-bold">Source:</span>
+      <a
+        href="https://www.weather-manila.com/"
+        target="_blank"
+        class="text-primary"
+      >
+        Weather Manila
+      </a>
+    </p>
+  </section>
+
+  <div
+    *ngFor="let temperatureType of temperatureTypes"
+    role="button"
+    class="flex justify-center md:hidden swiper-no-swiping px-4"
+  >
+    <button
+      class="
+        my-2
+        bg-white
+        font-semibold
+        text-center
+        rounded-xl
+        border
+        shadow-lg
+        p-2
+        w-full
+        flex-shrink-0
+      "
+      [ngClass]="{
+        'border-primary border-4':
+          isTemperatureActive && activeTemperatureType === temperatureType,
+        'border-transparent':
+          !isTemperatureActive || activeTemperatureType !== temperatureType
+      }"
+      (click)="selectTemperatureType(temperatureType)"
+    >
+      <div class="flex items-center" role="button">
+        <div class="bg-primary rounded-md py-1 px-2">
+          <img
+            class="h-10 w-6"
+            src="assets/legends/temperature/noun-temperature.svg"
+            alt="temperature"
+          />
+        </div>
+
+        <div class="flex flex-col text-left ml-3">
+          <label
+            class="font-bold leading-none f-f-r text-xl capitalize"
+            for="selected-temperature-{{ temperatureType }}"
+          >
+            <span role="button">
+              {{ getTemperatureLabel(temperatureType) }}
+            </span>
+          </label>
+        </div>
+      </div>
+    </button>
+  </div>
+</ng-container>
 
 <!-- DESKTOP VIEW -->
 <div
@@ -116,8 +189,11 @@
       border-b-4 border-primary
     "
     [ngClass]="{
-      'border-primary': activeRainfallContourType === rainfallContourType,
-      'border-transparent': activeRainfallContourType !== rainfallContourType
+      'border-primary':
+        !isTemperatureActive &&
+        activeRainfallContourType === rainfallContourType,
+      'border-transparent':
+        isTemperatureActive || activeRainfallContourType !== rainfallContourType
     }"
     (click)="selectRainfallContourType(rainfallContourType)"
   >
@@ -173,18 +249,122 @@
     </section>
   </ng-container>
 </div>
+<ng-container>
+  <section class="px-5 md:px-0 md:block hidden">
+    <p class="mt-5 text-lg tracking-wide">
+      <span class="font-bold">Temperature</span>
+    </p>
+    <p class="italic text-xs tracking-wide">
+      <span class="font-bold">Source:</span>
+      <a
+        href="https://www.weather-manila.com/"
+        target="_blank"
+        class="text-primary"
+      >
+        Weather Manila
+      </a>
+    </p>
+  </section>
+
+  <div *ngFor="let temperatureType of temperatureTypes" role="button">
+    <button
+      class="
+        hidden
+        my-2
+        w-full
+        md:flex
+        p-2
+        bg-white
+        shadow-md
+        hover:shadow-lg
+        rounded-md
+        hover:bg-gray-100
+        items-center
+        justify-between
+        border-b-4 border-primary
+      "
+      [ngClass]="{
+        'border-primary':
+          isTemperatureActive && activeTemperatureType === temperatureType,
+        'border-transparent':
+          !isTemperatureActive || activeTemperatureType !== temperatureType
+      }"
+      (click)="selectTemperatureType(temperatureType)"
+    >
+      <div class="flex items-center" role="button">
+        <div class="bg-primary rounded-md py-1 px-2">
+          <img
+            class="h-10 w-6"
+            src="assets/legends/temperature/noun-temperature.svg"
+            alt="temperature"
+          />
+        </div>
+
+        <div class="flex flex-col text-left ml-3">
+          <label
+            class="font-bold leading-none f-f-r text-xl capitalize"
+            for="selected-temperature-{{ temperatureType }}"
+          >
+            <span role="button">
+              {{ getTemperatureLabel(temperatureType) }}
+            </span>
+          </label>
+        </div>
+      </div>
+    </button>
+  </div>
+
+  <!-- Temperature Forecast Days Selector -->
+  <div class="px-5 md:px-0 mb-3">
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button
+        *ngFor="let day of temperatureForecastDays"
+        type="button"
+        class="
+          px-3
+          py-2
+          rounded-md
+          border
+          text-sm
+          focus:outline-none
+          transition
+          font-medium
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+        [disabled]="!isTemperatureActive"
+        [ngClass]="
+          isTemperatureActive &&
+          (selectedTemperatureForecastDay$ | async) === day.value
+            ? 'bg-primary text-white border-primary'
+            : 'bg-gray-200 text-gray-800 border-gray-300'
+        "
+        (click)="selectTemperatureForecastDay(day.value)"
+      >
+        {{ day.label }}
+      </button>
+    </div>
+  </div>
+</ng-container>
 
 <div class="pt-2">
   <section class="px-6 md:px-0 mt-2 md:mt-0">
     <header class="text-lg font-bold leading-tight">Legend</header>
   </section>
 
-  <img
-    style="justify-self: anchor-center"
-    src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
-      selectedRainfallContourType$ | async
-    }}.png"
-  />
+  <ng-container *ngIf="temperatureShown$ | async; else rainfallLegend">
+    <img
+      style="justify-self: anchor-center"
+      src="assets/legends/temperature/wu_{{ selectedTemperature$ | async }}.png"
+    />
+  </ng-container>
+  <ng-template #rainfallLegend>
+    <img
+      style="justify-self: anchor-center"
+      src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
+        selectedRainfallContourType$ | async
+      }}.png"
+    />
+  </ng-template>
 </div>
 
 <div class="md:mb-4">
@@ -200,9 +380,8 @@
             [min]="min"
             [max]="max"
             [step]="step"
-            [value]="initialValue"
             [formControl]="sliderCtrl"
-            (input)="changeOpacity($event)"
+            (input)="changeOpacity()"
           />
 
           <div class="flex justify-between text-xs text-gray-600 mx-1">

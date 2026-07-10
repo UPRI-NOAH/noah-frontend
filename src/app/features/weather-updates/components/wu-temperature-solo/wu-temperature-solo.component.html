@@ -1,0 +1,21 @@
+<div class="pl-0">
+  <div class="flex flex-row items-center">
+    <div class="flex flex-row items-center radio">
+      <input
+        type="radio"
+        class="radio h-5 w-5 text-blue-600"
+        id="selected-weather-satellite-{{ tempName }}"
+        [checked]="(selectedTemperature$ | async) === tempName"
+        (click)="selectTemperature(tempName)"
+      />
+    </div>
+    <div class="ml-3">
+      <label
+        for="selected-weather-satellite-{{ tempName }}"
+        class="text-base f-f-r capitalize"
+        >{{ displayName }}</label
+      >
+    </div>
+  </div>
+  <div class="flex items-center pt-4"></div>
+</div>

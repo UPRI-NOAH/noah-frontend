@@ -32,12 +32,15 @@ import {
   BoundariesGroupState,
   BoundariesType,
   BoundariesState,
+  LightningState,
+  LightningType,
+  LightningTypeState,
   TemperatureType,
   TemperatureTypeState,
   TemperatureState,
   TemperatureForecastDay,
 } from '../store/noah-playground.store';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
@@ -229,6 +232,17 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.typhoonTrack.expanded));
   }
 
+  get lightningGroupShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.shown));
+  }
+
+  get lightningGroupExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.lightning.expanded));
+  }
+
+  get selectedLightning$(): Observable<LightningType> {
+    return this.store.state$.pipe(map((state) => state.lightning.selectedType));
+  }
   get temperatureShown$(): Observable<boolean> {
     return this.store.state$.pipe(map((state) => state.temperature.shown));
   }
@@ -333,6 +347,13 @@ export class NoahPlaygroundService {
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
+  }
+
+  getHazardLevel(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): HazardLevelState {
+    return this.store.state[hazardType].levels[hazardLevel];
   }
 
   getExaggeration(): ExaggerationState {
@@ -582,12 +603,31 @@ export class NoahPlaygroundService {
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
-    hazardLevel: HazardLevel
+    hazardLevel: HazardLevel,
+    customPalette?: NoahColorPalette
   ): void {
+    const currentHazard = this.store.state[hazardType];
+    const currentLevels = currentHazard.levels as Record<
+      HazardLevel,
+      HazardLevelState
+    >;
+    const currentLevel = currentLevels[hazardLevel];
     const hazard: FloodState | LandslideState | StormSurgeState = {
-      ...this.store.state[hazardType],
-    };
-    hazard.levels[hazardLevel].color = color;
+      ...currentHazard,
+      levels: {
+        ...currentLevels,
+        [hazardLevel]: {
+          ...currentLevel,
+          color,
+          customPalette:
+            color === 'noah-custom' && customPalette
+              ? { ...customPalette }
+              : undefined,
+          colorRevision: (currentLevel.colorRevision ?? 0) + 1,
+        },
+      },
+    } as FloodState | LandslideState | StormSurgeState;
+
     this.store.patch(
       { [hazardType]: hazard },
       `color ${color}, ${hazardType}, ${hazardLevel}`
@@ -605,8 +645,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, expanded: hazardState.expanded } },
       `expanded ${hazardState.expanded}, ${hazardType}`
     );
   }
@@ -615,8 +657,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, shown: hazardState.shown } },
       `shown ${hazardState.shown}, ${hazardType}`
     );
   }
@@ -1223,6 +1267,75 @@ export class NoahPlaygroundService {
     );
   }
 
+  getLightningType(): LightningState {
+    return this.store.state.lightning;
+  }
+
+  getLightningTypes(type: LightningType): LightningTypeState {
+    return this.store.state.lightning.types[type];
+  }
+
+  getLightningType$(type: LightningType): Observable<LightningTypeState> {
+    return this.store.state$.pipe(map((state) => state.lightning.types[type]));
+  }
+
+  getLightningTypeOpacity(type: LightningType): number {
+    return this.store.state.lightning.types[type].opacity;
+  }
+
+  setLightningTypeOpacity(opacity: number, type: LightningType) {
+    const lightning: LightningState = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.types[type].opacity = opacity;
+    this.store.patch(
+      { lightning },
+      `Lightning - update ${type}'s opacity to ${opacity}`
+    );
+  }
+
+  toggleLightningGroupShown(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.shown = !lightning.shown;
+
+    this.store.patch(
+      {
+        lightning,
+      },
+      `Lightning Group State shown to ${lightning.shown}`
+    );
+  }
+
+  toggleLightningGroupExpanded(): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    const { expanded } = lightning;
+    lightning.expanded = !expanded;
+
+    this.store.patch(
+      { lightning },
+      `update lightning state expanded to ${!expanded}`
+    );
+  }
+
+  setLightningType(lightningType: LightningType): void {
+    const lightning = {
+      ...this.store.state.lightning,
+    };
+
+    lightning.selectedType = lightningType;
+
+    this.store.patch(
+      { lightning },
+      `Select lightning type to ${lightningType}`
+    );
+  }
   toggleWeatherUpdatesGroupShown(): void {
     const weatherUpdates = {
       ...this.store.state.weatherUpdates,
