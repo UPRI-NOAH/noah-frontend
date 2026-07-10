@@ -39,6 +39,9 @@ import {
   TemperatureTypeState,
   TemperatureState,
   TemperatureForecastDay,
+  WindGroupState,
+  WindType,
+  WindState,
 } from '../store/noah-playground.store';
 import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -50,6 +53,7 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 
 @Injectable({
   providedIn: 'root',
@@ -251,6 +255,24 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.temperature.expanded));
   }
 
+  get windShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.shown));
+  }
+
+  get windExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.expanded));
+  }
+
+  getWindParticleCount$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(
+      map((state) => state.wind.types[type].particleCount)
+    );
+  }
+
+  getWindSpeed$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
+  }
+
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
@@ -313,6 +335,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(
       map((state) => state.volcanoes.types[volcanoType])
     );
+  }
+
+  getWind$(windType: WindType): Observable<WindState> {
+    return this.store.state$.pipe(map((state) => state.wind.types[windType]));
   }
 
   getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
@@ -577,6 +603,71 @@ export class NoahPlaygroundService {
       { temperature },
       `toggle Temperature Visibility ${!shown}`
     );
+  }
+
+  toggleWindGroupExpansion(): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+    };
+
+    wind.expanded = !wind.expanded;
+    this.store.patch({ wind }, `toggle wind expansion`);
+  }
+
+  toggleWindGroupVisibility(): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+    };
+    const { shown } = wind;
+
+    wind.shown = !shown;
+    this.store.patch({ wind }, `toggle Wind Visibility ${!shown}`);
+  }
+  /*
+  getWindParticleCount(): number {
+    return this.store.state.wind.particleCount;
+  }
+
+  getWindSpeed(): number {
+    return this.store.state.wind.speed;
+  }
+  */
+
+  setWindParticleCount(particleCount: number, type: WindType): void {
+    const nextParticleCount = Number(particleCount);
+
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          particleCount: nextParticleCount,
+        },
+      },
+    };
+
+    this.store.patch(
+      { wind },
+      `Wind Particle Count set to ${nextParticleCount}`
+    );
+  }
+
+  setWindSpeed(speed: number, type: WindType): void {
+    const nextSpeed = Number(speed);
+
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          speed: nextSpeed,
+        },
+      },
+    };
+
+    this.store.patch({ wind }, `Wind Speed set to ${nextSpeed}`);
   }
 
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
