@@ -3480,6 +3480,7 @@ export class MapPlaygroundComponent
       container: 'map',
       style: environment.mapbox.styles.terrain,
       zoom: 5.5,
+      minZoom: 4,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
@@ -3499,12 +3500,21 @@ export class MapPlaygroundComponent
     window.addEventListener('resize', this.windResizeListener);
     this.initWindMoveListeners();
 
-    this.pgService.windShown$
-      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((shown) => {
-        this.windVisible = shown;
+    const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+      distinctUntilChanged(),
+      shareReplay(1)
+    );
 
-        if (shown) {
+    combineLatest([
+      this.pgService.windShown$.pipe(distinctUntilChanged()),
+      weatherUpdateShown$,
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([shown, weatherUpdateShown]) => {
+        const overallShown = shown && weatherUpdateShown;
+        this.windVisible = overallShown;
+
+        if (overallShown) {
           this.resizeWindCanvas();
           this.initWindParticles();
           if (!this.windMapMoving) {

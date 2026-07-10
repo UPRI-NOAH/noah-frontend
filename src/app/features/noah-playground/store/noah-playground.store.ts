@@ -709,7 +709,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
 
   wind: {
-    shown: false,
+    shown: true,
     expanded: false,
     types: {
       wind: {
