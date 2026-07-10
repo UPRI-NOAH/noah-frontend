@@ -94,6 +94,7 @@ export class TourComponent implements OnChanges, OnDestroy {
     this.currentStepIndex = 0;
     this.phase = 'welcome';
     this.attachOverlay();
+    this.changeDetectorRef.detectChanges();
   }
 
   startTour(): void {

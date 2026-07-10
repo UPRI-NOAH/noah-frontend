@@ -1,15 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { HAZARDS } from '@shared/mocks/hazard-types-and-levels';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import {
   BreakpointObserver,
   BreakpointState,
   Breakpoints,
 } from '@angular/cdk/layout';
+import { UPRI_DEFAULT_CENTER } from '@features/noah-playground/store/noah-playground.store';
 
 @Component({
   selector: 'noah-noah-playground',
@@ -184,6 +186,53 @@ export class NoahPlaygroundComponent implements OnInit {
     const [lng, lat] =
       selectedPlace.center || selectedPlace.geometry?.coordinates;
     this.pgService.setCenter({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
+  }
+
+  @HostListener('window:noah-tour-location-search-skipped')
+  useTourFallbackLocation(): void {
+    this.pgService.center$.pipe(take(1)).subscribe((center) => {
+      if (center) {
+        return;
+      }
+
+      this.pgService.setCurrentLocation('UP Resilience Institute');
+      this.pgService.setCenter(UPRI_DEFAULT_CENTER);
+    });
+  }
+
+  @HostListener('window:noah-studio-playground-reset')
+  resetForNoahStudioTour(): void {
+    this.searchTerm = '';
+    this.isSidebarOpen = false;
+    this.isLogoutAlert = false;
+    this.isMenu = true;
+    this.isList = null;
+    this.height = 256;
+    this.initialHeight = this.height;
+    this.raBtnPopu = false;
+    this.showAlert = false;
+    this.modalAlert = false;
+    this.isWarningAlert = false;
+    this.disclaimerModalOpen = false;
+    this.iotModalOpen = false;
+
+    this.updateVisibility();
+    document
+      .querySelector<HTMLElement>('[data-tour-id="sidebar-scroll"]')
+      ?.scrollTo({ top: 0 });
+
+    this.modalService.closeRiskModal();
+    this.modalService.closeBtnRiskAssessment();
+    this.modalService.iotSummaryModalClose();
+    this.modalService.disclaimerModalClose();
+    this.modalService.warningClose();
+    this.modalService.qcLoginClose();
+    this.modalService.lagunaLoginClose();
+    this.modalService.closeModal();
+    this.modalService.closeLogoutModal();
+    this.modalService.hideEaPopup();
+    this.modalService.hideLegend();
   }
 
   isLoggedIn(): boolean {

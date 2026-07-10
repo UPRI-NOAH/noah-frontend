@@ -67,5 +67,29 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         },
       ],
     },
+    {
+      id: 'map-controls',
+      label: 'Map Controls',
+      steps: [
+        {
+          id: 'map-controls-1',
+          title: 'Map Controls',
+          text: 'Use these map controls to adjust how you view and interact with the map. These tools let you change map views, access the tour, and use extra map information.',
+          target: '[data-tour-id="map-controls"]',
+          spotlightTargets: ['[data-tour-id="mapbox-map-controls"]'],
+          dimTarget: '#sidebar',
+          placement: 'left',
+        },
+        {
+          id: 'map-controls-2',
+          title: 'Zoom Controls',
+          text: 'Use the plus and minus buttons to zoom in for more detail or zoom out for a wider view.',
+          target: '[data-tour-id="mapbox-zoom-in"]',
+          spotlightTargets: ['[data-tour-id="mapbox-zoom-out"]'],
+          dimTarget: '#sidebar',
+          placement: 'left',
+        },
+      ],
+    },
   ],
 };

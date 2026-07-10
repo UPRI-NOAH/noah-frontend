@@ -165,7 +165,7 @@ export class MapPlaygroundComponent
   map!: Map;
 
   geolocateControl!: GeolocateControl;
-  centerMarker!: Marker;
+  centerMarker?: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
@@ -311,11 +311,62 @@ export class MapPlaygroundComponent
     this.screenHeight = window.innerHeight;
   }
 
+  @HostListener('window:noah-studio-playground-reset')
+  resetForNoahStudioTour(): void {
+    this.pgService.resetPlayground();
+
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+    this.draw?.deleteAll();
+    this.closeAllTyphoonPopups();
+    document
+      .querySelectorAll<HTMLElement>('.mapboxgl-popup')
+      .forEach((popup) => popup.remove());
+
+    this.measurementActive = false;
+    this.geojson = null;
+    this.linestring = null;
+    this.clearMapOutput('coordinates');
+    this.clearMapOutput('distance');
+    this.clearMapOutput('area');
+
+    this.map.getCanvas().style.cursor = '';
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    const loginStatus = localStorage.getItem('loginStatus');
+    const camera =
+      loginStatus === '1'
+        ? { center: QC_DEFAULT_CENTER, zoom: 12 }
+        : loginStatus === '2'
+        ? { center: LAGUNA_DEFAULT_CENTER, zoom: 12.74 }
+        : { center: PH_DEFAULT_CENTER, zoom: 5.5 };
+
+    this.map.jumpTo({
+      ...camera,
+      bearing: 0,
+      pitch: 0,
+    });
+  }
+
+  private clearMapOutput(id: string): void {
+    const element = document.getElementById(id);
+    if (!element) {
+      return;
+    }
+
+    element.innerHTML = '';
+    element.style.display = 'none';
+  }
+
   /**
    * Adds the plus and minus zoom map controls
    */
   addNavigationControls() {
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    this.markTopRightMapControlsForTour();
   }
 
   /**
@@ -324,6 +375,23 @@ export class MapPlaygroundComponent
   addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
+    this.markTopRightMapControlsForTour();
+  }
+
+  private markTopRightMapControlsForTour(): void {
+    const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
+      ?.setAttribute('data-tour-id', 'mapbox-map-controls');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-in')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-in');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
   }
 
   /**
@@ -407,6 +475,7 @@ export class MapPlaygroundComponent
     // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
+    container.setAttribute('data-tour-id', 'map-scale-control');
     container.style.position = 'absolute';
     container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
@@ -3771,6 +3840,7 @@ export class MapPlaygroundComponent
     });
 
     this.map.addControl(this.draw);
+    this.markTopRightMapControlsForTour();
 
     this.map.on('draw.create', this.updateCalculate.bind(this));
     this.map.on('draw.delete', this.updateCalculate.bind(this));
