@@ -651,7 +651,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   lightning: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: 'realtime-lightning',
     types: {

@@ -564,7 +564,7 @@
           </div>
         </div>
         <div [ngClass]="(expanded$ | async) ? ' pt-0 ' : ' hidden '">
-          <hr class="pb-0" />
+          <hr class="mt-2 pb-0" />
           <div class="pl-0">
             <div class="items-center">
               <noah-weather-satellite-playground
@@ -572,6 +572,7 @@
               ></noah-weather-satellite-playground>
               <noah-typhoon-track-group></noah-typhoon-track-group>
               <noah-temperature></noah-temperature>
+              <noah-lightning-group></noah-lightning-group>
             </div>
           </div>
         </div>
@@ -580,7 +581,7 @@
       <!-- END WEATHER UPDATES SIDEPANEL -->
 
       <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
-      <noah-lightning-group class="w-full"></noah-lightning-group>
+
       <!-- <noah-dengue-risk-group class="w-full"></noah-dengue-risk-group> -->
 
       <ng-container *ngFor="let hazard of hazardTypes">

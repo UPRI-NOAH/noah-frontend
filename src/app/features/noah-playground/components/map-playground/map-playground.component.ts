@@ -2685,17 +2685,30 @@ export class MapPlaygroundComponent
             distinctUntilChanged()
           );
 
+        const weatherUpdateShown$ =
+          this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1));
+
         combineLatest([
           allShown$,
           selectedLightning$,
           lightningOpacity$,
           dataAvailable$,
+          weatherUpdateShown$,
         ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(
-            ([allShown, selectedLightning, lightningOpacity, hasData]) => {
+            ([
+              allShown,
+              selectedLightning,
+              lightningOpacity,
+              hasData,
+              weatherUpdateShown,
+            ]) => {
               const visible =
-                allShown && selectedLightning === lightningType && hasData;
+                allShown &&
+                selectedLightning === lightningType &&
+                hasData &&
+                weatherUpdateShown;
               const opacity = visible ? lightningOpacity / 100 : 0;
 
               this.map.setLayoutProperty(
@@ -2712,11 +2725,14 @@ export class MapPlaygroundComponent
     const realtimeLayerVisibility$ = combineLatest([
       this.pgService.lightningGroupShown$.pipe(distinctUntilChanged()),
       this.pgService.selectedLightning$.pipe(distinctUntilChanged()),
+      this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1)),
     ])
       .pipe(
         map(
-          ([allShown, selectedLightning]) =>
-            allShown && selectedLightning === 'realtime-lightning'
+          ([allShown, selectedLightning, weatherUpdateShown$]) =>
+            allShown &&
+            selectedLightning === 'realtime-lightning' &&
+            weatherUpdateShown$
         ),
         distinctUntilChanged(),
         takeUntil(this._unsub),
