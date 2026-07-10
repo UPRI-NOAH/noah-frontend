@@ -3140,7 +3140,7 @@ export class MapPlaygroundComponent
   }
 
   private async fetchWindGrid(): Promise<void> {
-    const url = 'https://webgis-static.up.edu.ph/api/wind/wind_grid_cache.json';
+    const url = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
 
     try {
       const res = await fetch(url);
