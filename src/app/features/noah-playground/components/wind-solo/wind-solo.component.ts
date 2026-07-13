@@ -23,10 +23,11 @@ export class WindSoloComponent implements OnInit {
         this.initialParticleCountValue = particleCount;
         this.initialSpeedValue = speed;
       });
-    /*
-    this.initialParticleCountValue = this.pgService.getWindParticleCount();
-    this.initialSpeedValue = this.pgService.getWindSpeed();
-    */
+
+    this.initialParticleCountValue =
+      this.pgService.getWindParticleCount('wind');
+    /* this.initialSpeedValue = this.pgService.getWindSpeed();
+     */
   }
 
   changeParticleCount(particleCount: number) {

@@ -544,10 +544,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     selectedType: 'himawari',
     types: {
       himawari: {
-        opacity: 80,
+        opacity: 70,
       },
       'himawari-GSMAP': {
-        opacity: 80,
+        opacity: 70,
       },
     },
   },

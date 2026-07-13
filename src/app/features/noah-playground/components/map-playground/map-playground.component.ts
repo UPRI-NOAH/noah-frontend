@@ -2156,11 +2156,18 @@ export class MapPlaygroundComponent
             .getVolcano$(volcanoType)
             .pipe(shareReplay(1));
 
-          combineLatest([allShown$, volcano$])
+          const volcanoOpacity$ = this.pgService.getVolcano$(volcanoType).pipe(
+            map((volcano) => volcano.opacity),
+            distinctUntilChanged()
+          );
+
+          combineLatest([allShown$, volcano$, volcanoOpacity$])
             .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-            .subscribe(([allShown, volcano]) => {
+            .subscribe(([allShown, volcano, volcanoOpacity]) => {
               const visibility = volcano.shown && allShown ? 'visible' : 'none';
+              let newOpacity = 0;
               if (volcano.shown && allShown) {
+                newOpacity = volcano.opacity / 100;
                 if (volcanoType === 'active') {
                   const handleClick = (e) => {
                     const name = e.features[0].properties.name;
@@ -3600,6 +3607,42 @@ export class MapPlaygroundComponent
     }
   }
 
+  private getFallbackWindParticle(): WindParticle {
+    const bounds = this.windGridBounds;
+
+    return {
+      lng: bounds.west + Math.random() * (bounds.east - bounds.west),
+      lat: bounds.south + Math.random() * (bounds.north - bounds.south),
+      age: Math.floor(Math.random() * this.windSettings.maxAge),
+    };
+  }
+
+  private getSafeMapBounds(): mapboxgl.LngLatBounds | null {
+    if (!this.map) return null;
+
+    try {
+      const bounds = this.map.getBounds();
+      const west = bounds?.getWest();
+      const east = bounds?.getEast();
+      const south = bounds?.getSouth();
+      const north = bounds?.getNorth();
+
+      if (
+        !bounds ||
+        !Number.isFinite(west) ||
+        !Number.isFinite(east) ||
+        !Number.isFinite(south) ||
+        !Number.isFinite(north)
+      ) {
+        return null;
+      }
+
+      return bounds;
+    } catch {
+      return null;
+    }
+  }
+
   private metDirToUV(
     speedMs: number,
     dirFromDeg: number
@@ -3695,7 +3738,11 @@ export class MapPlaygroundComponent
   }
 
   private randomWindParticle(): WindParticle {
-    const bounds = this.map.getBounds();
+    const bounds = this.getSafeMapBounds();
+
+    if (!bounds) {
+      return this.getFallbackWindParticle();
+    }
 
     return {
       lng:
@@ -3746,7 +3793,13 @@ export class MapPlaygroundComponent
     const canvas = this.windCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
 
-    if (!this.windVisible || this.windMapMoving || !canvas || !ctx) {
+    if (
+      !this.windVisible ||
+      this.windMapMoving ||
+      !canvas ||
+      !ctx ||
+      !this.map
+    ) {
       this.windAnimationFrame = null;
       return;
     }
@@ -3769,11 +3822,34 @@ export class MapPlaygroundComponent
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#FF1F80';
     */
-    const bounds = this.map.getBounds();
+    const bounds = this.getSafeMapBounds();
+    if (!bounds) {
+      this.windAnimationFrame = requestAnimationFrame((ts) =>
+        this.stepWind(ts)
+      );
+      return;
+    }
     const dashLengthPx = 5;
 
     for (const particle of this.windParticles) {
-      const prevPx = this.map.project([particle.lng, particle.lat]);
+      if (!Number.isFinite(particle.lng) || !Number.isFinite(particle.lat)) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      let prevPx: { x: number; y: number };
+      try {
+        prevPx = this.map.project([particle.lng, particle.lat]);
+      } catch {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      if (!Number.isFinite(prevPx.x) || !Number.isFinite(prevPx.y)) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
       const { u, v } = this.windAt(particle.lng, particle.lat);
       const speedMs = Math.sqrt(u * u + v * v);
       const magnitude = Math.max(speedMs, 0.001);
@@ -3787,7 +3863,22 @@ export class MapPlaygroundComponent
         x: prevPx.x + dirX * stepPx,
         y: prevPx.y + dirY * stepPx,
       };
-      const nextLngLat = this.map.unproject([nextPxRaw.x, nextPxRaw.y]);
+
+      let nextLngLat: mapboxgl.LngLat;
+      try {
+        nextLngLat = this.map.unproject([nextPxRaw.x, nextPxRaw.y]);
+      } catch {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      if (
+        !Number.isFinite(nextLngLat.lng) ||
+        !Number.isFinite(nextLngLat.lat)
+      ) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
 
       particle.lng = nextLngLat.lng;
       particle.lat = nextLngLat.lat;
