@@ -276,5 +276,17 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         },
       ],
     },
+    {
+      id: 'end',
+      label: 'End',
+      steps: [
+        {
+          id: 'end',
+          title: "You're Ready to Explore",
+          text: 'You’ve completed the NOAH Studio tutorial. You can now explore hazard maps, weather updates, risk information, and map tools on your own. Use the layer panel and map controls anytime to adjust what you see and inspect areas across the Philippines.',
+          placement: 'center',
+        },
+      ],
+    },
   ],
 };
