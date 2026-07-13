@@ -166,7 +166,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
             '[data-tour-id="map-scale-control"]',
             '[data-tour-id="tour-help-info"]',
           ],
-          placement: 'upper-left',
+          placement: 'left',
         },
 
         {
