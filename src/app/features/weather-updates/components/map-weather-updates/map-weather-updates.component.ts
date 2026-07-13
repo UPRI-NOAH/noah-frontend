@@ -664,88 +664,97 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     });
 
     // Click events.
-    this.map.on('click', 'typhoon-track-icon', (e) => {
-      if (e.features && e.features.length > 0) {
-        // Close all existing popups before opening a new one
-        this.closeAllTyphoonPopups();
+    const handleTyphoonPopup = (features: GeoJSON.Feature<any>[]) => {
+      if (!features || features.length === 0) return;
 
-        const feature = e.features[0];
-        const coordinates = (feature.geometry as any).coordinates.slice();
-        const typhoonName = feature.properties?.international_name;
-        const typhoonClass = this.getTyphoonClassFullName(
-          feature.properties?.typhoon_type
-        );
-        const datetime = feature.properties?.datetime;
+      // Close all existing popups before opening a new one
+      this.closeAllTyphoonPopups();
 
-        // Format date/time to 'MMM DD, YYYY
-        const formattedDate = new Date(datetime).toLocaleString('en-PH', {
-          year: 'numeric',
-          month: 'short',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-          timeZone: 'Asia/Manila',
-        });
-        const radius = feature.properties?.radius;
-        const formattedTyphoonName = typhoonName
-          .replace('{', '(')
-          .replace('}', ')');
+      const feature = features[0];
+      const coordinates = (feature.geometry as any).coordinates.slice();
+      const typhoonName = feature.properties?.international_name;
+      const typhoonClass = this.getTyphoonClassFullName(
+        feature.properties?.typhoon_type
+      );
+      const datetime = feature.properties?.datetime;
 
-        // HTML of the popup
-        const popupContent = `
-          <div>
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
-            <p style="margin: 5px 0; font-size: 12px; color: #666;">
-              <strong>Classification:</strong> ${typhoonClass}
-            </p>
-            <p style="margin: 5px 0; font-size: 12px; color: #666;">
-              <strong>Date/Time:</strong> ${formattedDate}
-            </p>
-            ${
-              radius && radius > 0
-                ? `<p style="margin: 5px 0; font-size: 12px; color: #666;">
-                     <strong>Forecast Radius:</strong> ${radius} km
-                   </p>`
-                : `<p style="margin: 5px 0; font-size: 12px; color: #2563eb; font-weight: 500;">
-                     Actual Position
-                   </p>`
-            }
-          </div>
-        `;
+      // Format date/time to 'MMM DD, YYYY
+      const formattedDate = new Date(datetime).toLocaleString('en-PH', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Manila',
+      });
+      const radius = feature.properties?.radius;
+      const formattedTyphoonName = typhoonName
+        .replace('{', '(')
+        .replace('}', ')');
 
-        // if map is zoomed out such that multiple
-        // copies of the feature are visible, popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
-        // Create a new popup instance for each click
-        const popup = new mapboxgl.Popup({
-          closeButton: true,
-          closeOnClick: false,
-          offset: 25,
-        })
-          .setLngLat(coordinates)
-          .setHTML(popupContent)
-          .addTo(this.map);
-
-        // Store the popup reference
-        this.activePopups.push(popup);
-
-        // event listener for the close button
-        popup.getElement().addEventListener('click', (event) => {
-          if ((event.target as HTMLElement).classList.contains('close-popup')) {
-            popup.remove();
-            // Remove from active popups array
-            const index = this.activePopups.indexOf(popup);
-            if (index > -1) {
-              this.activePopups.splice(index, 1);
-            }
+      // HTML of the popup
+      const popupContent = `
+        <div>
+          <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
+          <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            <strong>Classification:</strong> ${typhoonClass}
+          </p>
+          <p style="margin: 5px 0; font-size: 12px; color: #666;">
+            <strong>Date/Time:</strong> ${formattedDate}
+          </p>
+          ${
+            radius && radius > 0
+              ? `<p style="margin: 5px 0; font-size: 12px; color: #666;">
+                   <strong>Forecast Radius:</strong> ${radius} km
+                 </p>`
+              : `<p style="margin: 5px 0; font-size: 12px; color: #2563eb; font-weight: 500;">
+                   Actual Position
+                 </p>`
           }
-        });
+        </div>
+      `;
+
+      // if map is zoomed out such that multiple
+      // copies of the feature are visible, popup appears
+      // over the copy being pointed to.
+      while (Math.abs(-coordinates[0]) > 180) {
+        coordinates[0] += coordinates[0] > 0 ? -360 : 360;
       }
+
+      // Create a new popup instance for each click
+      const popup = new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: false,
+        offset: 25,
+      })
+        .setLngLat(coordinates)
+        .setHTML(popupContent)
+        .addTo(this.map);
+
+      // Store the popup reference
+      this.activePopups.push(popup);
+
+      // event listener for the close button
+      popup.getElement().addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).classList.contains('close-popup')) {
+          popup.remove();
+          // Remove from active popups array
+          const index = this.activePopups.indexOf(popup);
+          if (index > -1) {
+            this.activePopups.splice(index, 1);
+          }
+        }
+      });
+    };
+
+    this.map.on('click', 'typhoon-track-icon', (e) => {
+      handleTyphoonPopup(e.features);
+    });
+
+    // Touch event for mobile devices
+    this.map.on('touchend', 'typhoon-track-icon', (e) => {
+      handleTyphoonPopup(e.features);
     });
 
     // change cursor when hovering over icon.
