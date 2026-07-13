@@ -16,6 +16,24 @@ describe('TourComponent', () => {
   let fixture: ComponentFixture<TourComponent>;
   let overlayContainer: OverlayContainer;
 
+  const stylesContainPoint = (
+    styles: Record<string, string>[],
+    x: number,
+    y: number
+  ): boolean =>
+    styles.some((style) => {
+      if (style.inset === '0') {
+        return true;
+      }
+
+      const left = Number.parseFloat(style.left || '0');
+      const top = Number.parseFloat(style.top || '0');
+      const width = Number.parseFloat(style.width || '0');
+      const height = Number.parseFloat(style.height || '0');
+
+      return x >= left && x < left + width && y >= top && y < top + height;
+    });
+
   const definition: TourDefinition = {
     id: 'test-tour',
     title: 'Test Tour',
@@ -207,8 +225,45 @@ describe('TourComponent', () => {
 
     expect(component.stepPanelStyle.left).toBe('50%');
     expect(component.stepPanelStyle.top).toBe('50%');
-    expect(component.targetHighlightStyle).toBeNull();
+    expect(component.targetHighlightStyles).toEqual([]);
   }));
+
+  it('keeps the gap between separate targets dimmed and blocked', () => {
+    const targetRects = [
+      new DOMRect(100, 100, 100, 40),
+      new DOMRect(300, 100, 100, 40),
+    ];
+    const maskStyles = (component as any).stylesOutsideRects(
+      targetRects,
+      1000,
+      800
+    );
+
+    expect(stylesContainPoint(maskStyles, 250, 120)).toBe(true);
+    expect(stylesContainPoint(maskStyles, 150, 120)).toBe(false);
+    expect(stylesContainPoint(maskStyles, 350, 120)).toBe(false);
+  });
+
+  it('keeps only the expanded active card highlighted and interactive', () => {
+    const headerRect = new DOMRect(100, 100, 100, 40);
+    const expandedCardRect = new DOMRect(100, 100, 100, 400);
+    const activeRects = [headerRect, expandedCardRect];
+    const maskStyles = (component as any).stylesOutsideRects(
+      activeRects,
+      1000,
+      800
+    );
+    const blockerStyles = (component as any).stylesOutsideRects(
+      activeRects,
+      1000,
+      800
+    );
+
+    expect(stylesContainPoint(maskStyles, 150, 350)).toBe(false);
+    expect(stylesContainPoint(blockerStyles, 150, 350)).toBe(false);
+    expect(stylesContainPoint(maskStyles, 150, 550)).toBe(true);
+    expect(stylesContainPoint(blockerStyles, 150, 550)).toBe(true);
+  });
 
   it('resets the current step when closed and reopened', fakeAsync(() => {
     component.startTour();

@@ -25,9 +25,14 @@ export interface TourStep {
   id: string;
   title: string;
   text: string;
+  /** Primary highlighted and interactive element used to position the panel. */
   target?: string;
+  /** Additional elements that are both highlighted and interactive. */
   spotlightTargets?: string[];
-  dimTarget?: string;
+  /** Elements that remain interactive without being visually highlighted. */
+  interactionTargets?: string[];
+  /** Elements that are explicitly dimmed and blocked. */
+  dimTargets?: string[];
   advanceOnEvent?: string;
   nextEvent?: string;
   interactionInsets?: Partial<

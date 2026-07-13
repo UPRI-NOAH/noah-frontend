@@ -40,8 +40,9 @@ export class TourComponent implements OnChanges, OnDestroy {
   currentStepIndex = 0;
   flatSteps: FlatTourStep[] = [];
   stepPanelStyle: TourPositionStyle = {};
-  targetHighlightStyle: TourPositionStyle | null = null;
-  targetDimStyle: TourPositionStyle | null = null;
+  targetHighlightStyles: TourPositionStyle[] = [];
+  highlightMaskStyles: TourPositionStyle[] = [];
+  targetDimStyles: TourPositionStyle[] = [];
   interactionBlockerStyles: TourPositionStyle[] = [];
 
   private overlayRef: OverlayRef | null = null;
@@ -50,6 +51,8 @@ export class TourComponent implements OnChanges, OnDestroy {
   private observedMutationRoot: HTMLElement | null = null;
   private observedResizeTargets: HTMLElement[] = [];
   private repositionFrameId: number | null = null;
+  private observingDocumentScroll = false;
+  private readonly handleDocumentScroll = (): void => this.scheduleReposition();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -118,8 +121,9 @@ export class TourComponent implements OnChanges, OnDestroy {
     this.phase = 'closed';
     this.currentStepIndex = 0;
     this.stepPanelStyle = {};
-    this.targetHighlightStyle = null;
-    this.targetDimStyle = null;
+    this.targetHighlightStyles = [];
+    this.highlightMaskStyles = [];
+    this.targetDimStyles = [];
     this.interactionBlockerStyles = [];
     this.overlayRef?.dispose();
     this.overlayRef = null;
@@ -215,8 +219,9 @@ export class TourComponent implements OnChanges, OnDestroy {
   private renderCurrentStep(): void {
     this.disconnectTargetObservers();
     this.stepPanelStyle = this.centeredPanelStyle();
-    this.targetHighlightStyle = null;
-    this.targetDimStyle = null;
+    this.targetHighlightStyles = [];
+    this.highlightMaskStyles = [];
+    this.targetDimStyles = [];
     this.interactionBlockerStyles = [];
     this.changeDetectorRef.detectChanges();
 
@@ -226,12 +231,12 @@ export class TourComponent implements OnChanges, OnDestroy {
     }
 
     view.requestAnimationFrame(() => {
-      this.positionCurrentStep();
+      this.positionCurrentStep(true);
       this.stepComponent?.focusHeading();
     });
   }
 
-  private positionCurrentStep(): void {
+  private positionCurrentStep(scrollTargetIntoView = false): void {
     const flatStep = this.currentFlatStep;
     const panel = this.stepPanel?.nativeElement;
     const view = this.document.defaultView;
@@ -241,18 +246,21 @@ export class TourComponent implements OnChanges, OnDestroy {
     }
 
     const target = this.findTarget(flatStep.step.target);
-    const dimTarget = this.findTarget(flatStep.step.dimTarget);
+    const dimTargets = this.findTargets(flatStep.step.dimTargets || []);
     const spotlightTargets = this.findTargets(
       flatStep.step.spotlightTargets || []
     );
-
-    this.targetDimStyle = dimTarget
-      ? this.styleForRect(dimTarget.getBoundingClientRect())
-      : null;
+    const interactionTargets = this.findTargets(
+      flatStep.step.interactionTargets || []
+    );
+    this.targetDimStyles = dimTargets.map((dimTarget) =>
+      this.styleForRect(dimTarget.getBoundingClientRect())
+    );
 
     if (!target) {
       this.stepPanelStyle = this.centeredPanelStyle();
-      this.targetHighlightStyle = null;
+      this.targetHighlightStyles = [];
+      this.highlightMaskStyles = [];
       this.interactionBlockerStyles = [{ inset: '0' }];
       return;
     }
@@ -263,28 +271,51 @@ export class TourComponent implements OnChanges, OnDestroy {
         (spotlightTarget) => spotlightTarget !== target
       ),
     ];
-    this.observeTargets(target, highlightedTargets);
-    target.scrollIntoView({ block: 'center', inline: 'nearest' });
+    const interactiveTargets = [
+      ...highlightedTargets,
+      ...interactionTargets.filter(
+        (interactionTarget) => !highlightedTargets.includes(interactionTarget)
+      ),
+    ];
+    this.observeTargets(target, [...interactiveTargets, ...dimTargets]);
+    if (scrollTargetIntoView) {
+      target.scrollIntoView({ block: 'center', inline: 'nearest' });
+    }
 
     const margin = 16;
     const gap = 16;
     const targetRect = target.getBoundingClientRect();
-    const highlightRect = this.unionRect(highlightedTargets);
+    const highlightRects = highlightedTargets.map((highlightedTarget) =>
+      this.expandRect(highlightedTarget.getBoundingClientRect(), {
+        top: 4,
+        right: 4,
+        bottom: 4,
+        left: 4,
+      })
+    );
     const panelRect = panel.getBoundingClientRect();
     const panelWidth = panelRect.width;
     const panelHeight = panelRect.height;
-    const interactionRect = this.expandRect(
-      highlightRect,
-      flatStep.step.interactionInsets
+    const interactionRects = interactiveTargets.map((interactiveTarget) =>
+      this.expandRect(
+        interactiveTarget.getBoundingClientRect(),
+        flatStep.step.interactionInsets
+      )
     );
-    this.interactionBlockerStyles = this.blockerStylesAround(
-      interactionRect,
+    this.targetHighlightStyles = highlightRects.map((highlightRect) =>
+      this.styleForRect(highlightRect)
+    );
+    this.highlightMaskStyles = this.stylesOutsideRects(
+      highlightRects,
       view.innerWidth,
       view.innerHeight
     );
-    if (this.targetDimStyle) {
-      this.interactionBlockerStyles.push(this.targetDimStyle);
-    }
+    this.interactionBlockerStyles = this.stylesOutsideRects(
+      interactionRects,
+      view.innerWidth,
+      view.innerHeight
+    );
+    this.interactionBlockerStyles.push(...this.targetDimStyles);
     const placement = flatStep.step.placement || 'right';
     const position = this.positionForPlacement(
       placement,
@@ -307,22 +338,6 @@ export class TourComponent implements OnChanges, OnDestroy {
       top: `${top}px`,
       transform: 'none',
     };
-    this.targetHighlightStyle = {
-      left: `${Math.max(highlightRect.left - 4, 0)}px`,
-      top: `${Math.max(highlightRect.top - 4, 0)}px`,
-      width: `${Math.max(highlightRect.width + 8, 0)}px`,
-      height: `${Math.max(highlightRect.height + 8, 0)}px`,
-    };
-  }
-
-  private unionRect(targets: HTMLElement[]): DOMRect {
-    const rects = targets.map((target) => target.getBoundingClientRect());
-    const left = Math.min(...rects.map((rect) => rect.left));
-    const top = Math.min(...rects.map((rect) => rect.top));
-    const right = Math.max(...rects.map((rect) => rect.right));
-    const bottom = Math.max(...rects.map((rect) => rect.bottom));
-
-    return new DOMRect(left, top, right - left, bottom - top);
   }
 
   private styleForRect(rect: DOMRect): TourPositionStyle {
@@ -350,37 +365,79 @@ export class TourComponent implements OnChanges, OnDestroy {
     return new DOMRect(left, top, right - left, bottom - top);
   }
 
-  private blockerStylesAround(
-    rect: DOMRect,
+  private stylesOutsideRects(
+    rects: DOMRect[],
     viewportWidth: number,
     viewportHeight: number
   ): TourPositionStyle[] {
-    return [
-      {
-        left: '0',
-        top: '0',
-        width: `${viewportWidth}px`,
-        height: `${Math.max(rect.top, 0)}px`,
-      },
-      {
-        left: '0',
-        top: `${Math.max(rect.top, 0)}px`,
-        width: `${Math.max(rect.left, 0)}px`,
-        height: `${Math.max(rect.height, 0)}px`,
-      },
-      {
-        left: `${Math.min(rect.right, viewportWidth)}px`,
-        top: `${Math.max(rect.top, 0)}px`,
-        width: `${Math.max(viewportWidth - rect.right, 0)}px`,
-        height: `${Math.max(rect.height, 0)}px`,
-      },
-      {
-        left: '0',
-        top: `${Math.min(rect.bottom, viewportHeight)}px`,
-        width: `${viewportWidth}px`,
-        height: `${Math.max(viewportHeight - rect.bottom, 0)}px`,
-      },
-    ];
+    const clippedRects = rects
+      .map((rect) => {
+        const left = Math.min(Math.max(rect.left, 0), viewportWidth);
+        const top = Math.min(Math.max(rect.top, 0), viewportHeight);
+        const right = Math.min(Math.max(rect.right, 0), viewportWidth);
+        const bottom = Math.min(Math.max(rect.bottom, 0), viewportHeight);
+
+        return new DOMRect(left, top, right - left, bottom - top);
+      })
+      .filter((rect) => rect.width > 0 && rect.height > 0);
+
+    if (clippedRects.length === 0) {
+      return [{ inset: '0' }];
+    }
+
+    const xCoordinates = Array.from(
+      new Set([
+        0,
+        viewportWidth,
+        ...clippedRects.flatMap((rect) => [rect.left, rect.right]),
+      ])
+    ).sort((left, right) => left - right);
+    const yCoordinates = Array.from(
+      new Set([
+        0,
+        viewportHeight,
+        ...clippedRects.flatMap((rect) => [rect.top, rect.bottom]),
+      ])
+    ).sort((top, bottom) => top - bottom);
+    const styles: TourPositionStyle[] = [];
+
+    for (let yIndex = 0; yIndex < yCoordinates.length - 1; yIndex += 1) {
+      const top = yCoordinates[yIndex];
+      const bottom = yCoordinates[yIndex + 1];
+      const middleY = (top + bottom) / 2;
+      let blockedStart: number | null = null;
+
+      for (let xIndex = 0; xIndex < xCoordinates.length - 1; xIndex += 1) {
+        const left = xCoordinates[xIndex];
+        const right = xCoordinates[xIndex + 1];
+        const middleX = (left + right) / 2;
+        const isAllowed = clippedRects.some(
+          (rect) =>
+            middleX >= rect.left &&
+            middleX <= rect.right &&
+            middleY >= rect.top &&
+            middleY <= rect.bottom
+        );
+
+        if (!isAllowed && blockedStart === null) {
+          blockedStart = left;
+        }
+
+        const isLastColumn = xIndex === xCoordinates.length - 2;
+        if (blockedStart !== null && (isAllowed || isLastColumn)) {
+          const blockedRight = isAllowed ? left : right;
+          styles.push({
+            left: `${blockedStart}px`,
+            top: `${top}px`,
+            width: `${blockedRight - blockedStart}px`,
+            height: `${bottom - top}px`,
+          });
+          blockedStart = null;
+        }
+      }
+    }
+
+    return styles;
   }
 
   private findTargets(selectors: string[]): HTMLElement[] {
@@ -405,6 +462,11 @@ export class TourComponent implements OnChanges, OnDestroy {
     const view = this.document.defaultView;
     if (!view) {
       return;
+    }
+
+    if (!this.observingDocumentScroll) {
+      this.document.addEventListener('scroll', this.handleDocumentScroll, true);
+      this.observingDocumentScroll = true;
     }
 
     const mutationRoot =
@@ -468,6 +530,14 @@ export class TourComponent implements OnChanges, OnDestroy {
     this.targetResizeObserver = null;
     this.observedMutationRoot = null;
     this.observedResizeTargets = [];
+    if (this.observingDocumentScroll) {
+      this.document.removeEventListener(
+        'scroll',
+        this.handleDocumentScroll,
+        true
+      );
+      this.observingDocumentScroll = false;
+    }
   }
 
   private findTarget(selector?: string): HTMLElement | null {

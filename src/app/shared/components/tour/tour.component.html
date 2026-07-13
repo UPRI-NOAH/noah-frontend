@@ -57,20 +57,20 @@
       ></div>
 
       <div
-        *ngIf="!targetHighlightStyle"
+        *ngIf="targetHighlightStyles.length === 0"
         class="tour-overlay"
         aria-hidden="true"
       ></div>
 
       <div
-        *ngIf="targetHighlightStyle"
-        class="tour-target-highlight"
-        [ngStyle]="targetHighlightStyle"
+        *ngFor="let highlightMaskStyle of highlightMaskStyles"
+        class="tour-highlight-mask"
+        [ngStyle]="highlightMaskStyle"
         aria-hidden="true"
       ></div>
 
       <div
-        *ngIf="targetDimStyle"
+        *ngFor="let targetDimStyle of targetDimStyles"
         class="tour-target-dim"
         [ngStyle]="targetDimStyle"
         aria-hidden="true"
