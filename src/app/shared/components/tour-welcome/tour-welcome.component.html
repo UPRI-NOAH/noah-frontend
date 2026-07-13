@@ -5,15 +5,6 @@
   aria-labelledby="tour-welcome-title"
   aria-describedby="tour-welcome-text"
 >
-  <button
-    type="button"
-    class="tour-welcome__close"
-    aria-label="Close tour"
-    (click)="close.emit()"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-
   <div class="tour-welcome__body">
     <div
       *ngIf="content?.logoUrl || content?.brandLabel"

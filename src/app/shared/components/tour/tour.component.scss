@@ -10,6 +10,10 @@
   pointer-events: auto;
 }
 
+.tour-overlay--welcome {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 .tour-layer {
   position: fixed;
   z-index: 10002;
