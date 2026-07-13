@@ -3974,7 +3974,7 @@ export class MapPlaygroundComponent
         .replace('}', ')');
 
       const popupHTML = `
-    <div>
+    <div style="z-index: 9999; position: relative;">
       <h3 style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#333;">${formattedTyphoonName}</h3>
       <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Classification:</strong> ${typhoonClass}</p>
       <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Date/Time:</strong> ${formattedDate}</p>
@@ -4001,6 +4001,9 @@ export class MapPlaygroundComponent
         .setLngLat(coords)
         .setHTML(popupHTML)
         .addTo(this.map);
+
+      // Set z-index to ensure popup appears on top
+      popup.getElement().style.zIndex = '9999';
 
       // Store popup reference
       this.activePopups.push(popup);

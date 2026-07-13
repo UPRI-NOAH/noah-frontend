@@ -695,7 +695,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
 
       // HTML of the popup
       const popupContent = `
-        <div>
+        <div style="z-index: 9999; position: relative;">
           <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">${formattedTyphoonName}</h3>
           <p style="margin: 5px 0; font-size: 12px; color: #666;">
             <strong>Classification:</strong> ${typhoonClass}
@@ -731,6 +731,9 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         .setLngLat(coordinates)
         .setHTML(popupContent)
         .addTo(this.map);
+
+      // Set z-index to ensure popup appears on top
+      popup.getElement().style.zIndex = '9999';
 
       // Store the popup reference
       this.activePopups.push(popup);
