@@ -22,7 +22,7 @@
 
 <div
   class="map-icon absolute z-[60] right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
-  data-tour-id="map-controls"
+  data-tour-id="map-view"
 >
   <div class="p-2">
     <div class="dropdown inline-block relative">
@@ -118,7 +118,7 @@
       </ul>
     </div>
     <div class="ml-2 mt-2">
-      <noah-tour [definition]="tourDefinition"></noah-tour>
+      <noah-tour [definition]="tourDefinition" data-tour-id="tour-help-info"></noah-tour>
     </div>
   </div>
 </div>

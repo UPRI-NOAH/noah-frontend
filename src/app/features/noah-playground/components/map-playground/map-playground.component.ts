@@ -376,10 +376,26 @@ export class MapPlaygroundComponent
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
     this.markTopRightMapControlsForTour();
+
+    const mapContainer = this.map.getContainer();
+    if (!mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+      const observer = new MutationObserver(() => {
+        if (mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+          this.markTopRightMapControlsForTour();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(mapContainer, { childList: true, subtree: true });
+    }
   }
 
   private markTopRightMapControlsForTour(): void {
     const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-geolocate')
+      ?.setAttribute('data-tour-id', 'mapbox-geolocate');
 
     mapContainer
       .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
@@ -392,6 +408,22 @@ export class MapPlaygroundComponent
     mapContainer
       .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
       ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-compass')
+      ?.setAttribute('data-tour-id', 'mapbox-compass');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_line')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-line');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_polygon')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-polygon');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_trash')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-trash');
   }
 
   /**
