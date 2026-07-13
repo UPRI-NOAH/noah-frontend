@@ -63,6 +63,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           text: 'After searching for a location, move the pin to any point on the map to view available hazard, weather, and disaster risk data for that place.',
           target: '[data-tour-id="map-canvas"]',
           dimTargets: ['#sidebar'],
+          nextEvent: 'noah-tour-map-camera-reset',
           placement: 'bottom-right',
         },
       ],

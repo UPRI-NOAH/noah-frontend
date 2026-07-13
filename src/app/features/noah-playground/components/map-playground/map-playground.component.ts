@@ -336,6 +336,11 @@ export class MapPlaygroundComponent
       this.switchMapStyle('terrain');
     }
 
+    this.resetMapCameraForNoahStudioTour();
+  }
+
+  @HostListener('window:noah-tour-map-camera-reset')
+  resetMapCameraForNoahStudioTour(): void {
     const loginStatus = localStorage.getItem('loginStatus');
     const camera =
       loginStatus === '1'
