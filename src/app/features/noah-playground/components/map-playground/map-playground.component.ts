@@ -2643,6 +2643,7 @@ export class MapPlaygroundComponent
         const lightningPopup = new mapboxgl.Popup({
           closeButton: true,
           closeOnClick: true,
+          className: 'lightning-popup',
         });
 
         const handleLightningClick = (e: any) => {
@@ -2681,7 +2682,7 @@ export class MapPlaygroundComponent
             : null;
 
           const content = `
-            <div style="color: #333333; font-size: 13px; line-height: 1.5;">
+            <div style="color: #333333; font-size: 13px; line-height: 1.5; z-index: 11; position: relative;">
               <div><strong>Type:</strong> ${type}</div>
               <div><strong>Amplitude:</strong> ${amplitude}</div>
               <div><strong>Height:</strong> ${height}</div>
