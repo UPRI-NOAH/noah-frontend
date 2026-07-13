@@ -2,6 +2,7 @@
   class="flex flex-col p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6"
 >
   <div
+    [attr.data-tour-id]="hazard.type + '-hazard-header'"
     class="select-none flex items-center justify-between cursor-pointer"
     (click)="toggleExpansion()"
   >

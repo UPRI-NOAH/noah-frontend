@@ -494,15 +494,15 @@
       "
     >
       <div data-tour-id="hazard-layers">
-        <noah-exaggeration class="w-full"></noah-exaggeration>
+        <div data-tour-id="3d-terrain">
+          <noah-exaggeration class="w-full"></noah-exaggeration>
+        </div>
 
         <ng-container *ngFor="let hazard of hazardTypes">
-          <noah-hazard-type
-            *ngIf="hazard.type === 'flood'"
-            class="w-full"
-            [hazard]="hazard"
-          >
-          </noah-hazard-type>
+          <div *ngIf="hazard.type === 'flood'" data-tour-id="flood-hazard">
+            <noah-hazard-type class="w-full" [hazard]="hazard">
+            </noah-hazard-type>
+          </div>
         </ng-container>
       </div>
 
@@ -512,6 +512,7 @@
         data-tour-id="weather-updates"
       >
         <div
+          data-tour-id="weather-updates-header"
           (click)="toggleExpanded()"
           class="select-none flex items-center justify-between cursor-pointer"
         >
@@ -584,19 +585,20 @@
 
       <!-- END WEATHER UPDATES SIDEPANEL -->
 
-      <div data-tour-id="risk-assessment">
+      <div data-tour-id="flood-impact-forecast">
         <noah-risk-assessment-group class="w-full"></noah-risk-assessment-group>
       </div>
       <noah-lightning-group class="w-full"></noah-lightning-group>
       <!-- <noah-dengue-risk-group class="w-full"></noah-dengue-risk-group> -->
 
       <ng-container *ngFor="let hazard of hazardTypes">
-        <noah-hazard-type
+        <div
           *ngIf="hazard.type !== 'flood'"
-          class="w-full"
-          [hazard]="hazard"
+          [attr.data-tour-id]="hazard.type + '-hazard'"
         >
-        </noah-hazard-type>
+          <noah-hazard-type class="w-full" [hazard]="hazard">
+          </noah-hazard-type>
+        </div>
       </ng-container>
 
       <!-- 
@@ -606,15 +608,21 @@
         [hazard]="hazard"
       ></noah-hazard-type> 
 -->
-      <noah-volcano-group class="w-full"></noah-volcano-group>
-      <noah-critical-facilities-playground
-        class="w-full"
-      ></noah-critical-facilities-playground>
+      <div data-tour-id="volcanoes">
+        <noah-volcano-group class="w-full"></noah-volcano-group>
+      </div>
+      <div data-tour-id="critical-facilities">
+        <noah-critical-facilities-playground
+          class="w-full"
+        ></noah-critical-facilities-playground>
+      </div>
 
       <!-- <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group> -->
 
-      <noah-qc-sensors-group></noah-qc-sensors-group>
+      <div data-tour-id="internet-of-things">
+        <noah-qc-sensors-group></noah-qc-sensors-group>
+      </div>
       <noah-boundaries-group
         *ngIf="hideBoundaries"
         class="w-full"
