@@ -305,6 +305,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       container: 'map-weather-updates',
       style: environment.mapbox.styles.terrain,
       zoom: 4.4, // Initial zoom level for Rainfall Contour and Typhoon Track
+      minZoom: 4,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
