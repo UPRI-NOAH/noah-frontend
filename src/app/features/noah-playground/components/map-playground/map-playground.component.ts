@@ -341,6 +341,9 @@ export class MapPlaygroundComponent
 
   @HostListener('window:noah-tour-map-camera-reset')
   resetMapCameraForNoahStudioTour(): void {
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+
     const loginStatus = localStorage.getItem('loginStatus');
     const camera =
       loginStatus === '1'
@@ -3887,6 +3890,10 @@ export class MapPlaygroundComponent
   private updateCalculate(event) {
     const data = this.draw.getAll();
     const answer = document.getElementById('area');
+    if (!answer) {
+      return;
+    }
+
     let totalArea = 0;
     let totalLength = 0;
 
@@ -3913,8 +3920,10 @@ export class MapPlaygroundComponent
       }
 
       answer.innerHTML = output;
+      answer.style.display = output ? 'block' : 'none';
     } else {
       answer.innerHTML = '';
+      answer.style.display = 'none';
     }
   }
 

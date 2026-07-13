@@ -79,7 +79,7 @@ describe('MapPlaygroundComponent tour camera reset', () => {
     });
   });
 
-  it('does not clear playground state or map artifacts', () => {
+  it('removes the location pin without clearing other playground state', () => {
     const centerMarker = jasmine.createSpyObj('Marker', ['remove']);
     const draw = jasmine.createSpyObj('MapboxDraw', ['deleteAll']);
     component.centerMarker = centerMarker;
@@ -88,7 +88,39 @@ describe('MapPlaygroundComponent tour camera reset', () => {
     component.resetMapCameraForNoahStudioTour();
 
     expect(playgroundService.resetPlayground).not.toHaveBeenCalled();
-    expect(centerMarker.remove).not.toHaveBeenCalled();
+    expect(centerMarker.remove).toHaveBeenCalledTimes(1);
+    expect(component.centerMarker).toBeNull();
     expect(draw.deleteAll).not.toHaveBeenCalled();
+  });
+
+  it('shows measurement results again after the tour reset hides them', () => {
+    const answer = document.createElement('div');
+    answer.id = 'area';
+    answer.style.display = 'none';
+    document.body.appendChild(answer);
+    component.draw = {
+      getAll: () => ({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: [
+                [120, 14],
+                [121, 14],
+              ],
+            },
+          },
+        ],
+      }),
+    };
+
+    (component as any).updateCalculate(null);
+
+    expect(answer.style.display).toBe('block');
+    expect(answer.textContent).toContain('Total Distance:');
+    answer.remove();
   });
 });
