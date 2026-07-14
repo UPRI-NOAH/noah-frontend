@@ -1,10 +1,6 @@
 :host {
   display: block;
-  width: min(
-    calc(100vw - 2rem),
-    calc((100vh - 2rem) * 1.677966),
-    1287px
-  );
+  width: min(calc(100vw - 2rem), calc((100vh - 2rem) * 1.677966), 1287px);
   aspect-ratio: 1287 / 767;
   container-type: inline-size;
 }
@@ -78,6 +74,7 @@
 
 .tour-welcome__title-accent {
   color: #0867f2;
+  z-index: 1000;
 }
 
 .tour-welcome__text {
