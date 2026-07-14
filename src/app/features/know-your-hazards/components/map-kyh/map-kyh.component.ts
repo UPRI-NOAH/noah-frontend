@@ -18,6 +18,7 @@ import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
+import { KNOW_YOUR_HAZARDS_TOUR } from '@features/know-your-hazards/tour/know-your-hazards-tour.config';
 
 @Component({
   selector: 'noah-map-kyh',
@@ -25,6 +26,8 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
   styleUrls: ['./map-kyh.component.scss'],
 })
 export class MapKyhComponent implements OnInit {
+  readonly tourDefinition = KNOW_YOUR_HAZARDS_TOUR;
+
   map!: Map;
   geolocateControl!: GeolocateControl;
   //centerMarker!: Marker;
@@ -394,10 +397,10 @@ export class MapKyhComponent implements OnInit {
     // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
+    container.setAttribute('data-tour-id', 'map-scale-control');
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
+    container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -429,13 +432,20 @@ export class MapKyhComponent implements OnInit {
       }
     }
     const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '287px';
-      } else {
-        container.style.top = '242px';
+      const helpButton = document.querySelector(
+        '[data-tour-trigger="know-your-hazards"]'
+      ) as HTMLButtonElement | null;
+
+      if (helpButton) {
+        const mapRect = this.map.getContainer().getBoundingClientRect();
+        const helpButtonRect = helpButton.getBoundingClientRect();
+        container.style.top = `${helpButtonRect.bottom - mapRect.top + 8}px`;
       }
     };
     applyPosition();
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(applyPosition);
   }
 
   openLegend() {

@@ -5,6 +5,12 @@
   [selectedStyle]="mapStyle"
   (selectedStyleChange)="switchMapStyle($event)"
 ></noah-change-style-button>
+
+<noah-tour
+  class="absolute tour-help-icon"
+  data-tour-id="tour-help-info"
+  [definition]="tourDefinition"
+></noah-tour>
 <pre id="coordinates" class="coords"></pre>
 
 <div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
