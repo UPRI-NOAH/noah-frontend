@@ -1,0 +1,12 @@
+<nav class="tour-navbar" aria-label="Tour sections">
+  <button
+    *ngFor="let section of sections; trackBy: trackBySectionId"
+    type="button"
+    class="tour-navbar__item"
+    [class.tour-navbar__item--active]="section.id === activeSectionId"
+    [attr.aria-current]="section.id === activeSectionId ? 'step' : null"
+    (click)="selectSection(section.id)"
+  >
+    {{ section.label }}
+  </button>
+</nav>
