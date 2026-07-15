@@ -419,9 +419,21 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
     const topCities = Array.from(cityMap.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
-      .map(([key, count]) => ({
-        city: key.split('||')[0],
-        affected_barangays: count,
+      .map(([key, count]) => {
+        const [city, province] = key.split('||');
+        return { city, province, affected_barangays: count };
+      });
+
+    const topBarangaysByHazard = records
+      .filter((r) => typeof r.perc_aff_medhigh === 'number' && r.brgy && r.muni)
+      .slice()
+      .sort((a, b) => b.perc_aff_medhigh - a.perc_aff_medhigh)
+      .slice(0, 3)
+      .map((r) => ({
+        barangay: r.brgy,
+        municipality: this._toTitleCase(r.muni),
+        province: r.prov ? this._toTitleCase(r.prov) : undefined,
+        medhigh_percentage: r.perc_aff_medhigh,
       }));
 
     return {
@@ -431,6 +443,7 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
       affected_provinces: provinceMap.size,
       top_areas: topAreas,
       top_cities: topCities,
+      top_barangays_by_hazard: topBarangaysByHazard,
       notes: [
         'Counts exclude barangays tagged Little to None.',
         'Exposure is based on intersection with NOAH flood hazard layers.',

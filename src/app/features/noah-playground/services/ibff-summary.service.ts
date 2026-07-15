@@ -10,7 +10,15 @@ export interface TopArea {
 
 export interface TopCity {
   city: string;
+  province?: string;
   affected_barangays: number;
+}
+
+export interface TopBarangayByHazard {
+  barangay: string;
+  municipality: string;
+  province?: string;
+  medhigh_percentage: number;
 }
 
 export interface ExposedFacilities {
@@ -26,6 +34,7 @@ export interface ForecastSummaryInput {
   affected_provinces: number;
   top_areas: TopArea[];
   top_cities: TopCity[];
+  top_barangays_by_hazard?: TopBarangayByHazard[];
   exposed_facilities?: ExposedFacilities;
   highest_hazard_level?: string;
   notes?: string[];
