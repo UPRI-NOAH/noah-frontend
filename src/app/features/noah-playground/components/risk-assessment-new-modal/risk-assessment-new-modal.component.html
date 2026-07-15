@@ -1,0 +1,651 @@
+<!-- Desktop View -->
+<div
+  [ngClass]="
+    'z-50 fixed w-full lg:flex justify-center inset-0 lg:p-10 p-5 hidden'
+  "
+  *ngIf="riskModal"
+>
+  <div class="w-full h-full opacity-80 bg-black z-0 absolute inset-0"></div>
+
+  <!-- Modal -->
+  <div
+    class="
+      max-h-full
+      border-none
+      shadow-lg
+      relative
+      flex flex-col
+      w-full
+      pointer-events-auto
+      bg-white bg-clip-padding
+      rounded-3xl
+      outline-none
+      text-xl
+      overflow-hidden
+    "
+  >
+    <!-- Modal Header -->
+    <div
+      class="
+        flex flex-shrink-0
+        items-center
+        justify-between
+        bg-primary
+        border-b border-gray-200
+        rounded-t-md
+        p-8
+      "
+    >
+      <div class="relative w-full dark:bg-gray-800">
+        <div
+          class="
+            cursor-pointer
+            absolute
+            top-0
+            right-0
+            dark:text-white
+            text-white
+            transition
+            duration-150
+            ease-in-out
+          "
+        >
+          <button
+            class="
+              btn-mininmize
+              box-content
+              w-4
+              h-4
+              p-1
+              font-bold
+              rounded-none
+              mr-4
+              opacity-75
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-white hover:opacity-100 hover:no-underline
+            "
+            (click)="hideModal()"
+          >
+            <svg
+              fill="currentColor"
+              stroke-width="2.5"
+              xmlns="http://www.w3.org/2000/svg"
+              data-name="Layer 1"
+              viewBox="0 0 100 125"
+            >
+              <rect
+                width="90"
+                height="16.1"
+                x="5"
+                y="41.9"
+                rx="5.7"
+                ry="5.7"
+                style="stroke-width: 0"
+              />
+            </svg>
+          </button>
+          <button
+            class="
+              btn-close
+              box-content
+              w-4
+              h-4
+              p-1
+              font-bold
+              rounded-none
+              opacity-75
+              focus:shadow-none focus:outline-none focus:opacity-100
+              hover:text-white hover:opacity-100 hover:no-underline
+            "
+            (click)="closeModal()"
+          >
+            <svg
+              fill="currentColor"
+              stroke-width="2.5"
+              xmlns="http://www.w3.org/2000/svg"
+              xml:space="preserve"
+              fill-rule="evenodd"
+              stroke-linejoin="round"
+              stroke-miterlimit="2"
+              clip-rule="evenodd"
+              viewBox="0 0 32 40"
+            >
+              <path
+                d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div>
+          <p
+            class="
+              lg:text-2xl
+              md:text-lg
+              font-extrabold
+              leading-none
+              whitespace-pre-line
+              md:
+              text-white
+              dark:text-gray-100
+            "
+          >
+            In a large flood event, how many people might be affected and would
+            need evacuation?
+          </p>
+          <div
+            class="
+              pt-2
+              italic
+              text-white
+              lg:text-lg
+              text-sm
+              opacity-75
+              flex
+              items-center
+              gap-1.5
+            "
+          >
+            <svg
+              class="w-4 h-4 lg:w-5 lg:h-5 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <span>As of {{ dateDataText }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex border-b border-gray-200 px-8 mt-2">
+      <button
+        (click)="activeTab = 'barangays'"
+        [class.border-primary]="activeTab === 'barangays'"
+        [class.text-primary]="activeTab === 'barangays'"
+        [class.border-transparent]="activeTab !== 'barangays'"
+        [class.text-gray-400]="activeTab !== 'barangays'"
+        class="
+          flex
+          items-center
+          gap-1.5
+          px-4
+          py-3
+          text-base
+          font-bold
+          border-b-2 border-primary
+          text-primary
+          transition-colors
+          duration-150
+        "
+      >
+        <!-- triangle/warning icon -->
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+          />
+        </svg>
+        Affected Barangays
+      </button>
+      <button
+        (click)="activeTab = 'province'"
+        [class.border-primary]="activeTab === 'province'"
+        [class.text-primary]="activeTab === 'province'"
+        [class.border-transparent]="activeTab !== 'province'"
+        [class.text-gray-400]="activeTab !== 'province'"
+        class="
+          flex
+          items-center
+          gap-1.5
+          px-4
+          py-3
+          text-base
+          font-bold
+          border-b-2 border-transparent
+          text-gray-400
+          hover:text-gray-600 hover:border-gray-300
+          transition-colors
+          duration-150
+        "
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        By Province
+      </button>
+
+      <button
+        (click)="activeTab = 'archive'"
+        [class.border-primary]="activeTab === 'archive'"
+        [class.text-primary]="activeTab === 'archive'"
+        [class.border-transparent]="activeTab !== 'archive'"
+        [class.text-gray-400]="activeTab !== 'archive'"
+        class="
+          flex
+          items-center
+          gap-1.5
+          px-4
+          py-3
+          text-base
+          font-bold
+          border-b-2 border-transparent
+          text-gray-400
+          hover:text-gray-600 hover:border-gray-300
+          transition-colors
+          duration-150
+        "
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+          />
+        </svg>
+        Data Archive
+      </button>
+
+      <button
+        (click)="activeTab = 'summary'"
+        [class.border-primary]="activeTab === 'summary'"
+        [class.text-primary]="activeTab === 'summary'"
+        [class.border-transparent]="activeTab !== 'summary'"
+        [class.text-gray-400]="activeTab !== 'summary'"
+        class="
+          flex
+          items-center
+          gap-1.5
+          px-4
+          py-3
+          text-base
+          font-bold
+          border-b-2 border-transparent
+          text-gray-400
+          hover:text-gray-600 hover:border-gray-300
+          transition-colors
+          duration-150
+        "
+      >
+        <!-- chart bar icon -->
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+        Summary
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <noah-risk-assessment-affected-barangays
+      *ngIf="activeTab === 'barangays'"
+      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+    >
+    </noah-risk-assessment-affected-barangays>
+
+    <noah-risk-assessment-by-province
+      *ngIf="activeTab === 'province'"
+      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+    >
+    </noah-risk-assessment-by-province>
+
+    <noah-risk-assessment-data-archive
+      *ngIf="activeTab === 'archive'"
+      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+    >
+    </noah-risk-assessment-data-archive>
+
+    <noah-risk-assessment-summary
+      *ngIf="activeTab === 'summary'"
+      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+    >
+    </noah-risk-assessment-summary>
+
+    <!-- Footer -->
+    <div class="flex-shrink-0 md:py-3 md:px-8 border-t border-gray-200">
+      <div class="text-gray-500 text-xs italic">
+        <b>Disclaimer:</b> Calculations apply to Medium and High Hazard zones
+        only.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile View -->
+<div
+  class="w-full h-full opacity-80 bg-black z-0 absolute inset-0 lg:hidden"
+  *ngIf="riskModal"
+></div>
+<div
+  class="
+    max-h-auto
+    border-none
+    shadow-lg
+    relative
+    flex flex-col
+    h-[95dvh]
+    w-[95dvw]
+    top-[2.5dvh]
+    left-[2.5dvw]
+    pointer-events-auto
+    bg-gray-50 bg-clip-padding
+    rounded-3xl
+    outline-none
+    text-xl
+    opacity-100
+    overflow-hidden
+    lg:hidden
+  "
+  *ngIf="riskModal"
+>
+  <div class="relative w-full h-full dark:bg-gray-800 flex flex-col">
+    <!-- NEW Mobile Header -->
+    <header class="flex-shrink-0">
+      <div class="bg-primary p-6">
+        <div class="flex flex-row justify-between items-start">
+          <div class="flex-1">
+            <div class="font-extrabold text-white text-base leading-snug">
+              In a large flood event, how many people might be affected and
+              would need evacuation?
+            </div>
+            <div
+              class="
+                italic
+                text-white text-xs
+                opacity-75
+                mt-1
+                flex
+                items-center
+                gap-1
+              "
+            >
+              <svg
+                class="w-3.5 h-3.5 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <span>As of {{ dateDataText }}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 ml-2 flex-shrink-0">
+            <button
+              class="box-content w-4 h-4 p-1 hover:opacity-100"
+              (click)="hideModal()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                data-name="Layer 1"
+                viewBox="0 0 100 125"
+                fill="white"
+              >
+                <rect
+                  width="90"
+                  height="16.1"
+                  x="5"
+                  y="41.9"
+                  rx="5.7"
+                  ry="5.7"
+                  style="stroke-width: 0"
+                />
+              </svg>
+            </button>
+            <button
+              class="box-content w-4 h-4 p-1 hover:opacity-100"
+              (click)="closeModal()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xml:space="preserve"
+                fill-rule="evenodd"
+                stroke-linejoin="round"
+                stroke-miterlimit="2"
+                clip-rule="evenodd"
+                viewBox="0 0 32 40"
+                fill="white"
+              >
+                <path
+                  fill="white"
+                  d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-col flex-1 px-6 min-h-0">
+      <!-- Mobile Tab Navigation -->
+      <div
+        class="flex border-b border-gray-200 overflow-x-auto pt-2 flex-shrink-0"
+      >
+        <button
+          (click)="activeTab = 'barangays'"
+          [class.border-primary]="activeTab === 'barangays'"
+          [class.text-primary]="activeTab === 'barangays'"
+          [class.border-transparent]="activeTab !== 'barangays'"
+          [class.text-gray-400]="activeTab !== 'barangays'"
+          class="
+            flex
+            items-center
+            gap-1
+            px-3
+            py-2.5
+            text-sm
+            font-bold
+            border-b-2
+            whitespace-nowrap
+            transition-colors
+            duration-150
+          "
+        >
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v3m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+            />
+          </svg>
+          Affected Barangays
+        </button>
+        <button
+          (click)="activeTab = 'province'"
+          [class.border-primary]="activeTab === 'province'"
+          [class.text-primary]="activeTab === 'province'"
+          [class.border-transparent]="activeTab !== 'province'"
+          [class.text-gray-400]="activeTab !== 'province'"
+          class="
+            flex
+            items-center
+            gap-1
+            px-3
+            py-2.5
+            text-sm
+            font-bold
+            border-b-2
+            whitespace-nowrap
+            transition-colors
+            duration-150
+          "
+        >
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          By Province
+        </button>
+        <button
+          (click)="activeTab = 'archive'"
+          [class.border-primary]="activeTab === 'archive'"
+          [class.text-primary]="activeTab === 'archive'"
+          [class.border-transparent]="activeTab !== 'archive'"
+          [class.text-gray-400]="activeTab !== 'archive'"
+          class="
+            flex
+            items-center
+            gap-1
+            px-3
+            py-2.5
+            text-sm
+            font-bold
+            border-b-2
+            whitespace-nowrap
+            transition-colors
+            duration-150
+          "
+        >
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+            />
+          </svg>
+          Archive
+        </button>
+        <button
+          (click)="activeTab = 'summary'"
+          [class.border-primary]="activeTab === 'summary'"
+          [class.text-primary]="activeTab === 'summary'"
+          [class.border-transparent]="activeTab !== 'summary'"
+          [class.text-gray-400]="activeTab !== 'summary'"
+          class="
+            flex
+            items-center
+            gap-1
+            px-3
+            py-2.5
+            text-sm
+            font-bold
+            border-b-2
+            whitespace-nowrap
+            transition-colors
+            duration-150
+          "
+        >
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+          Summary
+        </button>
+      </div>
+
+      <!-- Mobile Tab Content -->
+      <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+        <noah-risk-assessment-affected-barangays
+          *ngIf="activeTab === 'barangays'"
+          class="flex flex-col h-full"
+        ></noah-risk-assessment-affected-barangays>
+
+        <noah-risk-assessment-by-province
+          *ngIf="activeTab === 'province'"
+          class="flex flex-col h-full"
+        ></noah-risk-assessment-by-province>
+
+        <noah-risk-assessment-data-archive
+          *ngIf="activeTab === 'archive'"
+          class="flex flex-col h-full"
+        ></noah-risk-assessment-data-archive>
+
+        <noah-risk-assessment-summary
+          *ngIf="activeTab === 'summary'"
+          class="flex flex-col h-full"
+        ></noah-risk-assessment-summary>
+      </div>
+    </div>
+
+    <!-- Mobile Footer -->
+    <div class="flex-shrink-0 px-6 py-3 border-t border-gray-200">
+      <div class="text-gray-500 text-xs italic">
+        <b>Disclaimer:</b> Calculations apply to Medium and High Hazard zones
+        only.
+      </div>
+    </div>
+  </div>
+</div>

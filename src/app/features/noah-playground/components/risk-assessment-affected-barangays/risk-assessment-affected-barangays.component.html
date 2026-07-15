@@ -1,0 +1,715 @@
+<!-- Desktop View -->
+<div class="hidden lg:flex flex-col flex-auto px-8 py-4 h-full min-h-0">
+  <!-- Search + Pagination Row -->
+  <div class="flex items-center gap-3 mb-4 flex-shrink-0">
+    <!-- Search -->
+    <div class="relative flex-1">
+      <div
+        class="
+          absolute
+          inset-y-0
+          left-0
+          flex
+          items-center
+          pl-3
+          pointer-events-none
+        "
+      >
+        <svg
+          class="w-5 h-5 text-gray-500 dark:text-gray-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <input
+        [(ngModel)]="searchValue"
+        type="search"
+        id="table-search"
+        class="
+          bg-gray-50
+          border border-gray-300
+          text-gray-900 text-sm
+          rounded-lg
+          focus:ring-blue-500 focus:border-blue-500
+          block
+          w-full
+          pl-10
+          p-2.5
+          dark:bg-gray-700
+          dark:border-gray-600
+          dark:placeholder-gray-400
+          dark:text-white
+          dark:focus:ring-blue-500
+          dark:focus:border-blue-500
+          disabled:cursor-not-allowed
+        "
+        placeholder="Search Barangay, Municipality"
+        (input)="loadData(1, searchValue)"
+        [disabled]="errorMsg"
+      />
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <!-- First page -->
+      <button
+        class="
+          p-1.5
+          rounded
+          text-gray-500
+          hover:text-primary hover:bg-blue-50
+          disabled:opacity-40 disabled:cursor-not-allowed
+        "
+        (click)="loadData(1)"
+        [disabled]="currentPage === 1"
+        title="First page"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M11 19l-7-7 7-7M18 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      <!-- Prev -->
+      <button
+        class="
+          p-1.5
+          rounded
+          text-gray-500
+          hover:text-primary hover:bg-blue-50
+          disabled:opacity-40 disabled:cursor-not-allowed
+        "
+        (click)="loadData(currentPage - 1)"
+        [disabled]="currentPage === 1"
+        title="Previous page"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+
+      <span class="text-sm text-gray-600 whitespace-nowrap px-1">
+        {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
+        {{ currentPageEnd | number: '1.0-0' }} of
+        {{ totalDataCount | number: '1.0-0' }}
+      </span>
+
+      <!-- Next -->
+      <button
+        class="
+          p-1.5
+          rounded
+          text-gray-500
+          hover:text-primary hover:bg-blue-50
+          disabled:opacity-40 disabled:cursor-not-allowed
+        "
+        (click)="loadData(currentPage + 1)"
+        [disabled]="currentPage * itemsPerPage >= totalDataCount"
+        title="Next page"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+      <!-- Last page -->
+      <button
+        class="
+          p-1.5
+          rounded
+          text-gray-500
+          hover:text-primary hover:bg-blue-50
+          disabled:opacity-40 disabled:cursor-not-allowed
+        "
+        (click)="loadData(lastPage)"
+        [disabled]="currentPage * itemsPerPage >= totalDataCount"
+        title="Last page"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 5l7 7-7 7M6 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div
+    class="table-wrp flex-1 overflow-y-auto min-h-0 relative block rounded-t-xl"
+  >
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead
+        class="
+          sticky
+          top-0
+          z-10
+          font-extrabold
+          text-xs
+          tracking-wider
+          md:text-base
+          uppercase
+          bg-[#E2ECFF]
+          dark:text-gray-400
+          rounded-t-xl
+        "
+      >
+        <tr>
+          <th
+            class="sticky top-0"
+            [ngClass]="col.widthClass"
+            *ngFor="let col of columns"
+          >
+            <div
+              role="button"
+              (click)="onHeaderColumnClick(col.key)"
+              class="
+                flex
+                leading-none
+                items-center
+                transition-colors
+                duration-150
+                p-4
+                y-full
+                text-sm
+                border-b border-primary
+              "
+              [ngClass]="{
+                'bg-primary text-white': sortField === col.key,
+                'text-primary hover:bg-[#CADCFF]': sortField !== col.key,
+                'rounded-tl-xl': col.key === 'brgy',
+                'rounded-tr-xl': col.key === 'perc_aff_medhigh'
+              }"
+            >
+              <span class="w-full truncate">{{ col.header }}</span>
+              <svg
+                class="w-3 h-3 ml-1.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                />
+              </svg>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <div *ngIf="noResult">
+        <div class="flex items-center absolute justify-center w-full py-6">
+          <div class="bg-white flex items-center justify-center mx-4 md:w-2/3">
+            <div class="flex flex-col items-center py-4">
+              <p
+                class="
+                  px-4
+                  pb-10
+                  text-base
+                  md:text-2xl
+                  leading-none
+                  text-center text-gray-600
+                "
+              >
+                No result for "{{ searchValue }}"
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-container>
+        <div *ngIf="errorMsg; else dataAvailable">
+          <div class="flex items-center absolute justify-center w-full py-6">
+            <div
+              class="bg-white flex items-center justify-center mx-4 md:w-2/3"
+            >
+              <div class="flex flex-col items-center py-4">
+                <p
+                  class="
+                    px-4
+                    pb-10
+                    text-base
+                    md:text-xl
+                    leading-none
+                    text-center text-gray-600
+                  "
+                >
+                  No forecast that meets pre-determined thresholds for large
+                  floods
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #dataAvailable>
+        <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
+          <tr
+            *ngFor="
+              let data of affectedData
+                | sort: sortField:sortDirection
+                | searchRiskAffected: searchValue
+            "
+            class="
+              bg-white
+              border-b
+              transition
+              duration-300
+              ease-in-out
+              dark:bg-gray-800 dark:border-gray-700
+              hover:bg-gray-50
+              dark:hover:bg-gray-600
+              text-xs
+              md:text-base
+            "
+          >
+            <td class="text-sm text-gray-900 p-4 whitespace-nowrap">
+              <span class="font-extrabold">{{ data.brgy }}</span>
+            </td>
+            <td class="text-sm text-gray-900 font-medium p-4 whitespace-nowrap">
+              <span class="capitalize">{{ data.muni | lowercase }}</span>
+            </td>
+            <td class="text-sm text-gray-900 font-medium p-4 whitespace-nowrap">
+              <span class="capitalize">{{ data.prov | lowercase }}</span>
+            </td>
+            <td class="text-sm text-gray-900 font-medium p-4">
+              {{ data.total_pop | number: '1.0-0' }}
+            </td>
+            <td class="text-sm text-gray-900 font-medium p-4">
+              {{ data.total_aff_pop | number: '1.0-0' }}
+            </td>
+            <td class="text-sm text-gray-900 font-medium p-4">
+              {{ data.exposed_medhigh | number: '1.0-0' }}
+            </td>
+            <td class="p-4">
+              <div class="flex items-center gap-2">
+                <span
+                  class="text-sm font-extrabold w-14 flex-shrink-0"
+                  [ngClass]="{
+                    'text-[#FF383C]': data.perc_aff_medhigh >= redLevel,
+                    'text-[#FFA528]':
+                      data.perc_aff_medhigh >= orangeLevel &&
+                      data.perc_aff_medhigh < redLevel,
+                    'text-[#34C759]': data.perc_aff_medhigh < orangeLevel
+                  }"
+                >
+                  {{ data.perc_aff_medhigh }}%
+                </span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5 w-full">
+                  <div
+                    class="h-1.5 rounded-full"
+                    [style.width.%]="data.perc_aff_medhigh"
+                    [ngClass]="{
+                      'bg-[#FF383C]': data.perc_aff_medhigh >= redLevel,
+                      'bg-[#FFA528]':
+                        data.perc_aff_medhigh >= orangeLevel &&
+                        data.perc_aff_medhigh < redLevel,
+                      'bg-[#34C759]': data.perc_aff_medhigh < orangeLevel
+                    }"
+                  ></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </ng-template>
+    </table>
+  </div>
+</div>
+
+<!-- Mobile View Container -->
+<div class="flex flex-col h-full lg:hidden pb-2">
+  <!-- Mobile Search + Sort (Locked at top) -->
+  <div class="w-full pt-3 flex-shrink-0">
+    <div class="mt-1 flex flex-row place-content-stretch gap-2">
+      <!-- Search -->
+      <div class="w-full h-full flex-1">
+        <div class="relative">
+          <div
+            class="
+              absolute
+              inset-y-0
+              left-0
+              flex
+              items-center
+              pl-3
+              pointer-events-none
+            "
+          >
+            <svg
+              class="w-5 h-5 text-gray-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <input
+            [(ngModel)]="searchValue"
+            type="search"
+            class="
+              bg-white
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              focus:ring-blue-500 focus:border-blue-500
+              block
+              w-full
+              pl-10
+              p-2.5
+            "
+            placeholder="Search Location"
+          />
+        </div>
+      </div>
+      <!-- Sort -->
+      <div class="w-auto h-full">
+        <div class="relative">
+          <div class="absolute left-0 flex pl-3 pointer-events-none">
+            <svg
+              class="h-5 w-5 mt-2.5"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              *ngIf="sortDirection === 'ascending'"
+            >
+              <path
+                d="M13 12H21M13 8H21M13 16H21M6 7V17M6 17L3 14M6 17L9 14"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <svg
+              class="h-5 w-5 mt-2.5"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              *ngIf="sortDirection === 'descending'"
+            >
+              <path
+                d="M13 12H21M13 8H21M13 16H21M6 7V17M6 7L3 10M6 7L9 10"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <button
+            class="
+              bg-white
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              pl-9
+              p-2.5
+              w-fit
+              whitespace-nowrap
+              text-left
+            "
+            type="button"
+            (click)="showSortDropdown()"
+          >
+            {{
+              sortField === 'perc_aff_medhigh'
+                ? 'Percentage'
+                : sortField === 'total_pop'
+                ? 'Population'
+                : sortField === 'prov'
+                ? 'Province'
+                : sortField === 'brgy'
+                ? 'Barangay'
+                : sortField === 'muni'
+                ? 'Municipality'
+                : 'Sort by:'
+            }}
+          </button>
+          <ul
+            class="
+              bg-white
+              border border-gray-300
+              text-gray-900 text-sm
+              rounded-lg
+              absolute
+              z-10
+              right-0
+              mt-1
+            "
+            *ngIf="showSort"
+          >
+            <button
+              class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+              (click)="onHeaderColumnClick('perc_aff_medhigh')"
+            >
+              Percentage
+            </button>
+            <button
+              class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+              (click)="onHeaderColumnClick('total_pop')"
+            >
+              Population
+            </button>
+            <button
+              class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+              (click)="onHeaderColumnClick('brgy')"
+            >
+              Barangay
+            </button>
+            <button
+              class="h-auto w-full p-2.5 border-b border-gray-300 text-left"
+              (click)="onHeaderColumnClick('muni')"
+            >
+              Municipality
+            </button>
+            <button
+              class="h-auto w-full p-2.5 border-gray-300 text-left"
+              (click)="onHeaderColumnClick('prov')"
+            >
+              Province
+            </button>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Card List (This is the ONLY part that scrolls) -->
+  <div class="flex-1 overflow-y-auto min-h-0 mt-2" *ngIf="!errorMsg">
+    <div class="flex flex-col">
+      <div
+        class="
+          bg-white
+          border border-gray-300
+          rounded-lg
+          w-full
+          h-auto
+          px-4
+          py-3
+          my-1
+          flex flex-row
+          place-content-between
+          overscroll-contain
+        "
+        *ngFor="
+          let data of affectedData
+            | sort: sortField:sortDirection
+            | searchRiskAffected: searchValue
+        "
+      >
+        <div class="text-left">
+          <div class="font-bold text-sm">{{ data.brgy }}</div>
+          <div class="font-semibold text-sm">{{ data.muni }}</div>
+          <div class="text-xs">{{ data.prov }}</div>
+        </div>
+        <div class="text-right">
+          <div
+            class="font-bold text-sm"
+            [ngClass]="{
+              'text-[#FF383C]': data.perc_aff_medhigh >= redLevel,
+              'text-[#FFA528]':
+                data.perc_aff_medhigh >= orangeLevel &&
+                data.perc_aff_medhigh < redLevel,
+              'text-[#34C759]': data.perc_aff_medhigh < orangeLevel
+            }"
+          >
+            {{ data.perc_aff_medhigh }}% affected
+          </div>
+          <div class="font-semibold text-sm">
+            {{ data.exposed_medhigh }} affected people
+          </div>
+          <div class="text-xs">out of {{ data.total_pop }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile No Forecast -->
+  <div
+    class="
+      flex-1 flex
+      items-center
+      justify-center
+      bg-gray-300
+      rounded-lg
+      mt-2
+      min-h-0
+    "
+    *ngIf="errorMsg"
+  >
+    <div class="p-8 text-center text-base">
+      No forecast that meets pre-determined thresholds for large floods
+    </div>
+  </div>
+
+  <!-- NEW: Mobile Pagination (Locked directly above the footer) -->
+  <div
+    class="
+      flex
+      items-center
+      justify-center
+      gap-2
+      flex-shrink-0
+      w-full
+      pt-3
+      mt-2
+      border-t border-gray-200
+    "
+    *ngIf="!errorMsg"
+  >
+    <!-- First page -->
+    <button
+      class="
+        p-1.5
+        rounded
+        text-gray-500
+        hover:text-primary hover:bg-blue-50
+        disabled:opacity-40 disabled:cursor-not-allowed
+      "
+      (click)="loadData(1)"
+      [disabled]="currentPage === 1"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11 19l-7-7 7-7M18 19l-7-7 7-7"
+        />
+      </svg>
+    </button>
+    <!-- Prev -->
+    <button
+      class="
+        p-1.5
+        rounded
+        text-gray-500
+        hover:text-primary hover:bg-blue-50
+        disabled:opacity-40 disabled:cursor-not-allowed
+      "
+      (click)="loadData(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+    </button>
+    <!-- Numbers -->
+    <span class="text-xs text-gray-600 whitespace-nowrap px-1">
+      {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
+      {{ currentPageEnd | number: '1.0-0' }} of
+      {{ totalDataCount | number: '1.0-0' }}
+    </span>
+    <!-- Next -->
+    <button
+      class="
+        p-1.5
+        rounded
+        text-gray-500
+        hover:text-primary hover:bg-blue-50
+        disabled:opacity-40 disabled:cursor-not-allowed
+      "
+      (click)="loadData(currentPage + 1)"
+      [disabled]="currentPage * itemsPerPage >= totalDataCount"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+    <!-- Last page -->
+    <button
+      class="
+        p-1.5
+        rounded
+        text-gray-500
+        hover:text-primary hover:bg-blue-50
+        disabled:opacity-40 disabled:cursor-not-allowed
+      "
+      (click)="loadData(lastPage)"
+      [disabled]="currentPage * itemsPerPage >= totalDataCount"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M13 5l7 7-7 7M6 5l7 7-7 7"
+        />
+      </svg>
+    </button>
+  </div>
+</div>

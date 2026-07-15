@@ -9,4 +9,5 @@ export const environment = {
     },
   },
   gaTag: 'G-2LP2ZPT4BG',
+  panahonApiUrl: 'https://panahon.up.edu.ph'
 };

@@ -13,6 +13,7 @@ export const environment = {
     },
   },
   gaTag: 'G-XXQTRHXBW3',
+  panahonApiUrl: ''
 };
 
 /*

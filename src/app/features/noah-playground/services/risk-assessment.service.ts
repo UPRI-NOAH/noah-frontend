@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '@env/environment';
 
 export type AffectedData = {
   prov: string;
@@ -17,7 +18,7 @@ export type AffectedData = {
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-  private API_BASE_URL = 'https://panahon.up.edu.ph';
+  private API_BASE_URL = environment.panahonApiUrl; // 'https://panahon.up.edu.ph'
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
   private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
@@ -26,27 +27,34 @@ export class RiskAssessmentService {
   // Track the search term
   private currentSearchTerm: string | null = null;
 
-  getAffectedPopulations(page?: number, searchTerm?: string): Observable<any> {
-    let url = this.defaultUrl; // Start with the default URL
+  getAffectedPopulations(
+    page?: number,
+    searchTerm?: string,
+    sortField?: string,
+    sortDirection?: string
+  ): Observable<any> {
+    let url = this.defaultUrl;
 
-    // Update the current search term when provided
     if (searchTerm !== undefined) {
       this.currentSearchTerm = searchTerm;
     }
 
-    // Modify the URL if there is a non-empty search term
     if (this.currentSearchTerm && this.currentSearchTerm.trim() !== '') {
       url += `&search=${this.currentSearchTerm}`;
     }
 
-    // Add the page parameter if it's provided
     if (page) {
       url += `&page=${page}`;
     }
 
+    if (sortField) {
+      const ordering =
+        sortDirection === 'ascending' ? sortField : `-${sortField}`;
+      url += `&ordering=${ordering}`;
+    }
+
     return this.http.get(url).pipe(
       tap((response: any) => {
-        // Update next and previous page URLs from the API response
         this.nextPageUrl = response.next;
         this.previousPageUrl = response.previous;
       })
