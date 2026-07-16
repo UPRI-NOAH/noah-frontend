@@ -24,147 +24,148 @@
       overflow-hidden
     "
   >
-    <!-- Modal Header -->
+    <!-- Desktop Modal Header -->
     <div
-      class="
-        flex flex-shrink-0
-        items-center
-        justify-between
-        bg-primary
-        border-b border-gray-200
-        rounded-t-md
-        p-8
-      "
+      class="flex flex-col flex-shrink-0 w-full rounded-t-3xl overflow-hidden"
     >
-      <div class="relative w-full dark:bg-gray-800">
-        <div
-          class="
-            cursor-pointer
-            absolute
-            top-0
-            right-0
-            dark:text-white
-            text-white
-            transition
-            duration-150
-            ease-in-out
-          "
-        >
-          <button
-            class="
-              btn-mininmize
-              box-content
-              w-4
-              h-4
-              p-1
-              font-bold
-              rounded-none
-              mr-4
-              opacity-75
-              focus:shadow-none focus:outline-none focus:opacity-100
-              hover:text-white hover:opacity-100 hover:no-underline
-            "
-            (click)="hideModal()"
-          >
-            <svg
-              fill="currentColor"
-              stroke-width="2.5"
-              xmlns="http://www.w3.org/2000/svg"
-              data-name="Layer 1"
-              viewBox="0 0 100 125"
-            >
-              <rect
-                width="90"
-                height="16.1"
-                x="5"
-                y="41.9"
-                rx="5.7"
-                ry="5.7"
-                style="stroke-width: 0"
-              />
-            </svg>
-          </button>
-          <button
-            class="
-              btn-close
-              box-content
-              w-4
-              h-4
-              p-1
-              font-bold
-              rounded-none
-              opacity-75
-              focus:shadow-none focus:outline-none focus:opacity-100
-              hover:text-white hover:opacity-100 hover:no-underline
-            "
-            (click)="closeModal()"
-          >
-            <svg
-              fill="currentColor"
-              stroke-width="2.5"
-              xmlns="http://www.w3.org/2000/svg"
-              xml:space="preserve"
-              fill-rule="evenodd"
-              stroke-linejoin="round"
-              stroke-miterlimit="2"
-              clip-rule="evenodd"
-              viewBox="0 0 32 40"
-            >
-              <path
-                d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
-              />
-            </svg>
-          </button>
-        </div>
-        <div>
-          <p
-            class="
-              lg:text-2xl
-              md:text-lg
-              font-extrabold
-              leading-none
-              whitespace-pre-line
-              md:
-              text-white
-              dark:text-gray-100
-            "
-          >
-            In a large flood event, how many people might be affected and would
-            need evacuation?
-          </p>
+      <!-- Title & Controls -->
+      <div class="bg-[#0066FF] px-8 py-5 flex items-start justify-between">
+        <!-- Icon & Text -->
+        <div class="flex items-center gap-4">
+          <!-- Wave Icon Box -->
           <div
             class="
-              pt-2
-              italic
-              text-white
-              lg:text-lg
-              text-sm
-              opacity-75
+              w-12
+              h-12
+              rounded-xl
+              bg-white/20
               flex
               items-center
-              gap-1.5
+              justify-center
+              flex-shrink-0
+              shadow-sm
             "
           >
             <svg
-              class="w-4 h-4 lg:w-5 lg:h-5 stroke-current"
+              class="w-7 h-7 text-white"
               fill="none"
               viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 17c3-1.5 6-1.5 9 0s6 1.5 9 0 M3 12c3-1.5 6-1.5 9 0s6 1.5 9 0 M3 7c3-1.5 6-1.5 9 0s6 1.5 9 0"
+              />
+            </svg>
+          </div>
+
+          <!-- Text Content -->
+          <div class="flex flex-col justify-center">
+            <h2 class="text-xl font-extrabold text-white">
+              Flood Exposure Assessment
+            </h2>
+            <p class="text-sm text-white/90 mt-0.5" opacity-80>
+              In a large flood event, how many people might be affected and
+              would need evacuation?
+            </p>
+          </div>
+        </div>
+
+        <!-- Window Controls -->
+        <div class="flex items-center gap-2 mt-1">
+          <button
+            (click)="hideModal()"
+            class="
+              w-8
+              h-8
+              flex
+              items-center
+              justify-center
+              rounded-lg
+              border border-white/30
+              text-white
+              hover:bg-white/20 hover:border-white
+              transition-all
+              focus:outline-none
+            "
+            title="Minimize"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
               stroke-width="2.5"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                d="M20 12H4"
               />
             </svg>
-            <span>As of {{ dateDataText }}</span>
-          </div>
+          </button>
+          <button
+            (click)="closeModal()"
+            class="
+              w-8
+              h-8
+              flex
+              items-center
+              justify-center
+              rounded-lg
+              border border-white/30
+              text-white
+              hover:bg-white/20 hover:border-white
+              transition-all
+              focus:outline-none
+            "
+            title="Close"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Dark Meta Bar -->
+      <div
+        class="bg-[#0052CC] px-8 py-2.5 flex items-center text-sm text-white/90"
+      >
+        <div class="flex items-center gap-1.5">
+          <svg
+            class="w-4 h-4 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>As of {{ dateDataText }}</span>
+        </div>
+        <span class="mx-3 text-white/40">&middot;</span>
+        <span class="text-white/80">Updated {{ lastUpdatedText }} ago</span>
       </div>
     </div>
 
     <!-- Tab Navigation -->
-    <div class="flex border-b border-gray-200 px-8 mt-2">
+    <div class="flex border-b border-gray-200 px-8 mt-1">
       <button
         (click)="activeTab = 'barangays'"
         [class.border-primary]="activeTab === 'barangays'"
@@ -191,7 +192,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="3"
+          stroke-width="2"
         >
           <path
             stroke-linecap="round"
@@ -227,7 +228,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="3"
+          stroke-width="2"
         >
           <path
             stroke-linecap="round"
@@ -269,7 +270,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="3"
+          stroke-width="2"
         >
           <path
             stroke-linecap="round"
@@ -301,21 +302,21 @@
           duration-150
         "
       >
-        <!-- chart bar icon -->
+        <!-- ai star icon -->
         <svg
           class="w-4 h-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="3"
+          stroke-width="2"
         >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            d="M10.5 21.5C10.5 16.5 6.5 12.5 1.5 12.5C6.5 12.5 10.5 8.5 10.5 3.5C10.5 8.5 14.5 12.5 19.5 12.5C14.5 12.5 10.5 16.5 10.5 21.5Z"
           />
         </svg>
-        Summary
+        AI Summary
       </button>
     </div>
 
@@ -334,7 +335,7 @@
 
     <noah-risk-assessment-data-archive
       *ngIf="activeTab === 'archive'"
-      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+      class="flex-1 overflow-y-auto min-h-0 flex flex-col lg:w-1/2 lg:mx-auto"
     >
     </noah-risk-assessment-data-archive>
 
@@ -382,119 +383,149 @@
   *ngIf="riskModal"
 >
   <div class="relative w-full h-full dark:bg-gray-800 flex flex-col">
-    <!-- NEW Mobile Header -->
-    <header class="flex-shrink-0">
-      <div class="bg-primary p-6">
-        <div class="flex flex-row justify-between items-start">
-          <div class="flex-1">
-            <div class="font-extrabold text-white text-base leading-snug">
-              In a large flood event, how many people might be affected and
-              would need evacuation?
-            </div>
-            <div
-              class="
-                italic
-                text-white text-xs
-                opacity-75
-                mt-1
-                flex
-                items-center
-                gap-1
-              "
-            >
-              <svg
-                class="w-3.5 h-3.5 stroke-current"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="2.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-              <span>As of {{ dateDataText }}</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-1 ml-2 flex-shrink-0">
-            <button
-              class="box-content w-4 h-4 p-1 hover:opacity-100"
-              (click)="hideModal()"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                data-name="Layer 1"
-                viewBox="0 0 100 125"
-                fill="white"
-              >
-                <rect
-                  width="90"
-                  height="16.1"
-                  x="5"
-                  y="41.9"
-                  rx="5.7"
-                  ry="5.7"
-                  style="stroke-width: 0"
-                />
-              </svg>
-            </button>
-            <button
-              class="box-content w-4 h-4 p-1 hover:opacity-100"
-              (click)="closeModal()"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xml:space="preserve"
-                fill-rule="evenodd"
-                stroke-linejoin="round"
-                stroke-miterlimit="2"
-                clip-rule="evenodd"
-                viewBox="0 0 32 40"
-                fill="white"
-              >
-                <path
-                  fill="white"
-                  d="m18.8 16 9.6-9.6a2 2 0 1 0-2.8-2.8L16 13.2 6.4 3.6a2 2 0 1 0-2.8 2.8l9.6 9.6-9.6 9.6a2 2 0 1 0 2.8 2.8l9.6-9.6 9.6 9.6a2 2 0 1 0 2.8-2.8L18.8 16Z"
-                />
-              </svg>
-            </button>
-          </div>
+    <!-- Mobile Header -->
+    <header class="flex-shrink-0 flex flex-col w-full">
+      <!-- Top Section -->
+      <div class="bg-[#0066FF] px-6 py-4 flex items-start justify-between">
+        <div class="flex flex-col flex-1 pr-4">
+          <h2 class="text-lg font-extrabold text-white leading-tight">
+            Flood Exposure Assessment
+          </h2>
+          <p class="text-xs text-white/90 mt-1">
+            How many people might be affected and would need evacuation?
+          </p>
         </div>
+
+        <!-- Window Controls -->
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          <button
+            (click)="hideModal()"
+            class="
+              w-7
+              h-7
+              flex
+              items-center
+              justify-center
+              rounded-md
+              border border-white/30
+              text-white
+              hover:bg-white/20 hover:border-white
+              transition-all
+              focus:outline-none
+            "
+          >
+            <svg
+              class="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M20 12H4"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="closeModal()"
+            class="
+              w-7
+              h-7
+              flex
+              items-center
+              justify-center
+              rounded-md
+              border border-white/30
+              text-white
+              hover:bg-white/20 hover:border-white
+              transition-all
+              focus:outline-none
+            "
+          >
+            <svg
+              class="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Meta Bar -->
+      <div
+        class="bg-[#0052CC] px-6 py-2 flex items-center text-xs text-white/90"
+      >
+        <div class="flex items-center gap-1">
+          <svg
+            class="w-3.5 h-3.5 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>As of {{ dateDataText }} </span>
+        </div>
+        <span class="mx-3 text-white/40"></span>
+        <span class="text-white/80">Updated {{ lastUpdatedText }} ago</span>
       </div>
     </header>
 
     <div class="flex flex-col flex-1 px-6 min-h-0">
       <!-- Mobile Tab Navigation -->
       <div
-        class="flex border-b border-gray-200 overflow-x-auto pt-2 flex-shrink-0"
+        class="
+          grid grid-cols-2
+          gap-2
+          py-3
+          border-b border-gray-200
+          flex-shrink-0
+        "
       >
+        <!-- Affected Barangays -->
         <button
           (click)="activeTab = 'barangays'"
-          [class.border-primary]="activeTab === 'barangays'"
+          [class.bg-blue-50]="activeTab === 'barangays'"
           [class.text-primary]="activeTab === 'barangays'"
-          [class.border-transparent]="activeTab !== 'barangays'"
-          [class.text-gray-400]="activeTab !== 'barangays'"
+          [class.border-primary]="activeTab === 'barangays'"
+          [class.bg-white]="activeTab !== 'barangays'"
+          [class.text-gray-500]="activeTab !== 'barangays'"
+          [class.border-gray-200]="activeTab !== 'barangays'"
           class="
             flex
             items-center
-            gap-1
-            px-3
+            justify-center
+            gap-1.5
+            px-2
             py-2.5
-            text-sm
+            text-xs
             font-bold
-            border-b-2
-            whitespace-nowrap
+            border
+            rounded-lg
             transition-colors
             duration-150
           "
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-4 h-4 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="3"
+            stroke-width="2"
           >
             <path
               stroke-linecap="round"
@@ -502,34 +533,39 @@
               d="M12 9v3m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             />
           </svg>
-          Affected Barangays
+          <span class="truncate">Affected Barangays</span>
         </button>
+
+        <!-- By Province -->
         <button
           (click)="activeTab = 'province'"
-          [class.border-primary]="activeTab === 'province'"
+          [class.bg-blue-50]="activeTab === 'province'"
           [class.text-primary]="activeTab === 'province'"
-          [class.border-transparent]="activeTab !== 'province'"
-          [class.text-gray-400]="activeTab !== 'province'"
+          [class.border-primary]="activeTab === 'province'"
+          [class.bg-white]="activeTab !== 'province'"
+          [class.text-gray-500]="activeTab !== 'province'"
+          [class.border-gray-200]="activeTab !== 'province'"
           class="
             flex
             items-center
-            gap-1
-            px-3
+            justify-center
+            gap-1.5
+            px-2
             py-2.5
-            text-sm
+            text-xs
             font-bold
-            border-b-2
-            whitespace-nowrap
+            border
+            rounded-lg
             transition-colors
             duration-150
           "
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-4 h-4 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="3"
+            stroke-width="2"
           >
             <path
               stroke-linecap="round"
@@ -542,34 +578,39 @@
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          By Province
+          <span class="truncate">By Province</span>
         </button>
+
+        <!-- Archive -->
         <button
           (click)="activeTab = 'archive'"
-          [class.border-primary]="activeTab === 'archive'"
+          [class.bg-blue-50]="activeTab === 'archive'"
           [class.text-primary]="activeTab === 'archive'"
-          [class.border-transparent]="activeTab !== 'archive'"
-          [class.text-gray-400]="activeTab !== 'archive'"
+          [class.border-primary]="activeTab === 'archive'"
+          [class.bg-white]="activeTab !== 'archive'"
+          [class.text-gray-500]="activeTab !== 'archive'"
+          [class.border-gray-200]="activeTab !== 'archive'"
           class="
             flex
             items-center
-            gap-1
-            px-3
+            justify-center
+            gap-1.5
+            px-2
             py-2.5
-            text-sm
+            text-xs
             font-bold
-            border-b-2
-            whitespace-nowrap
+            border
+            rounded-lg
             transition-colors
             duration-150
           "
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-4 h-4 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="3"
+            stroke-width="2"
           >
             <path
               stroke-linecap="round"
@@ -577,42 +618,48 @@
               d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
             />
           </svg>
-          Archive
+          <span class="truncate"> Data Archive</span>
         </button>
+
+        <!-- Summary -->
         <button
           (click)="activeTab = 'summary'"
-          [class.border-primary]="activeTab === 'summary'"
+          [class.bg-blue-50]="activeTab === 'summary'"
           [class.text-primary]="activeTab === 'summary'"
-          [class.border-transparent]="activeTab !== 'summary'"
-          [class.text-gray-400]="activeTab !== 'summary'"
+          [class.border-primary]="activeTab === 'summary'"
+          [class.bg-white]="activeTab !== 'summary'"
+          [class.text-gray-500]="activeTab !== 'summary'"
+          [class.border-gray-200]="activeTab !== 'summary'"
           class="
             flex
             items-center
-            gap-1
-            px-3
+            justify-center
+            gap-1.5
+            px-2
             py-2.5
-            text-sm
+            text-xs
             font-bold
-            border-b-2
-            whitespace-nowrap
+            border
+            rounded-lg
             transition-colors
             duration-150
           "
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-4 h-4 flex-shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            stroke-width="3"
+            stroke-width="2"
           >
+            <!-- Large Star -->
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              d="M10.5 21.5C10.5 16.5 6.5 12.5 1.5 12.5C6.5 12.5 10.5 8.5 10.5 3.5C10.5 8.5 14.5 12.5 19.5 12.5C14.5 12.5 10.5 16.5 10.5 21.5Z"
             />
           </svg>
-          Summary
+          <span class="truncate">AI Summary</span>
         </button>
       </div>
 

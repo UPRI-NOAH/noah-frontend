@@ -64,7 +64,9 @@
           p-1.5
           rounded
           text-gray-500
-          hover:text-primary hover:bg-blue-50
+          hover:text-primary hover:bg-blue-100
+          transition-colors
+          duration-150
           disabled:opacity-40 disabled:cursor-not-allowed
         "
         (click)="loadData(1)"
@@ -76,7 +78,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.5"
         >
           <path
             stroke-linecap="round"
@@ -91,7 +93,9 @@
           p-1.5
           rounded
           text-gray-500
-          hover:text-primary hover:bg-blue-50
+          hover:text-primary hover:bg-blue-100
+          transition-colors
+          duration-150
           disabled:opacity-40 disabled:cursor-not-allowed
         "
         (click)="loadData(currentPage - 1)"
@@ -103,7 +107,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.5"
         >
           <path
             stroke-linecap="round"
@@ -113,7 +117,7 @@
         </svg>
       </button>
 
-      <span class="text-sm text-gray-600 whitespace-nowrap px-1">
+      <span class="text-sm text-gray-600 font-bold whitespace-nowrap px-1">
         {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
         {{ currentPageEnd | number: '1.0-0' }} of
         {{ totalDataCount | number: '1.0-0' }}
@@ -125,7 +129,9 @@
           p-1.5
           rounded
           text-gray-500
-          hover:text-primary hover:bg-blue-50
+          hover:text-primary hover:bg-blue-100
+          transition-colors
+          duration-150
           disabled:opacity-40 disabled:cursor-not-allowed
         "
         (click)="loadData(currentPage + 1)"
@@ -137,7 +143,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.5"
         >
           <path
             stroke-linecap="round"
@@ -152,7 +158,9 @@
           p-1.5
           rounded
           text-gray-500
-          hover:text-primary hover:bg-blue-50
+          hover:text-primary hover:bg-blue-100
+          transition-colors
+          duration-150
           disabled:opacity-40 disabled:cursor-not-allowed
         "
         (click)="loadData(lastPage)"
@@ -164,7 +172,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.5"
         >
           <path
             stroke-linecap="round"
@@ -211,7 +219,8 @@
                 items-center
                 transition-colors
                 duration-150
-                p-4
+                px-4
+                py-3.5
                 y-full
                 text-sm
                 border-b border-primary
@@ -248,7 +257,7 @@
                 class="
                   px-4
                   pb-10
-                  text-base
+                  text-bold
                   md:text-2xl
                   leading-none
                   text-center text-gray-600
@@ -272,7 +281,7 @@
                   class="
                     px-4
                     pb-10
-                    text-base
+                    text-bold
                     md:text-xl
                     leading-none
                     text-center text-gray-600
@@ -308,25 +317,45 @@
               md:text-base
             "
           >
-            <td class="text-sm text-gray-900 p-4 whitespace-nowrap">
-              <span class="font-extrabold">{{ data.brgy }}</span>
+            <td class="text-sm text-gray-900 px-4 py-3.5 whitespace-nowrap">
+              <span class="font-extrabold truncate">{{ data.brgy }}</span>
             </td>
-            <td class="text-sm text-gray-900 font-medium p-4 whitespace-nowrap">
-              <span class="capitalize">{{ data.muni | lowercase }}</span>
+            <td
+              class="
+                text-sm text-gray-900
+                font-medium
+                px-4
+                py-3.5
+                whitespace-nowrap
+              "
+            >
+              <span class="capitalize truncate">{{
+                data.muni | lowercase
+              }}</span>
             </td>
-            <td class="text-sm text-gray-900 font-medium p-4 whitespace-nowrap">
-              <span class="capitalize">{{ data.prov | lowercase }}</span>
+            <td
+              class="
+                text-sm text-gray-900
+                font-medium
+                px-4
+                py-3.5
+                whitespace-nowrap
+              "
+            >
+              <span class="capitalize truncate">{{
+                data.prov | lowercase
+              }}</span>
             </td>
-            <td class="text-sm text-gray-900 font-medium p-4">
+            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
               {{ data.total_pop | number: '1.0-0' }}
             </td>
-            <td class="text-sm text-gray-900 font-medium p-4">
+            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
               {{ data.total_aff_pop | number: '1.0-0' }}
             </td>
-            <td class="text-sm text-gray-900 font-medium p-4">
+            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
               {{ data.exposed_medhigh | number: '1.0-0' }}
             </td>
-            <td class="p-4">
+            <td class="px-4 py-3.5">
               <div class="flex items-center gap-2">
                 <span
                   class="text-sm font-extrabold w-14 flex-shrink-0"
@@ -364,7 +393,7 @@
 
 <!-- Mobile View Container -->
 <div class="flex flex-col h-full lg:hidden pb-2">
-  <!-- Mobile Search + Sort (Locked at top) -->
+  <!-- Mobile Search + Sort -->
   <div class="w-full pt-3 flex-shrink-0">
     <div class="mt-1 flex flex-row place-content-stretch gap-2">
       <!-- Search -->
@@ -585,12 +614,12 @@
     "
     *ngIf="errorMsg"
   >
-    <div class="p-8 text-center text-base">
+    <div class="p-8 text-center text-bold text-gray-600">
       No forecast that meets pre-determined thresholds for large floods
     </div>
   </div>
 
-  <!-- NEW: Mobile Pagination (Locked directly above the footer) -->
+  <!-- Mobile Pagination -->
   <div
     class="
       flex
@@ -658,7 +687,7 @@
       </svg>
     </button>
     <!-- Numbers -->
-    <span class="text-xs text-gray-600 whitespace-nowrap px-1">
+    <span class="text-xs font-bold text-gray-600 whitespace-nowrap px-1">
       {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
       {{ currentPageEnd | number: '1.0-0' }} of
       {{ totalDataCount | number: '1.0-0' }}

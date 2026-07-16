@@ -16,6 +16,7 @@ export class RiskAssessmentNewModalComponent implements OnInit {
   activeTab: 'barangays' | 'province' | 'archive' | 'summary';
   riskModal = false;
   dateDataText: string;
+  lastUpdatedText: string;
   mobileDisclaimer = false;
   btnReadMore = true;
   showSelect = false;
@@ -86,7 +87,26 @@ export class RiskAssessmentNewModalComponent implements OnInit {
 
   loadDateText(): void {
     this.riskAssessment.getDateText().subscribe((data: string) => {
-      this.dateDataText = data;
+      this.dateDataText = data; 
+      const safeDateStr = data.replace(' - ', ' ');
+      
+      const lastUpdatedDate = new Date(safeDateStr);
+      const now = new Date();
+      
+      const diffInMs = now.getTime() - lastUpdatedDate.getTime();
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      const diffInDays = Math.floor(diffInHours / 24);
+
+      if (diffInDays > 0) {
+        this.lastUpdatedText = `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+      } else if (diffInHours > 0) {
+        this.lastUpdatedText = `${diffInHours} hr${diffInHours > 1 ? 's' : ''}`;
+      } else if (diffInMinutes > 0) {
+        this.lastUpdatedText = `${diffInMinutes} min`;
+      } else {
+        this.lastUpdatedText = `Just now`;
+      }
     });
   }
 
