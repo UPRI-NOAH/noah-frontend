@@ -576,23 +576,23 @@ export class TourComponent implements OnChanges, OnDestroy {
     switch (placement) {
       case 'upper-left':
         return {
-          left: margin,
-          top: margin,
+          left: target.left + gap,
+          top: target.top + gap,
         };
       case 'upper-right':
         return {
-          left: viewportWidth - panelWidth - margin,
-          top: margin,
+          left: target.right - panelWidth - gap,
+          top: target.top + gap,
         };
       case 'bottom-left':
         return {
-          left: margin,
-          top: viewportHeight - panelHeight - margin,
+          left: target.left + gap,
+          top: target.bottom - panelHeight - gap,
         };
       case 'bottom-right':
         return {
-          left: viewportWidth - panelWidth - margin,
-          top: viewportHeight - panelHeight - margin,
+          left: target.right - panelWidth - gap,
+          top: target.bottom - panelHeight - gap,
         };
       case 'center':
         return {

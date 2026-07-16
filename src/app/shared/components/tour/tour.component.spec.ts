@@ -228,6 +228,22 @@ describe('TourComponent', () => {
     expect(component.targetHighlightStyles).toEqual([]);
   }));
 
+  it('positions corner placements inside the target bounds', () => {
+    const position = (component as any).positionForPlacement(
+      'bottom-right',
+      new DOMRect(0, 0, 1022, 1024),
+      587,
+      295,
+      16,
+      1440,
+      1024,
+      16
+    );
+
+    expect(position.left).toBe(419);
+    expect(position.top).toBe(713);
+  });
+
   it('keeps the gap between separate targets dimmed and blocked', () => {
     const targetRects = [
       new DOMRect(100, 100, 100, 40),
