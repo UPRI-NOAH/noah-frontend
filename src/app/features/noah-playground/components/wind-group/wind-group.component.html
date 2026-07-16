@@ -24,9 +24,7 @@
         />
       </label>
       <div class="flex flex-col ml-3">
-        <div class="text-base leading-none font-bold">
-          Weather Satellite Image
-        </div>
+        <div class="text-base leading-none font-bold">Wind</div>
       </div>
     </div>
     <div class="cursor-pointer">
@@ -68,18 +66,43 @@
       </button>
     </div>
   </div>
+
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="pl-3">
-      <div class="items-center">
-        <!-- CRITICAL FACILITY START -->
-        <noah-weather
-          *ngFor="let weatherSat of weatherSatellite"
-          [name]="weatherSat"
-        ></noah-weather>
-        <!-- CRITICAL FACILITY END -->
-        <hr class="p-2" />
-      </div>
+    <!--
+    <div class="pl-0 mb-4">
+      <noah-slider
+        label="Particle Count"
+        [initialValue]="initialParticleCountValue"
+        [min]="100"
+        [max]="1500"
+        [step]="50"
+        (valueChange)="changeParticleCount($event)"
+      ></noah-slider>
     </div>
+    <div class="pl-0 mb-4">
+      <noah-slider
+        label="Speed"
+        [initialValue]="initialSpeedValue"
+        [min]="0.05"
+        [max]="2"
+        [step]="0.05"
+        (valueChange)="changeSpeed($event)"
+      ></noah-slider>
+    </div>
+    -->
+    <noah-wind-solo
+      *ngFor="let wind of windTypeList"
+      [windType]="wind"
+    ></noah-wind-solo>
+
+    <section class="px-5 mt-2 md:px-0 mb-1">
+      <p class="italic text-xs tracking-wide mb-2">
+        <span class="font-bold">Source:</span>
+        <a href="https://open-meteo.com/" target="_blank" class="text-primary">
+          OPEN-METEO
+        </a>
+      </p>
+    </section>
   </div>
 </div>

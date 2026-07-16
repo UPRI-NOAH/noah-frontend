@@ -333,6 +333,29 @@ export type WeatherUpdates = {
   expanded: boolean;
 };
 
+// wind
+
+export type WindType = 'wind';
+
+export type WindGroupState = {
+  shown: boolean;
+  expanded: boolean;
+  types: Record<WindType, WindState>;
+};
+
+export type WindState = {
+  particleCount: number;
+  speed: number;
+};
+/*
+export type WindState = {
+  shown: boolean;
+  expanded: boolean;
+  particleCount: number;
+  speed: number;
+};
+*/
+
 type NoahPlaygroundState = {
   exaggeration: ExaggerationState;
   flood: FloodState;
@@ -365,6 +388,7 @@ type NoahPlaygroundState = {
   typhoonTrack: TyphoonTrackState;
   lightning: LightningState;
   weatherUpdates: WeatherUpdates;
+  wind: WindGroupState;
 };
 
 const createInitialValue = (): NoahPlaygroundState => ({
@@ -525,10 +549,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     selectedType: 'himawari',
     types: {
       himawari: {
-        opacity: 80,
+        opacity: 70,
       },
       'himawari-GSMAP': {
-        opacity: 80,
+        opacity: 70,
       },
     },
   },
@@ -656,7 +680,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   lightning: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: 'realtime-lightning',
     types: {
@@ -687,6 +711,18 @@ const createInitialValue = (): NoahPlaygroundState => ({
   weatherUpdates: {
     shown: false,
     expanded: true,
+  },
+
+  wind: {
+    shown: true,
+    expanded: false,
+    types: {
+      wind: {
+        // shown: true,
+        particleCount: 1000,
+        speed: 0.5,
+      },
+    },
   },
 });
 
