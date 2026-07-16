@@ -19,10 +19,6 @@ export class RiskAssessmentNewModalComponent implements OnInit {
   lastUpdatedText: string;
   mobileDisclaimer = false;
   btnReadMore = true;
-  showSelect = false;
-  archieveDateTime: string;
-  archieveDownload: string;
-  dropdown: string[] = [];
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -37,62 +33,16 @@ export class RiskAssessmentNewModalComponent implements OnInit {
     });
 
     this.loadDateText();
-    this.archiveData();
-  }
-
-  showSelectDate() {
-    this.showSelect = !this.showSelect;
-  }
-
-  async downloadData(selectedDate: string) {
-    try {
-      const response: any = await this.riskAssessment
-        .archiveData()
-        .pipe(first())
-        .toPromise();
-      if (response && response.results) {
-        const selectedResult = response.results.find(
-          (result: any) => result.datetime === selectedDate
-        );
-
-        if (selectedResult && selectedResult.s3_link) {
-          window.open(selectedResult.s3_link, '_blank');
-        } else {
-          console.error('Selected date not found or missing s3_link');
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching archive data:', error);
-    }
-  }
-
-  onDateSelected(selectedDate: string) {
-    if (selectedDate !== 'select-date') {
-      this.downloadData(selectedDate).then(() => {
-        this.showSelect = false;
-      });
-    }
-  }
-
-  async archiveData() {
-    const response: any = await this.riskAssessment
-      .archiveData()
-      .pipe(first())
-      .toPromise();
-    if (response && response.results) {
-      const datetimes = response.results.map((result: any) => result.datetime);
-      this.dropdown = datetimes;
-    }
   }
 
   loadDateText(): void {
     this.riskAssessment.getDateText().subscribe((data: string) => {
-      this.dateDataText = data; 
+      this.dateDataText = data;
       const safeDateStr = data.replace(' - ', ' ');
-      
+
       const lastUpdatedDate = new Date(safeDateStr);
       const now = new Date();
-      
+
       const diffInMs = now.getTime() - lastUpdatedDate.getTime();
       const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
       const diffInHours = Math.floor(diffInMinutes / 60);
