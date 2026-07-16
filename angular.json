@@ -106,8 +106,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "noah-frontend:build",
-            "proxyConfig": "proxy.conf.json"
+            "browserTarget": "noah-frontend:build"
           },
           "configurations": {
             "production": {
