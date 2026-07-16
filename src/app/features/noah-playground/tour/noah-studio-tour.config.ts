@@ -221,7 +221,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'weather-updates',
           title: 'Weather Updates',
-          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide. Expand it to access three sub-layers — Weather Satellite Image for cloud and rain coverage, Typhoon Track to monitor active storm paths, and Temperature for current heat readings across the country.',
+          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide. Expand it to access five sub-layers — Weather Satellite Image for cloud and rain coverage, Typhoon Track to monitor active storm paths, and Temperature for current heat readings across the country, , Lightning Data to track lightning activity, and Wind to visualize wind flow patterns across the country.',
           target: '[data-tour-id="weather-updates-header"]',
           spotlightTargets: ['[data-tour-id="weather-updates"]'],
           placement: 'right',
