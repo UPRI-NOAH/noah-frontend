@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WindType } from '@features/noah-playground/store/noah-playground.store';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { first } from 'rxjs';
+import { first } from 'rxjs/operators';
 @Component({
   selector: 'noah-wind-solo',
   templateUrl: './wind-solo.component.html',
@@ -23,10 +23,11 @@ export class WindSoloComponent implements OnInit {
         this.initialParticleCountValue = particleCount;
         this.initialSpeedValue = speed;
       });
-    /*
-    this.initialParticleCountValue = this.pgService.getWindParticleCount();
-    this.initialSpeedValue = this.pgService.getWindSpeed();
-    */
+
+    this.initialParticleCountValue =
+      this.pgService.getWindParticleCount('wind');
+    /* this.initialSpeedValue = this.pgService.getWindSpeed();
+     */
   }
 
   changeParticleCount(particleCount: number) {

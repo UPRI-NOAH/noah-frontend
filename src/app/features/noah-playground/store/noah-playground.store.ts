@@ -544,10 +544,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     selectedType: 'himawari',
     types: {
       himawari: {
-        opacity: 80,
+        opacity: 70,
       },
       'himawari-GSMAP': {
-        opacity: 80,
+        opacity: 70,
       },
     },
   },
@@ -675,7 +675,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   lightning: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: 'realtime-lightning',
     types: {
@@ -709,7 +709,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   },
 
   wind: {
-    shown: false,
+    shown: true,
     expanded: false,
     types: {
       wind: {

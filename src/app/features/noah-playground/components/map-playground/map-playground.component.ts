@@ -2156,11 +2156,18 @@ export class MapPlaygroundComponent
             .getVolcano$(volcanoType)
             .pipe(shareReplay(1));
 
-          combineLatest([allShown$, volcano$])
+          const volcanoOpacity$ = this.pgService.getVolcano$(volcanoType).pipe(
+            map((volcano) => volcano.opacity),
+            distinctUntilChanged()
+          );
+
+          combineLatest([allShown$, volcano$, volcanoOpacity$])
             .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-            .subscribe(([allShown, volcano]) => {
+            .subscribe(([allShown, volcano, volcanoOpacity]) => {
               const visibility = volcano.shown && allShown ? 'visible' : 'none';
+              let newOpacity = 0;
               if (volcano.shown && allShown) {
+                newOpacity = volcano.opacity / 100;
                 if (volcanoType === 'active') {
                   const handleClick = (e) => {
                     const name = e.features[0].properties.name;
@@ -2636,6 +2643,7 @@ export class MapPlaygroundComponent
         const lightningPopup = new mapboxgl.Popup({
           closeButton: true,
           closeOnClick: true,
+          className: 'lightning-popup',
         });
 
         const handleLightningClick = (e: any) => {
@@ -2674,7 +2682,7 @@ export class MapPlaygroundComponent
             : null;
 
           const content = `
-            <div style="color: #333333; font-size: 13px; line-height: 1.5;">
+            <div style="color: #333333; font-size: 13px; line-height: 1.5; z-index: 11; position: relative;">
               <div><strong>Type:</strong> ${type}</div>
               <div><strong>Amplitude:</strong> ${amplitude}</div>
               <div><strong>Height:</strong> ${height}</div>
@@ -2725,17 +2733,30 @@ export class MapPlaygroundComponent
             distinctUntilChanged()
           );
 
+        const weatherUpdateShown$ =
+          this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1));
+
         combineLatest([
           allShown$,
           selectedLightning$,
           lightningOpacity$,
           dataAvailable$,
+          weatherUpdateShown$,
         ])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
           .subscribe(
-            ([allShown, selectedLightning, lightningOpacity, hasData]) => {
+            ([
+              allShown,
+              selectedLightning,
+              lightningOpacity,
+              hasData,
+              weatherUpdateShown,
+            ]) => {
               const visible =
-                allShown && selectedLightning === lightningType && hasData;
+                allShown &&
+                selectedLightning === lightningType &&
+                hasData &&
+                weatherUpdateShown;
               const opacity = visible ? lightningOpacity / 100 : 0;
 
               this.map.setLayoutProperty(
@@ -2752,11 +2773,14 @@ export class MapPlaygroundComponent
     const realtimeLayerVisibility$ = combineLatest([
       this.pgService.lightningGroupShown$.pipe(distinctUntilChanged()),
       this.pgService.selectedLightning$.pipe(distinctUntilChanged()),
+      this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1)),
     ])
       .pipe(
         map(
-          ([allShown, selectedLightning]) =>
-            allShown && selectedLightning === 'realtime-lightning'
+          ([allShown, selectedLightning, weatherUpdateShown$]) =>
+            allShown &&
+            selectedLightning === 'realtime-lightning' &&
+            weatherUpdateShown$
         ),
         distinctUntilChanged(),
         takeUntil(this._unsub),
@@ -3464,6 +3488,7 @@ export class MapPlaygroundComponent
       container: 'map',
       style: environment.mapbox.styles.terrain,
       zoom: 5.5,
+      minZoom: 4,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
@@ -3483,12 +3508,21 @@ export class MapPlaygroundComponent
     window.addEventListener('resize', this.windResizeListener);
     this.initWindMoveListeners();
 
-    this.pgService.windShown$
-      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((shown) => {
-        this.windVisible = shown;
+    const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+      distinctUntilChanged(),
+      shareReplay(1)
+    );
 
-        if (shown) {
+    combineLatest([
+      this.pgService.windShown$.pipe(distinctUntilChanged()),
+      weatherUpdateShown$,
+    ])
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe(([shown, weatherUpdateShown]) => {
+        const overallShown = shown && weatherUpdateShown;
+        this.windVisible = overallShown;
+
+        if (overallShown) {
           this.resizeWindCanvas();
           this.initWindParticles();
           if (!this.windMapMoving) {
@@ -3571,6 +3605,42 @@ export class MapPlaygroundComponent
         map.off('moveend', this.windMoveEndListener);
       }
       this.windMoveEndListener = null;
+    }
+  }
+
+  private getFallbackWindParticle(): WindParticle {
+    const bounds = this.windGridBounds;
+
+    return {
+      lng: bounds.west + Math.random() * (bounds.east - bounds.west),
+      lat: bounds.south + Math.random() * (bounds.north - bounds.south),
+      age: Math.floor(Math.random() * this.windSettings.maxAge),
+    };
+  }
+
+  private getSafeMapBounds(): mapboxgl.LngLatBounds | null {
+    if (!this.map) return null;
+
+    try {
+      const bounds = this.map.getBounds();
+      const west = bounds?.getWest();
+      const east = bounds?.getEast();
+      const south = bounds?.getSouth();
+      const north = bounds?.getNorth();
+
+      if (
+        !bounds ||
+        !Number.isFinite(west) ||
+        !Number.isFinite(east) ||
+        !Number.isFinite(south) ||
+        !Number.isFinite(north)
+      ) {
+        return null;
+      }
+
+      return bounds;
+    } catch {
+      return null;
     }
   }
 
@@ -3669,7 +3739,11 @@ export class MapPlaygroundComponent
   }
 
   private randomWindParticle(): WindParticle {
-    const bounds = this.map.getBounds();
+    const bounds = this.getSafeMapBounds();
+
+    if (!bounds) {
+      return this.getFallbackWindParticle();
+    }
 
     return {
       lng:
@@ -3720,7 +3794,13 @@ export class MapPlaygroundComponent
     const canvas = this.windCanvas?.nativeElement;
     const ctx = canvas?.getContext('2d');
 
-    if (!this.windVisible || this.windMapMoving || !canvas || !ctx) {
+    if (
+      !this.windVisible ||
+      this.windMapMoving ||
+      !canvas ||
+      !ctx ||
+      !this.map
+    ) {
       this.windAnimationFrame = null;
       return;
     }
@@ -3743,11 +3823,34 @@ export class MapPlaygroundComponent
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#FF1F80';
     */
-    const bounds = this.map.getBounds();
+    const bounds = this.getSafeMapBounds();
+    if (!bounds) {
+      this.windAnimationFrame = requestAnimationFrame((ts) =>
+        this.stepWind(ts)
+      );
+      return;
+    }
     const dashLengthPx = 5;
 
     for (const particle of this.windParticles) {
-      const prevPx = this.map.project([particle.lng, particle.lat]);
+      if (!Number.isFinite(particle.lng) || !Number.isFinite(particle.lat)) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      let prevPx: { x: number; y: number };
+      try {
+        prevPx = this.map.project([particle.lng, particle.lat]);
+      } catch {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      if (!Number.isFinite(prevPx.x) || !Number.isFinite(prevPx.y)) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
       const { u, v } = this.windAt(particle.lng, particle.lat);
       const speedMs = Math.sqrt(u * u + v * v);
       const magnitude = Math.max(speedMs, 0.001);
@@ -3761,7 +3864,22 @@ export class MapPlaygroundComponent
         x: prevPx.x + dirX * stepPx,
         y: prevPx.y + dirY * stepPx,
       };
-      const nextLngLat = this.map.unproject([nextPxRaw.x, nextPxRaw.y]);
+
+      let nextLngLat: mapboxgl.LngLat;
+      try {
+        nextLngLat = this.map.unproject([nextPxRaw.x, nextPxRaw.y]);
+      } catch {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
+
+      if (
+        !Number.isFinite(nextLngLat.lng) ||
+        !Number.isFinite(nextLngLat.lat)
+      ) {
+        Object.assign(particle, this.getFallbackWindParticle());
+        continue;
+      }
 
       particle.lng = nextLngLat.lng;
       particle.lat = nextLngLat.lat;
@@ -3820,99 +3938,104 @@ export class MapPlaygroundComponent
     // Ensure activePopups array exists
     if (!this.activePopups) this.activePopups = [];
 
-    // Click event for typhoon points
-    this.map.on(
-      'click',
-      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
-      (e) => {
-        if (!e.features || e.features.length === 0) return;
+    const layerName =
+      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source;
 
-        // Close existing popups
-        this.closeAllTyphoonPopups();
+    // Helper function to handle typhoon popup display
+    const handleTyphoonPopup = (features: GeoJSON.Feature<any>[]) => {
+      if (!features || features.length === 0) return;
 
-        const feature = e.features[0];
-        const coords = (feature.geometry as any).coordinates.slice();
-        const typhoonName = feature.properties?.international_name || 'Unnamed';
-        const typhoonClass = this.getTyphoonClassFullName(
-          feature.properties?.typhoon_type
-        );
-        const datetime = feature.properties?.datetime;
-        const radius = feature.properties?.radius;
+      // Close existing popups
+      this.closeAllTyphoonPopups();
 
-        // Format date/time
-        const formattedDate = datetime
-          ? new Date(datetime).toLocaleString('en-PH', {
-              year: 'numeric',
-              month: 'short',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true,
-              timeZone: 'Asia/Manila',
-            })
-          : 'N/A';
+      const feature = features[0];
+      const coords = (feature.geometry as any).coordinates.slice();
+      const typhoonName = feature.properties?.international_name || 'Unnamed';
+      const typhoonClass = this.getTyphoonClassFullName(
+        feature.properties?.typhoon_type
+      );
+      const datetime = feature.properties?.datetime;
+      const radius = feature.properties?.radius;
 
-        const formattedTyphoonName = typhoonName
-          .replace('{', '(')
-          .replace('}', ')');
+      // Format date/time
+      const formattedDate = datetime
+        ? new Date(datetime).toLocaleString('en-PH', {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'Asia/Manila',
+          })
+        : 'N/A';
 
-        const popupHTML = `
-      <div>
-        <h3 style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#333;">${formattedTyphoonName}</h3>
-        <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Classification:</strong> ${typhoonClass}</p>
-        <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Date/Time:</strong> ${formattedDate}</p>
-        ${
-          radius && radius > 0
-            ? `<p style="margin:5px 0;font-size:12px;color:#666;"><strong>Forecast Radius:</strong> ${radius} km</p>`
-            : `<p style="margin:5px 0;font-size:12px;font-weight:500;">Actual Position</p>`
-        }
-      </div>
-    `;
+      const formattedTyphoonName = typhoonName
+        .replace('{', '(')
+        .replace('}', ')');
 
-        // Fix for wrapped coordinates at world edges
-        while (Math.abs(e.lngLat.lng - coords[0]) > 180) {
-          coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
-        }
-
-        // Create popup
-        const popup = new mapboxgl.Popup({
-          closeButton: true,
-          closeOnClick: false,
-          offset: 25,
-        })
-          .setLngLat(coords)
-          .setHTML(popupHTML)
-          .addTo(this.map);
-
-        // Store popup reference
-        this.activePopups.push(popup);
-
-        // Optional: handle close button manually if needed
-        popup.getElement().addEventListener('click', (event) => {
-          if ((event.target as HTMLElement).classList.contains('close-popup')) {
-            popup.remove();
-            const index = this.activePopups.indexOf(popup);
-            if (index > -1) this.activePopups.splice(index, 1);
-          }
-        });
+      const popupHTML = `
+    <div style="z-index: 9999; position: relative;">
+      <h3 style="margin:0 0 10px 0;font-size:14px;font-weight:bold;color:#333;">${formattedTyphoonName}</h3>
+      <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Classification:</strong> ${typhoonClass}</p>
+      <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Date/Time:</strong> ${formattedDate}</p>
+      ${
+        radius && radius > 0
+          ? `<p style="margin:5px 0;font-size:12px;color:#666;"><strong>Forecast Radius:</strong> ${radius} km</p>`
+          : `<p style="margin:5px 0;font-size:12px;font-weight:500;">Actual Position</p>`
       }
-    );
+    </div>
+  `;
+
+      // Fix for wrapped coordinates at world edges
+      const lngLat = { lng: coords[0], lat: coords[1] };
+      while (Math.abs(lngLat.lng - coords[0]) > 180) {
+        coords[0] += lngLat.lng > coords[0] ? 360 : -360;
+      }
+
+      // Create popup
+      const popup = new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: false,
+        offset: 25,
+      })
+        .setLngLat(coords)
+        .setHTML(popupHTML)
+        .addTo(this.map);
+
+      // Set z-index to ensure popup appears on top
+      popup.getElement().style.zIndex = '9999';
+
+      // Store popup reference
+      this.activePopups.push(popup);
+
+      // Optional: handle close button manually if needed
+      popup.getElement().addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).classList.contains('close-popup')) {
+          popup.remove();
+          const index = this.activePopups.indexOf(popup);
+          if (index > -1) this.activePopups.splice(index, 1);
+        }
+      });
+    };
+
+    // Click event for typhoon points
+    this.map.on('click', layerName, (e) => {
+      handleTyphoonPopup(e.features);
+    });
+
+    // Touch event for mobile devices
+    this.map.on('touchend', layerName, (e) => {
+      handleTyphoonPopup(e.features);
+    });
 
     // Hover cursor changes
-    this.map.on(
-      'mouseenter',
-      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
-      () => {
-        this.map.getCanvas().style.cursor = 'pointer';
-      }
-    );
-    this.map.on(
-      'mouseleave',
-      source === 'typhoon-track-map-source' ? 'typhoon-track-icon' : source,
-      () => {
-        this.map.getCanvas().style.cursor = '';
-      }
-    );
+    this.map.on('mouseenter', layerName, () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+    this.map.on('mouseleave', layerName, () => {
+      this.map.getCanvas().style.cursor = '';
+    });
   }
 
   // an array of popups for storing all opened popups.
