@@ -54,6 +54,7 @@ import { state } from '@angular/animations';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { get } from 'http';
 
 @Injectable({
   providedIn: 'root',
@@ -263,16 +264,6 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.wind.expanded));
   }
 
-  getWindParticleCount$(type: WindType): Observable<number> {
-    return this.store.state$.pipe(
-      map((state) => state.wind.types[type].particleCount)
-    );
-  }
-
-  getWindSpeed$(type: WindType): Observable<number> {
-    return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
-  }
-
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
@@ -339,6 +330,16 @@ export class NoahPlaygroundService {
 
   getWind$(windType: WindType): Observable<WindState> {
     return this.store.state$.pipe(map((state) => state.wind.types[windType]));
+  }
+
+  getWindParticleCount$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(
+      map((state) => state.wind.types[type].particleCount)
+    );
+  }
+
+  getWindSpeed$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
   }
 
   getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
@@ -632,6 +633,10 @@ export class NoahPlaygroundService {
     return this.store.state.wind.speed;
   }
   */
+
+  getWindParticleCount(type: WindType): number {
+    return this.store.state.wind.types[type].particleCount;
+  }
 
   setWindParticleCount(particleCount: number, type: WindType): void {
     const nextParticleCount = Number(particleCount);
