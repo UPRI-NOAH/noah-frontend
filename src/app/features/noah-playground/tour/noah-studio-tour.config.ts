@@ -223,7 +223,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'weather-updates',
           title: 'Weather Updates',
-          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide.\n\nExpand it to access five sub-layers — Weather Satellite Image for cloud and rain coverage, Typhoon Track to monitor active storm paths, Temperature for current heat readings across the country, Lightning Data to track lightning activity, and Wind to visualize wind flow patterns across the country.',
+          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide.\n\nExpand it to access five sub-layers — **Weather Satellite Image** for cloud and rain coverage, **Typhoon Track** to monitor active storm paths, **Temperature** for current heat readings across the country, **Lightning Data** to track lightning activity, and **Wind** to visualize wind flow patterns across the country.',
           target: '[data-tour-id="weather-updates-header"]',
           spotlightTargets: ['[data-tour-id="weather-updates"]'],
           placement: 'right',
@@ -231,7 +231,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'flood-impact-forecast',
           title: 'Flood Impact Forecast',
-          text: 'A beta feature that combines a 24-hour rain forecast with flood-prone population data. Hit Calculate Flood Exposure to see a barangay-level breakdown of how many people are at risk in a flood event.',
+          text: 'Flood Impact Forecast is a beta feature that combines a 24-hour rain forecast with flood-prone population data to estimate potential exposure at the barangay level.\n\nExpand the dropdown to turn on the **Rain Forecast** and **Flood Prone Population** layers, adjust their **opacity**, then select **Calculate Flood Exposure** to view the results.',
           target: '[data-tour-id="flood-impact-forecast-header"]',
           spotlightTargets: ['[data-tour-id="flood-impact-forecast"]'],
           placement: 'right',
@@ -239,7 +239,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'landslide-hazard',
           title: 'Landslide Hazard',
-          text: 'Landslide Hazard shows areas at risk of slope failures and debris flows — especially critical for communities in mountainous provinces during typhoon season.',
+          text: "Landslide Hazard shows areas susceptible to landslides, debris flows, and alluvial-fan processes. This is especially useful for communities in mountainous areas during periods of heavy rain.\n\nExpand the dropdown to choose **Landslides** or **Debris Flow and Alluvial Fan**, adjust the layer's **opacity**, and select the **color** used to render it on the map.",
           target: '[data-tour-id="landslide-hazard-header"]',
           spotlightTargets: ['[data-tour-id="landslide-hazard"]'],
           placement: 'right',
@@ -247,7 +247,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'storm-surge-hazard',
           title: 'Storm Surge Hazard',
-          text: 'Storm Surge Hazard maps coastal areas that could be inundated by seawater pushed inland by typhoon winds. This is one of the most dangerous hazards in the Philippines.',
+          text: "Storm Surge Hazard maps coastal areas that could be inundated by seawater pushed inland during a typhoon. Use it to understand which coastal communities may be exposed at different surge heights.\n\nExpand the dropdown to choose **Storm Surge Advisory 1–4**, adjust the layer's **opacity**, and select the **color** used to render it on the map.",
           target: '[data-tour-id="storm-surge-hazard-header"]',
           spotlightTargets: ['[data-tour-id="storm-surge-hazard"]'],
           placement: 'right',
@@ -255,7 +255,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'volcanoes',
           title: 'Volcanoes',
-          text: 'The Volcanoes layer shows active volcanoes along with their permanent and extended danger zones — covering Taal, Mayon, Pinatubo, and more.',
+          text: 'The Volcanoes layer plots volcano locations and groups them by activity classification: active, potentially active, or inactive.\n\nExpand the dropdown to choose one or more **activity classifications**, adjust marker **opacity**, and review the **legend** for each classification.',
           target: '[data-tour-id="volcanoes-header"]',
           spotlightTargets: ['[data-tour-id="volcanoes"]'],
           placement: 'right',
@@ -263,7 +263,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'critical-facilities',
           title: 'Critical Facilities',
-          text: 'Critical Facilities plots hospitals, fire stations, police stations, and schools on the map. These are important places you may need during and after a disaster.',
+          text: 'Critical Facilities plots hospitals, fire stations, police stations, and schools on the map. These locations can support planning and response before, during, and after a disaster.\n\nExpand the dropdown to choose which **facility types** to display, adjust their marker **opacity**, and use the **legend** to identify them on the map.',
           target: '[data-tour-id="critical-facilities-header"]',
           spotlightTargets: ['[data-tour-id="critical-facilities"]'],
           placement: 'right',
@@ -271,7 +271,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'internet-of-things',
           title: 'Internet of Things',
-          text: "IoT shows live readings from NOAH's network of automated rain gauges and water level sensors deployed around the country. Real ground data, in real time.",
+          text: 'IoT provides available flood- and rain-sensor readings for Quezon City, together with local administrative boundaries and critical facilities. Sensor datasets are still being calibrated and validated.\n\nExpand the dropdown to choose **Flood** or **Rain** sensors, display municipal or barangay **boundaries** and QC **critical facilities**, then select **View Data Summary** for more details.',
           target: '[data-tour-id="internet-of-things-header"]',
           spotlightTargets: ['[data-tour-id="internet-of-things"]'],
           placement: 'right',
