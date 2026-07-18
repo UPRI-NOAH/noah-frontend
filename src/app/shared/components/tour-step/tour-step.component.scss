@@ -32,6 +32,14 @@
   letter-spacing: 0;
 }
 
+.tour-step__paragraph {
+  margin: 0;
+}
+
+.tour-step__paragraph + .tour-step__paragraph {
+  margin-top: 12px;
+}
+
 .tour-step__progress {
   margin: 0;
   color: #000000;
