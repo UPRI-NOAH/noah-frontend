@@ -1,8 +1,16 @@
 <div id="map" data-tour-id="map-canvas"></div>
 <canvas #windCanvas id="wind-canvas"></canvas>
 
-<div id="distance" class="distance-container"></div>
-<div id="area" class="area-container my-2"></div>
+<div
+  id="distance"
+  data-tour-id="map-measurement-output"
+  class="distance-container"
+></div>
+<div
+  id="area"
+  data-tour-id="map-measurement-output"
+  class="area-container my-2"
+></div>
 <pre id="coordinates" class="coords"></pre>
 
 <div
@@ -61,6 +69,7 @@
         </svg>
       </button>
       <ul
+        data-tour-id="map-view-options"
         class="
           dropdown-menu
           rounded-lg

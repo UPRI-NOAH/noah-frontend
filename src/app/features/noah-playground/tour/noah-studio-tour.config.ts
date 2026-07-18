@@ -156,6 +156,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
             '[data-tour-id="mapbox-draw-trash"]',
             '[data-tour-id="map-canvas"]',
           ],
+          panelAvoidTargets: ['[data-tour-id="map-measurement-output"]'],
           dimTargets: [
             '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
@@ -175,6 +176,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           text: 'Switch between different map views to better understand the area you are looking at. The current map views available are satellite and terrain view.',
           target: '[data-tour-id="map-view"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          panelAvoidTargets: ['[data-tour-id="map-view-options"]'],
           dimTargets: [
             '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
