@@ -253,6 +253,12 @@ export class TourComponent implements OnChanges, OnDestroy {
     const interactionTargets = this.findTargets(
       flatStep.step.interactionTargets || []
     );
+    const panelAvoidTargets = this.findTargets(
+      flatStep.step.panelAvoidTargets || []
+    );
+    const observedPanelAvoidTargets = this.findAllTargets(
+      flatStep.step.panelAvoidTargets || []
+    );
     this.targetDimStyles = dimTargets.map((dimTarget) =>
       this.styleForRect(dimTarget.getBoundingClientRect())
     );
@@ -277,7 +283,11 @@ export class TourComponent implements OnChanges, OnDestroy {
         (interactionTarget) => !highlightedTargets.includes(interactionTarget)
       ),
     ];
-    this.observeTargets(target, [...interactiveTargets, ...dimTargets]);
+    this.observeTargets(target, [
+      ...interactiveTargets,
+      ...dimTargets,
+      ...observedPanelAvoidTargets,
+    ]);
     if (scrollTargetIntoView) {
       target.scrollIntoView({ block: 'center', inline: 'nearest' });
     }
@@ -327,11 +337,27 @@ export class TourComponent implements OnChanges, OnDestroy {
       view.innerHeight,
       margin
     );
+    const collisionAdjustedPosition = this.positionToAvoidTargets(
+      position,
+      placement,
+      panelWidth,
+      panelHeight,
+      panelAvoidTargets.map((avoidTarget) =>
+        avoidTarget.getBoundingClientRect()
+      ),
+      gap
+    );
 
     const maxLeft = Math.max(margin, view.innerWidth - panelWidth - margin);
     const maxTop = Math.max(margin, view.innerHeight - panelHeight - margin);
-    const left = Math.min(Math.max(position.left, margin), maxLeft);
-    const top = Math.min(Math.max(position.top, margin), maxTop);
+    const left = Math.min(
+      Math.max(collisionAdjustedPosition.left, margin),
+      maxLeft
+    );
+    const top = Math.min(
+      Math.max(collisionAdjustedPosition.top, margin),
+      maxTop
+    );
 
     this.stepPanelStyle = {
       left: `${left}px`,
@@ -441,14 +467,18 @@ export class TourComponent implements OnChanges, OnDestroy {
   }
 
   private findTargets(selectors: string[]): HTMLElement[] {
+    return this.findAllTargets(selectors).filter((target) => {
+      const rect = target.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+  }
+
+  private findAllTargets(selectors: string[]): HTMLElement[] {
     return selectors.flatMap((selector) => {
       try {
         return Array.from(
           this.document.querySelectorAll<HTMLElement>(selector)
-        ).filter((target) => {
-          const rect = target.getBoundingClientRect();
-          return rect.width > 0 && rect.height > 0;
-        });
+        );
       } catch {
         return [];
       }
@@ -470,8 +500,8 @@ export class TourComponent implements OnChanges, OnDestroy {
     }
 
     const mutationRoot =
-      primaryTarget.querySelector<HTMLElement>('noah-search') ||
-      primaryTarget.closest<HTMLElement>('noah-search') ||
+      primaryTarget.closest<HTMLElement>('noah-root') ||
+      primaryTarget.parentElement ||
       primaryTarget;
 
     if (this.observedMutationRoot !== mutationRoot) {
@@ -621,6 +651,41 @@ export class TourComponent implements OnChanges, OnDestroy {
           top: target.top + (target.height - panelHeight) / 2,
         };
     }
+  }
+
+  private positionToAvoidTargets(
+    position: { left: number; top: number },
+    placement: TourPlacement,
+    panelWidth: number,
+    panelHeight: number,
+    avoidRects: DOMRect[],
+    gap: number
+  ): { left: number; top: number } {
+    if (placement !== 'left') {
+      return position;
+    }
+
+    const panelRight = position.left + panelWidth;
+    const panelBottom = position.top + panelHeight;
+    const overlappingRects = avoidRects.filter(
+      (rect) =>
+        rect.left < panelRight &&
+        rect.right > position.left &&
+        rect.top < panelBottom &&
+        rect.bottom > position.top
+    );
+
+    if (overlappingRects.length === 0) {
+      return position;
+    }
+
+    return {
+      left: Math.min(
+        position.left,
+        ...overlappingRects.map((rect) => rect.left - panelWidth - gap)
+      ),
+      top: position.top,
+    };
   }
 
   private centeredPanelStyle(): TourPositionStyle {

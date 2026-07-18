@@ -244,6 +244,32 @@ describe('TourComponent', () => {
     expect(position.top).toBe(713);
   });
 
+  it('shifts a left-positioned panel away from a visible overlapping target', () => {
+    const position = (component as any).positionToAvoidTargets(
+      { left: 500, top: 100 },
+      'left',
+      300,
+      200,
+      [new DOMRect(650, 150, 100, 40)],
+      16
+    );
+
+    expect(position).toEqual({ left: 334, top: 100 });
+  });
+
+  it('keeps a left-positioned panel anchored without visible avoid targets', () => {
+    const position = (component as any).positionToAvoidTargets(
+      { left: 500, top: 100 },
+      'left',
+      300,
+      200,
+      [],
+      16
+    );
+
+    expect(position).toEqual({ left: 500, top: 100 });
+  });
+
   it('keeps the gap between separate targets dimmed and blocked', () => {
     const targetRects = [
       new DOMRect(100, 100, 100, 40),
@@ -279,6 +305,20 @@ describe('TourComponent', () => {
     expect(stylesContainPoint(blockerStyles, 150, 350)).toBe(false);
     expect(stylesContainPoint(maskStyles, 150, 550)).toBe(true);
     expect(stylesContainPoint(blockerStyles, 150, 550)).toBe(true);
+  });
+
+  it('observes the app shell for sibling targets being removed or restored', () => {
+    const appRoot = document.createElement('noah-root');
+    const target = document.createElement('div');
+    appRoot.appendChild(target);
+    document.body.appendChild(appRoot);
+
+    (component as any).observeTargets(target, [target]);
+
+    expect((component as any).observedMutationRoot).toBe(appRoot);
+
+    (component as any).disconnectTargetObservers();
+    appRoot.remove();
   });
 
   it('resets the current step when closed and reopened', fakeAsync(() => {

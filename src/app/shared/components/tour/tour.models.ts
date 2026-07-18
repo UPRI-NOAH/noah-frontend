@@ -31,6 +31,8 @@ export interface TourStep {
   spotlightTargets?: string[];
   /** Elements that remain interactive without being visually highlighted. */
   interactionTargets?: string[];
+  /** Visible elements that the tour panel must not cover. */
+  panelAvoidTargets?: string[];
   /** Elements that are explicitly dimmed and blocked. */
   dimTargets?: string[];
   advanceOnEvent?: string;
