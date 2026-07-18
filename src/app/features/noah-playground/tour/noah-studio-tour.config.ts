@@ -205,7 +205,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: '3d-terrain',
           title: '3D Terrain',
-          text: 'Turn on 3D Terrain to view the map with elevation and landform details. This helps you better understand mountains, slopes, valleys, and other terrain features. Expand the dropdown to change the exaggeration which is how strongly the terrain height appears on the map.',
+          text: 'Turn on 3D Terrain to view the map with elevation and landform details. This helps you better understand mountains, slopes, valleys, and other terrain features.\n\nExpand the dropdown to change the **exaggeration** which is how strongly the terrain height appears on the map.',
           target: '[data-tour-id="3d-terrain-header"]',
           spotlightTargets: ['[data-tour-id="3d-terrain"]'],
           placement: 'right',
@@ -213,7 +213,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'flood-hazard',
           title: 'Flood Hazard',
-          text: 'The Flood Hazard layer shows areas that may be affected by flooding. Use this to identify places with possible flood exposure during heavy rainfall or extreme weather events.',
+          text: "The Flood Hazard layer shows areas that may be affected by flooding. Use this to identify places with possible flood exposure during heavy rainfall or extreme weather events.\n\nExpand the dropdown to choose the **return period** you want to view, adjust the layer's **opacity**, and select the **color** used to render it on the map.",
           target: '[data-tour-id="flood-hazard-header"]',
           spotlightTargets: ['[data-tour-id="flood-hazard"]'],
           placement: 'right',
@@ -221,7 +221,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'weather-updates',
           title: 'Weather Updates',
-          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide. Expand it to access five sub-layers — Weather Satellite Image for cloud and rain coverage, Typhoon Track to monitor active storm paths, and Temperature for current heat readings across the country, , Lightning Data to track lightning activity, and Wind to visualize wind flow patterns across the country.',
+          text: 'Weather Updates gives you near-real-time data from stations and satellites nationwide.\n\nExpand it to access five sub-layers — Weather Satellite Image for cloud and rain coverage, Typhoon Track to monitor active storm paths, Temperature for current heat readings across the country, Lightning Data to track lightning activity, and Wind to visualize wind flow patterns across the country.',
           target: '[data-tour-id="weather-updates-header"]',
           spotlightTargets: ['[data-tour-id="weather-updates"]'],
           placement: 'right',
