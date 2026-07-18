@@ -1,7 +1,7 @@
 <!-- Desktop View -->
 <div
   [ngClass]="
-    'z-50 fixed w-full lg:flex justify-center inset-0 lg:p-10 p-5 hidden'
+    'z-50 fixed w-full lg:flex justify-center inset-0 lg:px-10 lg:py-8 p-5 hidden'
   "
   *ngIf="riskModal"
 >
@@ -46,19 +46,19 @@
               shadow-sm
             "
           >
-            <svg
-              class="w-7 h-7 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3 17c3-1.5 6-1.5 9 0s6 1.5 9 0 M3 12c3-1.5 6-1.5 9 0s6 1.5 9 0 M3 7c3-1.5 6-1.5 9 0s6 1.5 9 0"
-              />
-            </svg>
+            <div
+              class="w-7 h-7 bg-white"
+              style="
+                mask-image: url('assets/icons/flooded-house.svg');
+                -webkit-mask-image: url('assets/icons/flooded-house.svg');
+                mask-size: contain;
+                -webkit-mask-size: contain;
+                mask-repeat: no-repeat;
+                -webkit-mask-repeat: no-repeat;
+                mask-position: center;
+                -webkit-mask-position: center;
+              "
+            ></div>
           </div>
 
           <!-- Text Content -->
@@ -179,7 +179,7 @@
           px-4
           py-3
           text-base
-          font-bold
+          font-semibold
           border-b-2 border-primary
           text-primary
           transition-colors
@@ -208,7 +208,6 @@
         [class.text-primary]="activeTab === 'province'"
         [class.border-transparent]="activeTab !== 'province'"
         [class.text-gray-400]="activeTab !== 'province'"
-        *ngIf="false"
         class="
           flex
           items-center
@@ -216,7 +215,7 @@
           px-4
           py-3
           text-base
-          font-bold
+          font-semibold
           border-b-2 border-transparent
           text-gray-400
           hover:text-gray-600 hover:border-gray-300
@@ -258,7 +257,7 @@
           px-4
           py-3
           text-base
-          font-bold
+          font-semibold
           border-b-2 border-transparent
           text-gray-400
           hover:text-gray-600 hover:border-gray-300
@@ -295,7 +294,7 @@
           px-4
           py-3
           text-base
-          font-bold
+          font-semibold
           border-b-2 border-transparent
           text-gray-400
           hover:text-gray-600 hover:border-gray-300
@@ -347,7 +346,7 @@
     </noah-risk-assessment-summary>
 
     <!-- Footer -->
-    <div class="flex-shrink-0 md:py-3 md:px-8 border-t border-gray-200">
+    <div class="flex-shrink-0 md:py-2 md:px-8 border-t border-gray-200">
       <div class="text-gray-500 text-xs italic">
         <b>Disclaimer:</b> Calculations apply to Medium and High Hazard zones
         only.
@@ -514,7 +513,7 @@
             px-2
             py-2.5
             text-xs
-            font-bold
+            font-semibold
             border
             rounded-lg
             transition-colors
@@ -554,12 +553,11 @@
             px-2
             py-2.5
             text-xs
-            font-bold
+            font-semibold
             border
             rounded-lg
             transition-colors
             duration-150
-            *ngIf='false'
           "
         >
           <svg
@@ -600,7 +598,7 @@
             px-2
             py-2.5
             text-xs
-            font-bold
+            font-semibold
             border
             rounded-lg
             transition-colors
@@ -640,7 +638,7 @@
             px-2
             py-2.5
             text-xs
-            font-bold
+            font-semibold
             border
             rounded-lg
             transition-colors
