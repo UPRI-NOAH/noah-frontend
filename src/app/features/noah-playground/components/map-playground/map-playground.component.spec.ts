@@ -43,6 +43,19 @@ describe('MapPlaygroundComponent tour camera reset', () => {
     expect(exploreLocationStep?.nextEvent).toBe('noah-tour-map-camera-reset');
   });
 
+  it('keeps map-control tour panels inside the mobile sidebar', () => {
+    const mapControlSection = NOAH_STUDIO_TOUR.sections.find(
+      (section) => section.id === 'map-controls'
+    );
+
+    expect(mapControlSection?.steps.length).toBeGreaterThan(0);
+    expect(
+      mapControlSection?.steps.every(
+        (step) => step.mobilePanelTarget === '#sidebar'
+      )
+    ).toBe(true);
+  });
+
   [
     {
       label: 'standard users',

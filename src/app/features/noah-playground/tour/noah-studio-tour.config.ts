@@ -1,5 +1,7 @@
 import { TourDefinition } from '@shared/components/tour/tour.models';
 
+const MOBILE_SIDEBAR_TARGET = '#sidebar';
+
 export const NOAH_STUDIO_TOUR: TourDefinition = {
   id: 'noah-studio',
   title: 'NOAH Studio',
@@ -79,6 +81,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           target: '[data-tour-id="mapbox-map-controls"]',
           spotlightTargets: ['[data-tour-id="map-view"]'],
           interactionTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: ['#sidebar'],
           placement: 'left',
         },
@@ -91,6 +94,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
             '[data-tour-id="mapbox-zoom-out"]',
             '[data-tour-id="map-canvas"]',
           ],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
             '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
@@ -110,6 +114,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           text: 'If the map has been rotated or tilted, you can use this control to return the view to its default direction.',
           target: '[data-tour-id="mapbox-compass"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
             '#sidebar',
             '[data-tour-id="map-view"]',
@@ -131,6 +136,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           text: 'This map control button moves the map to your current location, making it easier to check nearby hazards, weather data, and disaster risk information.',
           target: '[data-tour-id="mapbox-geolocate"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
             '#sidebar',
             '[data-tour-id="map-view"]',
@@ -157,6 +163,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
             '[data-tour-id="map-canvas"]',
           ],
           panelAvoidTargets: ['[data-tour-id="map-measurement-output"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
             '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
@@ -177,6 +184,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           target: '[data-tour-id="map-view"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
           panelAvoidTargets: ['[data-tour-id="map-view-options"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
             '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',

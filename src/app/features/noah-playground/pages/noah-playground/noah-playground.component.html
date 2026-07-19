@@ -142,6 +142,8 @@
       class="
         absolute
         md:hidden
+        z-50
+        h-6
         w-full
         top-0
         left-1/2
@@ -152,7 +154,10 @@
         flex
         items-center
         justify-center
+        touch-none
       "
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -327,11 +332,7 @@
         alt="Sidebar background"
       />
     </div>
-    <div
-      class="relative flex items-center justify-between mb-2"
-      (touchstart)="onTouchStart($event)"
-      (touchmove)="onTouchMove($event)"
-    >
+    <div class="relative flex items-center justify-between mb-2">
       <div class="w-full">
         <img
           src="assets/icons/noah_logo.png"
