@@ -63,9 +63,28 @@
   pointer-events: auto;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 767px) {
+  .tour-layer {
+    padding: 12px;
+  }
+
   .tour-step-panel {
+    display: flex;
+    overflow: hidden;
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    flex-direction: column;
     padding: 16px;
     border-radius: 20px;
+  }
+
+  .tour-step-panel noah-tour-navbar {
+    flex: 0 0 auto;
+  }
+
+  .tour-step-panel noah-tour-step {
+    min-height: 0;
+    flex: 1 1 auto;
   }
 }

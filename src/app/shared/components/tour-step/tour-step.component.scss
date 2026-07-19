@@ -93,8 +93,21 @@
   text-decoration: none;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 767px) {
+  :host,
+  .tour-step {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+
   .tour-step__body {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
     padding: 18px 0 14px;
   }
 
@@ -106,5 +119,17 @@
   .tour-step__text {
     font-size: 16px;
     line-height: 23px;
+  }
+
+  .tour-step__footer {
+    min-height: 44px;
+    flex: 0 0 auto;
+  }
+
+  .tour-step__button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 0 4px;
   }
 }
