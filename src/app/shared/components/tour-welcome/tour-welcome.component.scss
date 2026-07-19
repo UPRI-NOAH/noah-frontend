@@ -157,56 +157,61 @@
 
 @media (max-width: 767px) {
   :host {
-    width: min(calc(100vw - 2rem), 36rem);
-    max-height: calc(100vh - 2rem);
+    width: min(calc(100vw - 24px), 36rem);
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
     aspect-ratio: auto;
   }
 
   .tour-welcome {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 0;
     overflow-y: auto;
     height: auto;
-    max-height: calc(100vh - 2rem);
-    padding: 24px 20px;
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 20px;
     border-radius: 20px;
   }
 
   .tour-welcome__body {
-    gap: 16px;
-    padding-top: 16px;
+    gap: 14px;
+    padding-top: 0;
   }
 
   .tour-welcome__brand {
-    min-height: 34px;
+    min-height: 28px;
+    justify-content: left;
     gap: 10px;
   }
 
   .tour-welcome__logo {
     width: 76px;
+    height: 28px;
+    flex: 0 0 76px;
   }
 
   .tour-welcome__brand-label {
-    font-size: 24px;
-    line-height: 34px;
+    font-size: 22px;
+    line-height: 28px;
   }
 
   .tour-welcome__title {
     min-height: 0;
     flex: 0 1 auto;
     padding: 0;
-    font-size: 36px;
-    line-height: 44px;
+    font-size: 32px;
+    line-height: 38px;
   }
 
   .tour-welcome__text {
-    font-size: 18px;
-    line-height: 27px;
+    font-size: 16px;
+    line-height: 24px;
   }
 
   .tour-welcome__prompt {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 21px;
   }
 
   .tour-welcome__actions {
@@ -215,9 +220,9 @@
   }
 
   .tour-welcome__button {
-    min-height: 56px;
+    min-height: 48px;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 24px;
   }
 
@@ -235,7 +240,6 @@
   }
 
   .tour-welcome__image {
-    width: 100%;
-    max-height: 280px;
+    display: none;
   }
 }

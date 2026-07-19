@@ -53,6 +53,9 @@ describe('TourWelcomeComponent', () => {
     expect(
       element.querySelector<HTMLImageElement>('.tour-welcome__logo')?.alt
     ).toBe('Project NOAH');
+    expect(
+      element.querySelector<HTMLImageElement>('.tour-welcome__image')?.src
+    ).toContain('noah-studio-welcome-image.svg');
   });
 
   it('emits start and close from the primary actions', () => {
