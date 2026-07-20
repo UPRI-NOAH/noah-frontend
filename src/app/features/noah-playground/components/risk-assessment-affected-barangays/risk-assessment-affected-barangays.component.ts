@@ -87,6 +87,7 @@ export class RiskAssessmentAffectedBarangaysComponent implements OnInit {
           brgy: a.brgy,
           muni: a.muni,
           prov: a.prov,
+          region: a.region,
           total_pop: a.total_pop,
           total_aff_pop: a.total_aff_pop,
           exposed_medhigh: a.exposed_medhigh,
@@ -104,6 +105,10 @@ export class RiskAssessmentAffectedBarangaysComponent implements OnInit {
       this.errorMsg = true;
       this.noResult = false;
     }
+  }
+
+  asterisk(province: string): string {
+    return province.replace(/ \(Not a Province\)$/, '*');
   }
 
   onHeaderColumnClick(field: string) {

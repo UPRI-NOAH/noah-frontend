@@ -321,35 +321,39 @@
     </div>
 
     <!-- Modal Body -->
-    <noah-risk-assessment-affected-barangays
-      *ngIf="activeTab === 'barangays'"
-      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+    <div
+      class="bg-[#F4F7FF] h-full flex flex-col flex-1 min-h-0 overflow-hidden"
     >
-    </noah-risk-assessment-affected-barangays>
+      <noah-risk-assessment-affected-barangays
+        *ngIf="activeTab === 'barangays'"
+        class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+      >
+      </noah-risk-assessment-affected-barangays>
 
-    <noah-risk-assessment-by-province
-      *ngIf="activeTab === 'province'"
-      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
-    >
-    </noah-risk-assessment-by-province>
+      <noah-risk-assessment-by-province
+        *ngIf="activeTab === 'province'"
+        class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+      >
+      </noah-risk-assessment-by-province>
 
-    <noah-risk-assessment-data-archive
-      *ngIf="activeTab === 'archive'"
-      class="flex-1 overflow-y-auto min-h-0 flex flex-col lg:w-1/2 lg:mx-auto"
-    >
-    </noah-risk-assessment-data-archive>
+      <noah-risk-assessment-data-archive
+        *ngIf="activeTab === 'archive'"
+        class="flex-1 overflow-y-auto min-h-0 flex flex-col lg:w-1/2 lg:mx-auto"
+      >
+      </noah-risk-assessment-data-archive>
 
-    <noah-risk-assessment-summary
-      *ngIf="activeTab === 'summary'"
-      class="flex-1 overflow-y-auto min-h-0 flex flex-col"
-    >
-    </noah-risk-assessment-summary>
+      <noah-risk-assessment-summary
+        *ngIf="activeTab === 'summary'"
+        class="flex-1 overflow-y-auto min-h-0 flex flex-col"
+      >
+      </noah-risk-assessment-summary>
+    </div>
 
     <!-- Footer -->
     <div class="flex-shrink-0 md:py-2 md:px-8 border-t border-gray-200">
       <div class="text-gray-500 text-xs italic">
         <b>Disclaimer:</b> Calculations apply to Medium and High Hazard zones
-        only.
+        only; <b>*Note:</b> Not a province.
       </div>
     </div>
   </div>
@@ -691,7 +695,7 @@
     <div class="flex-shrink-0 px-6 py-3 border-t border-gray-200">
       <div class="text-gray-500 text-xs italic">
         <b>Disclaimer:</b> Calculations apply to Medium and High Hazard zones
-        only.
+        only; <b>*Note:</b> Not a province.
       </div>
     </div>
   </div>
