@@ -205,6 +205,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
             '[data-tour-id="map-scale-control"]',
             '[data-tour-id="tour-help-info"]',
           ],
+          nextEvent: 'noah-tour-layer-panel-reset',
           placement: 'left',
         },
       ],

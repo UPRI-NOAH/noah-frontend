@@ -399,6 +399,27 @@ export class MapPlaygroundComponent
     });
   }
 
+  @HostListener('window:noah-tour-layer-panel-reset')
+  resetMapForLayerPanelTour(): void {
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+    this.draw?.deleteAll();
+
+    this.measurementActive = false;
+    this.geojson = null;
+    this.linestring = null;
+    this.clearMapOutput('coordinates');
+    this.clearMapOutput('distance');
+    this.clearMapOutput('area');
+    this.map.getCanvas().style.cursor = '';
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.resetMapCameraForNoahStudioTour();
+  }
+
   private clearMapOutput(id: string): void {
     const element = document.getElementById(id);
     if (!element) {

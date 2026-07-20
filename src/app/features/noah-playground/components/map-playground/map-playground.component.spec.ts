@@ -13,7 +13,8 @@ describe('MapPlaygroundComponent tour camera reset', () => {
   let playgroundService: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    map = jasmine.createSpyObj('Map', ['jumpTo']);
+    map = jasmine.createSpyObj('Map', ['getCanvas', 'jumpTo', 'setStyle']);
+    map.getCanvas.and.returnValue(document.createElement('canvas'));
     playgroundService = jasmine.createSpyObj('NoahPlaygroundService', [
       'resetPlayground',
     ]);
@@ -41,6 +42,14 @@ describe('MapPlaygroundComponent tour camera reset', () => {
       .find((step) => step.id === 'explore-location');
 
     expect(exploreLocationStep?.nextEvent).toBe('noah-tour-map-camera-reset');
+  });
+
+  it('resets temporary map state before moving to the Layer Panel', () => {
+    const finalMapControlStep = NOAH_STUDIO_TOUR.sections
+      .find((section) => section.id === 'map-controls')
+      ?.steps.at(-1);
+
+    expect(finalMapControlStep?.nextEvent).toBe('noah-tour-layer-panel-reset');
   });
 
   it('keeps map-control tour panels inside the mobile sidebar', () => {
@@ -123,6 +132,32 @@ describe('MapPlaygroundComponent tour camera reset', () => {
     expect(centerMarker.remove).toHaveBeenCalledTimes(1);
     expect(component.centerMarker).toBeNull();
     expect(draw.deleteAll).not.toHaveBeenCalled();
+  });
+
+  it('restores the map for the Layer Panel without clearing layer state', () => {
+    const centerMarker = jasmine.createSpyObj('Marker', ['remove']);
+    const draw = jasmine.createSpyObj('MapboxDraw', ['deleteAll']);
+    const area = document.createElement('div');
+    area.id = 'area';
+    area.textContent = 'Total Area: 10 sqm';
+    area.style.display = 'block';
+    document.body.appendChild(area);
+    component.centerMarker = centerMarker;
+    component.draw = draw;
+    component.mapStyle = 'satellite';
+
+    component.resetMapForLayerPanelTour();
+
+    expect(playgroundService.resetPlayground).not.toHaveBeenCalled();
+    expect(centerMarker.remove).toHaveBeenCalledTimes(1);
+    expect(component.centerMarker).toBeNull();
+    expect(draw.deleteAll).toHaveBeenCalledTimes(1);
+    expect(area.textContent).toBe('');
+    expect(area.style.display).toBe('none');
+    expect(map.setStyle).toHaveBeenCalledTimes(1);
+    expect(component.mapStyle).toBe('terrain');
+    expect(map.jumpTo).toHaveBeenCalledTimes(1);
+    area.remove();
   });
 
   it('shows measurement results again after the tour reset hides them', () => {
