@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RiskAssessmentService } from '@features/noah-playground/services/risk-assessment.service';
 import { first } from 'rxjs/operators';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'noah-risk-assessment-data-archive',
@@ -124,9 +126,40 @@ export class RiskAssessmentDataArchiveComponent implements OnInit {
     }
   }
 
-  downloadAll(): void {
+  async downloadAll(): Promise<void> {
     if (!this.selectedDate || this.selectedResults.length === 0) return;
-    console.log('Downloading ZIP for date:', this.selectedDate);
-    // Add logic to package/download ZIP
+
+    console.log(`Starting ZIP download for date: ${this.selectedDate}`);
+
+    const zip = new JSZip();
+    const zipFileName = `affected_brgys_${this.selectedDate}`;
+
+    try {
+      const fetchPromises = this.selectedResults.map(async (result) => {
+        if (result.s3_link) {
+          const fileName = result.s3_link.split('/').pop() || 'data.csv';
+          const response = await fetch(result.s3_link);
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch ${fileName}: ${response.statusText}`
+            );
+          }
+          const blob = await response.blob();
+
+          zip.file(fileName, blob);
+        }
+      });
+
+      await Promise.all(fetchPromises);
+
+      const zipContent = await zip.generateAsync({ type: 'blob' });
+
+      saveAs(zipContent, `${zipFileName}.zip`);
+
+      console.log('ZIP download complete.');
+    } catch (error) {
+      console.error('Error creating ZIP file:', error);
+    }
   }
 }
