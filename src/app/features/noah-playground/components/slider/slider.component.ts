@@ -32,9 +32,9 @@ export class SliderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.sliderCtrl = new FormControl(this.initialValue);
-    this.sliderCtrl.valueChanges
-      .pipe(takeUntil(this._unsub))
-      .subscribe((v) => this.valueChange.emit(v));
+    this.sliderCtrl.valueChanges.pipe(takeUntil(this._unsub)).subscribe((v) => {
+      this.valueChange.emit(v);
+    });
   }
 
   ngOnDestroy(): void {

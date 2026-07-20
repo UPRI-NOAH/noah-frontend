@@ -39,6 +39,8 @@ import { LightningComponent } from './components/lightning-solo/lightning.compon
 import { LightningGroupComponent } from './components/lightning-group/lightning-group.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
+import { WindGroupComponent } from './components/wind-group/wind-group.component';
+import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +77,8 @@ import { TemperatureSoloComponent } from './components/temperature-solo/temperat
     LightningGroupComponent,
     TemperatureComponent,
     TemperatureSoloComponent,
+    WindGroupComponent,
+    WindSoloComponent,
   ],
   imports: [
     CommonModule,

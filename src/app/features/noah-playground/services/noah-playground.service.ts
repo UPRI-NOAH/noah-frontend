@@ -39,8 +39,11 @@ import {
   TemperatureTypeState,
   TemperatureState,
   TemperatureForecastDay,
+  WindGroupState,
+  WindType,
+  WindState,
 } from '../store/noah-playground.store';
-import { NoahColor } from '@shared/mocks/noah-colors';
+import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
@@ -50,6 +53,8 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { state } from '@angular/animations';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { get } from 'http';
 
 @Injectable({
   providedIn: 'root',
@@ -251,6 +256,14 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.temperature.expanded));
   }
 
+  get windShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.shown));
+  }
+
+  get windExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.wind.expanded));
+  }
+
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
@@ -315,6 +328,20 @@ export class NoahPlaygroundService {
     );
   }
 
+  getWind$(windType: WindType): Observable<WindState> {
+    return this.store.state$.pipe(map((state) => state.wind.types[windType]));
+  }
+
+  getWindParticleCount$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(
+      map((state) => state.wind.types[type].particleCount)
+    );
+  }
+
+  getWindSpeed$(type: WindType): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
+  }
+
   getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
     return this.store.state$.pipe(
       map((state) => state.boundaries.types[boundariesType])
@@ -347,6 +374,13 @@ export class NoahPlaygroundService {
 
   getHazardColor(hazardType: HazardType, hazardLevel: HazardLevel): NoahColor {
     return this.store.state[hazardType].levels[hazardLevel].color;
+  }
+
+  getHazardLevel(
+    hazardType: HazardType,
+    hazardLevel: HazardLevel
+  ): HazardLevelState {
+    return this.store.state[hazardType].levels[hazardLevel];
   }
 
   getExaggeration(): ExaggerationState {
@@ -572,6 +606,75 @@ export class NoahPlaygroundService {
     );
   }
 
+  toggleWindGroupExpansion(): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+    };
+
+    wind.expanded = !wind.expanded;
+    this.store.patch({ wind }, `toggle wind expansion`);
+  }
+
+  toggleWindGroupVisibility(): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+    };
+    const { shown } = wind;
+
+    wind.shown = !shown;
+    this.store.patch({ wind }, `toggle Wind Visibility ${!shown}`);
+  }
+  /*
+  getWindParticleCount(): number {
+    return this.store.state.wind.particleCount;
+  }
+
+  getWindSpeed(): number {
+    return this.store.state.wind.speed;
+  }
+  */
+
+  getWindParticleCount(type: WindType): number {
+    return this.store.state.wind.types[type].particleCount;
+  }
+
+  setWindParticleCount(particleCount: number, type: WindType): void {
+    const nextParticleCount = Number(particleCount);
+
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          particleCount: nextParticleCount,
+        },
+      },
+    };
+
+    this.store.patch(
+      { wind },
+      `Wind Particle Count set to ${nextParticleCount}`
+    );
+  }
+
+  setWindSpeed(speed: number, type: WindType): void {
+    const nextSpeed = Number(speed);
+
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          speed: nextSpeed,
+        },
+      },
+    };
+
+    this.store.patch({ wind }, `Wind Speed set to ${nextSpeed}`);
+  }
+
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
     const btnCalculateRisk: CalculateRiskButton = {
       ...this.store.state.btnCalculateRisk,
@@ -596,12 +699,31 @@ export class NoahPlaygroundService {
   setHazardTypeColor(
     color: NoahColor,
     hazardType: HazardType,
-    hazardLevel: HazardLevel
+    hazardLevel: HazardLevel,
+    customPalette?: NoahColorPalette
   ): void {
+    const currentHazard = this.store.state[hazardType];
+    const currentLevels = currentHazard.levels as Record<
+      HazardLevel,
+      HazardLevelState
+    >;
+    const currentLevel = currentLevels[hazardLevel];
     const hazard: FloodState | LandslideState | StormSurgeState = {
-      ...this.store.state[hazardType],
-    };
-    hazard.levels[hazardLevel].color = color;
+      ...currentHazard,
+      levels: {
+        ...currentLevels,
+        [hazardLevel]: {
+          ...currentLevel,
+          color,
+          customPalette:
+            color === 'noah-custom' && customPalette
+              ? { ...customPalette }
+              : undefined,
+          colorRevision: (currentLevel.colorRevision ?? 0) + 1,
+        },
+      },
+    } as FloodState | LandslideState | StormSurgeState;
+
     this.store.patch(
       { [hazardType]: hazard },
       `color ${color}, ${hazardType}, ${hazardLevel}`
@@ -619,8 +741,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, expanded: hazardState.expanded } },
       `expanded ${hazardState.expanded}, ${hazardType}`
     );
   }
@@ -629,8 +753,10 @@ export class NoahPlaygroundService {
     hazardType: HazardType,
     hazardState: FloodState | LandslideState | StormSurgeState
   ) {
+    const currentHazard = this.store.state[hazardType];
+
     this.store.patch(
-      { [hazardType]: { ...hazardState } },
+      { [hazardType]: { ...currentHazard, shown: hazardState.shown } },
       `shown ${hazardState.shown}, ${hazardType}`
     );
   }

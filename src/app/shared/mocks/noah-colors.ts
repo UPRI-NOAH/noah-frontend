@@ -2,7 +2,24 @@ import { SensorType } from '@features/noah-playground/services/sensor.service';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
 import { QuezonCitySensorType } from '@features/noah-playground/store/noah-playground.store';
 
-export const NOAH_COLORS = {
+export type NoahColorLevel = 'low' | 'medium' | 'high';
+export type NoahColorPalette = Record<NoahColorLevel, string>;
+
+export type NoahColor =
+  | 'noah-red'
+  | 'noah-pink'
+  | 'noah-violet'
+  | 'noah-blue'
+  | 'noah-green'
+  | 'noah-black'
+  | 'noah-custom';
+
+export type NoahColorSelection = {
+  color: NoahColor;
+  customPalette?: NoahColorPalette;
+};
+
+export const NOAH_COLORS: Record<NoahColor, NoahColorPalette> = {
   'noah-red': {
     low: '#F2C94C',
     medium: '#F2994A',
@@ -33,23 +50,16 @@ export const NOAH_COLORS = {
     medium: '#8B8B8B',
     high: '#333333',
   },
+  'noah-custom': {
+    low: '#BFDBFE',
+    medium: '#60A5FA',
+    high: '#3B82F6',
+  },
 };
 
 export const NOAH_COLORS_ARRAY: NoahColor[] = [
   ...Object.keys(NOAH_COLORS).map((c) => c as NoahColor),
 ];
-// To investigate why this works and direct `as const` doesn't
-// const constNoahColors = [...NOAH_COLORS_ARRAY] as const;
-// export type NoahColor = typeof constNoahColors[];
-
-export type NoahColor =
-  | 'noah-red'
-  | 'noah-pink'
-  | 'noah-violet'
-  | 'noah-blue'
-  | 'noah-green'
-  | 'noah-black';
-
 // SENSOR COLORS
 export const SENSOR_COLORS: Record<SensorType, string> = {
   arg: '#3498DB',
