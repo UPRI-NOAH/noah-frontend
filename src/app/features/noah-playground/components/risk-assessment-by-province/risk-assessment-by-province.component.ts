@@ -33,6 +33,10 @@ export class RiskAssessmentByProvinceComponent implements OnInit {
     return Math.min(this.currentPage * this.itemsPerPage, this.totalDataCount);
   }
 
+  asterisk(province: string): string {
+    return province.replace(/ \(Not a Province\)$/, '*');
+  }
+
   constructor(private riskAssessment: RiskAssessmentService) {}
 
   ngOnInit(): void {

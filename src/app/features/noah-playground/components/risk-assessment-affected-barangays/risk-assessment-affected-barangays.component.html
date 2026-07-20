@@ -1,5 +1,16 @@
 <!-- Desktop View -->
-<div class="hidden lg:flex flex-col flex-auto px-8 py-4 h-full min-h-0">
+<div
+  class="
+    hidden
+    lg:flex
+    flex-col flex-auto
+    px-8
+    py-4
+    h-full
+    min-h-0
+    bg-[#F4F7FF]
+  "
+>
   <!-- Search + Pagination Row -->
   <div class="flex items-center gap-3 mb-4 flex-shrink-0">
     <!-- Search -->
@@ -179,9 +190,85 @@
     </div>
   </div>
 
-  <!-- Table -->
+  <!-- Empty State: No Result -->
   <div
-    class="table-wrp flex-1 overflow-y-auto min-h-0 relative block rounded-t-xl"
+    *ngIf="noResult"
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      p-8
+      min-h-[300px]
+      bg-gray-200
+      rounded-xl
+    "
+  >
+    <svg
+      class="w-16 h-16 text-gray-500 mb-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      />
+    </svg>
+    <p class="text-xl text-center text-gray-500 font-bold leading-tight">
+      No result for "{{ searchValue }}"
+    </p>
+  </div>
+
+  <!-- Empty State: Error / No Forecast -->
+  <div
+    *ngIf="errorMsg"
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      p-8
+      min-h-[300px]
+      bg-gray-200
+      rounded-xl
+    "
+  >
+    <div class="flex flex-col items-center p-8 text-center max-w-md">
+      <svg
+        class="w-16 h-16 text-gray-500 mb-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      <p class="text-lg font-bold text-gray-500 leading-tight">
+        No forecast that meets pre-determined thresholds for large floods
+      </p>
+    </div>
+  </div>
+
+  <!-- Table (Completely hidden if there's no data) -->
+  <div
+    *ngIf="!errorMsg && !noResult"
+    class="
+      table-wrp
+      w-full
+      overflow-y-auto
+      relative
+      block
+      rounded-xl
+      border border-[#C8D8FF]
+      shadow-md
+      max-h-[55vh]
+      transition-all
+    "
   >
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <thead
@@ -194,9 +281,8 @@
           tracking-wider
           md:text-base
           uppercase
-          bg-[#E2ECFF]
-          dark:text-gray-400
-          rounded-t-xl
+          bg-primary
+          text-white
         "
       >
         <tr>
@@ -221,10 +307,9 @@
                 border-b border-primary
               "
               [ngClass]="{
-                'bg-primary text-white': sortField === col.key,
-                'text-primary hover:bg-[#CADCFF]': sortField !== col.key,
-                'rounded-tl-xl': col.key === 'brgy',
-                'rounded-tr-xl': col.key === 'perc_aff_medhigh'
+                'bg-[#013FA3] text-white': sortField === col.key,
+                'bg-primary text-white hover:bg-[#0158E0]':
+                  sortField !== col.key
               }"
             >
               <span class="w-full truncate">{{ col.header }}</span>
@@ -244,146 +329,87 @@
         </tr>
       </thead>
 
-      <!-- No Result State -->
-      <div
-        *ngIf="noResult"
-        class="
-          absolute
-          w-full
-          flex flex-col
-          items-center
-          justify-center
-          mt-20
-          pointer-events-none
-        "
-      >
-        <p class="text-xl text-center text-gray-400 font-medium">
-          No result for "{{ searchValue }}"
-        </p>
-      </div>
-
-      <!-- Error / No Forecast State -->
-      <ng-container>
-        <div
-          *ngIf="errorMsg; else dataAvailable"
+      <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
+        <tr
+          *ngFor="let data of affectedData"
           class="
-            absolute
-            w-full
-            flex flex-col
-            items-center
-            justify-center
-            mt-12
-            pointer-events-none
+            bg-white
+            border-b border-[#E2ECFF]
+            transition
+            duration-300
+            ease-in-out
+            dark:bg-gray-800 dark:border-gray-700
+            hover:bg-[#EBF2FF]
+            dark:hover:bg-gray-600
+            text-xs
+            md:text-base
           "
         >
-          <div class="flex flex-col items-center p-8 text-center max-w-md">
-            <svg
-              class="w-16 h-16 text-gray-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="1.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <p class="text-lg font-bold text-gray-400 leading-tight">
-              No forecast that meets pre-determined thresholds for large floods
-            </p>
-          </div>
-        </div>
-      </ng-container>
-
-      <ng-template #dataAvailable>
-        <tbody class="overflow-auto lg:h-auto h-96 px-2 md:px-10">
-          <tr
-            *ngFor="let data of affectedData"
+          <td class="text-sm text-gray-900 px-4 py-3.5 whitespace-nowrap">
+            <span class="font-extrabold truncate">{{ data.brgy }}</span>
+          </td>
+          <td
             class="
-              bg-white
-              border-b
-              transition
-              duration-300
-              ease-in-out
-              dark:bg-gray-800 dark:border-gray-700
-              hover:bg-gray-50
-              dark:hover:bg-gray-600
-              text-xs
-              md:text-base
+              text-sm text-gray-900
+              font-medium
+              px-4
+              py-3.5
+              whitespace-nowrap
             "
           >
-            <td class="text-sm text-gray-900 px-4 py-3.5 whitespace-nowrap">
-              <span class="font-extrabold truncate">{{ data.brgy }}</span>
-            </td>
-            <td
-              class="
-                text-sm text-gray-900
-                font-medium
-                px-4
-                py-3.5
-                whitespace-nowrap
-              "
-            >
-              <span class="capitalize truncate">{{
-                data.muni | lowercase
-              }}</span>
-            </td>
-            <td
-              class="
-                text-sm text-gray-900
-                font-medium
-                px-4
-                py-3.5
-                whitespace-nowrap
-              "
-            >
-              <span class="capitalize truncate">{{
-                data.prov | lowercase
-              }}</span>
-            </td>
-            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
-              {{ data.total_pop | number: '1.0-0' }}
-            </td>
-            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
-              {{ data.total_aff_pop | number: '1.0-0' }}
-            </td>
-            <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
-              {{ data.exposed_medhigh | number: '1.0-0' }}
-            </td>
-            <td class="px-4 py-3.5">
-              <div class="flex items-center gap-2">
-                <span
-                  class="text-sm font-extrabold w-14 flex-shrink-0"
+            <span class="truncate">{{ data.muni }}</span>
+          </td>
+          <td
+            class="
+              text-sm text-gray-900
+              font-medium
+              px-4
+              py-3.5
+              whitespace-nowrap
+            "
+          >
+            <span class="truncate">{{ asterisk(data.prov) }}</span>
+          </td>
+          <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
+            {{ data.total_pop | number: '1.0-0' }}
+          </td>
+          <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
+            {{ data.total_aff_pop | number: '1.0-0' }}
+          </td>
+          <td class="text-sm text-gray-900 font-medium px-4 py-3.5">
+            {{ data.exposed_medhigh | number: '1.0-0' }}
+          </td>
+          <td class="px-4 py-3.5">
+            <div class="flex items-center gap-2">
+              <span
+                class="text-sm font-extrabold w-14 flex-shrink-0"
+                [ngClass]="{
+                  'text-[#FF383C]': data.perc_aff_medhigh >= redLevel,
+                  'text-[#FFA528]':
+                    data.perc_aff_medhigh >= orangeLevel &&
+                    data.perc_aff_medhigh < redLevel,
+                  'text-[#34C759]': data.perc_aff_medhigh < orangeLevel
+                }"
+              >
+                {{ data.perc_aff_medhigh }}%
+              </span>
+              <div class="flex-1 bg-gray-300 rounded-full h-1.5 w-full">
+                <div
+                  class="h-1.5 rounded-full"
+                  [style.width.%]="data.perc_aff_medhigh"
                   [ngClass]="{
-                    'text-[#FF383C]': data.perc_aff_medhigh >= redLevel,
-                    'text-[#FFA528]':
+                    'bg-[#FF383C]': data.perc_aff_medhigh >= redLevel,
+                    'bg-[#FFA528]':
                       data.perc_aff_medhigh >= orangeLevel &&
                       data.perc_aff_medhigh < redLevel,
-                    'text-[#34C759]': data.perc_aff_medhigh < orangeLevel
+                    'bg-[#34C759]': data.perc_aff_medhigh < orangeLevel
                   }"
-                >
-                  {{ data.perc_aff_medhigh }}%
-                </span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5 w-full">
-                  <div
-                    class="h-1.5 rounded-full"
-                    [style.width.%]="data.perc_aff_medhigh"
-                    [ngClass]="{
-                      'bg-[#FF383C]': data.perc_aff_medhigh >= redLevel,
-                      'bg-[#FFA528]':
-                        data.perc_aff_medhigh >= orangeLevel &&
-                        data.perc_aff_medhigh < redLevel,
-                      'bg-[#34C759]': data.perc_aff_medhigh < orangeLevel
-                    }"
-                  ></div>
-                </div>
+                ></div>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </ng-template>
+            </div>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
@@ -392,7 +418,7 @@
 <div class="flex flex-col h-full lg:hidden pb-2">
   <!-- Mobile Search + Sort -->
   <div class="w-full pt-3 flex-shrink-0">
-    <div class="mt-1 flex flex-row place-content-stretch gap-2">
+    <div class="flex flex-row place-content-stretch gap-2">
       <!-- Search -->
       <div class="w-full h-full flex-1">
         <div class="relative">
@@ -549,32 +575,38 @@
   </div>
 
   <!-- Mobile Card List -->
-  <div class="flex-1 overflow-y-auto min-h-0 mt-2" *ngIf="!errorMsg">
-    <div class="flex flex-col">
+  <div class="flex-1 overflow-y-auto min-h-0 mt-3" *ngIf="!errorMsg">
+    <div class="flex flex-col gap-2.5 pb-2">
       <div
         class="
           bg-white
-          border border-gray-300
-          rounded-lg
-          w-full
-          h-auto
-          px-4
-          py-3
-          my-1
-          flex flex-row
-          place-content-between
-          overscroll-contain
+          border border-gray-200
+          rounded-xl
+          p-4
+          flex
+          justify-between
+          shadow-sm
+          transition-all
         "
         *ngFor="let data of affectedData"
       >
-        <div class="text-left">
-          <div class="font-extrabold text-sm">{{ data.brgy }}</div>
-          <div class="font-semibold text-sm">{{ data.muni }}</div>
-          <div class="text-xs">{{ data.prov }}</div>
+        <!-- Left: Location Details -->
+        <div class="text-left flex flex-col justify-center">
+          <div class="font-bold text-sm text-gray-900 leading-tight">
+            {{ data.brgy }}
+          </div>
+          <div class="font-medium text-sm text-gray-700 leading-snug mt-0.5">
+            {{ data.muni }}
+          </div>
+          <div class="text-xs text-gray-400 leading-snug">
+            {{ asterisk(data.prov) }}
+          </div>
         </div>
-        <div class="text-right">
+
+        <!-- Right: Statistics -->
+        <div class="text-right flex flex-col justify-center">
           <div
-            class="font-extrabold text-sm"
+            class="font-bold text-sm leading-tight"
             [ngClass]="{
               'text-[#FF383C]': data.perc_aff_medhigh >= redLevel,
               'text-[#FFA528]':
@@ -585,30 +617,14 @@
           >
             {{ data.perc_aff_medhigh }}% affected
           </div>
-          <div class="font-semibold text-sm">
+          <div class="font-medium text-sm text-gray-700 leading-snug mt-0.5">
             {{ data.exposed_medhigh }} affected people
           </div>
-          <div class="text-xs">out of {{ data.total_pop }}</div>
+          <div class="text-xs text-gray-400 leading-snug">
+            out of {{ data.total_pop }}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Mobile No Forecast -->
-  <div
-    class="
-      flex-1 flex
-      items-center
-      justify-center
-      bg-gray-300
-      rounded-lg
-      mt-2
-      min-h-0
-    "
-    *ngIf="errorMsg"
-  >
-    <div class="p-8 text-center text-bold text-gray-600">
-      No forecast that meets pre-determined thresholds for large floods
     </div>
   </div>
 
