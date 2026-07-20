@@ -332,9 +332,21 @@ export type WeatherUpdates = {
 
 export type WindType = 'wind';
 
+export const WIND_FORECAST_DAYS = [
+  { label: 'Today', value: 0 },
+  { label: '+1D', value: 1 },
+  { label: '+2D', value: 2 },
+  { label: '+3D', value: 3 },
+  { label: '+4D', value: 4 },
+  { label: '+5D', value: 5 },
+] as const;
+
+export type WindForecastDay = typeof WIND_FORECAST_DAYS[number]['value'];
+
 export type WindGroupState = {
   shown: boolean;
   expanded: boolean;
+  selectedForecastDay: WindForecastDay;
   types: Record<WindType, WindState>;
 };
 
@@ -711,6 +723,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
   wind: {
     shown: true,
     expanded: false,
+    selectedForecastDay: 0,
     types: {
       wind: {
         // shown: true,

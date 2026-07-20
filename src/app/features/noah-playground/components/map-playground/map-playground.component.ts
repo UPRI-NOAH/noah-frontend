@@ -97,6 +97,7 @@ import {
   LightningTypes,
   TemperatureType,
   TemperatureForecastDay,
+  WindForecastDay,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -270,6 +271,8 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
+  private windCurrentForecastDay: WindForecastDay = 0;
+  private windForecastCache: WindGrid | null = null;
 
   constructor(
     private mapService: MapService,
@@ -3548,6 +3551,22 @@ export class MapPlaygroundComponent
       .subscribe((speed) => {
         this.windSettings.speed = speed;
       });
+
+    this.pgService.selectedWindForecastDay$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((day) => {
+        if (day !== this.windCurrentForecastDay) {
+          this.windCurrentForecastDay = day;
+          this.fetchWindGrid(day).then(() => {
+            this.windForecastCache = this.windGrid;
+            if (this.windVisible && !this.windMapMoving) {
+              this.stopWindAnimation();
+              this.initWindParticles();
+              this.startWindAnimation();
+            }
+          });
+        }
+      });
   }
 
   private resizeWindCanvas(): void {
@@ -3656,15 +3675,50 @@ export class MapPlaygroundComponent
     };
   }
 
-  private async fetchWindGrid(): Promise<void> {
-    const url = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
+  private async fetchWindGrid(dayOffset: WindForecastDay = 0): Promise<void> {
+    const liveUrl = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
+    const forecastUrl =
+      'https://webgis-static.up.edu.ph/api/wind/wind_forecast_grid.json';
 
     try {
+      const url = dayOffset === 0 ? liveUrl : forecastUrl;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`wind API returned ${res.status}`);
 
       const data = await res.json();
-      const points = data.points || [];
+
+      if (dayOffset === 0) {
+        const points = data.points || [];
+        const uGrid: number[][] = [];
+        const vGrid: number[][] = [];
+        let idx = 0;
+
+        for (let r = 0; r < this.windGridRows; r++) {
+          const uRow: number[] = [];
+          const vRow: number[] = [];
+
+          for (let c = 0; c < this.windGridCols; c++) {
+            const entry = points[idx++];
+            const speed = entry?.speed ?? 0;
+            const direction = entry?.direction ?? 0;
+            const { u, v } = this.metDirToUV(speed, direction);
+
+            uRow.push(u);
+            vRow.push(v);
+          }
+
+          uGrid.push(uRow);
+          vGrid.push(vRow);
+        }
+
+        this.windGrid = { uGrid, vGrid };
+        this.windReady = true;
+        return;
+      }
+
+      const hoursPerDay = 24;
+      const startIdx = (dayOffset - 1) * hoursPerDay;
+      const forecastPoints = data.points || [];
       const uGrid: number[][] = [];
       const vGrid: number[][] = [];
       let idx = 0;
@@ -3674,13 +3728,33 @@ export class MapPlaygroundComponent
         const vRow: number[] = [];
 
         for (let c = 0; c < this.windGridCols; c++) {
-          const entry = points[idx++];
-          const speed = entry?.speed ?? 0;
-          const direction = entry?.direction ?? 0;
-          const { u, v } = this.metDirToUV(speed, direction);
+          const point = forecastPoints[idx++];
+          const forecast = point?.forecast || [];
+          let sumU = 0;
+          let sumV = 0;
+          let count = 0;
 
-          uRow.push(u);
-          vRow.push(v);
+          for (
+            let h = startIdx;
+            h < Math.min(startIdx + hoursPerDay, forecast.length);
+            h++
+          ) {
+            const entry = forecast[h];
+            const speed = entry?.speed ?? 0;
+            const direction = entry?.direction ?? 0;
+            const { u, v } = this.metDirToUV(speed, direction);
+            sumU += u;
+            sumV += v;
+            count++;
+          }
+
+          if (count > 0) {
+            uRow.push(sumU / count);
+            vRow.push(sumV / count);
+          } else {
+            uRow.push(0);
+            vRow.push(0);
+          }
         }
 
         uGrid.push(uRow);
@@ -3811,8 +3885,8 @@ export class MapPlaygroundComponent
     this.windLastTimestamp = timestamp;
     const timeScale = Math.min(dt, 0.1) * 60;
 
-    ctx.fillStyle = 'rgba(0,0,0,0.95)';
-    ctx.globalCompositeOperation = 'destination-in';
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'source-over';
 

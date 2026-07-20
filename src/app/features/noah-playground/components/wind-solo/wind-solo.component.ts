@@ -1,7 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { WindType } from '@features/noah-playground/store/noah-playground.store';
+import {
+  WindType,
+  WIND_FORECAST_DAYS,
+  WindForecastDay,
+} from '@features/noah-playground/store/noah-playground.store';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { first } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
 @Component({
   selector: 'noah-wind-solo',
   templateUrl: './wind-solo.component.html',
@@ -10,12 +16,17 @@ import { first } from 'rxjs/operators';
 export class WindSoloComponent implements OnInit {
   @Input() windType: WindType;
 
+  forecastDays = WIND_FORECAST_DAYS;
+  selectedForecastDay$: Observable<WindForecastDay>;
+
   initialParticleCountValue: number = 1000;
   initialSpeedValue: number = 0.5;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
   ngOnInit(): void {
+    this.selectedForecastDay$ = this.pgService.selectedWindForecastDay$;
+
     this.pgService
       .getWind$(this.windType)
       .pipe(first())
@@ -26,8 +37,6 @@ export class WindSoloComponent implements OnInit {
 
     this.initialParticleCountValue =
       this.pgService.getWindParticleCount('wind');
-    /* this.initialSpeedValue = this.pgService.getWindSpeed();
-     */
   }
 
   changeParticleCount(particleCount: number) {
@@ -36,5 +45,9 @@ export class WindSoloComponent implements OnInit {
 
   changeSpeed(speed: number) {
     this.pgService.setWindSpeed(speed, this.windType);
+  }
+
+  selectForecastDay(day: WindForecastDay): void {
+    this.pgService.selectWindForecastDay(day);
   }
 }
