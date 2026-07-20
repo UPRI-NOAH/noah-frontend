@@ -36,7 +36,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'pan-around-map',
           title: 'Pan Around the Map',
-          text: 'Left-click and drag anywhere on the map to move around and explore different locations.',
+          text: 'Left-click and drag anywhere on the map to move around and explore different locations.\n\n**For mobile:** Touch and drag anywhere on the map with one finger.',
           target: '[data-tour-id="map-canvas"]',
           dimTargets: ['#sidebar'],
           placement: 'bottom-right',
@@ -44,7 +44,7 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
         {
           id: 'rotate-and-tilt-view',
           title: 'Rotate and Tilt View',
-          text: 'Right-click and drag on the map to rotate your view or tilt the map for a different perspective.',
+          text: 'Right-click and drag on the map to rotate your view or tilt the map for a different perspective.\n\n**For mobile:** Use two fingers to rotate the map. Drag two fingers up or down together to tilt the view.',
           target: '[data-tour-id="map-canvas"]',
           dimTargets: ['#sidebar'],
           placement: 'bottom-right',
