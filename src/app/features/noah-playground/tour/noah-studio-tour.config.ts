@@ -79,8 +79,16 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
           title: 'Map Controls',
           text: 'Use these map controls to adjust how you view and interact with the map. These tools let you change map views, access the tour, and use extra map information.',
           target: '[data-tour-id="mapbox-map-controls"]',
-          spotlightTargets: ['[data-tour-id="map-view"]'],
+          spotlightTargets: [
+            '[data-tour-id="map-view"]',
+            '[data-tour-id="map-view-options"]',
+            '[data-tour-id="map-measurement-output"]',
+          ],
           interactionTargets: ['[data-tour-id="map-canvas"]'],
+          panelAvoidTargets: [
+            '[data-tour-id="map-view-options"]',
+            '[data-tour-id="map-measurement-output"]',
+          ],
           mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: ['#sidebar'],
           placement: 'left',

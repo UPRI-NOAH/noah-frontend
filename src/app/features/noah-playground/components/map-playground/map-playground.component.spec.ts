@@ -56,6 +56,25 @@ describe('MapPlaygroundComponent tour camera reset', () => {
     ).toBe(true);
   });
 
+  it('keeps the map-control overview responsive to menus and measurements', () => {
+    const overviewStep = NOAH_STUDIO_TOUR.sections
+      .find((section) => section.id === 'map-controls')
+      ?.steps.find((step) => step.id === 'map-controls-1');
+
+    expect(overviewStep?.spotlightTargets).toEqual([
+      '[data-tour-id="map-view"]',
+      '[data-tour-id="map-view-options"]',
+      '[data-tour-id="map-measurement-output"]',
+    ]);
+    expect(overviewStep?.interactionTargets).toEqual([
+      '[data-tour-id="map-canvas"]',
+    ]);
+    expect(overviewStep?.panelAvoidTargets).toEqual([
+      '[data-tour-id="map-view-options"]',
+      '[data-tour-id="map-measurement-output"]',
+    ]);
+  });
+
   [
     {
       label: 'standard users',
