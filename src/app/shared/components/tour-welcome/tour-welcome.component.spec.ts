@@ -19,14 +19,14 @@ describe('TourWelcomeComponent', () => {
     component = fixture.componentInstance;
     component.content = {
       title: 'Welcome to',
-      accentTitle: 'Know Your Hazards',
-      text: 'Explore hazards near you.',
+      accentTitle: 'NOAH Studio',
+      text: 'Explore hazard maps.',
       prompt: 'Take a quick tour.',
-      brandLabel: 'KNOW YOUR HAZARDS',
+      brandLabel: 'STUDIO',
       logoUrl: 'assets/icons/logo-noah.svg',
       logoAlt: 'Project NOAH',
-      imageUrl: 'assets/images/tour/kyh-welcome-image.svg',
-      imageAlt: 'Know Your Hazards map preview',
+      imageUrl: 'assets/images/tour/noah-studio-welcome-image.svg',
+      imageAlt: 'NOAH Studio map preview',
     };
     fixture.detectChanges();
   });
@@ -40,19 +40,22 @@ describe('TourWelcomeComponent', () => {
 
     expect(
       element.querySelector('.tour-welcome__brand-label')?.textContent
-    ).toContain('KNOW YOUR HAZARDS');
+    ).toContain('STUDIO');
     expect(
       element.querySelector('.tour-welcome__title')?.textContent
     ).toContain('Welcome to');
     expect(
       element.querySelector('.tour-welcome__title-accent')?.textContent
-    ).toContain('Know Your Hazards');
+    ).toContain('NOAH Studio');
     expect(
       element.querySelector('.tour-welcome__prompt')?.textContent
     ).toContain('Take a quick tour.');
     expect(
       element.querySelector<HTMLImageElement>('.tour-welcome__logo')?.alt
     ).toBe('Project NOAH');
+    expect(
+      element.querySelector<HTMLImageElement>('.tour-welcome__image')?.src
+    ).toContain('noah-studio-welcome-image.svg');
   });
 
   it('emits start and close from the primary actions', () => {

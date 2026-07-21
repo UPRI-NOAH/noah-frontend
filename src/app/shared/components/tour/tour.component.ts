@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -24,13 +25,53 @@ import { TourStepComponent } from '../tour-step/tour-step.component';
 type TourPhase = 'closed' | 'welcome' | 'tour';
 type TourPositionStyle = Record<string, string>;
 
+interface TourPanelPosition {
+  left: number;
+  top: number;
+  maxHeight?: number;
+}
+
+interface MobilePanelCandidate extends TourPanelPosition {
+  side: 'top' | 'bottom';
+  availableHeight: number;
+  avoidOverlap: number;
+}
+
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_PANEL_MARGIN = 12;
+const MOBILE_PANEL_GAP = 12;
+const MOBILE_MIN_PANEL_HEIGHT = 240;
+
 @Component({
   selector: 'noah-tour',
   templateUrl: './tour.component.html',
   styleUrls: ['./tour.component.scss'],
 })
-export class TourComponent implements OnChanges, OnDestroy {
+export class TourComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() definition: TourDefinition | null = null;
+  @Input() autoOpenOnFirstVisit = false;
+
+  ngAfterViewInit(): void {
+    if (!this.autoOpenOnFirstVisit || !this.definition) {
+      return;
+    }
+
+    const storageKey = `noah-tour:${this.definition.id}:welcome-seen`;
+
+    try {
+      const storage = this.document.defaultView?.localStorage;
+
+      if (!storage || storage.getItem(storageKey)) {
+        return;
+      }
+
+      this.openWelcome();
+      storage.setItem(storageKey, 'true');
+    } catch {
+      // localStorage may be unavailable in privacy-restricted browsers.
+      this.openWelcome();
+    }
+  }
 
   @ViewChild(CdkPortal, { static: true }) tourPortal!: CdkPortal;
   @ViewChild('stepPanel') stepPanel?: ElementRef<HTMLElement>;
@@ -165,12 +206,27 @@ export class TourComponent implements OnChanges, OnDestroy {
     this.renderCurrentStep();
   }
 
-  @HostListener('window:resize')
   @HostListener('window:scroll')
   repositionCurrentStep(): void {
     if (this.phase === 'tour') {
       this.positionCurrentStep();
     }
+  }
+
+  @HostListener('window:resize')
+  handleWindowResize(): void {
+    if (this.phase !== 'tour') {
+      return;
+    }
+
+    if (this.stepPanelStyle['max-height']) {
+      const positionStyle = { ...this.stepPanelStyle };
+      delete positionStyle['max-height'];
+      this.stepPanelStyle = positionStyle;
+      this.changeDetectorRef.detectChanges();
+    }
+
+    this.positionCurrentStep();
   }
 
   @HostListener('document:keydown.escape')
@@ -253,6 +309,16 @@ export class TourComponent implements OnChanges, OnDestroy {
     const interactionTargets = this.findTargets(
       flatStep.step.interactionTargets || []
     );
+    const panelAvoidTargets = this.findTargets(
+      flatStep.step.panelAvoidTargets || []
+    );
+    const isMobile = this.isMobileViewport(view.innerWidth);
+    const mobilePanelTarget = isMobile
+      ? this.findTarget(flatStep.step.mobilePanelTarget)
+      : null;
+    const observedPanelAvoidTargets = this.findAllTargets(
+      flatStep.step.panelAvoidTargets || []
+    );
     this.targetDimStyles = dimTargets.map((dimTarget) =>
       this.styleForRect(dimTarget.getBoundingClientRect())
     );
@@ -277,31 +343,67 @@ export class TourComponent implements OnChanges, OnDestroy {
         (interactionTarget) => !highlightedTargets.includes(interactionTarget)
       ),
     ];
-    this.observeTargets(target, [...interactiveTargets, ...dimTargets]);
+    this.observeTargets(target, [
+      ...interactiveTargets,
+      ...dimTargets,
+      ...observedPanelAvoidTargets,
+      ...(mobilePanelTarget ? [mobilePanelTarget] : []),
+    ]);
     if (scrollTargetIntoView) {
       target.scrollIntoView({ block: 'center', inline: 'nearest' });
     }
 
-    const margin = 16;
-    const gap = 16;
-    const targetRect = target.getBoundingClientRect();
-    const highlightRects = highlightedTargets.map((highlightedTarget) =>
-      this.expandRect(highlightedTarget.getBoundingClientRect(), {
-        top: 4,
-        right: 4,
-        bottom: 4,
-        left: 4,
-      })
+    const margin = isMobile ? MOBILE_PANEL_MARGIN : 16;
+    const gap = isMobile ? MOBILE_PANEL_GAP : 16;
+    const getVisibleHighlightRects = (): DOMRect[] =>
+      highlightedTargets
+        .map((highlightedTarget) =>
+          this.visibleRectForTarget(
+            highlightedTarget,
+            view.innerWidth,
+            view.innerHeight,
+            {
+              top: 4,
+              right: 4,
+              bottom: 4,
+              left: 4,
+            }
+          )
+        )
+        .filter((rect) => rect.width > 0 && rect.height > 0);
+    let highlightRects = getVisibleHighlightRects();
+
+    if (highlightRects.length === 0 && this.hasClippingAncestor(target)) {
+      target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      highlightRects = getVisibleHighlightRects();
+
+      if (highlightRects.length === 0) {
+        return;
+      }
+    }
+
+    const visibleTargetRect = this.visibleRectForTarget(
+      target,
+      view.innerWidth,
+      view.innerHeight
     );
+    const targetRect =
+      visibleTargetRect.width > 0 && visibleTargetRect.height > 0
+        ? visibleTargetRect
+        : target.getBoundingClientRect();
     const panelRect = panel.getBoundingClientRect();
     const panelWidth = panelRect.width;
     const panelHeight = panelRect.height;
-    const interactionRects = interactiveTargets.map((interactiveTarget) =>
-      this.expandRect(
-        interactiveTarget.getBoundingClientRect(),
-        flatStep.step.interactionInsets
+    const interactionRects = interactiveTargets
+      .map((interactiveTarget) =>
+        this.visibleRectForTarget(
+          interactiveTarget,
+          view.innerWidth,
+          view.innerHeight,
+          flatStep.step.interactionInsets
+        )
       )
-    );
+      .filter((rect) => rect.width > 0 && rect.height > 0);
     this.targetHighlightStyles = highlightRects.map((highlightRect) =>
       this.styleForRect(highlightRect)
     );
@@ -317,19 +419,56 @@ export class TourComponent implements OnChanges, OnDestroy {
     );
     this.interactionBlockerStyles.push(...this.targetDimStyles);
     const placement = flatStep.step.placement || 'right';
-    const position = this.positionForPlacement(
-      placement,
-      targetRect,
-      panelWidth,
-      panelHeight,
-      gap,
-      view.innerWidth,
-      view.innerHeight,
-      margin
+    const avoidRects = panelAvoidTargets.map((avoidTarget) =>
+      avoidTarget.getBoundingClientRect()
     );
+    const position: TourPanelPosition = isMobile
+      ? this.positionInMobileContainer(
+          mobilePanelTarget?.getBoundingClientRect() || null,
+          panelWidth,
+          panelHeight,
+          view.innerWidth,
+          view.innerHeight
+        ) ||
+        this.positionForMobile(
+          this.boundingRect(
+            highlightRects.length ? highlightRects : [targetRect]
+          ),
+          targetRect,
+          placement,
+          panelWidth,
+          panelHeight,
+          view.innerWidth,
+          view.innerHeight,
+          avoidRects
+        )
+      : this.positionToAvoidTargets(
+          this.positionForPlacement(
+            placement,
+            targetRect,
+            panelWidth,
+            panelHeight,
+            gap,
+            view.innerWidth,
+            view.innerHeight,
+            margin
+          ),
+          placement,
+          panelWidth,
+          panelHeight,
+          avoidRects,
+          gap
+        );
 
     const maxLeft = Math.max(margin, view.innerWidth - panelWidth - margin);
-    const maxTop = Math.max(margin, view.innerHeight - panelHeight - margin);
+    const positionedPanelHeight = Math.min(
+      panelHeight,
+      position.maxHeight || panelHeight
+    );
+    const maxTop = Math.max(
+      margin,
+      view.innerHeight - positionedPanelHeight - margin
+    );
     const left = Math.min(Math.max(position.left, margin), maxLeft);
     const top = Math.min(Math.max(position.top, margin), maxTop);
 
@@ -337,7 +476,270 @@ export class TourComponent implements OnChanges, OnDestroy {
       left: `${left}px`,
       top: `${top}px`,
       transform: 'none',
+      ...(position.maxHeight
+        ? { 'max-height': `${position.maxHeight}px` }
+        : {}),
     };
+  }
+
+  private isMobileViewport(viewportWidth: number): boolean {
+    return viewportWidth < MOBILE_BREAKPOINT;
+  }
+
+  private boundingRect(rects: DOMRect[]): DOMRect {
+    const left = Math.min(...rects.map((rect) => rect.left));
+    const top = Math.min(...rects.map((rect) => rect.top));
+    const right = Math.max(...rects.map((rect) => rect.right));
+    const bottom = Math.max(...rects.map((rect) => rect.bottom));
+
+    return new DOMRect(left, top, right - left, bottom - top);
+  }
+
+  private visibleRectForTarget(
+    target: HTMLElement,
+    viewportWidth: number,
+    viewportHeight: number,
+    insets?: Partial<Record<'top' | 'right' | 'bottom' | 'left', number>>
+  ): DOMRect {
+    const view = this.document.defaultView;
+    let rect = this.expandRect(target.getBoundingClientRect(), insets);
+    let left = Math.max(rect.left, 0);
+    let top = Math.max(rect.top, 0);
+    let right = Math.min(rect.right, viewportWidth);
+    let bottom = Math.min(rect.bottom, viewportHeight);
+    let ancestor = target.parentElement;
+
+    while (view && ancestor && ancestor !== this.document.body) {
+      const styles = view.getComputedStyle(ancestor);
+      const clipsHorizontally = this.clipsOverflow(styles.overflowX);
+      const clipsVertically = this.clipsOverflow(styles.overflowY);
+
+      if (clipsHorizontally || clipsVertically) {
+        rect = ancestor.getBoundingClientRect();
+        if (clipsHorizontally) {
+          left = Math.max(left, rect.left);
+          right = Math.min(right, rect.right);
+        }
+        if (clipsVertically) {
+          top = Math.max(top, rect.top);
+          bottom = Math.min(bottom, rect.bottom);
+        }
+      }
+
+      ancestor = ancestor.parentElement;
+    }
+
+    return new DOMRect(
+      left,
+      top,
+      Math.max(0, right - left),
+      Math.max(0, bottom - top)
+    );
+  }
+
+  private clipsOverflow(overflow: string): boolean {
+    return ['auto', 'clip', 'hidden', 'scroll'].includes(overflow);
+  }
+
+  private hasClippingAncestor(target: HTMLElement): boolean {
+    const view = this.document.defaultView;
+    let ancestor = target.parentElement;
+
+    while (view && ancestor && ancestor !== this.document.body) {
+      const styles = view.getComputedStyle(ancestor);
+      if (
+        this.clipsOverflow(styles.overflowX) ||
+        this.clipsOverflow(styles.overflowY)
+      ) {
+        return true;
+      }
+
+      ancestor = ancestor.parentElement;
+    }
+
+    return false;
+  }
+
+  private positionInMobileContainer(
+    containerRect: DOMRect | null,
+    panelWidth: number,
+    panelHeight: number,
+    viewportWidth: number,
+    viewportHeight: number
+  ): TourPanelPosition | null {
+    if (
+      !containerRect ||
+      containerRect.width <= 0 ||
+      containerRect.height <= 0
+    ) {
+      return null;
+    }
+
+    const margin = MOBILE_PANEL_MARGIN;
+    const containerLeft = Math.max(containerRect.left, 0);
+    const containerRight = Math.min(containerRect.right, viewportWidth);
+    const containerBottom = Math.min(containerRect.bottom, viewportHeight);
+    const availableWidth = Math.max(
+      0,
+      containerRight - containerLeft - margin * 2
+    );
+    const maxPanelHeight = Math.max(0, viewportHeight - margin * 2);
+    const positionedPanelHeight = Math.min(panelHeight, maxPanelHeight);
+
+    if (
+      availableWidth <= 0 ||
+      containerBottom <= margin ||
+      positionedPanelHeight <= 0
+    ) {
+      return null;
+    }
+
+    return {
+      left: containerLeft + margin + (availableWidth - panelWidth) / 2,
+      top: Math.max(margin, containerBottom - margin - positionedPanelHeight),
+      maxHeight: positionedPanelHeight,
+    };
+  }
+
+  private positionForMobile(
+    protectedRect: DOMRect,
+    targetRect: DOMRect,
+    placement: TourPlacement,
+    panelWidth: number,
+    panelHeight: number,
+    viewportWidth: number,
+    viewportHeight: number,
+    avoidRects: DOMRect[]
+  ): TourPanelPosition {
+    const margin = MOBILE_PANEL_MARGIN;
+    const gap = MOBILE_PANEL_GAP;
+    const maxPanelHeight = Math.max(0, viewportHeight - margin * 2);
+    const naturalPanelHeight = Math.min(panelHeight, maxPanelHeight);
+    const left = Math.min(
+      Math.max(
+        protectedRect.left + (protectedRect.width - panelWidth) / 2,
+        margin
+      ),
+      Math.max(margin, viewportWidth - panelWidth - margin)
+    );
+    const availableAbove = Math.max(0, protectedRect.top - gap - margin);
+    const availableBelow = Math.max(
+      0,
+      viewportHeight - protectedRect.bottom - gap - margin
+    );
+    const requiredHeight = Math.min(
+      naturalPanelHeight,
+      MOBILE_MIN_PANEL_HEIGHT
+    );
+    const candidates: MobilePanelCandidate[] = [];
+
+    const addCandidate = (
+      side: 'top' | 'bottom',
+      availableHeight: number
+    ): void => {
+      if (availableHeight < requiredHeight) {
+        return;
+      }
+
+      const candidateHeight = Math.min(naturalPanelHeight, availableHeight);
+      const top =
+        side === 'top'
+          ? protectedRect.top - gap - candidateHeight
+          : protectedRect.bottom + gap;
+      const candidateRect = new DOMRect(left, top, panelWidth, candidateHeight);
+
+      candidates.push({
+        side,
+        left,
+        top,
+        maxHeight: candidateHeight,
+        availableHeight,
+        avoidOverlap: avoidRects.reduce(
+          (overlap, rect) =>
+            overlap + this.intersectionArea(candidateRect, rect),
+          0
+        ),
+      });
+    };
+
+    addCandidate('top', availableAbove);
+    addCandidate('bottom', availableBelow);
+
+    if (candidates.length > 0) {
+      const preferredSide = this.preferredMobileSide(placement);
+      candidates.sort((first, second) => {
+        if (first.avoidOverlap !== second.avoidOverlap) {
+          return first.avoidOverlap - second.avoidOverlap;
+        }
+
+        if (preferredSide) {
+          const firstIsPreferred = first.side === preferredSide;
+          const secondIsPreferred = second.side === preferredSide;
+          if (firstIsPreferred !== secondIsPreferred) {
+            return firstIsPreferred ? -1 : 1;
+          }
+        }
+
+        return second.availableHeight - first.availableHeight;
+      });
+
+      const bestCandidate = candidates[0];
+      return {
+        left: bestCandidate.left,
+        top: bestCandidate.top,
+        maxHeight: bestCandidate.maxHeight,
+      };
+    }
+
+    const fallbackPosition = this.positionToAvoidTargets(
+      this.positionForPlacement(
+        placement,
+        targetRect,
+        panelWidth,
+        naturalPanelHeight,
+        gap,
+        viewportWidth,
+        viewportHeight,
+        margin
+      ),
+      placement,
+      panelWidth,
+      naturalPanelHeight,
+      avoidRects,
+      gap
+    );
+
+    return {
+      ...fallbackPosition,
+      maxHeight: naturalPanelHeight,
+    };
+  }
+
+  private preferredMobileSide(
+    placement: TourPlacement
+  ): 'top' | 'bottom' | null {
+    if (placement === 'top' || placement.startsWith('upper-')) {
+      return 'top';
+    }
+
+    if (placement === 'bottom' || placement.startsWith('bottom-')) {
+      return 'bottom';
+    }
+
+    return null;
+  }
+
+  private intersectionArea(first: DOMRect, second: DOMRect): number {
+    const width = Math.max(
+      0,
+      Math.min(first.right, second.right) - Math.max(first.left, second.left)
+    );
+    const height = Math.max(
+      0,
+      Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top)
+    );
+
+    return width * height;
   }
 
   private styleForRect(rect: DOMRect): TourPositionStyle {
@@ -441,14 +843,18 @@ export class TourComponent implements OnChanges, OnDestroy {
   }
 
   private findTargets(selectors: string[]): HTMLElement[] {
+    return this.findAllTargets(selectors).filter((target) => {
+      const rect = target.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+  }
+
+  private findAllTargets(selectors: string[]): HTMLElement[] {
     return selectors.flatMap((selector) => {
       try {
         return Array.from(
           this.document.querySelectorAll<HTMLElement>(selector)
-        ).filter((target) => {
-          const rect = target.getBoundingClientRect();
-          return rect.width > 0 && rect.height > 0;
-        });
+        );
       } catch {
         return [];
       }
@@ -470,8 +876,8 @@ export class TourComponent implements OnChanges, OnDestroy {
     }
 
     const mutationRoot =
-      primaryTarget.querySelector<HTMLElement>('noah-search') ||
-      primaryTarget.closest<HTMLElement>('noah-search') ||
+      primaryTarget.closest<HTMLElement>('noah-root') ||
+      primaryTarget.parentElement ||
       primaryTarget;
 
     if (this.observedMutationRoot !== mutationRoot) {
@@ -576,23 +982,23 @@ export class TourComponent implements OnChanges, OnDestroy {
     switch (placement) {
       case 'upper-left':
         return {
-          left: margin,
-          top: margin,
+          left: target.left + gap,
+          top: target.top + gap,
         };
       case 'upper-right':
         return {
-          left: viewportWidth - panelWidth - margin,
-          top: margin,
+          left: target.right - panelWidth - gap,
+          top: target.top + gap,
         };
       case 'bottom-left':
         return {
-          left: margin,
-          top: viewportHeight - panelHeight - margin,
+          left: target.left + gap,
+          top: target.bottom - panelHeight - gap,
         };
       case 'bottom-right':
         return {
-          left: viewportWidth - panelWidth - margin,
-          top: viewportHeight - panelHeight - margin,
+          left: target.right - panelWidth - gap,
+          top: target.bottom - panelHeight - gap,
         };
       case 'center':
         return {
@@ -621,6 +1027,41 @@ export class TourComponent implements OnChanges, OnDestroy {
           top: target.top + (target.height - panelHeight) / 2,
         };
     }
+  }
+
+  private positionToAvoidTargets(
+    position: { left: number; top: number },
+    placement: TourPlacement,
+    panelWidth: number,
+    panelHeight: number,
+    avoidRects: DOMRect[],
+    gap: number
+  ): { left: number; top: number } {
+    if (placement !== 'left') {
+      return position;
+    }
+
+    const panelRight = position.left + panelWidth;
+    const panelBottom = position.top + panelHeight;
+    const overlappingRects = avoidRects.filter(
+      (rect) =>
+        rect.left < panelRight &&
+        rect.right > position.left &&
+        rect.top < panelBottom &&
+        rect.bottom > position.top
+    );
+
+    if (overlappingRects.length === 0) {
+      return position;
+    }
+
+    return {
+      left: Math.min(
+        position.left,
+        ...overlappingRects.map((rect) => rect.left - panelWidth - gap)
+      ),
+      top: position.top,
+    };
   }
 
   private centeredPanelStyle(): TourPositionStyle {
