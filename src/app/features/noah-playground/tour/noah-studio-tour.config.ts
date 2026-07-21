@@ -10,7 +10,8 @@ export const NOAH_STUDIO_TOUR: TourDefinition = {
     title: 'Welcome to',
     accentTitle: 'NOAH Studio',
     text: 'Explore hazard maps, weather data, and disaster risk information for the Philippines.',
-    prompt: 'Take a quick tour to get started, or explore on your own.',
+    prompt:
+      'Take a quick tour to get started, or explore on your own. If you skip the tour, you can return to it anytime using the Help button on the Map.',
     brandLabel: 'STUDIO',
     logoUrl: 'assets/icons/logo-noah.svg',
     logoAlt: 'Project NOAH',
