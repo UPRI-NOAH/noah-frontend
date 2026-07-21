@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -46,8 +47,31 @@ const MOBILE_MIN_PANEL_HEIGHT = 240;
   templateUrl: './tour.component.html',
   styleUrls: ['./tour.component.scss'],
 })
-export class TourComponent implements OnChanges, OnDestroy {
+export class TourComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() definition: TourDefinition | null = null;
+  @Input() autoOpenOnFirstVisit = false;
+
+  ngAfterViewInit(): void {
+    if (!this.autoOpenOnFirstVisit || !this.definition) {
+      return;
+    }
+
+    const storageKey = `noah-tour:${this.definition.id}:welcome-seen`;
+
+    try {
+      const storage = this.document.defaultView?.localStorage;
+
+      if (!storage || storage.getItem(storageKey)) {
+        return;
+      }
+
+      this.openWelcome();
+      storage.setItem(storageKey, 'true');
+    } catch {
+      // localStorage may be unavailable in privacy-restricted browsers.
+      this.openWelcome();
+    }
+  }
 
   @ViewChild(CdkPortal, { static: true }) tourPortal!: CdkPortal;
   @ViewChild('stepPanel') stepPanel?: ElementRef<HTMLElement>;
