@@ -205,6 +205,16 @@ export class BaseComponent implements OnInit {
     });
   }
 
+  @HostListener('window:weather-updates-temperature-panel-reset')
+  showTemperaturePanelForTour(): void {
+    this.wuService.setTyphoonTrackVisibility(false);
+    this.wuService.setWeatherSatelliteVisibility(false);
+    this.wuService.selectTemperatureType('heat_index');
+    this.wuService.selectTemperatureForecastDay(1);
+    this.swiper?.swiperRef.slideTo(0);
+    void this.router.navigateByUrl('/weather-updates/temperature');
+  }
+
   goHome(): void {
     this.wuService.resetWeatherUpdates();
     this.router.navigateByUrl('/');

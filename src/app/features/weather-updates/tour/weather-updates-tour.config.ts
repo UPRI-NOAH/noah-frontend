@@ -178,6 +178,37 @@ export const WEATHER_UPDATES_TOUR: TourDefinition = {
             '[data-tour-id="rainfall-panel-heading"]',
             '[data-tour-id="rainfall-panel-options"]',
           ],
+          nextEvent: 'weather-updates-temperature-panel-reset',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'temperature-panel',
+      label: 'Temperature Panel',
+      steps: [
+        {
+          id: 'temperature-panel',
+          title: 'Temperature Panel',
+          text: 'Select Heat Index to see how hot conditions may feel or Maximum Temperature to view the highest forecast temperature. Choose Latest or one of the next four forecast days, and the map will update to show the selected temperature information.',
+          target: '[data-tour-id="temperature-panel-heading"]',
+          spotlightTargets: ['[data-tour-id="temperature-panel-options"]'],
+          previousEvent: 'weather-updates-rainfall-panel-reset',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'legend-opacity',
+      label: 'Legend and Opacity',
+      steps: [
+        {
+          id: 'legend-opacity',
+          title: 'Legend and Opacity',
+          text: 'The legend automatically changes to match the rainfall or temperature layer you select, helping you understand the colors and values shown on the map. Use the Opacity slider to make the active layer more transparent or more visible when comparing it with the base map.',
+          target: '[data-tour-id="weather-legend"]',
+          spotlightTargets: ['[data-tour-id="weather-opacity"]'],
+          previousEvent: 'weather-updates-temperature-panel-reset',
           placement: 'left',
         },
       ],

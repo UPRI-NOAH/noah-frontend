@@ -130,6 +130,7 @@ describe('WEATHER_UPDATES_TOUR', () => {
           '[data-tour-id="rainfall-panel-heading"]',
           '[data-tour-id="rainfall-panel-options"]',
         ],
+        nextEvent: 'weather-updates-temperature-panel-reset',
         placement: 'left',
       }),
     ]);
@@ -137,5 +138,47 @@ describe('WEATHER_UPDATES_TOUR', () => {
       rainfallPanel?.steps.some((step) => step.id === 'rainfall-legend-opacity')
     ).toBe(false);
     expect(rainfallPanel?.steps[0].mobilePanelTarget).toBeUndefined();
+  });
+
+  it('moves from rainfall to the responsive Temperature Panel section', () => {
+    const temperaturePanel = WEATHER_UPDATES_TOUR.sections.find(
+      (section) => section.id === 'temperature-panel'
+    );
+
+    expect(temperaturePanel?.label).toBe('Temperature Panel');
+    expect(temperaturePanel?.steps).toEqual([
+      jasmine.objectContaining({
+        id: 'temperature-panel',
+        title: 'Temperature Panel',
+        target: '[data-tour-id="temperature-panel-heading"]',
+        spotlightTargets: ['[data-tour-id="temperature-panel-options"]'],
+        previousEvent: 'weather-updates-rainfall-panel-reset',
+        placement: 'left',
+      }),
+    ]);
+    expect(temperaturePanel?.steps[0].text).toContain('Heat Index');
+    expect(temperaturePanel?.steps[0].text).toContain('Maximum Temperature');
+  });
+
+  it('explains the layer-aware legend and opacity controls', () => {
+    const legendOpacity = WEATHER_UPDATES_TOUR.sections.find(
+      (section) => section.id === 'legend-opacity'
+    );
+
+    expect(legendOpacity?.label).toBe('Legend and Opacity');
+    expect(legendOpacity?.steps).toEqual([
+      jasmine.objectContaining({
+        id: 'legend-opacity',
+        title: 'Legend and Opacity',
+        target: '[data-tour-id="weather-legend"]',
+        spotlightTargets: ['[data-tour-id="weather-opacity"]'],
+        previousEvent: 'weather-updates-temperature-panel-reset',
+        placement: 'left',
+      }),
+    ]);
+    expect(legendOpacity?.steps[0].text).toContain(
+      'rainfall or temperature layer'
+    );
+    expect(legendOpacity?.steps[0].text).toContain('active layer');
   });
 });
