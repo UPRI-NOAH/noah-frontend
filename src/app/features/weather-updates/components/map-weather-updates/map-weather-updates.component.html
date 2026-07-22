@@ -43,10 +43,20 @@
   </div>
 </div>
 
-<!-- Switch Map Style -->
-<noah-change-style-button
-  class="mapStyle absolute right-0 mr-1 p-1.5"
-  [selectedStyle]="mapStyle"
-  (selectedStyleChange)="switchMapStyle($event)"
->
-</noah-change-style-button>
+<div class="map-tools absolute z-[60] right-0 mr-1 flex flex-col items-center">
+  <!-- Switch Map Style -->
+  <noah-change-style-button
+    class="p-1.5"
+    [selectedStyle]="mapStyle"
+    (selectedStyleChange)="switchMapStyle($event)"
+  >
+  </noah-change-style-button>
+
+  <div class="mt-1 px-1.5">
+    <noah-tour
+      [definition]="tourDefinition"
+      [autoOpenOnFirstVisit]="true"
+      data-tour-id="tour-help-info"
+    ></noah-tour>
+  </div>
+</div>

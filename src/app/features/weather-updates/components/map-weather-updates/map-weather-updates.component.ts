@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
+import { WEATHER_UPDATES_TOUR } from '@features/weather-updates/tour/weather-updates-tour.config';
 import {
   MapStyle,
   PH_DEFAULT_CENTER,
@@ -28,6 +29,8 @@ import {
   styleUrls: ['./map-weather-updates.component.scss'],
 })
 export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
+  readonly tourDefinition = WEATHER_UPDATES_TOUR;
+
   map!: Map;
   geolocateControl: GeolocateControl;
   mapStyle: MapStyle = 'terrain';
@@ -118,10 +121,10 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
+    container.setAttribute('data-tour-id', 'map-scale-control');
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
+    container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -153,13 +156,20 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       }
     }
     const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '287px';
-      } else {
-        container.style.top = '235px';
+      const helpButton = document.querySelector(
+        '[data-tour-trigger="weather-updates"]'
+      ) as HTMLButtonElement | null;
+
+      if (helpButton) {
+        const mapRect = this.map.getContainer().getBoundingClientRect();
+        const helpButtonRect = helpButton.getBoundingClientRect();
+        container.style.top = `${helpButtonRect.bottom - mapRect.top + 8}px`;
       }
     };
     applyPosition();
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(applyPosition);
   }
 
   zoomTyphoon() {
