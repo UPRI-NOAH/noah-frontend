@@ -6,7 +6,7 @@ export const WEATHER_UPDATES_TOUR: TourDefinition = {
   welcome: {
     title: 'Welcome to',
     accentTitle: 'Weather\u00a0Updates',
-    text: 'Monitor current weather conditions, rainfall forecasts, and related map overlays across the Philippines.',
+    text: 'Monitor current weather conditions across the Philippines.',
     prompt:
       'Take a quick tour to get started, or skip and explore on your own.  If you skip the tour, you can return to it anytime using the Help button on the Map.',
     brandLabel: 'WEATHER UPDATES',
