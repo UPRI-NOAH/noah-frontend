@@ -99,6 +99,7 @@
     <!-- Search Input Container -->
     <div
       class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl"
+      data-tour-id="location-search"
     >
       <noah-search
         class="flex-1 z-20"
@@ -141,6 +142,8 @@
       class="
         absolute
         md:hidden
+        z-50
+        h-6
         w-full
         top-0
         left-1/2
@@ -151,7 +154,10 @@
         flex
         items-center
         justify-center
+        touch-none
       "
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -326,11 +332,7 @@
         alt="Sidebar background"
       />
     </div>
-    <div
-      class="relative flex items-center justify-between mb-2"
-      (touchstart)="onTouchStart($event)"
-      (touchmove)="onTouchMove($event)"
-    >
+    <div class="relative flex items-center justify-between mb-2">
       <div class="w-full">
         <img
           src="assets/icons/noah_logo.png"
@@ -470,7 +472,7 @@
       <!-- <noah-login></noah-login> -->
     </div>
 
-    <div class="relative z-50">
+    <div class="relative z-50" data-tour-id="location-search">
       <noah-search
         class="w-auto hidden md:block relative mb-2"
         [searchTerm]="searchTerm"
@@ -479,6 +481,7 @@
       </noah-search>
     </div>
     <div
+      data-tour-id="sidebar-scroll"
       class="
         overflow-y-auto
         flex-1
@@ -491,22 +494,26 @@
         scroll-smooth
       "
     >
-      <noah-exaggeration class="w-full"></noah-exaggeration>
+      <div data-tour-id="hazard-layers">
+        <div data-tour-id="3d-terrain">
+          <noah-exaggeration class="w-full"></noah-exaggeration>
+        </div>
 
-      <ng-container *ngFor="let hazard of hazardTypes">
-        <noah-hazard-type
-          *ngIf="hazard.type === 'flood'"
-          class="w-full"
-          [hazard]="hazard"
-        >
-        </noah-hazard-type>
-      </ng-container>
+        <ng-container *ngFor="let hazard of hazardTypes">
+          <div *ngIf="hazard.type === 'flood'" data-tour-id="flood-hazard">
+            <noah-hazard-type class="w-full" [hazard]="hazard">
+            </noah-hazard-type>
+          </div>
+        </ng-container>
+      </div>
 
       <!-- WEATHER UPDATES SIDEPANEL -->
       <div
         class="p-5 w-full bg-sidebar shadow-md hover:shodow-lg rounded-lg mt-6"
+        data-tour-id="weather-updates"
       >
         <div
+          data-tour-id="weather-updates-header"
           (click)="toggleExpanded()"
           class="select-none flex items-center justify-between cursor-pointer"
         >
@@ -586,12 +593,13 @@
       <!-- <noah-dengue-risk-group class="w-full"></noah-dengue-risk-group> -->
 
       <ng-container *ngFor="let hazard of hazardTypes">
-        <noah-hazard-type
+        <div
           *ngIf="hazard.type !== 'flood'"
-          class="w-full"
-          [hazard]="hazard"
+          [attr.data-tour-id]="hazard.type + '-hazard'"
         >
-        </noah-hazard-type>
+          <noah-hazard-type class="w-full" [hazard]="hazard">
+          </noah-hazard-type>
+        </div>
       </ng-container>
 
       <!-- 
@@ -601,15 +609,21 @@
         [hazard]="hazard"
       ></noah-hazard-type> 
 -->
-      <noah-volcano-group class="w-full"></noah-volcano-group>
-      <noah-critical-facilities-playground
-        class="w-full"
-      ></noah-critical-facilities-playground>
+      <div data-tour-id="volcanoes">
+        <noah-volcano-group class="w-full"></noah-volcano-group>
+      </div>
+      <div data-tour-id="critical-facilities">
+        <noah-critical-facilities-playground
+          class="w-full"
+        ></noah-critical-facilities-playground>
+      </div>
 
       <!-- <noah-contour-maps></noah-contour-maps>
       <noah-sensors-group></noah-sensors-group> -->
 
-      <noah-qc-sensors-group></noah-qc-sensors-group>
+      <div data-tour-id="internet-of-things">
+        <noah-qc-sensors-group></noah-qc-sensors-group>
+      </div>
       <noah-boundaries-group
         *ngIf="hideBoundaries"
         class="w-full"

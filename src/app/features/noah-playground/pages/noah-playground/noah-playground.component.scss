@@ -52,3 +52,9 @@
   background-color: hsla(0, 100%, 73%, 1);
   transition: all 0.3s ease;
 }
+
+@media (max-width: 767px) {
+  [data-tour-id='sidebar-scroll'] {
+    overscroll-behavior-y: contain;
+  }
+}

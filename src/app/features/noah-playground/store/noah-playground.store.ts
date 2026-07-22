@@ -13,6 +13,11 @@ export const PH_DEFAULT_CENTER = {
   lng: 120.443461,
 };
 
+export const UPRI_DEFAULT_CENTER = {
+  lat: 14.6577006,
+  lng: 121.0709613,
+};
+
 export const QC_DEFAULT_CENTER = {
   lat: 14.676,
   lng: 121.0437,

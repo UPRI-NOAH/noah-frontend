@@ -115,6 +115,7 @@ import {
   TyphoonTrackService,
   TyphoonTrackType,
 } from '@features/noah-playground/services/typhoon-track.service';
+import { NOAH_STUDIO_TOUR } from '@features/noah-playground/tour/noah-studio-tour.config';
 import { url } from 'inspector';
 
 type MapStyle = 'terrain' | 'satellite';
@@ -170,10 +171,12 @@ Accessbility(Highcharts);
 export class MapPlaygroundComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  readonly tourDefinition = NOAH_STUDIO_TOUR;
+
   map!: Map;
 
   geolocateControl!: GeolocateControl;
-  centerMarker!: Marker;
+  centerMarker?: Marker;
   pgLocation: string = '';
   mapStyle: MapStyle = 'terrain';
   isMapboxAttrib;
@@ -348,11 +351,91 @@ export class MapPlaygroundComponent
     this.screenHeight = window.innerHeight;
   }
 
+  @HostListener('window:noah-studio-playground-reset')
+  resetForNoahStudioTour(): void {
+    this.pgService.resetPlayground();
+
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+    this.draw?.deleteAll();
+    this.closeAllTyphoonPopups();
+    document
+      .querySelectorAll<HTMLElement>('.mapboxgl-popup')
+      .forEach((popup) => popup.remove());
+
+    this.measurementActive = false;
+    this.geojson = null;
+    this.linestring = null;
+    this.clearMapOutput('coordinates');
+    this.clearMapOutput('distance');
+    this.clearMapOutput('area');
+
+    this.map.getCanvas().style.cursor = '';
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.resetMapCameraForNoahStudioTour();
+  }
+
+  @HostListener('window:noah-tour-map-camera-reset')
+  resetMapCameraForNoahStudioTour(): void {
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+
+    const loginStatus = localStorage.getItem('loginStatus');
+    const camera =
+      loginStatus === '1'
+        ? { center: QC_DEFAULT_CENTER, zoom: 12 }
+        : loginStatus === '2'
+        ? { center: LAGUNA_DEFAULT_CENTER, zoom: 12.74 }
+        : { center: PH_DEFAULT_CENTER, zoom: 5.5 };
+
+    this.map.jumpTo({
+      ...camera,
+      bearing: 0,
+      pitch: 0,
+    });
+  }
+
+  @HostListener('window:noah-tour-layer-panel-reset')
+  resetMapForLayerPanelTour(): void {
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+    this.draw?.deleteAll();
+
+    this.measurementActive = false;
+    this.geojson = null;
+    this.linestring = null;
+    this.clearMapOutput('coordinates');
+    this.clearMapOutput('distance');
+    this.clearMapOutput('area');
+    this.map.getCanvas().style.cursor = '';
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.resetMapCameraForNoahStudioTour();
+  }
+
+  private clearMapOutput(id: string): void {
+    const element = document.getElementById(id);
+    if (!element) {
+      return;
+    }
+
+    element.innerHTML = '';
+    element.style.display = 'none';
+  }
+
   /**
    * Adds the plus and minus zoom map controls
    */
   addNavigationControls() {
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    this.markTopRightMapControlsForTour();
   }
 
   /**
@@ -361,6 +444,55 @@ export class MapPlaygroundComponent
   addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
+    this.markTopRightMapControlsForTour();
+
+    const mapContainer = this.map.getContainer();
+    if (!mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+      const observer = new MutationObserver(() => {
+        if (mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+          this.markTopRightMapControlsForTour();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(mapContainer, { childList: true, subtree: true });
+    }
+  }
+
+  private markTopRightMapControlsForTour(): void {
+    const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-geolocate')
+      ?.setAttribute('data-tour-id', 'mapbox-geolocate');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
+      ?.setAttribute('data-tour-id', 'mapbox-map-controls');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-in')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-in');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-compass')
+      ?.setAttribute('data-tour-id', 'mapbox-compass');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_line')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-line');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_polygon')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-polygon');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapbox-gl-draw_trash')
+      ?.setAttribute('data-tour-id', 'mapbox-draw-trash');
   }
 
   /**
@@ -444,10 +576,10 @@ export class MapPlaygroundComponent
     // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
+    container.setAttribute('data-tour-id', 'map-scale-control');
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
+    container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -480,13 +612,20 @@ export class MapPlaygroundComponent
     }
 
     const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '423px';
-      } else {
-        container.style.top = '359px';
+      const helpButton = document.querySelector(
+        '[data-tour-trigger="noah-studio"]'
+      ) as HTMLButtonElement | null;
+
+      if (helpButton) {
+        const mapRect = this.map.getContainer().getBoundingClientRect();
+        const helpButtonRect = helpButton.getBoundingClientRect();
+        container.style.top = `${helpButtonRect.bottom - mapRect.top + 8}px`;
       }
     };
     applyPosition();
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(applyPosition);
   }
 
   /**
@@ -4271,6 +4410,7 @@ export class MapPlaygroundComponent
     });
 
     this.map.addControl(this.draw);
+    this.markTopRightMapControlsForTour();
 
     this.map.on('draw.create', this.updateCalculate.bind(this));
     this.map.on('draw.delete', this.updateCalculate.bind(this));
@@ -4280,6 +4420,10 @@ export class MapPlaygroundComponent
   private updateCalculate(event) {
     const data = this.draw.getAll();
     const answer = document.getElementById('area');
+    if (!answer) {
+      return;
+    }
+
     let totalArea = 0;
     let totalLength = 0;
 
@@ -4306,8 +4450,10 @@ export class MapPlaygroundComponent
       }
 
       answer.innerHTML = output;
+      answer.style.display = output ? 'block' : 'none';
     } else {
       answer.innerHTML = '';
+      answer.style.display = 'none';
     }
   }
 

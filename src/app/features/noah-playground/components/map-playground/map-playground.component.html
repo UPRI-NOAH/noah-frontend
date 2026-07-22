@@ -1,8 +1,16 @@
-<div id="map"></div>
+<div id="map" data-tour-id="map-canvas"></div>
 <canvas #windCanvas id="wind-canvas"></canvas>
 
-<div id="distance" class="distance-container"></div>
-<div id="area" class="area-container my-2"></div>
+<div
+  id="distance"
+  data-tour-id="map-measurement-output"
+  class="distance-container"
+></div>
+<div
+  id="area"
+  data-tour-id="map-measurement-output"
+  class="area-container my-2"
+></div>
 <pre id="coordinates" class="coords"></pre>
 
 <div
@@ -22,7 +30,8 @@
 ></div>
 
 <div
-  class="map-icon absolute z-10 right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
+  class="map-icon absolute z-[60] right-0 pl-0.5 h-16 w-16 flex flex-row py-1.5"
+  data-tour-id="map-view"
 >
   <div class="p-2">
     <div class="dropdown inline-block relative">
@@ -60,6 +69,7 @@
         </svg>
       </button>
       <ul
+        data-tour-id="map-view-options"
         class="
           dropdown-menu
           rounded-lg
@@ -116,6 +126,13 @@
           >
         </li>
       </ul>
+    </div>
+    <div class="ml-2 mt-2">
+      <noah-tour
+        [definition]="tourDefinition"
+        [autoOpenOnFirstVisit]="true"
+        data-tour-id="tour-help-info"
+      ></noah-tour>
     </div>
   </div>
 </div>

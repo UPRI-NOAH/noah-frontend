@@ -929,6 +929,10 @@ export class NoahPlaygroundService {
     this.store.patch({ center });
   }
 
+  resetPlayground(): void {
+    this.store.reset('Reset NOAH Studio for tour');
+  }
+
   setQcCenter(qcCenter: { lat: number; lng: number }) {
     this.store.patch({ qcCenter }, 'Update Quezon City Location');
   }

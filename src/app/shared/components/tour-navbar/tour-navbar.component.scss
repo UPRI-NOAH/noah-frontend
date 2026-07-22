@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.tour-navbar {
+  display: grid;
+  grid-auto-columns: minmax(73.8px, 1fr);
+  grid-auto-flow: column;
+  gap: 20px;
+  overflow-x: auto;
+  width: 100%;
+  min-height: 34px;
+  scrollbar-width: thin;
+}
+
+.tour-navbar__item {
+  display: flex;
+  min-width: 73.8px;
+  min-height: 34px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-bottom: 3px solid #6f6f6f;
+  background: transparent;
+  color: #6f6f6f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 14px;
+  letter-spacing: 0;
+  padding: 0 0 6px;
+  text-align: center;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.tour-navbar__item:hover {
+  color: #0152cc;
+}
+
+.tour-navbar__item:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.tour-navbar__item--active {
+  border-bottom-color: #0152cc;
+  color: #0152cc;
+}
