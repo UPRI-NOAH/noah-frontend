@@ -1,5 +1,6 @@
-<nav class="tour-navbar" aria-label="Tour sections">
+<nav #navbar class="tour-navbar" aria-label="Tour sections">
   <button
+    #sectionItem
     *ngFor="let section of sections; trackBy: trackBySectionId"
     type="button"
     class="tour-navbar__item"
