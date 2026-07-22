@@ -1,5 +1,7 @@
 import { TourDefinition } from '@shared/components/tour/tour.models';
 
+const MOBILE_SIDEBAR_TARGET = '#sidebar';
+
 export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
   id: 'know-your-hazards',
   title: 'Know Your Hazards',
@@ -37,6 +39,7 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           title: 'Pan Around the Map',
           text: 'Left-click and drag anywhere on the map to move around and explore different locations.\n\n**For mobile:** Touch and drag anywhere on the map with one finger.',
           target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
           placement: 'bottom-right',
         },
         {
@@ -44,6 +47,7 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           title: 'Rotate and Tilt View',
           text: 'Right-click and drag on the map to rotate your view or tilt the map for a different perspective.\n\n**For mobile:** Use two fingers to rotate the map. Drag two fingers up or down together to tilt the view.',
           target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
           placement: 'bottom-right',
         },
         {
@@ -60,6 +64,7 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           title: 'Explore a Location',
           text: 'After searching for a location, move the pin to any point on the map to view available hazard, weather, and disaster risk data for that place.',
           target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
           placement: 'bottom-right',
         },
       ],
@@ -75,6 +80,7 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           target: '[data-tour-id="mapbox-map-controls"]',
           spotlightTargets: ['[data-tour-id="map-view"]'],
           interactionTargets: ['[data-tour-id="map-canvas"]'],
+          dimTargets: ['#sidebar'],
           placement: 'left',
         },
         {
@@ -86,7 +92,9 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
             '[data-tour-id="mapbox-zoom-out"]',
             '[data-tour-id="map-canvas"]',
           ],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
+            '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
             '[data-tour-id="mapbox-compass"]',
             '[data-tour-id="map-view"]',
@@ -101,7 +109,9 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           text: 'If the map has been rotated or tilted, you can use this control to return the view to its default direction.',
           target: '[data-tour-id="mapbox-compass"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
+            '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
             '[data-tour-id="mapbox-zoom-in"]',
             '[data-tour-id="mapbox-zoom-out"]',
@@ -117,7 +127,9 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           text: 'This map control button moves the map to your current location, making it easier to check nearby hazards, weather data, and disaster risk information.',
           target: '[data-tour-id="mapbox-geolocate"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
+            '#sidebar',
             '[data-tour-id="mapbox-zoom-in"]',
             '[data-tour-id="mapbox-zoom-out"]',
             '[data-tour-id="mapbox-compass"]',
@@ -134,7 +146,9 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           target: '[data-tour-id="map-view"]',
           spotlightTargets: ['[data-tour-id="map-canvas"]'],
           panelAvoidTargets: ['[data-tour-id="map-view-options"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
           dimTargets: [
+            '#sidebar',
             '[data-tour-id="mapbox-geolocate"]',
             '[data-tour-id="mapbox-zoom-in"]',
             '[data-tour-id="mapbox-zoom-out"]',
