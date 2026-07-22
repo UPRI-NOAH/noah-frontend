@@ -1,4 +1,8 @@
-<div class="absolute top-0 left-0 w-full h-full" id="map-weather-updates"></div>
+<div
+  class="absolute top-0 left-0 w-full h-full"
+  id="map-weather-updates"
+  data-tour-id="map-canvas"
+></div>
 <pre id="coordinates" class="coords"></pre>
 
 <div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
@@ -33,7 +37,10 @@
   </button>
 
   <!-- Search Input Container -->
-  <div class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl">
+  <div
+    class="flex items-center bg-white rounded-full shadow flex-1 max-w-3xl"
+    data-tour-id="location-search"
+  >
     <noah-search
       [searchTerm]="currentLocation$ | async"
       (selectPlace)="selectPlace($event)"
@@ -47,6 +54,7 @@
   <!-- Switch Map Style -->
   <noah-change-style-button
     class="p-1.5"
+    data-tour-id="map-view"
     [selectedStyle]="mapStyle"
     (selectedStyleChange)="switchMapStyle($event)"
   >

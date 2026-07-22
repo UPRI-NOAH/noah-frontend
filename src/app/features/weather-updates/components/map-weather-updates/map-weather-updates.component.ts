@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
@@ -110,6 +110,45 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     const [lng, lat] = coords;
     this.wuService.setCenter({ lat, lng });
     this.wuService.setCurrentCoords({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
+  }
+
+  @HostListener('window:weather-updates-reset')
+  resetForWeatherUpdatesTour(): void {
+    this.resetMapCameraForWeatherUpdatesTour();
+  }
+
+  @HostListener('window:noah-tour-map-camera-reset')
+  resetMapCameraForWeatherUpdatesTour(): void {
+    this.centerMarker?.remove();
+    this.centerMarker = null;
+
+    const coordinates = document.getElementById('coordinates');
+    if (coordinates) {
+      coordinates.innerHTML = '';
+      coordinates.style.display = 'none';
+    }
+
+    this.map.jumpTo({
+      center: PH_DEFAULT_CENTER,
+      zoom: 4.4,
+      bearing: 0,
+      pitch: 0,
+    });
+  }
+
+  @HostListener('window:weather-updates-rainfall-panel-reset')
+  resetMapForRainfallPanelTour(): void {
+    this.closeAllTyphoonPopups();
+    document
+      .querySelectorAll<HTMLElement>('.mapboxgl-popup')
+      .forEach((popup) => popup.remove());
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.resetMapCameraForWeatherUpdatesTour();
   }
 
   iniScaleControl() {
@@ -275,6 +314,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       },
     });
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    this.markTopRightMapControlsForTour();
 
     geocoder.on('result', (e) => {
       this.wuService.setCurrentLocation(e.result['place_name']);
@@ -285,6 +325,43 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
+    this.markTopRightMapControlsForTour();
+
+    const mapContainer = this.map.getContainer();
+    if (!mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+      const observer = new MutationObserver(() => {
+        if (mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+          this.markTopRightMapControlsForTour();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(mapContainer, { childList: true, subtree: true });
+    }
+  }
+
+  private markTopRightMapControlsForTour(): void {
+    const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-geolocate')
+      ?.setAttribute('data-tour-id', 'mapbox-geolocate');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
+      ?.setAttribute('data-tour-id', 'mapbox-map-controls');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-in')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-in');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-compass')
+      ?.setAttribute('data-tour-id', 'mapbox-compass');
   }
 
   initGeolocationListener() {

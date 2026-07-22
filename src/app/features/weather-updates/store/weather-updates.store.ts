@@ -9,6 +9,11 @@ export const PH_DEFAULT_CENTER = {
   lng: 121.59,
 };
 
+export const UPRI_DEFAULT_CENTER = {
+  lat: 14.6577006,
+  lng: 121.0709613,
+};
+
 export const RainfallContourType = [
   '1hr',
   '3hr',
@@ -91,7 +96,7 @@ export type WeatherSatelliteTypesState = {
 
 type WeatherUpdatesState = {
   isLoading: boolean;
-  center: { lng: number; lat: number };
+  center: { lng: number; lat: number } | null;
   currentCoords: { lng: number; lat: number };
   currentLocation: string;
   overlayOpacity: number;

@@ -1,5 +1,8 @@
 <!-- MOBILE VIEW -->
-<div class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping">
+<div
+  class="overflow-x-scroll mx-2 md:hidden swiper-no-swiping"
+  data-tour-id="rainfall-panel-options"
+>
   <div
     class="flex space-x-2 w-auto mb-4 justify-center"
     style="place-content: space-evenly"
@@ -45,7 +48,10 @@
 
 <!-- Separate Forecast Button -->
 <ng-container>
-  <section class="px-5 md:px-0 md:hidden mb-1">
+  <section
+    class="px-5 md:px-0 md:hidden mb-1"
+    data-tour-id="rainfall-panel-options"
+  >
     <p class="mt-5 text-base tracking-wide">
       <span class="font-bold">Forecasted Rainfall in Your Area</span>
     </p>
@@ -61,7 +67,10 @@
     </p>
   </section>
 </ng-container>
-<div class="flex justify-center md:hidden swiper-no-swiping px-4">
+<div
+  class="flex justify-center md:hidden swiper-no-swiping px-4"
+  data-tour-id="rainfall-panel-options"
+>
   <div
     class="
       bg-white
@@ -170,6 +179,7 @@
 <div
   *ngFor="let rainfallContourType of rainfallContourTypes; let i = index"
   role="button"
+  data-tour-id="rainfall-panel-options"
 >
   <button
     class="

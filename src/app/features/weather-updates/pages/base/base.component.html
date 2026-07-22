@@ -1,4 +1,4 @@
-<div class="md:hidden">
+<div class="md:hidden h-full min-h-0 flex flex-col overflow-hidden">
   <div
     class="
       px-6
@@ -9,11 +9,8 @@
       items-center
       bg-white
       shadow
-      sticky
-      top-0
+      flex-none
       lg-hidden
-      overflow-y-auto
-      z-40
     "
   >
     <a
@@ -50,76 +47,71 @@
     </a>
   </div>
 
-  <!-- NOTES
-  <noah-rainfall-contour-button></noah-rainfall-contour-button> -->
-  <swiper
-    #swiperRef
-    [pagination]="true"
-    [navigation]="false"
-    [spaceBetween]="8"
-    [autoHeight]="true"
-  >
-    <!-- Slide 0: Rainfall -->
-    <ng-template swiperSlide>
-      <section class="px-5 md:px-8 py-0">
-        <p class="mt-3 italic text-xs tracking-wide">
-          <span class="font-bold">Tip:</span> You may drag the pin to change the
-          location.
-        </p>
-      </section>
-      <section class="px-5 md:px-0 md:hidden mb-1">
-        <p class="mt-4 text-base tracking-wide">
-          <span class="font-bold"
-            >Current Accumulated Rainfall in Your Area</span
-          >
-        </p>
-        <p class="italic text-xs tracking-wide mb-2">
-          <span class="font-bold">Source:</span>
-          <a
-            href="https://sharaku.eorc.jaxa.jp/GSMaP_NOW/index.htm"
-            target="_blank"
-            class="text-primary"
-          >
-            JAXA Global Rainfall Watch (GSMaP)
-          </a>
-          and
-          <a
-            href="https://bagong.pagasa.dost.gov.ph/automated-rain-gauge"
-            target="_blank"
-            class="text-primary"
-          >
-            DOST-PAGASA
-          </a>
-        </p>
-      </section>
-
-      <noah-rainfall-contour-button></noah-rainfall-contour-button>
-      <!-- <noah-rainfall-contour-button-mobile></noah-rainfall-contour-button-mobile> -->
-    </ng-template>
-
-    <!-- Slide 1: Typhoon -->
-    <ng-template swiperSlide>
-      <section class="px-6 md:px-8 h-auto">
-        <noah-typhoon-track-group></noah-typhoon-track-group>
-      </section>
-    </ng-template>
-  </swiper>
-
-  <!-- Custom Swiper Navigation Buttons fixed to the bottom of the viewport -->
   <div
-    class="
-      fixed
-      left-0
-      right-0
-      bottom-0
-      flex
-      bg-white
-      justify-between
-      p-0
-      z-50
-      md:hidden
-    "
+    class="flex-1 min-h-0 overflow-y-auto"
+    data-tour-id="weather-sidebar-scroll"
   >
+    <!-- NOTES
+    <noah-rainfall-contour-button></noah-rainfall-contour-button> -->
+    <swiper
+      #swiperRef
+      [pagination]="true"
+      [navigation]="false"
+      [spaceBetween]="8"
+      [autoHeight]="true"
+    >
+      <!-- Slide 0: Rainfall -->
+      <ng-template swiperSlide>
+        <section class="px-5 md:px-8 py-0">
+          <p class="mt-3 italic text-xs tracking-wide">
+            <span class="font-bold">Tip:</span> You may drag the pin to change
+            the location.
+          </p>
+        </section>
+        <section
+          class="px-5 md:px-0 md:hidden mb-1"
+          data-tour-id="rainfall-panel-heading"
+        >
+          <p class="mt-4 text-base tracking-wide">
+            <span class="font-bold"
+              >Current Accumulated Rainfall in Your Area</span
+            >
+          </p>
+          <p class="italic text-xs tracking-wide mb-2">
+            <span class="font-bold">Source:</span>
+            <a
+              href="https://sharaku.eorc.jaxa.jp/GSMaP_NOW/index.htm"
+              target="_blank"
+              class="text-primary"
+            >
+              JAXA Global Rainfall Watch (GSMaP)
+            </a>
+            and
+            <a
+              href="https://bagong.pagasa.dost.gov.ph/automated-rain-gauge"
+              target="_blank"
+              class="text-primary"
+            >
+              DOST-PAGASA
+            </a>
+          </p>
+        </section>
+
+        <noah-rainfall-contour-button></noah-rainfall-contour-button>
+        <!-- <noah-rainfall-contour-button-mobile></noah-rainfall-contour-button-mobile> -->
+      </ng-template>
+
+      <!-- Slide 1: Typhoon -->
+      <ng-template swiperSlide>
+        <section class="px-6 md:px-8 h-auto">
+          <noah-typhoon-track-group></noah-typhoon-track-group>
+        </section>
+      </ng-template>
+    </swiper>
+  </div>
+
+  <!-- Custom Swiper Navigation Buttons kept below the scrolling content -->
+  <div class="h-10 flex-none flex bg-white justify-between items-center p-0">
     <button class="p-2" (click)="slidePrev()">
       <svg
         class="text-blue-700"
@@ -189,6 +181,7 @@
   </div>
 
   <noah-search
+    data-tour-id="location-search"
     [searchTerm]="currentLocation$ | async"
     (selectPlace)="selectPlace($event)"
     class="
@@ -205,7 +198,10 @@
     "
   >
   </noah-search>
-  <div class="max-h-[87vh] overflow-y-auto">
+  <div
+    class="max-h-[87vh] overflow-y-auto"
+    data-tour-id="weather-sidebar-scroll"
+  >
     <section class="px-6 md:px-8 py-0">
       <p class="mt-3 italic text-xs tracking-wide">
         <span class="font-bold">Tip:</span> You may drag the pin to change the
@@ -215,30 +211,32 @@
 
     <!-- KYH -->
     <section class="px-6 md:px-8">
-      <header class="text-lg font-bold leading-tight mt-5 pb-1">
-        Current Accumulated Rainfall in Your Area
-      </header>
+      <div data-tour-id="rainfall-panel-heading">
+        <header class="text-lg font-bold leading-tight mt-5 pb-1">
+          Current Accumulated Rainfall in Your Area
+        </header>
 
-      <section class="mb-3">
-        <p class="italic text-xs tracking-wide mb-2">
-          <span class="font-bold">Source:</span>
-          <a
-            href="https://sharaku.eorc.jaxa.jp/GSMaP_NOW/index.htm"
-            target="_blank"
-            class="text-primary"
-          >
-            JAXA Global Rainfall Watch (GSMaP)
-          </a>
-          and
-          <a
-            href="https://bagong.pagasa.dost.gov.ph/automated-rain-gauge"
-            target="_blank"
-            class="text-primary"
-          >
-            DOST-PAGASA
-          </a>
-        </p>
-      </section>
+        <section class="mb-3">
+          <p class="italic text-xs tracking-wide mb-2">
+            <span class="font-bold">Source:</span>
+            <a
+              href="https://sharaku.eorc.jaxa.jp/GSMaP_NOW/index.htm"
+              target="_blank"
+              class="text-primary"
+            >
+              JAXA Global Rainfall Watch (GSMaP)
+            </a>
+            and
+            <a
+              href="https://bagong.pagasa.dost.gov.ph/automated-rain-gauge"
+              target="_blank"
+              class="text-primary"
+            >
+              DOST-PAGASA
+            </a>
+          </p>
+        </section>
+      </div>
 
       <noah-rainfall-contour-button></noah-rainfall-contour-button>
 
