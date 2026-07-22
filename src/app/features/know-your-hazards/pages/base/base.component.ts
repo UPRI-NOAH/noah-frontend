@@ -41,6 +41,7 @@ export class BaseComponent implements OnInit {
     const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
   }
 
   changePage() {

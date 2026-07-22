@@ -92,6 +92,7 @@ export class MapKyhComponent implements OnInit {
     const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
   }
 
   initAttribution() {
@@ -137,6 +138,43 @@ export class MapKyhComponent implements OnInit {
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
+    this.markTopRightMapControlsForTour();
+
+    const mapContainer = this.map.getContainer();
+    if (!mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+      const observer = new MutationObserver(() => {
+        if (mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+          this.markTopRightMapControlsForTour();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(mapContainer, { childList: true, subtree: true });
+    }
+  }
+
+  private markTopRightMapControlsForTour(): void {
+    const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-geolocate')
+      ?.setAttribute('data-tour-id', 'mapbox-geolocate');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
+      ?.setAttribute('data-tour-id', 'mapbox-map-controls');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-in')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-in');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-compass')
+      ?.setAttribute('data-tour-id', 'mapbox-compass');
   }
 
   initGeolocationListener() {
