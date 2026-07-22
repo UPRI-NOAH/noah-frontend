@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
@@ -71,6 +71,36 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next(null);
     this._unsub.complete();
+  }
+
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    const pinPosition =
+      this.centerMarker?.getLngLat() || this.kyhService.currentCoords;
+
+    this.kyhLegend = true;
+    this.btnLegend = false;
+
+    const coordinates = document.getElementById('coordinates');
+    if (coordinates) {
+      coordinates.innerHTML = '';
+      coordinates.style.display = 'none';
+    }
+
+    document
+      .querySelectorAll<HTMLElement>('.mapboxgl-popup')
+      .forEach((popup) => popup.remove());
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.map.jumpTo({
+      center: pinPosition,
+      zoom: 13,
+      pitch: 50,
+      bearing: 30,
+    });
   }
 
   selectPlace(selectedPlace) {

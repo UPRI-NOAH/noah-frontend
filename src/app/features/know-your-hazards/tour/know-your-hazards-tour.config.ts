@@ -3,6 +3,7 @@ import { TourDefinition } from '@shared/components/tour/tour.models';
 export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
   id: 'know-your-hazards',
   title: 'Know Your Hazards',
+  startEvent: 'know-your-hazards-reset',
   welcome: {
     title: 'Welcome to',
     accentTitle: 'Know\u00a0Your\u00a0Hazards',
@@ -142,6 +143,74 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
             '[data-tour-id="tour-help-info"]',
           ],
           placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'hazards-panel',
+      label: 'Hazards Panel',
+      steps: [
+        {
+          id: 'hazards-panel',
+          title: 'Hazards Panel',
+          text: "Once you've set a location, this panel summarizes your risk for Flood, Landslide, and Storm Surge — each rated from Little to None up to High. Click any tab above to see the full assessment for that hazard.",
+          target:
+            '[data-tour-id="hazards-panel"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'flood-hazard-level',
+          title: 'Flood Hazard Level',
+          text: 'Flooding is the overflow of water from another body of water due to heavy rainfall. Click the flood hazard level button to know **what to do during flood** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-flood"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'landslide-hazard-level',
+          title: 'Landslide Hazard Level',
+          text: 'A landslide is a movement of earth, rock, or debris due to gravity. Click the landslide hazard level button to know **how to prepare for landslides, surviving a landslide, after a landslide** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-landslide"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'storm-surge-hazard-level',
+          title: 'Surge Hazard Level',
+          text: 'A storm surge is the abnormal rise of sea level resulting from tropical cyclone (storms). Click the storm surge hazard level button to know **how to prepare for storm surges,** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-storm-surge"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-critical-facilities-show',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'critical-facilities',
+      label: 'Critical Facilities',
+      steps: [
+        {
+          id: 'critical-facilities',
+          title: 'Critical Facilities',
+          text: "Scroll down and you'll find nearby critical facilities, like schools and health centers, so you know exactly where to go for help in your area. Tap on a critical facility to navigate to them in the map.",
+          target: '[data-tour-id="critical-facilities-panel"]',
+          previousEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'end',
+      label: 'End',
+      steps: [
+        {
+          id: 'end',
+          title: 'You’re ready to Explore',
+          text: 'You’ve completed the Know Your Hazards tutorial. You can now search for locations, view hazard levels, explore map overlays, and understand the disaster risk information shown for your selected area. Use the search bar, hazard cards, and map anytime to check possible risks across the Philippines.',
+          placement: 'center',
         },
       ],
     },

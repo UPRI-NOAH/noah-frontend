@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
@@ -67,6 +68,11 @@ export class SearchComponent implements OnInit {
       this.address = address; // Update address in real-time
       this.searchTermCtrl.setValue(address);
     });
+  }
+
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    this.isDropdownOpen = false;
   }
 
   // TO DO: add type for place

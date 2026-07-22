@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable } from 'rxjs';
@@ -20,6 +20,26 @@ export class BaseComponent implements OnInit {
     this.bibliographyUrl = this.router.serializeUrl(
       this.router.createUrlTree(['/bibliography'])
     );
+  }
+
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    this.currentPage = 1;
+  }
+
+  @HostListener('window:know-your-hazards-overview-reset')
+  showHazardsOverviewForTour(): void {
+    this.currentPage = 1;
+  }
+
+  @HostListener('window:know-your-hazards-critical-facilities-show')
+  showCriticalFacilitiesForTour(): void {
+    this.currentPage = 2;
+  }
+
+  @HostListener('window:know-your-hazards-critical-facilities-ready')
+  showCriticalFacilitiesWhenReadyForTour(): void {
+    this.currentPage = 2;
   }
 
   selectPlace(selectedPlace) {
