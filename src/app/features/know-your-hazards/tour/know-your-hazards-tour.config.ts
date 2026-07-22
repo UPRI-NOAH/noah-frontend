@@ -10,7 +10,8 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
     title: 'Welcome to',
     accentTitle: 'Know\u00a0Your\u00a0Hazards',
     text: 'Discover the potential hazards in your area and find critical facilities nearby.',
-    prompt: 'Take a quick tour to get started, or explore on your own.',
+    prompt:
+      'Take a quick tour to get started, or explore on your own. If you skip the tour, you can return to it anytime using the Help button on the Map.',
     brandLabel: 'KNOW YOUR HAZARDS',
     logoUrl: 'assets/icons/logo-noah.svg',
     logoAlt: 'Project NOAH',
