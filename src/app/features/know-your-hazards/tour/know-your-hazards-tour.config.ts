@@ -212,7 +212,7 @@ export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
           text: "Scroll down and you'll find nearby critical facilities, like schools and health centers, so you know exactly where to go for help in your area. Tap on a critical facility to navigate to them in the map.",
           target: '[data-tour-id="critical-facilities-heading"]',
           spotlightTargets: ['[data-tour-id="critical-facilities-panel"]'],
-          previousEvent: 'know-your-hazards-overview-reset',
+          previousEvent: 'know-your-hazards-overview-reset', // for kyh mobile only
           placement: 'left',
         },
       ],
