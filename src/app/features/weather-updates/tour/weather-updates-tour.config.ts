@@ -213,5 +213,17 @@ export const WEATHER_UPDATES_TOUR: TourDefinition = {
         },
       ],
     },
+    {
+      id: 'end',
+      label: 'End',
+      steps: [
+        {
+          id: 'end',
+          title: "You're Ready to Explore",
+          text: 'You’ve completed the Weather Updates tutorial. You can now search for locations, navigate the map, view rainfall and temperature information, interpret the active layer using its legend, and adjust its opacity. Use the weather panels and map controls anytime to explore current and forecast conditions across the Philippines.',
+          placement: 'center',
+        },
+      ],
+    },
   ],
 };

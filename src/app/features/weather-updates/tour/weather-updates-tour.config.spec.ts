@@ -181,4 +181,26 @@ describe('WEATHER_UPDATES_TOUR', () => {
     );
     expect(legendOpacity?.steps[0].text).toContain('active layer');
   });
+
+  it('ends with the Weather Updates completion step', () => {
+    const endSection = WEATHER_UPDATES_TOUR.sections.find(
+      (section) => section.id === 'end'
+    );
+
+    expect(endSection).toEqual(
+      jasmine.objectContaining({
+        label: 'End',
+        steps: [
+          jasmine.objectContaining({
+            id: 'end',
+            title: "You're Ready to Explore",
+            placement: 'center',
+          }),
+        ],
+      })
+    );
+    expect(endSection?.steps[0].text).toContain(
+      'completed the Weather Updates tutorial'
+    );
+  });
 });
