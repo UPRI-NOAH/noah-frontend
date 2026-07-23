@@ -41,6 +41,11 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
 import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
 import { WindGroupComponent } from './components/wind-group/wind-group.component';
 import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
+import { RiskAssessmentNewModalComponent } from './components/risk-assessment-new-modal/risk-assessment-new-modal.component';
+import { RiskAssessmentAffectedBarangaysComponent } from './components/risk-assessment-affected-barangays/risk-assessment-affected-barangays.component';
+import { RiskAssessmentDataArchiveComponent } from './components/risk-assessment-data-archive/risk-assessment-data-archive.component';
+import { RiskAssessmentByProvinceComponent } from './components/risk-assessment-by-province/risk-assessment-by-province.component';
+import { RiskAssessmentSummaryComponent } from './components/risk-assessment-summary/risk-assessment-summary.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +84,11 @@ import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
     TemperatureSoloComponent,
     WindGroupComponent,
     WindSoloComponent,
+    RiskAssessmentNewModalComponent,
+    RiskAssessmentAffectedBarangaysComponent,
+    RiskAssessmentDataArchiveComponent,
+    RiskAssessmentByProvinceComponent,
+    RiskAssessmentSummaryComponent,
   ],
   imports: [
     CommonModule,
