@@ -353,6 +353,7 @@ export type WindGroupState = {
 export type WindState = {
   particleCount: number;
   speed: number;
+  color: string;
 };
 /*
 export type WindState = {
@@ -729,6 +730,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
         // shown: true,
         particleCount: 1000,
         speed: 0.5,
+        color: '#67FF01',
       },
     },
   },

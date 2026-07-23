@@ -7,7 +7,7 @@
     shadow-md
     hover:shodow-lg
     rounded-lg
-    mt-4
+    mt-2
   "
 >
   <div
@@ -67,30 +67,9 @@
     </div>
   </div>
 
-  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
+  <div [ngClass]="(expanded$ | async) ? ' pt-4 ' : ' hidden '">
     <hr class="pb-4" />
-    <!--
-    <div class="pl-0 mb-4">
-      <noah-slider
-        label="Particle Count"
-        [initialValue]="initialParticleCountValue"
-        [min]="100"
-        [max]="1500"
-        [step]="50"
-        (valueChange)="changeParticleCount($event)"
-      ></noah-slider>
-    </div>
-    <div class="pl-0 mb-4">
-      <noah-slider
-        label="Speed"
-        [initialValue]="initialSpeedValue"
-        [min]="0.05"
-        [max]="2"
-        [step]="0.05"
-        (valueChange)="changeSpeed($event)"
-      ></noah-slider>
-    </div>
-    -->
+
     <noah-wind-solo
       *ngFor="let wind of windTypeList"
       [windType]="wind"
@@ -100,7 +79,7 @@
       <p class="italic text-xs tracking-wide mb-2">
         <span class="font-bold">Source:</span>
         <a href="https://open-meteo.com/" target="_blank" class="text-primary">
-          OPEN-METEO
+          Open-Meteo
         </a>
       </p>
     </section>

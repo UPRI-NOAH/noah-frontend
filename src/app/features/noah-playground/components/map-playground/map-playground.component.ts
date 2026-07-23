@@ -260,6 +260,7 @@ export class MapPlaygroundComponent
     count: 1000,
     speed: 0.5,
     maxAge: 70,
+    color: '#67FF01',
   };
   private windGrid: WindGrid | null = null;
   private windReady = false;
@@ -3552,6 +3553,13 @@ export class MapPlaygroundComponent
         this.windSettings.speed = speed;
       });
 
+    this.pgService
+      .getWindColor$('wind')
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((color) => {
+        this.windSettings.color = color;
+      });
+
     this.pgService.selectedWindForecastDay$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe((day) => {
@@ -3673,6 +3681,17 @@ export class MapPlaygroundComponent
       u: -speedMs * Math.sin(rad),
       v: -speedMs * Math.cos(rad),
     };
+  }
+
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : { r: 103, g: 255, b: 1 };
   }
 
   private async fetchWindGrid(dayOffset: WindForecastDay = 0): Promise<void> {
@@ -3984,9 +4003,10 @@ export class MapPlaygroundComponent
       const tailY = prevPx.y - dirY * tailLengthPx;
 
       const gradient = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      gradient.addColorStop(0, 'rgba(255, 255, 0, 0)');
-      gradient.addColorStop(0.65, 'rgba(255, 255, 0, 0.45)');
-      gradient.addColorStop(1, 'rgba(103, 255, 1, 0.95)');
+      const { r, g, b } = this.hexToRgb(this.windSettings.color);
+      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
+      gradient.addColorStop(0.65, `rgba(${r}, ${g}, ${b}, 0.45)`);
+      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.95)`);
 
       ctx.strokeStyle = gradient;
 
@@ -3997,7 +4017,7 @@ export class MapPlaygroundComponent
       ctx.lineTo(headX, headY);
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(103, 255, 1, 0.9)';
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
       ctx.beginPath();
       ctx.arc(headX, headY, 1.1, 0, Math.PI * 2);
       ctx.fill();

@@ -21,6 +21,7 @@ export class WindSoloComponent implements OnInit {
 
   initialParticleCountValue: number = 1000;
   initialSpeedValue: number = 0.5;
+  initialColorValue: string = '#67FF01';
 
   constructor(private pgService: NoahPlaygroundService) {}
 
@@ -30,9 +31,10 @@ export class WindSoloComponent implements OnInit {
     this.pgService
       .getWind$(this.windType)
       .pipe(first())
-      .subscribe(({ particleCount, speed }) => {
+      .subscribe(({ particleCount, speed, color }) => {
         this.initialParticleCountValue = particleCount;
         this.initialSpeedValue = speed;
+        this.initialColorValue = color;
       });
 
     this.initialParticleCountValue =
@@ -45,6 +47,10 @@ export class WindSoloComponent implements OnInit {
 
   changeSpeed(speed: number) {
     this.pgService.setWindSpeed(speed, this.windType);
+  }
+
+  changeColor(color: string) {
+    this.pgService.setWindColor(color, this.windType);
   }
 
   selectForecastDay(day: WindForecastDay): void {
