@@ -13,6 +13,7 @@ import {
 } from '@features/noah-playground/services/past-event.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'noah-risk-assessment-modal',
