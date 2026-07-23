@@ -1,3 +1,18 @@
+<div class="inline-flex mb-4 border border-gray-400 rounded-md overflow-hidden">
+  <button
+    *ngFor="let day of forecastDays; let first = first; let last = last"
+    type="button"
+    class="px-1.5 py-1 text-sm focus:outline-none -ml-px first:ml-0"
+    [ngClass]="
+      (selectedForecastDay$ | async) === day.value
+        ? 'bg-primary text-white z-10'
+        : 'bg-white text-gray-800 hover:bg-gray-100'
+    "
+    (click)="selectForecastDay(day.value)"
+  >
+    {{ day.label }}
+  </button>
+</div>
 <div class="pl-0 mb-4">
   <noah-slider
     label="Particle Count"
@@ -17,4 +32,13 @@
     [step]="0.05"
     (valueChange)="changeSpeed($event)"
   ></noah-slider>
+</div>
+<div class="pl-0 mb-4 flex items-center gap-2">
+  <label class="text-sm text-gray-700 font-medium">Pick a color:</label>
+  <input
+    type="color"
+    [value]="initialColorValue"
+    (input)="changeColor($any($event.target).value)"
+    class="w-8 h-8 rounded border border-gray-400 cursor-pointer p-0"
+  />
 </div>
