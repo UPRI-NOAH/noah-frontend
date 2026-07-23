@@ -6,7 +6,6 @@ import {
 import {
   IbffSummaryService,
   ForecastSummaryOutput,
-  ForecastSummaryInput,
 } from '@features/noah-playground/services/ibff-summary.service';
 import {
   PastEventService,
@@ -14,8 +13,6 @@ import {
 } from '@features/noah-playground/services/past-event.service';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import { first, switchMap, catchError } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'noah-risk-assessment-modal',
@@ -206,45 +203,18 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
     this.keyInsights = [];
     this.isTyping = false;
 
-    forkJoin([
-      this.riskAssessment.getAllAffectedData().pipe(
-        first(),
-        catchError(() => of([]))
-      ),
-      this.riskAssessment.getDateText().pipe(
-        first(),
-        catchError(() => of(''))
-      ),
-    ])
-      .pipe(
-        switchMap(([allRecords, dateText]: [any[], string]) => {
-          this.dateDataText = dateText;
-          const mapped: AffectedData[] = allRecords.map((a: any) => ({
-            brgy: a.brgy,
-            muni: a.muni,
-            prov: a.prov,
-            total_pop: a.total_pop,
-            total_aff_pop: a.total_aff_pop,
-            exposed_medhigh: a.exposed_medhigh,
-            perc_aff_medhigh: a.perc_aff_medhigh,
-          }));
-          const records = mapped.length ? mapped : this.affectedData;
-          const input = this.buildSummaryInput(records, records.length);
-          return this.ibffSummary.generateSummary(input);
-        })
-      )
-      .subscribe({
-        next: (result) => {
-          this.summaryResult = result;
-          this.summaryLoading = false;
-          this._startTypewriter(result);
-        },
-        error: () => {
-          this.summaryError =
-            'Unable to reach the summarization service. Please ensure the backend is running.';
-          this.summaryLoading = false;
-        },
-      });
+    this.ibffSummary.generateSummary().subscribe({
+      next: (result) => {
+        this.summaryResult = result;
+        this.summaryLoading = false;
+        this._startTypewriter(result);
+      },
+      error: () => {
+        this.summaryError =
+          'Unable to reach the summarization service. Please ensure the backend is running.';
+        this.summaryLoading = false;
+      },
+    });
   }
 
   // ── Past events ───────────────────────────────────────────────────────────
@@ -377,79 +347,6 @@ export class RiskAssessmentModalComponent implements OnInit, OnDestroy {
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
-
-  private _toTitleCase(s: string): string {
-    return s
-      .replace(/\s*\(Not a Province\)/gi, '')
-      .trim()
-      .toLowerCase()
-      .replace(/\b\w/g, (c) => c.toUpperCase());
-  }
-
-  private buildSummaryInput(
-    records: AffectedData[],
-    _totalCount: number
-  ): ForecastSummaryInput {
-    const provinceMap = new Map<string, number>();
-    const cityMap = new Map<string, number>();
-    const municipalitySet = new Set<string>();
-    const seen = new Set<string>();
-
-    for (const item of records) {
-      const dedupeKey = `${item.brgy}||${item.muni}||${item.prov}`;
-      if (seen.has(dedupeKey)) continue;
-      seen.add(dedupeKey);
-
-      if (item.prov) {
-        const prov = this._toTitleCase(item.prov);
-        provinceMap.set(prov, (provinceMap.get(prov) ?? 0) + 1);
-        if (item.muni) {
-          municipalitySet.add(`${item.muni}||${prov}`);
-          const cityKey = `${this._toTitleCase(item.muni)}||${prov}`;
-          cityMap.set(cityKey, (cityMap.get(cityKey) ?? 0) + 1);
-        }
-      }
-    }
-
-    const topAreas = Array.from(provinceMap.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([province, count]) => ({ province, affected_barangays: count }));
-
-    const topCities = Array.from(cityMap.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([key, count]) => {
-        const [city, province] = key.split('||');
-        return { city, province, affected_barangays: count };
-      });
-
-    const topBarangaysByHazard = records
-      .filter((r) => typeof r.perc_aff_medhigh === 'number' && r.brgy && r.muni)
-      .slice()
-      .sort((a, b) => b.perc_aff_medhigh - a.perc_aff_medhigh)
-      .slice(0, 3)
-      .map((r) => ({
-        barangay: r.brgy,
-        municipality: this._toTitleCase(r.muni),
-        province: r.prov ? this._toTitleCase(r.prov) : undefined,
-        medhigh_percentage: r.perc_aff_medhigh,
-      }));
-
-    return {
-      forecast_timestamp: this.dateDataText || 'not available',
-      affected_barangays: seen.size,
-      affected_municipalities: municipalitySet.size,
-      affected_provinces: provinceMap.size,
-      top_areas: topAreas,
-      top_cities: topCities,
-      top_barangays_by_hazard: topBarangaysByHazard,
-      notes: [
-        'Counts exclude barangays tagged Little to None.',
-        'Exposure is based on intersection with NOAH flood hazard layers.',
-      ],
-    };
-  }
 
   closeModal() {
     this.summaryResult = null;
