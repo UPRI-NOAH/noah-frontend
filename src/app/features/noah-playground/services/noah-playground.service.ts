@@ -349,6 +349,10 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
   }
 
+  getWindColor$(type: WindType): Observable<string> {
+    return this.store.state$.pipe(map((state) => state.wind.types[type].color));
+  }
+
   getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
     return this.store.state$.pipe(
       map((state) => state.boundaries.types[boundariesType])
@@ -680,6 +684,21 @@ export class NoahPlaygroundService {
     };
 
     this.store.patch({ wind }, `Wind Speed set to ${nextSpeed}`);
+  }
+
+  setWindColor(color: string, type: WindType): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          color,
+        },
+      },
+    };
+
+    this.store.patch({ wind }, `Wind Color set to ${color}`);
   }
 
   selectWindForecastDay(day: WindForecastDay): void {

@@ -33,3 +33,12 @@
     (valueChange)="changeSpeed($event)"
   ></noah-slider>
 </div>
+<div class="pl-0 mb-4 flex items-center gap-2">
+  <label class="text-sm text-gray-700 font-medium">Pick a color:</label>
+  <input
+    type="color"
+    [value]="initialColorValue"
+    (input)="changeColor($any($event.target).value)"
+    class="w-8 h-8 rounded border border-gray-400 cursor-pointer p-0"
+  />
+</div>
