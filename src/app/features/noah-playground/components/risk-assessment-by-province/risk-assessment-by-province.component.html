@@ -168,363 +168,407 @@
     </div>
   </div>
 
-  <!-- Province Accordion List -->
-  <div class="flex-1 overflow-y-auto min-h-0 flex flex-col gap-3 pb-4">
-    <!-- Empty State -->
-    <div
-      *ngIf="noResult"
-      class="
-        flex flex-col
-        items-center
-        justify-center
-        h-full
-        min-h-[300px]
-        bg-gray-200
-        rounded-xl
-      "
-    >
-      <div class="flex flex-col items-center p-8 text-center max-w-md">
-        <svg
-          class="w-16 h-16 text-gray-500 mb-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
-        <p class="text-xl font-bold text-gray-500 leading-tight">
-          No result for "{{ searchValue }}"
-        </p>
-      </div>
-    </div>
-
-    <!-- Error / No Forecast State -->
-    <div
-      *ngIf="errorMsg"
-      class="
-        flex flex-col
-        items-center
-        justify-center
-        h-full
-        min-h-[300px]
-        bg-gray-200
-        rounded-xl
-      "
-    >
-      <div class="flex flex-col items-center p-8 text-center max-w-md">
-        <svg
-          class="w-16 h-16 text-gray-500 mb-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
-        <p class="text-lg font-bold text-gray-500 leading-tight">
-          No forecast that meets pre-determined thresholds for large floods
-        </p>
-      </div>
-    </div>
-
-    <!-- Accordion Item -->
-    <div
-      *ngFor="let group of filteredProvinceData"
-      class="
-        flex flex-col
-        rounded-xl
-        flex-shrink-0
-        transition-all
-        duration-300
-        border
-        bg-white
-        overflow-hidden
-      "
-      [ngClass]="
-        group.expanded
-          ? 'border-primary shadow-md'
-          : 'border-gray-300 hover:border-primary'
-      "
-    >
-      <!-- Accordion Header -->
-      <button
-        (click)="group.expanded = !group.expanded"
-        class="
-          w-full
-          flex
-          items-center
-          justify-between
-          p-4
-          transition-colors
-          duration-200
-          focus:outline-none
-        "
-        [ngClass]="group.expanded ? 'bg-primary' : 'bg-transparent'"
+  <!-- Desktop Empty State: No Result -->
+  <div
+    *ngIf="noResult"
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      min-h-[300px]
+      bg-gray-200
+      rounded-xl
+      mb-4
+    "
+  >
+    <div class="flex flex-col items-center p-8 text-center max-w-md">
+      <svg
+        class="w-16 h-16 text-gray-500 mb-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
       >
-        <!-- Left: Icon & Title -->
-        <div class="flex items-center gap-4">
-          <div
-            class="
-              w-10
-              h-10
-              rounded-lg
-              flex
-              items-center
-              justify-center
-              flex-shrink-0
-              transition-colors
-            "
-            [ngClass]="
-              group.expanded
-                ? 'bg-white/20 text-white'
-                : 'bg-blue-50 text-primary'
-            "
-          >
-            <!-- Building Icon -->
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+        />
+      </svg>
+      <p class="text-xl font-bold text-gray-500 leading-tight">
+        No result for "{{ searchValue }}"
+      </p>
+    </div>
+  </div>
+
+  <!-- Desktop Empty State: Error / No Forecast -->
+  <div
+    *ngIf="errorMsg"
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      min-h-[300px]
+      bg-gray-200
+      rounded-xl
+      mb-4
+    "
+  >
+    <div class="flex flex-col items-center p-8 text-center max-w-md">
+      <div
+        class="w-16 h-16 mb-4 text-gray-500 bg-current"
+        [style.mask-image]="'url(assets/icons/happy-sun.svg)'"
+        [style.-webkit-mask-image]="'url(assets/icons/happy-sun.svg)'"
+        style="
+          mask-repeat: no-repeat;
+          mask-position: center;
+          mask-size: contain;
+          -webkit-mask-repeat: no-repeat;
+          -webkit-mask-position: center;
+          -webkit-mask-size: contain;
+        "
+      ></div>
+      <p class="text-lg font-bold text-gray-500 leading-tight">
+        No forecast that meets pre-determined thresholds for large floods
+      </p>
+    </div>
+  </div>
+
+  <!-- Scrollable Province Accordion List -->
+  <div
+    *ngIf="!errorMsg && !noResult"
+    class="flex-1 overflow-y-auto min-h-0 pr-2 pb-4"
+  >
+    <div class="flex flex-col gap-3">
+      <!-- Accordion Item -->
+      <div
+        *ngFor="let group of filteredProvinceData"
+        class="
+          flex flex-col
+          rounded-xl
+          flex-shrink-0
+          transition-all
+          duration-300
+          border
+          bg-white
+          overflow-hidden
+        "
+        [ngClass]="
+          group.expanded
+            ? 'border-primary shadow-md'
+            : 'border-gray-300 hover:border-primary'
+        "
+      >
+        <!-- Accordion Header -->
+        <button
+          (click)="group.expanded = !group.expanded"
+          class="
+            w-full
+            flex
+            items-center
+            justify-between
+            p-4
+            transition-colors
+            duration-200
+            focus:outline-none
+          "
+          [ngClass]="group.expanded ? 'bg-primary' : 'bg-transparent'"
+        >
+          <!-- Left: Icon & Title -->
+          <div class="flex items-center gap-4">
+            <div
+              class="
+                w-10
+                h-10
+                rounded-lg
+                flex
+                items-center
+                justify-center
+                flex-shrink-0
+                transition-colors
+              "
+              [ngClass]="
+                group.expanded
+                  ? 'bg-white/20 text-white'
+                  : 'bg-blue-50 text-primary'
+              "
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+            <div class="text-left">
+              <span
+                class="text-base font-extrabold transition-colors"
+                [ngClass]="group.expanded ? 'text-white' : 'text-gray-900'"
+              >
+                {{ asterisk(group.prov) }}
+              </span>
+              <p
+                class="text-xs transition-colors"
+                [ngClass]="group.expanded ? 'text-white/80' : 'text-gray-500'"
+              >
+                {{ group.region }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Badge & Chevron -->
+          <div class="flex items-center gap-4">
+            <span
+              class="px-4 py-1 text-xs font-bold rounded-full transition-colors"
+              [ngClass]="
+                group.expanded
+                  ? 'bg-white/20 text-white'
+                  : 'bg-primary text-white'
+              "
+            >
+              {{ group.total_barangays_affected }} barangays
+            </span>
             <svg
-              class="w-5 h-5"
+              class="w-5 h-5 transition-transform duration-300"
+              [ngClass]="
+                group.expanded ? 'rotate-180 text-white' : 'text-gray-400'
+              "
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="2.5"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                d="M19 9l-7 7-7-7"
               />
             </svg>
           </div>
-          <div class="text-left">
-            <span
-              class="text-base font-extrabold transition-colors"
-              [ngClass]="group.expanded ? 'text-white' : 'text-gray-900'"
-            >
-              {{ asterisk(group.prov) }}
-            </span>
-            <p
-              class="text-xs transition-colors"
-              [ngClass]="group.expanded ? 'text-white/80' : 'text-gray-500'"
-            >
-              {{ group.region }}
-            </p>
-          </div>
-        </div>
+        </button>
 
-        <!-- Right: Badge & Chevron -->
-        <div class="flex items-center gap-4">
-          <span
-            class="px-4 py-1 text-xs font-bold rounded-full transition-colors"
-            [ngClass]="
-              group.expanded
-                ? 'bg-white/20 text-white'
-                : 'bg-primary text-white'
-            "
-          >
-            {{ group.total_barangays_affected }} barangays
-          </span>
-          <svg
-            class="w-5 h-5 transition-transform duration-300"
-            [ngClass]="
-              group.expanded ? 'rotate-180 text-white' : 'text-gray-400'
-            "
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
-      </button>
-
-      <!-- Accordion Expanded Body -->
-      <div
-        class="
-          grid
-          transition-[grid-template-rows,opacity]
-          duration-300
-          ease-in-out
-        "
-        [ngClass]="
-          group.expanded
-            ? 'grid-rows-[1fr] opacity-100'
-            : 'grid-rows-[0fr] opacity-0'
-        "
-      >
-        <div class="overflow-hidden">
-          <div class="p-5 flex flex-col gap-4 bg-[#E2ECFF]">
-            <!-- Summary Cards -->
-            <div class="flex items-center justify-start gap-3 text-sm">
-              <!-- Municipalities Card -->
-              <div
-                class="
-                  bg-white
-                  border border-blue-100
-                  rounded-lg
-                  px-4
-                  py-2.5
-                  flex
-                  items-center
-                  gap-2
-                  shadow-sm
-                  w-fit
-                "
-              >
-                <svg
-                  class="w-4 h-4 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2.5"
+        <!-- Accordion Expanded Body -->
+        <div
+          class="
+            grid
+            transition-[grid-template-rows,opacity]
+            duration-300
+            ease-in-out
+          "
+          [ngClass]="
+            group.expanded
+              ? 'grid-rows-[1fr] opacity-100'
+              : 'grid-rows-[0fr] opacity-0'
+          "
+        >
+          <div class="overflow-hidden">
+            <div class="p-5 flex flex-col gap-4 bg-[#E2ECFF]">
+              <!-- Summary Cards -->
+              <div class="flex items-center justify-start gap-3 text-sm">
+                <!-- Municipalities Card -->
+                <div
+                  class="
+                    bg-white
+                    border border-blue-100
+                    rounded-lg
+                    px-4
+                    py-2.5
+                    flex
+                    items-center
+                    gap-2
+                    shadow-sm
+                    w-fit
+                  "
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
-                <span class="text-gray-500"
-                  ><b class="text-gray-900"
-                    >{{ group.total_municipalities_affected }} municipalities</b
+                  <svg
+                    class="w-4 h-4 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2.5"
                   >
-                  affected</span
-                >
-              </div>
-
-              <!-- Barangays Card -->
-              <div
-                class="
-                  bg-white
-                  border border-blue-100
-                  rounded-lg
-                  px-4
-                  py-2.5
-                  flex
-                  items-center
-                  gap-2
-                  shadow-sm
-                  w-fit
-                "
-              >
-                <svg
-                  class="w-4 h-4 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                  />
-                </svg>
-                <span class="text-gray-500"
-                  ><b class="text-gray-900"
-                    >{{ group.total_barangays_affected }} barangays</b
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                  <span class="text-gray-500"
+                    ><b class="text-gray-900"
+                      >{{
+                        group.total_municipalities_affected
+                      }}
+                      municipalities</b
+                    >
+                    affected</span
                   >
-                  affected</span
-                >
-              </div>
-            </div>
-
-            <!-- Section Title -->
-            <div class="flex items-center gap-2 mt-2">
-              <svg
-                class="w-4 h-4 text-primary"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <span
-                class="text-xs font-bold text-primary tracking-widest uppercase"
-                >Most Exposed Barangay</span
-              >
-            </div>
-
-            <!-- Inner Barangay Card List -->
-            <div class="flex flex-col gap-3">
-              <div
-                *ngFor="let brgy of group.barangays"
-                class="
-                  bg-white
-                  border border-blue-100
-                  rounded-lg
-                  px-6
-                  py-4
-                  flex
-                  items-center
-                  justify-between
-                  shadow-sm
-                "
-              >
-                <!-- Barangay Name / Muni -->
-                <div class="w-1/3">
-                  <div class="text-lg font-bold text-gray-900">
-                    {{ brgy.brgy }}
-                  </div>
-                  <div class="text-sm text-gray-500 font-medium">
-                    {{ brgy.muni }}
-                  </div>
                 </div>
 
-                <!-- Stats Container -->
-                <div class="flex-1 flex items-center justify-end gap-6">
-                  <!-- Population -->
-                  <div class="text-right border-r border-gray-200 pr-6">
-                    <div class="text-lg font-bold text-gray-900">
-                      {{ brgy.total_pop | number: '1.0-0' }}
-                    </div>
-                    <div class="text-sm text-gray-500 font-medium">
-                      Population
-                    </div>
-                  </div>
-
-                  <!-- Exposed (Med-High) -->
-                  <div class="text-right border-r border-gray-200 pr-6">
-                    <div class="text-lg font-bold text-gray-900">
-                      {{ brgy.exposed_medhigh | number: '1.0-0' }}
-                    </div>
-                    <div class="text-sm text-gray-500 font-medium">
-                      Exposed to Med-High
-                    </div>
-                  </div>
-
-                  <!-- Circular Progress Gauge -->
-                  <div
-                    class="flex items-center justify-center relative w-16 h-16"
+                <!-- Barangays Card -->
+                <div
+                  class="
+                    bg-white
+                    border border-blue-100
+                    rounded-lg
+                    px-4
+                    py-2.5
+                    flex
+                    items-center
+                    gap-2
+                    shadow-sm
+                    w-fit
+                  "
+                >
+                  <svg
+                    class="w-4 h-4 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2.5"
                   >
-                    <svg
-                      class="w-full h-full transform -rotate-90"
-                      viewBox="0 0 36 36"
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                    />
+                  </svg>
+                  <span class="text-gray-500"
+                    ><b class="text-gray-900"
+                      >{{ group.total_barangays_affected }} barangays</b
                     >
-                      <path
-                        class="text-gray-200"
-                        stroke-width="3.5"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
+                    affected</span
+                  >
+                </div>
+              </div>
+
+              <!-- Section Title -->
+              <div class="flex items-center gap-2 mt-2">
+                <svg
+                  class="w-4 h-4 text-primary"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span
+                  class="
+                    text-xs
+                    font-bold
+                    text-primary
+                    tracking-widest
+                    uppercase
+                  "
+                  >Most Exposed Barangay</span
+                >
+              </div>
+
+              <!-- Inner Barangay Card List -->
+              <div class="flex flex-col gap-3">
+                <div
+                  *ngFor="let brgy of group.barangays"
+                  class="
+                    bg-white
+                    border border-blue-100
+                    rounded-lg
+                    px-6
+                    py-4
+                    flex
+                    items-center
+                    justify-between
+                    shadow-sm
+                  "
+                >
+                  <!-- Barangay Name / Muni -->
+                  <div class="w-1/3">
+                    <div class="text-lg font-bold text-gray-900">
+                      {{ brgy.brgy }}
+                    </div>
+                    <div class="text-sm text-gray-500 font-medium">
+                      {{ brgy.muni }}
+                    </div>
+                  </div>
+
+                  <!-- Stats Container -->
+                  <div class="flex-1 flex items-center justify-end gap-6">
+                    <div class="text-right border-r border-gray-200 pr-6">
+                      <div class="text-lg font-bold text-gray-900">
+                        {{ brgy.total_pop | number: '1.0-0' }}
+                      </div>
+                      <div class="text-sm text-gray-500 font-medium">
+                        Population
+                      </div>
+                    </div>
+                    <div class="text-right border-r border-gray-200 pr-6">
+                      <div class="text-lg font-bold text-gray-900">
+                        {{ brgy.exposed_medhigh | number: '1.0-0' }}
+                      </div>
+                      <div class="text-sm text-gray-500 font-medium">
+                        Exposed to Med-High
+                      </div>
+                    </div>
+                    <!-- Circular Progress Gauge -->
+                    <div
+                      class="
+                        flex
+                        items-center
+                        justify-center
+                        relative
+                        w-16
+                        h-16
+                      "
+                    >
+                      <svg
+                        class="w-full h-full transform -rotate-90"
+                        viewBox="0 0 36 36"
+                      >
+                        <path
+                          class="text-gray-200"
+                          stroke-width="3.5"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          [ngClass]="{
+                            'text-[#FF383C]': brgy.perc_aff_medhigh >= redLevel,
+                            'text-[#FFA528]':
+                              brgy.perc_aff_medhigh >= orangeLevel &&
+                              brgy.perc_aff_medhigh < redLevel,
+                            'text-[#34C759]':
+                              brgy.perc_aff_medhigh < orangeLevel
+                          }"
+                          stroke-width="3.5"
+                          [attr.stroke-dasharray]="
+                            brgy.perc_aff_medhigh + ', 100'
+                          "
+                          stroke-linecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                      <div
+                        class="
+                          absolute
+                          inset-0
+                          flex
+                          items-center
+                          justify-center
+                          text-xs
+                          font-bold
+                          text-gray-900
+                        "
                         [ngClass]="{
                           'text-[#FF383C]': brgy.perc_aff_medhigh >= redLevel,
                           'text-[#FFA528]':
@@ -532,36 +576,9 @@
                             brgy.perc_aff_medhigh < redLevel,
                           'text-[#34C759]': brgy.perc_aff_medhigh < orangeLevel
                         }"
-                        stroke-width="3.5"
-                        [attr.stroke-dasharray]="
-                          brgy.perc_aff_medhigh + ', 100'
-                        "
-                        stroke-linecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div
-                      class="
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                        text-xs
-                        font-bold
-                        text-gray-900
-                      "
-                      [ngClass]="{
-                        'text-[#FF383C]': brgy.perc_aff_medhigh >= redLevel,
-                        'text-[#FFA528]':
-                          brgy.perc_aff_medhigh >= orangeLevel &&
-                          brgy.perc_aff_medhigh < redLevel,
-                        'text-[#34C759]': brgy.perc_aff_medhigh < orangeLevel
-                      }"
-                    >
-                      {{ brgy.perc_aff_medhigh | number: '1.0-0' }}%
+                      >
+                        {{ brgy.perc_aff_medhigh | number: '1.0-0' }}%
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -624,9 +641,75 @@
     </div>
   </div>
 
+  <!-- Mobile Empty State: No Result -->
+  <div
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      bg-gray-200
+      rounded-xl
+      mt-3
+      p-6
+      min-h-0
+    "
+    *ngIf="noResult"
+  >
+    <svg
+      class="w-12 h-12 text-gray-500 mb-3"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+      />
+    </svg>
+    <p class="text-base text-center text-gray-500 font-bold leading-snug">
+      No result for "{{ searchValue }}"
+    </p>
+  </div>
+
+  <!-- Mobile Empty State: Error / No Forecast -->
+  <div
+    class="
+      flex-1 flex flex-col
+      items-center
+      justify-center
+      bg-gray-200
+      rounded-xl
+      mt-3
+      p-6
+      min-h-0
+    "
+    *ngIf="errorMsg"
+  >
+    <div
+      class="w-12 h-12 mb-3 text-gray-500 bg-current"
+      [style.mask-image]="'url(assets/icons/happy-sun.svg)'"
+      [style.-webkit-mask-image]="'url(assets/icons/happy-sun.svg)'"
+      style="
+        mask-repeat: no-repeat;
+        mask-position: center;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        -webkit-mask-size: contain;
+      "
+    ></div>
+    <p class="text-base text-center text-gray-500 font-bold leading-snug">
+      No forecast that meets pre-determined thresholds for large floods
+    </p>
+  </div>
+
   <!-- Mobile Accordion List -->
-  <div class="flex-1 overflow-y-auto min-h-0 mt-3" *ngIf="!errorMsg">
-    <!-- The Cards -->
+  <div
+    class="flex-1 overflow-y-auto min-h-0 mt-3"
+    *ngIf="!errorMsg && !noResult"
+  >
     <div class="flex flex-col gap-3 pb-2">
       <div
         *ngFor="let group of filteredProvinceData"
@@ -660,7 +743,6 @@
           [ngClass]="group.expanded ? 'bg-primary' : 'bg-transparent'"
         >
           <div class="flex items-center gap-3">
-            <!-- Icon -->
             <div
               class="
                 w-10
@@ -692,7 +774,6 @@
                 />
               </svg>
             </div>
-            <!-- Text Wrapper -->
             <div class="text-left flex flex-col justify-center leading-tight">
               <div
                 class="text-sm font-extrabold transition-colors"
@@ -708,9 +789,7 @@
               </div>
             </div>
           </div>
-
           <div class="flex items-center gap-2">
-            <!-- Sleeker Pill Badge -->
             <span
               class="
                 px-3
@@ -942,7 +1021,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div class="flex justify-between items-end">
                     <div class="text-left">
                       <div class="text-xs text-gray-400 font-medium">
@@ -968,163 +1046,5 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Mobile No Result / Error State -->
-  <div
-    class="
-      flex-1 flex flex-col
-      items-center
-      justify-center
-      bg-gray-200
-      rounded-xl
-      mt-2
-      p-6
-      min-h-0
-    "
-    *ngIf="errorMsg || noResult"
-  >
-    <svg
-      class="w-12 h-12 text-gray-500 mb-3"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="1.5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-      />
-    </svg>
-    <p class="text-base text-center text-gray-500 font-bold leading-snug">
-      <ng-container *ngIf="noResult; else errorText">
-        No result for "{{ searchValue }}"
-      </ng-container>
-      <ng-template #errorText>
-        No forecast that meets pre-determined thresholds for large floods
-      </ng-template>
-    </p>
-  </div>
-
-  <!-- Mobile Pagination -->
-  <div
-    class="
-      flex
-      items-center
-      justify-center
-      gap-1
-      flex-shrink-0
-      w-full
-      pt-3
-      mt-2
-      border-t border-gray-200
-      px-4
-    "
-    *ngIf="!errorMsg"
-  >
-    <button
-      class="
-        p-2
-        rounded
-        text-gray-500
-        hover:text-primary hover:bg-blue-50
-        disabled:opacity-40
-      "
-      (click)="loadData(1)"
-      [disabled]="currentPage === 1"
-    >
-      <svg
-        class="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M11 19l-7-7 7-7M18 19l-7-7 7-7"
-        />
-      </svg>
-    </button>
-    <button
-      class="
-        p-2
-        rounded
-        text-gray-500
-        hover:text-primary hover:bg-blue-50
-        disabled:opacity-40
-      "
-      (click)="loadData(currentPage - 1)"
-      [disabled]="currentPage === 1"
-    >
-      <svg
-        class="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15 19l-7-7 7-7"
-        />
-      </svg>
-    </button>
-
-    <span class="text-xs font-bold text-gray-600 whitespace-nowrap px-2">
-      {{ (currentPage - 1) * itemsPerPage + 1 | number: '1.0-0' }} -
-      {{ currentPageEnd | number: '1.0-0' }} of
-      {{ totalDataCount | number: '1.0-0' }}
-    </span>
-
-    <button
-      class="
-        p-2
-        rounded
-        text-gray-500
-        hover:text-primary hover:bg-blue-50
-        disabled:opacity-40
-      "
-      (click)="loadData(currentPage + 1)"
-      [disabled]="currentPage * itemsPerPage >= totalDataCount"
-    >
-      <svg
-        class="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
-    </button>
-    <button
-      class="
-        p-2
-        rounded
-        text-gray-500
-        hover:text-primary hover:bg-blue-50
-        disabled:opacity-40
-      "
-      (click)="loadData(lastPage)"
-      [disabled]="currentPage * itemsPerPage >= totalDataCount"
-    >
-      <svg
-        class="w-4 h-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M13 5l7 7-7 7M6 5l7 7-7 7"
-        />
-      </svg>
-    </button>
   </div>
 </div>
