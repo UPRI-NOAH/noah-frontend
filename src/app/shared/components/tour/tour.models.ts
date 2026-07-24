@@ -38,6 +38,7 @@ export interface TourStep {
   /** Elements that are explicitly dimmed and blocked. */
   dimTargets?: string[];
   advanceOnEvent?: string;
+  previousEvent?: string;
   nextEvent?: string;
   interactionInsets?: Partial<
     Record<'top' | 'right' | 'bottom' | 'left', number>

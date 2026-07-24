@@ -124,6 +124,11 @@ export class SearchComponent implements OnInit {
     }
   }
 
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    this.isDropdownOpen = false;
+  }
+
   // TO DO: add type for place
   keydownAction(
     e: KeyboardEvent,

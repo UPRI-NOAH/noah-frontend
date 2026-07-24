@@ -175,6 +175,11 @@ export class TourComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
+    const previousEvent = this.currentFlatStep?.step.previousEvent;
+    if (previousEvent) {
+      this.document.defaultView?.dispatchEvent(new Event(previousEvent));
+    }
+
     this.currentStepIndex -= 1;
     this.renderCurrentStep();
   }

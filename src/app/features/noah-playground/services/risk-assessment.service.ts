@@ -32,7 +32,8 @@ export class RiskAssessmentService {
   private API_BASE_URL = 'https://panahon.up.edu.ph';
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
-  private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`; //?search=quezon+city+m
+  private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
+  // private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?page=1`;
   private S3_BASE_URL = 'https://webgis-static.up.edu.ph/api';
 
   private currentSearchTerm: string | null = null;
@@ -43,7 +44,6 @@ export class RiskAssessmentService {
     sortField?: string,
     sortDirection?: string
   ): Observable<any> {
-    
     if (searchTerm !== undefined) {
       this.currentSearchTerm = searchTerm;
     }
@@ -59,7 +59,8 @@ export class RiskAssessmentService {
     }
 
     if (sortField) {
-      const ordering = sortDirection === 'ascending' ? sortField : `-${sortField}`;
+      const ordering =
+        sortDirection === 'ascending' ? sortField : `-${sortField}`;
       url += `&ordering=${ordering}`;
     }
 
@@ -74,14 +75,17 @@ export class RiskAssessmentService {
   async getAffectedProvinces(): Promise<ProvinceGroup[]> {
     let rawDataset: AffectedData[] = [];
 
-    const chunkSize = 10000; 
+    const chunkSize = 10000;
     let currentOffset = 0;
     let hasMoreData = true;
 
     while (hasMoreData) {
       const chunkUrl = `${this.defaultUrl}&limit=${chunkSize}&offset=${currentOffset}`;
-      const response: any = await this.http.get(chunkUrl).pipe(first()).toPromise();
-      
+      const response: any = await this.http
+        .get(chunkUrl)
+        .pipe(first())
+        .toPromise();
+
       const fetchedRecords = response.results ? response.results : response;
 
       if (fetchedRecords && fetchedRecords.length > 0) {
@@ -132,8 +136,13 @@ export class RiskAssessmentService {
         }
       });
 
-      const topBarangays = brgys.filter((b) => b.perc_aff_medhigh === maxExposure);
-      const regionName = brgys.length > 0 && brgys[0].region ? brgys[0].region : 'Region Data Unavailable';
+      const topBarangays = brgys.filter(
+        (b) => b.perc_aff_medhigh === maxExposure
+      );
+      const regionName =
+        brgys.length > 0 && brgys[0].region
+          ? brgys[0].region
+          : 'Region Data Unavailable';
 
       groupedData.push({
         prov: provName,

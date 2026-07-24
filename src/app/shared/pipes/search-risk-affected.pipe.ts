@@ -20,6 +20,9 @@ export class SearchRiskAffectedPipe implements PipeTransform {
         data.prov
           .toLocaleLowerCase()
           .includes(searchValue.toLocaleLowerCase()) ||
+        data.region
+          .toLocaleLowerCase()
+          .includes(searchValue.toLocaleLowerCase()) ||
         data.total_pop
           .toLocaleString()
           .replace(/,/g, '')

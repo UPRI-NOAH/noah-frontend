@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 @Component({
   selector: 'noah-know-your-hazards',
@@ -10,7 +11,11 @@ export class KnowYourHazardsComponent implements OnInit {
   sideBarMobile: boolean = true;
   desktopView: boolean = false;
   btnShowSideBar: boolean = false;
-  constructor(private kyhService: KyhService, private title: Title) {}
+  constructor(
+    private kyhService: KyhService,
+    private title: Title,
+    private router: Router
+  ) {}
 
   kyhLegend: boolean = true;
   btnLegend: boolean = false;
@@ -28,6 +33,41 @@ export class KnowYourHazardsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.updateSideBarState();
+  }
+
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    void this.router.navigateByUrl('/know-your-hazards').then(() => {
+      document
+        .querySelectorAll<HTMLElement>('[data-tour-id="kyh-sidebar-scroll"]')
+        .forEach((sidebar) => sidebar.scrollTo({ top: 0 }));
+    });
+    this.kyhService.setCurrentView('all');
+
+    this.sideBarMobile = true;
+    this.btnShowSideBar = false;
+    this.kyhLegend = true;
+    this.btnLegend = false;
+    this.legendHideSide = false;
+    this.btnHideSide = false;
+    this.minimizeLegendSide = false;
+    this.updateSideBarState();
+  }
+
+  @HostListener('window:know-your-hazards-overview-reset')
+  showHazardsOverviewForTour(): void {
+    void this.router.navigateByUrl('/know-your-hazards');
+    this.kyhService.setCurrentView('all');
+  }
+
+  @HostListener('window:know-your-hazards-critical-facilities-show')
+  showCriticalFacilitiesForTour(): void {
+    this.kyhService.setCurrentView('all');
+    void this.router.navigateByUrl('/know-your-hazards').then(() => {
+      window.dispatchEvent(
+        new Event('know-your-hazards-critical-facilities-ready')
+      );
+    });
   }
 
   hideSideBar() {

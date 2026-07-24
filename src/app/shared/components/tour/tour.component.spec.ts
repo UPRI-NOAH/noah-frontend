@@ -188,6 +188,27 @@ describe('TourComponent', () => {
     delete firstStep.nextEvent;
   }));
 
+<<<<<<< HEAD
+=======
+  it('emits the configured event when Back is clicked', fakeAsync(() => {
+    const secondStep = definition.sections[0].steps[1];
+    secondStep.previousEvent = 'test-tour-previous';
+    const dispatchEventSpy = spyOn(window, 'dispatchEvent').and.callThrough();
+
+    component.startTour();
+    tick(16);
+    component.showNextStep();
+    tick(16);
+    component.showPreviousStep();
+
+    expect(dispatchEventSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({ type: 'test-tour-previous' })
+    );
+
+    delete secondStep.previousEvent;
+  }));
+
+>>>>>>> d4a3b06bb67ee4ed511150d6a151d298749c6e81
   it('does not emit the manual Next event when auto-advancing', fakeAsync(() => {
     const firstStep = definition.sections[0].steps[0];
     firstStep.nextEvent = 'test-tour-next';

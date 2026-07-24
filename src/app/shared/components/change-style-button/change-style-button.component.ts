@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MapStyle } from '@features/know-your-hazards/store/kyh.store';
 
 @Component({
@@ -15,6 +22,11 @@ export class ChangeStyleButtonComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    this.isOpenMenu = false;
+  }
 
   changeStyle(style: MapStyle) {
     this.selectedStyleChange.emit(style);
