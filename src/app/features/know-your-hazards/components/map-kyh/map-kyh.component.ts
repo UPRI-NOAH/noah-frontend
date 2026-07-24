@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
@@ -18,6 +18,7 @@ import { getHazardColor } from '@shared/mocks/flood';
 import { HazardLevel } from '@features/noah-playground/store/noah-playground.store';
 import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
+import { KNOW_YOUR_HAZARDS_TOUR } from '@features/know-your-hazards/tour/know-your-hazards-tour.config';
 
 @Component({
   selector: 'noah-map-kyh',
@@ -25,6 +26,8 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
   styleUrls: ['./map-kyh.component.scss'],
 })
 export class MapKyhComponent implements OnInit {
+  readonly tourDefinition = KNOW_YOUR_HAZARDS_TOUR;
+
   map!: Map;
   geolocateControl!: GeolocateControl;
   //centerMarker!: Marker;
@@ -70,6 +73,36 @@ export class MapKyhComponent implements OnInit {
     this._unsub.complete();
   }
 
+  @HostListener('window:know-your-hazards-reset')
+  resetForKnowYourHazardsTour(): void {
+    const pinPosition =
+      this.centerMarker?.getLngLat() || this.kyhService.currentCoords;
+
+    this.kyhLegend = true;
+    this.btnLegend = false;
+
+    const coordinates = document.getElementById('coordinates');
+    if (coordinates) {
+      coordinates.innerHTML = '';
+      coordinates.style.display = 'none';
+    }
+
+    document
+      .querySelectorAll<HTMLElement>('.mapboxgl-popup')
+      .forEach((popup) => popup.remove());
+
+    if (this.mapStyle !== 'terrain') {
+      this.switchMapStyle('terrain');
+    }
+
+    this.map.jumpTo({
+      center: pinPosition,
+      zoom: 13,
+      pitch: 50,
+      bearing: 30,
+    });
+  }
+
   selectPlace(selectedPlace) {
     this.kyhService.setCurrentLocation(
       selectedPlace.text ||
@@ -89,6 +122,7 @@ export class MapKyhComponent implements OnInit {
     const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
   }
 
   initAttribution() {
@@ -134,6 +168,43 @@ export class MapKyhComponent implements OnInit {
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
+    this.markTopRightMapControlsForTour();
+
+    const mapContainer = this.map.getContainer();
+    if (!mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+      const observer = new MutationObserver(() => {
+        if (mapContainer.querySelector('.mapboxgl-ctrl-geolocate')) {
+          this.markTopRightMapControlsForTour();
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(mapContainer, { childList: true, subtree: true });
+    }
+  }
+
+  private markTopRightMapControlsForTour(): void {
+    const mapContainer = this.map.getContainer();
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-geolocate')
+      ?.setAttribute('data-tour-id', 'mapbox-geolocate');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-top-right')
+      ?.setAttribute('data-tour-id', 'mapbox-map-controls');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-in')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-in');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-zoom-out')
+      ?.setAttribute('data-tour-id', 'mapbox-zoom-out');
+
+    mapContainer
+      .querySelector<HTMLElement>('.mapboxgl-ctrl-compass')
+      ?.setAttribute('data-tour-id', 'mapbox-compass');
   }
 
   initGeolocationListener() {
@@ -394,10 +465,10 @@ export class MapKyhComponent implements OnInit {
     // Create a custom container for the scale control
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
+    container.setAttribute('data-tour-id', 'map-scale-control');
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
+    container.style.top = '0';
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -429,13 +500,20 @@ export class MapKyhComponent implements OnInit {
       }
     }
     const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '287px';
-      } else {
-        container.style.top = '242px';
+      const helpButton = document.querySelector(
+        '[data-tour-trigger="know-your-hazards"]'
+      ) as HTMLButtonElement | null;
+
+      if (helpButton) {
+        const mapRect = this.map.getContainer().getBoundingClientRect();
+        const helpButtonRect = helpButton.getBoundingClientRect();
+        container.style.top = `${helpButtonRect.bottom - mapRect.top + 8}px`;
       }
     };
     applyPosition();
+    fromEvent(window, 'resize')
+      .pipe(takeUntil(this._unsub))
+      .subscribe(applyPosition);
   }
 
   openLegend() {

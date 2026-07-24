@@ -1,0 +1,234 @@
+import { TourDefinition } from '@shared/components/tour/tour.models';
+
+const MOBILE_SIDEBAR_TARGET = '#sidebar';
+
+export const KNOW_YOUR_HAZARDS_TOUR: TourDefinition = {
+  id: 'know-your-hazards',
+  title: 'Know Your Hazards',
+  startEvent: 'know-your-hazards-reset',
+  welcome: {
+    title: 'Welcome to',
+    accentTitle: 'Know\u00a0Your\u00a0Hazards',
+    text: 'Discover the potential hazards in your area and find critical facilities nearby.',
+    prompt:
+      'Take a quick tour to get started, or explore on your own. If you skip the tour, you can return to it anytime using the Help button on the Map.',
+    brandLabel: 'KNOW YOUR HAZARDS',
+    logoUrl: 'assets/icons/logo-noah.svg',
+    logoAlt: 'Project NOAH',
+    imageUrl: 'assets/images/tour/kyh-welcome-image.svg',
+    imageAlt: 'Know Your Hazards map preview',
+  },
+  sections: [
+    {
+      id: 'welcome',
+      label: 'Welcome',
+      steps: [
+        {
+          id: 'welcome',
+          title: 'Welcome!',
+          text: 'This tour will show you how to explore the hazards in your area, navigate the map, and find critical facilities nearby.',
+          placement: 'center',
+        },
+      ],
+    },
+    {
+      id: 'map-navigation',
+      label: 'Map Navigation',
+      steps: [
+        {
+          id: 'pan-around-map',
+          title: 'Pan Around the Map',
+          text: 'Left-click and drag anywhere on the map to move around and explore different locations.\n\n**For mobile:** Touch and drag anywhere on the map with one finger.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
+          placement: 'bottom-right',
+        },
+        {
+          id: 'rotate-and-tilt-view',
+          title: 'Rotate and Tilt View',
+          text: 'Right-click and drag on the map to rotate your view or tilt the map for a different perspective.\n\n**For mobile:** Use two fingers to rotate the map. Drag two fingers up or down together to tilt the view.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
+          placement: 'bottom-right',
+        },
+        {
+          id: 'search-bar',
+          title: 'Search Bar',
+          text: 'Use the Search Location bar to jump to any city, municipality, or barangay in the Philippines. Just type a name, choose from the searched locations, and the map will travel there instantly.',
+          target: '[data-tour-id="location-search"]',
+          spotlightTargets: ['[data-tour-id="location-search-options"]'],
+          advanceOnEvent: 'noah-tour-location-selected',
+          placement: 'left',
+        },
+        {
+          id: 'explore-location',
+          title: 'Explore a Location',
+          text: 'After searching for a location, move the pin to any point on the map to view available hazard, weather, and disaster risk data for that place.',
+          target: '[data-tour-id="map-canvas"]',
+          dimTargets: ['#sidebar'],
+          placement: 'bottom-right',
+        },
+      ],
+    },
+    {
+      id: 'map-controls',
+      label: 'Map Controls',
+      steps: [
+        {
+          id: 'map-controls-1',
+          title: 'Map Controls',
+          text: 'Use these map controls to adjust how you view and interact with the map. These tools let you change map views, access the tour, and use extra map information.',
+          target: '[data-tour-id="mapbox-map-controls"]',
+          spotlightTargets: ['[data-tour-id="map-view"]'],
+          interactionTargets: ['[data-tour-id="map-canvas"]'],
+          dimTargets: ['#sidebar'],
+          placement: 'left',
+        },
+        {
+          id: 'map-controls-2',
+          title: 'Zoom Controls',
+          text: 'Use the plus and minus buttons to zoom in for more detail or zoom out for a wider view.',
+          target: '[data-tour-id="mapbox-zoom-in"]',
+          spotlightTargets: [
+            '[data-tour-id="mapbox-zoom-out"]',
+            '[data-tour-id="map-canvas"]',
+          ],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
+          dimTargets: [
+            '#sidebar',
+            '[data-tour-id="mapbox-geolocate"]',
+            '[data-tour-id="mapbox-compass"]',
+            '[data-tour-id="map-view"]',
+            '[data-tour-id="map-scale-control"]',
+            '[data-tour-id="tour-help-info"]',
+          ],
+          placement: 'left',
+        },
+        {
+          id: 'map-controls-3',
+          title: 'Reset Map Direction',
+          text: 'If the map has been rotated or tilted, you can use this control to return the view to its default direction.',
+          target: '[data-tour-id="mapbox-compass"]',
+          spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
+          dimTargets: [
+            '#sidebar',
+            '[data-tour-id="mapbox-geolocate"]',
+            '[data-tour-id="mapbox-zoom-in"]',
+            '[data-tour-id="mapbox-zoom-out"]',
+            '[data-tour-id="map-view"]',
+            '[data-tour-id="map-scale-control"]',
+            '[data-tour-id="tour-help-info"]',
+          ],
+          placement: 'left',
+        },
+        {
+          id: 'map-controls-4',
+          title: 'Current Location',
+          text: 'This map control button moves the map to your current location, making it easier to check nearby hazards, weather data, and disaster risk information.',
+          target: '[data-tour-id="mapbox-geolocate"]',
+          spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
+          dimTargets: [
+            '#sidebar',
+            '[data-tour-id="mapbox-zoom-in"]',
+            '[data-tour-id="mapbox-zoom-out"]',
+            '[data-tour-id="mapbox-compass"]',
+            '[data-tour-id="map-view"]',
+            '[data-tour-id="map-scale-control"]',
+            '[data-tour-id="tour-help-info"]',
+          ],
+          placement: 'left',
+        },
+        {
+          id: 'map-controls-5',
+          title: 'Change Map View',
+          text: 'Switch between different map views to better understand the area you are looking at. The current map views available are satellite and terrain view.',
+          target: '[data-tour-id="map-view"]',
+          spotlightTargets: ['[data-tour-id="map-canvas"]'],
+          panelAvoidTargets: ['[data-tour-id="map-view-options"]'],
+          mobilePanelTarget: MOBILE_SIDEBAR_TARGET,
+          dimTargets: [
+            '#sidebar',
+            '[data-tour-id="mapbox-geolocate"]',
+            '[data-tour-id="mapbox-zoom-in"]',
+            '[data-tour-id="mapbox-zoom-out"]',
+            '[data-tour-id="mapbox-compass"]',
+            '[data-tour-id="map-scale-control"]',
+            '[data-tour-id="tour-help-info"]',
+          ],
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'hazards-panel',
+      label: 'Hazards Panel',
+      steps: [
+        {
+          id: 'hazards-panel',
+          title: 'Hazards Panel',
+          text: "Once you've set a location, this panel summarizes your risk for Flood, Landslide, and Storm Surge — each rated from Little to None up to High. Click any tab above to see the full assessment for that hazard.",
+          target:
+            '[data-tour-id="hazards-panel"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'flood-hazard-level',
+          title: 'Flood Hazard Level',
+          text: 'Flooding is the overflow of water from another body of water due to heavy rainfall. Click the flood hazard level button to know **what to do during flood** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-flood"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'landslide-hazard-level',
+          title: 'Landslide Hazard Level',
+          text: 'A landslide is a movement of earth, rock, or debris due to gravity. Click the landslide hazard level button to know **how to prepare for landslides, surviving a landslide, after a landslide** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-landslide"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-overview-reset',
+          placement: 'left',
+        },
+        {
+          id: 'storm-surge-hazard-level',
+          title: 'Surge Hazard Level',
+          text: 'A storm surge is the abnormal rise of sea level resulting from tropical cyclone (storms). Click the storm surge hazard level button to know **how to prepare for storm surges,** and the **survival kit** needed to be prepared.',
+          target:
+            '[data-tour-id="hazard-tab-storm-surge"], [data-tour-id="hazard-detail"]',
+          nextEvent: 'know-your-hazards-critical-facilities-show',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'critical-facilities',
+      label: 'Critical Facilities',
+      steps: [
+        {
+          id: 'critical-facilities',
+          title: 'Critical Facilities',
+          text: "Scroll down and you'll find nearby critical facilities, like schools and health centers, so you know exactly where to go for help in your area. Tap on a critical facility to navigate to them in the map.",
+          target: '[data-tour-id="critical-facilities-heading"]',
+          spotlightTargets: ['[data-tour-id="critical-facilities-panel"]'],
+          previousEvent: 'know-your-hazards-overview-reset', // for kyh mobile only
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'end',
+      label: 'End',
+      steps: [
+        {
+          id: 'end',
+          title: 'You’re ready to Explore',
+          text: 'You’ve completed the Know Your Hazards tutorial. You can now search for locations, view hazard levels, explore map overlays, and understand the disaster risk information shown for your selected area. Use the search bar, hazard cards, and map anytime to check possible risks across the Philippines.',
+          placement: 'center',
+        },
+      ],
+    },
+  ],
+};
