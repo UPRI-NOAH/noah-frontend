@@ -72,7 +72,10 @@
 <!-- Mobile Legend for rainfall contour (1hr-24hr) -->
 <div
   class="legend-expand md:hidden"
-  [ngClass]="{ 'legend-open': !isTemperatureActive }"
+  [ngClass]="{
+    'legend-open':
+      !isTemperatureActive && activeRainfallContourType !== 'forecast'
+  }"
 >
   <div>
     <div class="w-full flex justify-center px-6 md:px-0">
@@ -84,7 +87,7 @@
 <!-- Separate Forecast Button -->
 <ng-container>
   <section class="px-5 md:px-0 md:hidden mb-1">
-    <p class="mt-5 text-base tracking-wide">
+    <p class="mt-2 text-base tracking-wide">
       <span class="font-bold">Forecasted Rainfall in Your Area</span>
     </p>
     <p class="italic text-xs tracking-wide mb-2">
@@ -170,7 +173,7 @@
 
 <!-- Temperature section for forecast (MOBILE) -->
 <ng-container>
-  <section class="px-5 md:px-0 md:hidden block">
+  <section class="px-5 md:px-0 md:hidden block pb-2">
     <p class="mt-5 text-lg tracking-wide">
       <span class="font-bold">Temperature</span>
     </p>
