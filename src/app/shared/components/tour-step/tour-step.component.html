@@ -1,0 +1,55 @@
+<article
+  class="tour-step"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="tour-step-title"
+  aria-describedby="tour-step-text"
+>
+  <div class="tour-step__body">
+    <h2 #heading id="tour-step-title" class="tour-step__title" tabindex="-1">
+      {{ step?.title }}
+    </h2>
+    <div id="tour-step-text" class="tour-step__text">
+      <p *ngFor="let paragraph of textParagraphs" class="tour-step__paragraph">
+        <ng-container *ngFor="let segment of paragraph">
+          <strong *ngIf="segment.bold; else plainText">{{
+            segment.text
+          }}</strong>
+          <ng-template #plainText>{{ segment.text }}</ng-template>
+        </ng-container>
+      </p>
+    </div>
+    <p class="tour-step__progress">
+      {{ currentStepNumber }} of {{ totalSteps }}
+    </p>
+  </div>
+
+  <footer class="tour-step__footer">
+    <button
+      type="button"
+      class="tour-step__button tour-step__close"
+      (click)="close.emit()"
+    >
+      Close Tour
+    </button>
+
+    <div class="tour-step__navigation">
+      <button
+        type="button"
+        class="tour-step__button"
+        [disabled]="!hasPrevious"
+        (click)="previous.emit()"
+      >
+        Back
+      </button>
+
+      <button
+        type="button"
+        class="tour-step__button"
+        (click)="hasNext ? next.emit() : close.emit()"
+      >
+        {{ hasNext ? 'Next' : 'Finish' }}
+      </button>
+    </div>
+  </footer>
+</article>

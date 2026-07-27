@@ -145,7 +145,7 @@ export class WeatherUpdatesService {
     );
   }
 
-  get center$(): Observable<{ lng: number; lat: number }> {
+  get center$(): Observable<{ lng: number; lat: number } | null> {
     return this.store.state$.pipe(
       map((state) => state.center),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
@@ -168,6 +168,13 @@ export class WeatherUpdatesService {
 
   setCurrentCoords(currentCoords: { lat: number; lng: number }) {
     this.store.patch({ currentCoords }, 'Update Current Coords');
+  }
+
+  resetTourLocation(): void {
+    this.store.patch(
+      { center: null, currentLocation: '' },
+      'Reset Weather Updates tour location'
+    );
   }
 
   setRainfallContourOpacity(

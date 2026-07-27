@@ -1,4 +1,10 @@
-import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
 import { Observable } from 'rxjs';
@@ -56,6 +62,7 @@ export class BaseComponent implements OnInit {
     const [lng, lat] = coords;
     this.wuService.setCenter({ lat, lng });
     this.wuService.setCurrentCoords({ lat, lng });
+    window.dispatchEvent(new Event('noah-tour-location-selected'));
   }
 
   ngAfterViewInit() {
@@ -179,6 +186,51 @@ export class BaseComponent implements OnInit {
       this.wuService.activateRainfall();
       this.router.navigateByUrl('/weather-updates/rainfall-contour');
     }
+  }
+
+  @HostListener('window:weather-updates-rainfall-panel-reset')
+  showRainfallPanelForTour(): void {
+    this.wuService.setTyphoonTrackVisibility(false);
+    this.wuService.setWeatherSatelliteVisibility(false);
+    this.wuService.selectRainfallContourType('1hr');
+    this.swiper?.swiperRef.slideTo(0);
+    void this.router.navigateByUrl('/weather-updates/rainfall-contour');
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelectorAll<HTMLElement>(
+          '[data-tour-id="weather-sidebar-scroll"]'
+        )
+        .forEach((sidebar) => sidebar.scrollTo({ top: 0 }));
+    });
+  }
+
+  @HostListener('window:weather-updates-temperature-panel-reset')
+  showTemperaturePanelForTour(): void {
+    this.wuService.setTyphoonTrackVisibility(false);
+    this.wuService.setWeatherSatelliteVisibility(false);
+    this.wuService.selectTemperatureType('heat_index');
+    this.wuService.selectTemperatureForecastDay(1);
+    this.swiper?.swiperRef.slideTo(0);
+    void this.router.navigateByUrl('/weather-updates/temperature');
+  }
+
+  @HostListener('window:weather-updates-typhoon-track-panel-reset')
+  showTyphoonTrackPanelForTour(): void {
+    const swiperRef = this.swiper?.swiperRef;
+
+    if (swiperRef && swiperRef.activeIndex !== 1) {
+      this.suppressRouteOnNextSlideChange = true;
+      swiperRef.slideTo(1, 0);
+    }
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelectorAll<HTMLElement>(
+          '[data-tour-id="weather-sidebar-scroll"]'
+        )
+        .forEach((sidebar) => sidebar.scrollTo({ top: sidebar.scrollHeight }));
+    });
   }
 
   goHome(): void {

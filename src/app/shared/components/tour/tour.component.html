@@ -1,0 +1,100 @@
+<button
+  type="button"
+  aria-label="Help"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="phase !== 'closed'"
+  [attr.data-tour-trigger]="definition?.id || null"
+  [disabled]="!definition || flatSteps.length === 0"
+  class="
+    relative
+    flex
+    h-[36px]
+    w-[36px]
+    items-start
+    rounded-[4px]
+    bg-white
+    transition-colors
+    duration-150
+    hover:bg-gray-200
+    px-[5.04px]
+    pb-[4.32px]
+    pt-[4.68px]
+  "
+  (click)="openWelcome()"
+>
+  <img
+    src="assets/icons/info.svg"
+    alt=""
+    aria-hidden="true"
+    class="h-[27px] w-[27px] object-contain"
+  />
+</button>
+
+<ng-template cdkPortal>
+  <ng-container *ngIf="definition && phase !== 'closed'">
+    <div
+      *ngIf="phase === 'welcome'"
+      class="tour-overlay tour-overlay--welcome"
+      aria-hidden="true"
+      (click)="closeTour()"
+    ></div>
+
+    <div class="tour-layer" *ngIf="phase === 'welcome'">
+      <noah-tour-welcome
+        [content]="definition.welcome"
+        [tourTitle]="definition.title"
+        (start)="startTour()"
+        (close)="closeTour()"
+      ></noah-tour-welcome>
+    </div>
+
+    <ng-container *ngIf="phase === 'tour' && currentFlatStep">
+      <div
+        *ngFor="let blockerStyle of interactionBlockerStyles"
+        class="tour-interaction-blocker"
+        [ngStyle]="blockerStyle"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        *ngIf="targetHighlightStyles.length === 0"
+        class="tour-overlay"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        *ngFor="let highlightMaskStyle of highlightMaskStyles"
+        class="tour-highlight-mask"
+        [ngStyle]="highlightMaskStyle"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        *ngFor="let targetDimStyle of targetDimStyles"
+        class="tour-target-dim"
+        [ngStyle]="targetDimStyle"
+        aria-hidden="true"
+      ></div>
+
+      <div #stepPanel class="tour-step-panel" [ngStyle]="stepPanelStyle">
+        <noah-tour-navbar
+          [sections]="definition.sections"
+          [activeSectionId]="activeSectionId"
+          (sectionSelected)="selectSection($event)"
+        ></noah-tour-navbar>
+
+        <noah-tour-step
+          [tourTitle]="definition.title"
+          [step]="currentFlatStep.step"
+          [currentStepNumber]="currentStepIndex + 1"
+          [totalSteps]="flatSteps.length"
+          [hasPrevious]="hasPrevious"
+          [hasNext]="hasNext"
+          (previous)="showPreviousStep()"
+          (next)="showNextStep()"
+          (close)="closeTour()"
+        ></noah-tour-step>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
