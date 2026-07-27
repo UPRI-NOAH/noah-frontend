@@ -103,7 +103,7 @@
 
       <!-- Slide 1: Typhoon -->
       <ng-template swiperSlide>
-        <section class="px-6 md:px-8 h-auto">
+        <section class="px-6 md:px-8 h-auto" data-tour-id="typhoon-track-panel">
           <noah-typhoon-track-group></noah-typhoon-track-group>
         </section>
       </ng-template>
@@ -240,8 +240,10 @@
 
       <noah-rainfall-contour-button></noah-rainfall-contour-button>
 
-      <header class="text-lg font-bold leading-tight">More Options</header>
-      <noah-typhoon-track-group></noah-typhoon-track-group>
+      <div data-tour-id="typhoon-track-panel">
+        <header class="text-lg font-bold leading-tight">More Options</header>
+        <noah-typhoon-track-group></noah-typhoon-track-group>
+      </div>
     </section>
   </div>
 </div>

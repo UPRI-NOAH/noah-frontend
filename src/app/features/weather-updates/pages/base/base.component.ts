@@ -215,6 +215,24 @@ export class BaseComponent implements OnInit {
     void this.router.navigateByUrl('/weather-updates/temperature');
   }
 
+  @HostListener('window:weather-updates-typhoon-track-panel-reset')
+  showTyphoonTrackPanelForTour(): void {
+    const swiperRef = this.swiper?.swiperRef;
+
+    if (swiperRef && swiperRef.activeIndex !== 1) {
+      this.suppressRouteOnNextSlideChange = true;
+      swiperRef.slideTo(1, 0);
+    }
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelectorAll<HTMLElement>(
+          '[data-tour-id="weather-sidebar-scroll"]'
+        )
+        .forEach((sidebar) => sidebar.scrollTo({ top: sidebar.scrollHeight }));
+    });
+  }
+
   goHome(): void {
     this.wuService.resetWeatherUpdates();
     this.router.navigateByUrl('/');

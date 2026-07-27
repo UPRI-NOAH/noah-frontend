@@ -173,6 +173,7 @@ describe('WEATHER_UPDATES_TOUR', () => {
         target: '[data-tour-id="weather-legend"]',
         spotlightTargets: ['[data-tour-id="weather-opacity"]'],
         previousEvent: 'weather-updates-temperature-panel-reset',
+        nextEvent: 'weather-updates-typhoon-track-panel-reset',
         placement: 'left',
       }),
     ]);
@@ -180,6 +181,34 @@ describe('WEATHER_UPDATES_TOUR', () => {
       'rainfall or temperature layer'
     );
     expect(legendOpacity?.steps[0].text).toContain('active layer');
+  });
+
+  it('introduces Typhoon Track immediately before the completion step', () => {
+    const typhoonTrackIndex = WEATHER_UPDATES_TOUR.sections.findIndex(
+      (section) => section.id === 'typhoon-track'
+    );
+    const endIndex = WEATHER_UPDATES_TOUR.sections.findIndex(
+      (section) => section.id === 'end'
+    );
+    const typhoonTrack = WEATHER_UPDATES_TOUR.sections[typhoonTrackIndex];
+
+    expect(endIndex).toBe(typhoonTrackIndex + 1);
+    expect(typhoonTrack).toEqual(
+      jasmine.objectContaining({
+        label: 'Typhoon Track',
+        steps: [
+          jasmine.objectContaining({
+            id: 'typhoon-track',
+            title: 'Typhoon Track',
+            target: '[data-tour-id="typhoon-track-panel"]',
+            previousEvent: 'weather-updates-temperature-panel-reset',
+            placement: 'left',
+          }),
+        ],
+      })
+    );
+    expect(typhoonTrack.steps[0].text).toContain('Low Pressure Areas');
+    expect(typhoonTrack.steps[0].text).toContain('Himawari');
   });
 
   it('ends with the Weather Updates completion step', () => {

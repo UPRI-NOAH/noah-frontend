@@ -209,6 +209,21 @@ export const WEATHER_UPDATES_TOUR: TourDefinition = {
           target: '[data-tour-id="weather-legend"]',
           spotlightTargets: ['[data-tour-id="weather-opacity"]'],
           previousEvent: 'weather-updates-temperature-panel-reset',
+          nextEvent: 'weather-updates-typhoon-track-panel-reset',
+          placement: 'left',
+        },
+      ],
+    },
+    {
+      id: 'typhoon-track',
+      label: 'Typhoon Track',
+      steps: [
+        {
+          id: 'typhoon-track',
+          title: 'Typhoon Track',
+          text: 'Found under More Options, the Typhoon Track layer plots active weather systems on the map — from Low Pressure Areas all the way up to Super Typhoons. You can also adjust the Himawari satellite image opacity here.',
+          target: '[data-tour-id="typhoon-track-panel"]',
+          previousEvent: 'weather-updates-temperature-panel-reset',
           placement: 'left',
         },
       ],

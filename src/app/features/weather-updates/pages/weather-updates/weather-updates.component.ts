@@ -55,6 +55,12 @@ export class WeatherUpdatesComponent implements OnInit {
     this.btnShowSideBar = false;
   }
 
+  @HostListener('window:weather-updates-typhoon-track-panel-reset')
+  showTyphoonTrackSidebarForTour(): void {
+    this.sideBarMobile = true;
+    this.btnShowSideBar = false;
+  }
+
   @HostListener('window:noah-tour-location-search-skipped')
   useTourFallbackLocation(): void {
     this.wuService.center$.pipe(take(1)).subscribe((center) => {
