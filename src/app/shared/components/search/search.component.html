@@ -22,8 +22,8 @@
       <input
         type="search"
         [formControl]="searchTermCtrl"
-        (focus)="isDropdownOpen = true"
-        (keyup)="isDropdownOpen = true"
+        (focus)="openDropdown()"
+        (input)="openDropdown()"
         (keydown)="keydownAction($event)"
         placeholder="Search Location"
         autocomplete="off"
@@ -134,61 +134,153 @@
         <span>Your Current Location</span>
       </div>
 
-      <div
-        #locationOptions
-        tabindex="0"
-        (click)="pickPlace(place)"
-        (keydown)="keydownAction($event, 'select-option', place)"
-        *ngFor="let place of places$ | async"
-        class="
-          flex-row
-          block
-          w-full
-          px-4
-          py-0
-          cursor-pointer
-          text-left
-          hover:bg-gray-100 hover:text-gray-900
-          transition
-          duration-300
-          ease-in-out
-          focus:outline-none focus:bg-gray-100 focus:text-gray-900
-          group
-          overflow:
-          hidden;
-          text-overflow:
-          ellipsis;
-          white-space:
-          wrap;
-        "
-      >
-        <div class="py-2 max-w-xl w-full flex flex-row">
-          <div class="md:mt-0 items-center flex">
+      <ng-container *ngIf="isSearchQueryEmpty; else suggestionList">
+        <ng-container *ngIf="history$ | async as history">
+          <div
+            #locationOptions
+            tabindex="0"
+            role="button"
+            data-testid="search-history-item"
+            (click)="pickHistoryEntry(entry)"
+            (keydown)="keydownAction($event, 'select-history', entry)"
+            *ngFor="let entry of history"
+            class="
+              flex
+              items-center
+              w-full
+              px-4
+              py-2
+              cursor-pointer
+              text-left
+              hover:bg-gray-100 hover:text-gray-900
+              transition
+              duration-300
+              ease-in-out
+              focus:outline-none focus:bg-gray-100 focus:text-gray-900
+              group
+            "
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="inline-block pr-2 text-high h-8 w-6"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              class="flex-none mr-2 h-6 w-6 text-gray-900"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
             >
-              <path
-                fill-rule="evenodd"
-                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                clip-rule="evenodd"
-              />
+              <path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8" />
+              <path d="M3 3v5h5M12 7v5l3 2" />
             </svg>
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-gray-700 text-sm truncate">
+                {{ entry.name }}
+              </p>
+              <p
+                *ngIf="entry.address"
+                class="
+                  text-xs text-gray-700
+                  group-hover:text-gray-600
+                  italic
+                  truncate
+                "
+              >
+                {{ entry.address }}
+              </p>
+            </div>
+            <button
+              type="button"
+              class="
+                flex-none
+                ml-2
+                p-2
+                text-gray-700
+                hover:text-gray-900
+                focus:outline-none focus:ring-2 focus:ring-primary
+                rounded-full
+              "
+              data-testid="remove-search-history-item"
+              [attr.aria-label]="
+                'Remove ' + entry.name + ' from search history'
+              "
+              (keydown)="$event.stopPropagation()"
+              (click)="removeHistoryEntry($event, entry.mapboxId)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                />
+              </svg>
+            </button>
           </div>
-          <button class="flex-1 text-left">
-            <p class="font-bold text-gray-700 text-sm">
-              {{ place.name || place.text }}
-            </p>
-            <p class="text-xs text-gray-700 group-hover:text-gray-600 italic">
-              {{
-                place.full_address || place.place_formatted || place.place_name
-              }}
-            </p>
-          </button>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #suggestionList>
+        <div
+          #locationOptions
+          tabindex="0"
+          (click)="pickPlace(place)"
+          (keydown)="keydownAction($event, 'select-option', place)"
+          *ngFor="let place of places$ | async"
+          class="
+            flex-row
+            block
+            w-full
+            px-4
+            py-0
+            cursor-pointer
+            text-left
+            hover:bg-gray-100 hover:text-gray-900
+            transition
+            duration-300
+            ease-in-out
+            focus:outline-none focus:bg-gray-100 focus:text-gray-900
+            group
+            overflow:
+            hidden;
+            text-overflow:
+            ellipsis;
+            white-space:
+            wrap;
+          "
+        >
+          <div class="py-2 max-w-xl w-full flex flex-row">
+            <div class="md:mt-0 items-center flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="inline-block pr-2 text-high h-8 w-6"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <button class="flex-1 text-left">
+              <p class="font-bold text-gray-700 text-sm">
+                {{ place.name || place.text }}
+              </p>
+              <p class="text-xs text-gray-700 group-hover:text-gray-600 italic">
+                {{
+                  place.full_address ||
+                    place.place_formatted ||
+                    place.place_name
+                }}
+              </p>
+            </button>
+          </div>
         </div>
-      </div>
+      </ng-template>
     </ng-template>
   </div>
 
