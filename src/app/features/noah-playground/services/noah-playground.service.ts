@@ -42,6 +42,7 @@ import {
   WindGroupState,
   WindType,
   WindState,
+  WindForecastDay,
 } from '../store/noah-playground.store';
 import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { Observable, pipe } from 'rxjs';
@@ -264,6 +265,12 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.wind.expanded));
   }
 
+  get selectedWindForecastDay$(): Observable<WindForecastDay> {
+    return this.store.state$.pipe(
+      map((state) => state.wind.selectedForecastDay)
+    );
+  }
+
   get selectedTemperature$(): Observable<TemperatureType> {
     return this.store.state$.pipe(
       map((state) => state.temperature.selectedType)
@@ -340,6 +347,10 @@ export class NoahPlaygroundService {
 
   getWindSpeed$(type: WindType): Observable<number> {
     return this.store.state$.pipe(map((state) => state.wind.types[type].speed));
+  }
+
+  getWindColor$(type: WindType): Observable<string> {
+    return this.store.state$.pipe(map((state) => state.wind.types[type].color));
   }
 
   getBoundaries$(boundariesType: BoundariesType): Observable<BoundariesState> {
@@ -673,6 +684,30 @@ export class NoahPlaygroundService {
     };
 
     this.store.patch({ wind }, `Wind Speed set to ${nextSpeed}`);
+  }
+
+  setWindColor(color: string, type: WindType): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+      types: {
+        ...this.store.state.wind.types,
+        [type]: {
+          ...this.store.state.wind.types[type],
+          color,
+        },
+      },
+    };
+
+    this.store.patch({ wind }, `Wind Color set to ${color}`);
+  }
+
+  selectWindForecastDay(day: WindForecastDay): void {
+    const wind: WindGroupState = {
+      ...this.store.state.wind,
+    };
+
+    wind.selectedForecastDay = day;
+    this.store.patch({ wind }, `Select Wind Forecast Day: ${day}`);
   }
 
   setBtnCalculateRiskShown(value: boolean, type: CalculateRiskButton) {
