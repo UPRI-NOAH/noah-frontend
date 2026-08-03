@@ -219,6 +219,13 @@ export class RainfallContourButtonComponent implements OnInit {
     return tempType.replace(/_/g, ' ');
   }
 
+  getLegendSrc(type: string): string {
+    if (type === 'heat_index' || type === 'max_temperature') {
+      return `assets/legends/temperature/wu_${type}.png`;
+    }
+    return `assets/legends/rainfall-contour/rainfall-contour-legend-${type}.png`;
+  }
+
   /**
    * Show temperature when forecast rainfall is selected
    */

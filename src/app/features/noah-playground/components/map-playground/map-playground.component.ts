@@ -97,6 +97,7 @@ import {
   LightningTypes,
   TemperatureType,
   TemperatureForecastDay,
+  WindForecastDay,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -259,6 +260,7 @@ export class MapPlaygroundComponent
     count: 1000,
     speed: 0.5,
     maxAge: 70,
+    color: '#67FF01',
   };
   private windGrid: WindGrid | null = null;
   private windReady = false;
@@ -270,6 +272,8 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
+  private windCurrentForecastDay: WindForecastDay = 0;
+  private windForecastCache: WindGrid | null = null;
 
   constructor(
     private mapService: MapService,
@@ -3548,6 +3552,29 @@ export class MapPlaygroundComponent
       .subscribe((speed) => {
         this.windSettings.speed = speed;
       });
+
+    this.pgService
+      .getWindColor$('wind')
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((color) => {
+        this.windSettings.color = color;
+      });
+
+    this.pgService.selectedWindForecastDay$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((day) => {
+        if (day !== this.windCurrentForecastDay) {
+          this.windCurrentForecastDay = day;
+          this.fetchWindGrid(day).then(() => {
+            this.windForecastCache = this.windGrid;
+            if (this.windVisible && !this.windMapMoving) {
+              this.stopWindAnimation();
+              this.initWindParticles();
+              this.startWindAnimation();
+            }
+          });
+        }
+      });
   }
 
   private resizeWindCanvas(): void {
@@ -3656,15 +3683,61 @@ export class MapPlaygroundComponent
     };
   }
 
-  private async fetchWindGrid(): Promise<void> {
-    const url = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : { r: 103, g: 255, b: 1 };
+  }
+
+  private async fetchWindGrid(dayOffset: WindForecastDay = 0): Promise<void> {
+    const liveUrl = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
+    const forecastUrl =
+      'https://webgis-static.up.edu.ph/api/wind/wind_forecast_grid.json';
 
     try {
+      const url = dayOffset === 0 ? liveUrl : forecastUrl;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`wind API returned ${res.status}`);
 
       const data = await res.json();
-      const points = data.points || [];
+
+      if (dayOffset === 0) {
+        const points = data.points || [];
+        const uGrid: number[][] = [];
+        const vGrid: number[][] = [];
+        let idx = 0;
+
+        for (let r = 0; r < this.windGridRows; r++) {
+          const uRow: number[] = [];
+          const vRow: number[] = [];
+
+          for (let c = 0; c < this.windGridCols; c++) {
+            const entry = points[idx++];
+            const speed = entry?.speed ?? 0;
+            const direction = entry?.direction ?? 0;
+            const { u, v } = this.metDirToUV(speed, direction);
+
+            uRow.push(u);
+            vRow.push(v);
+          }
+
+          uGrid.push(uRow);
+          vGrid.push(vRow);
+        }
+
+        this.windGrid = { uGrid, vGrid };
+        this.windReady = true;
+        return;
+      }
+
+      const hoursPerDay = 24;
+      const startIdx = (dayOffset - 1) * hoursPerDay;
+      const forecastPoints = data.points || [];
       const uGrid: number[][] = [];
       const vGrid: number[][] = [];
       let idx = 0;
@@ -3674,13 +3747,33 @@ export class MapPlaygroundComponent
         const vRow: number[] = [];
 
         for (let c = 0; c < this.windGridCols; c++) {
-          const entry = points[idx++];
-          const speed = entry?.speed ?? 0;
-          const direction = entry?.direction ?? 0;
-          const { u, v } = this.metDirToUV(speed, direction);
+          const point = forecastPoints[idx++];
+          const forecast = point?.forecast || [];
+          let sumU = 0;
+          let sumV = 0;
+          let count = 0;
 
-          uRow.push(u);
-          vRow.push(v);
+          for (
+            let h = startIdx;
+            h < Math.min(startIdx + hoursPerDay, forecast.length);
+            h++
+          ) {
+            const entry = forecast[h];
+            const speed = entry?.speed ?? 0;
+            const direction = entry?.direction ?? 0;
+            const { u, v } = this.metDirToUV(speed, direction);
+            sumU += u;
+            sumV += v;
+            count++;
+          }
+
+          if (count > 0) {
+            uRow.push(sumU / count);
+            vRow.push(sumV / count);
+          } else {
+            uRow.push(0);
+            vRow.push(0);
+          }
         }
 
         uGrid.push(uRow);
@@ -3811,8 +3904,8 @@ export class MapPlaygroundComponent
     this.windLastTimestamp = timestamp;
     const timeScale = Math.min(dt, 0.1) * 60;
 
-    ctx.fillStyle = 'rgba(0,0,0,0.95)';
-    ctx.globalCompositeOperation = 'destination-in';
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'source-over';
 
@@ -3910,9 +4003,10 @@ export class MapPlaygroundComponent
       const tailY = prevPx.y - dirY * tailLengthPx;
 
       const gradient = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      gradient.addColorStop(0, 'rgba(255, 255, 0, 0)');
-      gradient.addColorStop(0.65, 'rgba(255, 255, 0, 0.45)');
-      gradient.addColorStop(1, 'rgba(103, 255, 1, 0.95)');
+      const { r, g, b } = this.hexToRgb(this.windSettings.color);
+      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
+      gradient.addColorStop(0.65, `rgba(${r}, ${g}, ${b}, 0.45)`);
+      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.95)`);
 
       ctx.strokeStyle = gradient;
 
@@ -3923,7 +4017,7 @@ export class MapPlaygroundComponent
       ctx.lineTo(headX, headY);
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(103, 255, 1, 0.9)';
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
       ctx.beginPath();
       ctx.arc(headX, headY, 1.1, 0, Math.PI * 2);
       ctx.fill();

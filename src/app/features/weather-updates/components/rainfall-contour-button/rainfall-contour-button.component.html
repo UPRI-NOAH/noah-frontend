@@ -38,15 +38,56 @@
         <h1 class="text-sm text-gray-700 whitespace-nowrap">
           {{ getLabelMobile(rainfallContourType) }}
         </h1>
+        <svg
+          class="
+            w-3
+            h-3
+            mx-auto
+            mt-1
+            text-gray-400
+            transition-transform
+            duration-300
+          "
+          [ngClass]="{
+            'rotate-180 text-primary':
+              !isTemperatureActive &&
+              activeRainfallContourType === rainfallContourType
+          }"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
       </div>
     </ng-container>
+  </div>
+</div>
+
+<!-- Mobile Legend for rainfall contour (1hr-24hr) -->
+<div
+  class="legend-expand md:hidden"
+  [ngClass]="{
+    'legend-open':
+      !isTemperatureActive && activeRainfallContourType !== 'forecast'
+  }"
+>
+  <div>
+    <div class="w-full flex justify-center px-6 md:px-0">
+      <img [src]="getLegendSrc(activeRainfallContourType)" />
+    </div>
   </div>
 </div>
 
 <!-- Separate Forecast Button -->
 <ng-container>
   <section class="px-5 md:px-0 md:hidden mb-1">
-    <p class="mt-5 text-base tracking-wide">
+    <p class="mt-2 text-base tracking-wide">
       <span class="font-bold">Forecasted Rainfall in Your Area</span>
     </p>
     <p class="italic text-xs tracking-wide mb-2">
@@ -94,13 +135,45 @@
       <div class="flex flex-col text-left ml-3">
         <h1 class="text-lg text-gray-700">Rainfall for Tomorrow</h1>
       </div>
+      <svg
+        class="w-4 h-4 ml-auto text-gray-400 transition-transform duration-300"
+        [ngClass]="{
+          'rotate-180 text-primary':
+            !isTemperatureActive && activeRainfallContourType === 'forecast'
+        }"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Legend for forecast -->
+<div
+  class="legend-expand md:hidden"
+  [ngClass]="{
+    'legend-open':
+      !isTemperatureActive && activeRainfallContourType === 'forecast'
+  }"
+>
+  <div>
+    <div class="w-full flex justify-center px-6 md:px-0">
+      <img [src]="getLegendSrc('forecast')" />
     </div>
   </div>
 </div>
 
 <!-- Temperature section for forecast (MOBILE) -->
 <ng-container>
-  <section class="px-5 md:px-0 md:hidden block">
+  <section class="px-5 md:px-0 md:hidden block pb-2">
     <p class="mt-5 text-lg tracking-wide">
       <span class="font-bold">Temperature</span>
     </p>
@@ -116,10 +189,41 @@
     </p>
   </section>
 
+  <!-- Mobile Temperature Forecast Days Selector -->
+  <div class="px-5 md:hidden mb-2">
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button
+        *ngFor="let day of temperatureForecastDays"
+        type="button"
+        class="
+          px-3
+          py-2
+          rounded-md
+          border
+          text-sm
+          focus:outline-none
+          transition
+          font-medium
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+        [disabled]="!isTemperatureActive"
+        [ngClass]="
+          isTemperatureActive &&
+          (selectedTemperatureForecastDay$ | async) === day.value
+            ? 'bg-primary text-white border-primary'
+            : 'bg-gray-200 text-gray-800 border-gray-300'
+        "
+        (click)="selectTemperatureForecastDay(day.value)"
+      >
+        {{ day.label }}
+      </button>
+    </div>
+  </div>
+
   <div
     *ngFor="let temperatureType of temperatureTypes"
     role="button"
-    class="flex justify-center md:hidden swiper-no-swiping px-4"
+    class="flex flex-col justify-center md:hidden swiper-no-swiping px-4"
   >
     <button
       class="
@@ -161,8 +265,47 @@
             </span>
           </label>
         </div>
+        <svg
+          class="
+            w-4
+            h-4
+            ml-auto
+            text-gray-400
+            transition-transform
+            duration-300
+          "
+          [ngClass]="{
+            'rotate-180 text-primary':
+              isTemperatureActive && activeTemperatureType === temperatureType
+          }"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
       </div>
     </button>
+
+    <!-- Mobile Legend for temperature -->
+    <div
+      class="legend-expand md:hidden"
+      [ngClass]="{
+        'legend-open':
+          isTemperatureActive && activeTemperatureType === temperatureType
+      }"
+    >
+      <div>
+        <div class="w-full flex justify-center px-6 md:px-0">
+          <img [src]="getLegendSrc(temperatureType)" />
+        </div>
+      </div>
+    </div>
   </div>
 </ng-container>
 
@@ -227,9 +370,50 @@
         </div>
       </div>
     </div>
+    <svg
+      class="
+        w-5
+        h-5
+        text-gray-400
+        transition-transform
+        duration-300
+        flex-shrink-0
+      "
+      [ngClass]="{
+        'rotate-180 text-primary':
+          !isTemperatureActive &&
+          activeRainfallContourType === rainfallContourType
+      }"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 9l-7 7-7-7"
+      />
+    </svg>
   </button>
 
-  <!-- ✅ Insert Forecast label right after the 24hr button -->
+  <!-- Desktop Legend for each rainfall contour type -->
+  <div
+    class="legend-expand hidden md:block"
+    [ngClass]="{
+      'legend-open':
+        !isTemperatureActive &&
+        activeRainfallContourType === rainfallContourType
+    }"
+  >
+    <div>
+      <div class="w-full flex justify-center px-6 md:px-0">
+        <img [src]="getLegendSrc(rainfallContourType)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Insert Forecast label right after the 24hr button -->
   <ng-container *ngIf="rainfallContourType === '24hr'">
     <section class="px-5 md:px-0 md:block hidden">
       <p class="mt-5 text-lg tracking-wide">
@@ -249,7 +433,7 @@
   </ng-container>
 </div>
 <ng-container>
-  <section class="px-5 md:px-0 md:block hidden">
+  <section class="px-5 md:px-0 md:block hidden pb-3">
     <p class="mt-5 text-lg tracking-wide">
       <span class="font-bold">Temperature</span>
     </p>
@@ -264,6 +448,37 @@
       </a>
     </p>
   </section>
+
+  <!-- Desktop Temperature Forecast Days Selector -->
+  <div class="px-5 md:px-0 mb-3 hidden md:block">
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button
+        *ngFor="let day of temperatureForecastDays"
+        type="button"
+        class="
+          px-3
+          py-2
+          rounded-md
+          border
+          text-sm
+          focus:outline-none
+          transition
+          font-medium
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+        [disabled]="!isTemperatureActive"
+        [ngClass]="
+          isTemperatureActive &&
+          (selectedTemperatureForecastDay$ | async) === day.value
+            ? 'bg-primary text-white border-primary'
+            : 'bg-gray-200 text-gray-800 border-gray-300'
+        "
+        (click)="selectTemperatureForecastDay(day.value)"
+      >
+        {{ day.label }}
+      </button>
+    </div>
+  </div>
 
   <div *ngFor="let temperatureType of temperatureTypes" role="button">
     <button
@@ -310,63 +525,48 @@
           </label>
         </div>
       </div>
-    </button>
-  </div>
-
-  <!-- Temperature Forecast Days Selector -->
-  <div class="px-5 md:px-0 mb-3">
-    <div class="flex flex-wrap gap-2 justify-center">
-      <button
-        *ngFor="let day of temperatureForecastDays"
-        type="button"
+      <svg
         class="
-          px-3
-          py-2
-          rounded-md
-          border
-          text-sm
-          focus:outline-none
-          transition
-          font-medium
-          disabled:cursor-not-allowed disabled:opacity-50
+          w-5
+          h-5
+          text-gray-400
+          transition-transform
+          duration-300
+          flex-shrink-0
         "
-        [disabled]="!isTemperatureActive"
-        [ngClass]="
-          isTemperatureActive &&
-          (selectedTemperatureForecastDay$ | async) === day.value
-            ? 'bg-primary text-white border-primary'
-            : 'bg-gray-200 text-gray-800 border-gray-300'
-        "
-        (click)="selectTemperatureForecastDay(day.value)"
+        [ngClass]="{
+          'rotate-180 text-primary':
+            isTemperatureActive && activeTemperatureType === temperatureType
+        }"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
       >
-        {{ day.label }}
-      </button>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </button>
+
+    <!-- Desktop Legend for each temperature type -->
+    <div
+      class="legend-expand hidden md:block"
+      [ngClass]="{
+        'legend-open':
+          isTemperatureActive && activeTemperatureType === temperatureType
+      }"
+    >
+      <div>
+        <div class="w-full flex justify-center px-6 md:px-0">
+          <img [src]="getLegendSrc(temperatureType)" />
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>
-
-<div class="pt-2">
-  <section class="px-6 md:px-0 mt-2 md:mt-0">
-    <header class="text-lg font-bold leading-tight">Legend</header>
-  </section>
-
-  <div class="w-full flex justify-center px-6 md:px-0 mt-2 md:mt-4">
-    <ng-container *ngIf="temperatureShown$ | async; else rainfallLegend">
-      <img
-        src="assets/legends/temperature/wu_{{
-          selectedTemperature$ | async
-        }}.png"
-      />
-    </ng-container>
-    <ng-template #rainfallLegend>
-      <img
-        src="assets/legends/rainfall-contour/rainfall-contour-legend-{{
-          selectedRainfallContourType$ | async
-        }}.png"
-      />
-    </ng-template>
-  </div>
-</div>
 
 <div class="md:mb-4">
   <section class="px-6 md:px-0 mt-2 md:mt-4">
