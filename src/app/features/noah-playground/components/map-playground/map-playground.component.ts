@@ -2276,9 +2276,6 @@ export class MapPlaygroundComponent
           },
         });
 
-        const weatherUpdateShown$ =
-          this.pgService.weatherUpdatesGroupShown$.pipe(shareReplay(1));
-
         const soloShown$ = this.pgService.temperatureShown$.pipe(
           shareReplay(1)
         );
@@ -2300,35 +2297,19 @@ export class MapPlaygroundComponent
             distinctUntilChanged()
           );
 
-        combineLatest([
-          soloShown$,
-          selectedTemperature$,
-          temperatureOpacity$,
-          weatherUpdateShown$,
-        ])
+        combineLatest([soloShown$, selectedTemperature$, temperatureOpacity$])
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
-          .subscribe(
-            ([
-              soloShown,
-              groupShown,
-              temperatureOpacity,
-              weatherUpdateShown,
-            ]) => {
-              let newOpacity = +(
-                soloShown &&
-                weatherUpdateShown &&
-                groupShown === temperatureType
-              );
-              if (newOpacity) {
-                newOpacity = temperatureOpacity / 100;
-              }
-              this.map.setPaintProperty(
-                temperatureType,
-                'raster-opacity',
-                newOpacity
-              );
+          .subscribe(([soloShown, groupShown, temperatureOpacity]) => {
+            let newOpacity = +(soloShown && groupShown === temperatureType);
+            if (newOpacity) {
+              newOpacity = temperatureOpacity / 100;
             }
-          );
+            this.map.setPaintProperty(
+              temperatureType,
+              'raster-opacity',
+              newOpacity
+            );
+          });
 
         selectedForecastDay$
           .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
