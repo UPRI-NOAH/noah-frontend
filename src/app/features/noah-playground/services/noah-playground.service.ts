@@ -208,6 +208,10 @@ export class NoahPlaygroundService {
     );
   }
 
+  get contourMapOpacity$(): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.contourMaps.opacity));
+  }
+
   get riskAssessmentExpoShown$(): Observable<boolean> {
     return this.store.state$.pipe(
       map((state) => state.riskAssessment.exposuretypes.shown)
@@ -1280,6 +1284,15 @@ export class NoahPlaygroundService {
 
     contourMaps.selectedType = type;
     this.store.patch({ contourMaps }, `select contour map type: ${type}`);
+  }
+
+  setContourMapOpacity(opacity: number): void {
+    const contourMaps = {
+      ...this.store.state.contourMaps,
+    };
+
+    contourMaps.opacity = opacity;
+    this.store.patch({ contourMaps }, `set contour map opacity to ${opacity}`);
   }
 
   toggleContourMapGroupVisibility(): void {

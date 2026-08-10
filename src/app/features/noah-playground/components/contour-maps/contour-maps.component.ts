@@ -14,6 +14,7 @@ export class ContourMapsComponent implements OnInit {
   expanded$: Observable<boolean>;
   selectedContourMap$: Observable<ContourMapType>;
   shown$: Observable<boolean>;
+  opacity$: Observable<number>;
 
   constructor(private pgService: NoahPlaygroundService) {}
 
@@ -21,6 +22,7 @@ export class ContourMapsComponent implements OnInit {
     this.expanded$ = this.pgService.contourMapGroupExpanded$;
     this.selectedContourMap$ = this.pgService.selectedContourMap$;
     this.shown$ = this.pgService.contourMapGroupShown$;
+    this.opacity$ = this.pgService.contourMapOpacity$;
   }
 
   toggleShown(event: Event) {
@@ -36,5 +38,9 @@ export class ContourMapsComponent implements OnInit {
 
   selectContourMap(type: ContourMapType) {
     this.pgService.selectContourMapType(type);
+  }
+
+  changeOpacity(opacity: number) {
+    this.pgService.setContourMapOpacity(opacity);
   }
 }
