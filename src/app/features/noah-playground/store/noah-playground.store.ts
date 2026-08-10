@@ -701,7 +701,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   temperature: {
-    shown: true,
+    shown: false,
     expanded: false,
     selectedType: 'heat_index',
     selectedForecastDay: 1,
