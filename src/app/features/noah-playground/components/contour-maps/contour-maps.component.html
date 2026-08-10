@@ -68,7 +68,7 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="grid grid-cols-2 gap-4 items-center">
+    <div class="grid grid-cols-2 items-center" style="justify-items: center">
       <div>
         <!-- CONTOUR MAP SOLO START -->
         <div class="f-f-r py-2" *ngFor="let contourMap of contourMaps">
@@ -94,7 +94,6 @@
         <!-- CONTOUR MAP SOLO END -->
       </div>
       <img
-        class="w-full"
         src="assets/legends/rainfall-contour-legend-{{
           selectedContourMap$ | async
         }}.png"
