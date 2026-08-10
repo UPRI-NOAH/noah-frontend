@@ -325,7 +325,7 @@ export class MapPlaygroundComponent
         this.initVolcanoes();
         this.initBoundaries();
         this.initWeatherSatelliteLayers();
-        //this.showContourMaps();
+        this.showContourMaps();
         this.initQcCenterListener();
         this.initLagunaCenterListener();
         this.initBarangayBoundary();
@@ -4301,97 +4301,109 @@ export class MapPlaygroundComponent
     );
   }
 
-  // showContourMaps() {
-  //   const contourMapImages = {
-  //     '1hr': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
-  //       type: 'image',
-  //     },
-  //     '3hr': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/3hr_latest_rainfall_contour.png',
-  //       type: 'image',
-  //     },
-  //     '6hr': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/6hr_latest_rainfall_contour.png',
-  //       type: 'image',
-  //     },
-  //     '12hr': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/12hr_latest_rainfall_contour.png',
-  //       type: 'image',
-  //     },
-  //     '24hr': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
-  //       type: 'image',
-  //     },
-  //     '24hr-lapse': {
-  //       url: 'https://webgis-static.up.edu.ph/api/contours/ph_contour.webm',
-  //       type: 'video',
-  //     },
-  //   };
+  showContourMaps() {
+    const contourMapImages = {
+      '1hr': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '3hr': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/3hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '6hr': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/6hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '12hr': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/12hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
+        type: 'image',
+      },
+      '24hr-lapse': {
+        url: 'https://webgis-static.up.edu.ph/api/contours/ph_contour.webm',
+        type: 'video',
+      },
+    };
 
-  //   const getContourMapSource = (contourMapDetails: {
-  //     url: string;
-  //     type: string;
-  //   }): AnySourceData => {
-  //     switch (contourMapDetails.type) {
-  //       case 'image':
-  //         return {
-  //           type: 'image',
-  //           url: contourMapDetails.url,
-  //           coordinates: [
-  //             [115.35, 21.55], // top-left
-  //             [128.25, 21.55], // top-right
-  //             [128.25, 3.85], // bottom-right
-  //             [115.35, 3.85], // bottom-left
-  //           ],
-  //         };
-  //       case 'video':
-  //         return {
-  //           type: 'video',
-  //           urls: [contourMapDetails.url],
-  //           coordinates: [
-  //             [115.35, 21.55], // top-left
-  //             [128.25, 21.55], // top-right
-  //             [128.25, 3.85], // bottom-right
-  //             [115.35, 3.85], // bottom-left
-  //           ],
-  //         };
-  //       default:
-  //         throw new Error('[MapPlayground] Unable to get contour map source');
-  //     }
-  //   };
+    const getContourMapSource = (contourMapDetails: {
+      url: string;
+      type: string;
+    }): AnySourceData => {
+      switch (contourMapDetails.type) {
+        case 'image':
+          return {
+            type: 'image',
+            url: contourMapDetails.url,
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        case 'video':
+          return {
+            type: 'video',
+            urls: [contourMapDetails.url],
+            coordinates: [
+              [115.35, 21.55], // top-left
+              [128.25, 21.55], // top-right
+              [128.25, 3.85], // bottom-right
+              [115.35, 3.85], // bottom-left
+            ],
+          };
+        default:
+          throw new Error('[MapPlayground] Unable to get contour map source');
+      }
+    };
 
-  //   Object.keys(contourMapImages).forEach((contourType) => {
-  //     const contourMapDetails = contourMapImages[contourType];
+    Object.keys(contourMapImages).forEach((contourType) => {
+      const contourMapDetails = contourMapImages[contourType];
 
-  //     this.map.addSource(contourType, getContourMapSource(contourMapDetails));
+      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
 
-  //     this.map.addLayer({
-  //       id: contourType,
-  //       type: 'raster',
-  //       source: contourType,
-  //       paint: {
-  //         'raster-fade-duration': 0,
-  //         'raster-opacity': 0,
-  //       },
-  //     });
+      this.map.addLayer({
+        id: contourType,
+        type: 'raster',
+        source: contourType,
+        paint: {
+          'raster-fade-duration': 0,
+          'raster-opacity': 0,
+        },
+      });
 
-  //     combineLatest([
-  //       this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
-  //       this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
-  //     ])
-  //       .pipe(
-  //         takeUntil(this._unsub),
-  //         takeUntil(this._changeStyle),
-  //         map(([groupShown, selectedContourMap]) => {
-  //           return +(groupShown && selectedContourMap === contourType);
-  //         })
-  //       )
-  //       .subscribe((opacity: number) => {
-  //         this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
-  //       });
-  //   });
-  // }
+      const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
+        shareReplay(1)
+      );
+
+      combineLatest([
+        this.pgService.contourMapGroupShown$.pipe(distinctUntilChanged()),
+        this.pgService.selectedContourMap$.pipe(distinctUntilChanged()),
+        this.pgService.contourMapOpacity$.pipe(distinctUntilChanged()),
+        weatherUpdateShown$,
+      ])
+        .pipe(
+          takeUntil(this._unsub),
+          takeUntil(this._changeStyle),
+          map(
+            ([groupShown, selectedContourMap, opacity, weatherUpdateShown]) => {
+              return groupShown &&
+                selectedContourMap === contourType &&
+                weatherUpdateShown
+                ? opacity / 100
+                : 0;
+            }
+          )
+        )
+        .subscribe((opacity: number) => {
+          this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+        });
+    });
+  }
 
   switchMapStyle(style: MapStyle) {
     if (this.mapStyle === style) return;

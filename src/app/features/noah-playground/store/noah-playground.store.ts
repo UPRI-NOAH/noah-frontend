@@ -390,6 +390,7 @@ type NoahPlaygroundState = {
     shown: boolean;
     expanded: boolean;
     selectedType: ContourMapType;
+    opacity: number;
   };
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
@@ -649,9 +650,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   contourMaps: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: '1hr',
+    opacity: 100,
   },
   typhoonTrack: {
     shown: true,

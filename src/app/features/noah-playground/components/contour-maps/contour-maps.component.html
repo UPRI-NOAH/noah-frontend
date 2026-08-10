@@ -1,13 +1,13 @@
 <div
   class="
     flex flex-col
-    p-5
+    p-4
     w-full
     bg-sidebar
     shadow-md
     hover:shodow-lg
     rounded-lg
-    mt-6
+    mt-4
   "
 >
   <div
@@ -24,7 +24,7 @@
         />
       </label>
       <div class="flex flex-col ml-3">
-        <div class="text-xl leading-none font-bold">Rainfall Contour</div>
+        <div class="text-base leading-none font-bold">Rainfall Contour</div>
       </div>
     </div>
     <div class="cursor-pointer">
@@ -68,10 +68,10 @@
   </div>
   <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
     <hr class="pb-4" />
-    <div class="flex justify-around">
-      <div class="my-auto items-center">
+    <div class="grid grid-cols-2 items-center" style="justify-items: center">
+      <div>
         <!-- CONTOUR MAP SOLO START -->
-        <div class="f-f-r py-2 pl-4" *ngFor="let contourMap of contourMaps">
+        <div class="f-f-r py-2" *ngFor="let contourMap of contourMaps">
           <div class="flex items-center">
             <div class="inline-flex items-center radio">
               <input
@@ -92,13 +92,21 @@
           </div>
         </div>
         <!-- CONTOUR MAP SOLO END -->
-        <hr class="p-2" />
       </div>
       <img
         src="assets/legends/rainfall-contour-legend-{{
           selectedContourMap$ | async
         }}.png"
       />
+    </div>
+    <div class="pb-4 pt-2">
+      <noah-slider
+        label="Opacity"
+        [initialValue]="opacity$ | async"
+        [min]="0"
+        [max]="100"
+        (valueChange)="changeOpacity($event)"
+      ></noah-slider>
     </div>
   </div>
 </div>
