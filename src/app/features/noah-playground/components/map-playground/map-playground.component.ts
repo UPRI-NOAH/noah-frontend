@@ -250,11 +250,11 @@ export class MapPlaygroundComponent
 
   private readonly windGridBounds = {
     west: 105,
-    east: 145,
+    east: 160,
     south: -5,
     north: 30,
   };
-  private readonly windGridCols = 22;
+  private readonly windGridCols = 26;
   private readonly windGridRows = 18;
   private readonly windSettings = {
     count: 1000,
@@ -272,8 +272,12 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
-  private windCurrentForecastDay: WindForecastDay = 0;
-  private windForecastCache: WindGrid | null = null;
+  private windLiveGrid: WindGrid | null = null;
+  private windLiveGridPromise: Promise<WindGrid> | null = null;
+  private windForecastPayload: { points: any[] } | null = null;
+  private windForecastPayloadPromise: Promise<{ points: any[] }> | null = null;
+  private windLoadToken = 0;
+  private windAppliedDay: WindForecastDay | null = null;
 
   constructor(
     private mapService: MapService,
@@ -3502,7 +3506,12 @@ export class MapPlaygroundComponent
   initWind(): void {
     this.resizeWindCanvas();
     this.initWindParticles();
-    this.fetchWindGrid();
+    this.requestWindDay(0);
+
+    // Prefetch the forecast payload in the background so the advance
+    // forecast buttons apply instantly when clicked (the JSON is large and
+    // would otherwise cause a multi-second delay on the first click).
+    this.loadForecastPayload().catch(() => undefined);
 
     this.removeWindResizeListener();
     this.windResizeListener = () => {
@@ -3563,17 +3572,11 @@ export class MapPlaygroundComponent
     this.pgService.selectedWindForecastDay$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe((day) => {
-        if (day !== this.windCurrentForecastDay) {
-          this.windCurrentForecastDay = day;
-          this.fetchWindGrid(day).then(() => {
-            this.windForecastCache = this.windGrid;
-            if (this.windVisible && !this.windMapMoving) {
-              this.stopWindAnimation();
-              this.initWindParticles();
-              this.startWindAnimation();
-            }
-          });
-        }
+        // Skip only when this exact day is already on screen. A fresh click
+        // always (re)triggers loading/applying so no click is ever dropped.
+        if (day === this.windAppliedDay && this.windReady) return;
+
+        this.requestWindDay(day);
       });
   }
 
@@ -3694,99 +3697,187 @@ export class MapPlaygroundComponent
       : { r: 103, g: 255, b: 1 };
   }
 
-  private async fetchWindGrid(dayOffset: WindForecastDay = 0): Promise<void> {
-    const liveUrl = 'https://webgis-static.up.edu.ph/api/wind/wind_grid.json';
-    const forecastUrl =
-      'https://webgis-static.up.edu.ph/api/wind/wind_forecast_grid.json';
+  private requestWindDay(day: WindForecastDay): void {
+    const token = ++this.windLoadToken;
 
-    try {
-      const url = dayOffset === 0 ? liveUrl : forecastUrl;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`wind API returned ${res.status}`);
+    const apply = (grid: WindGrid): void => {
+      // A newer request superseded this one; discard stale results so live
+      // and forecast data never overwrite each other.
+      if (token !== this.windLoadToken) return;
 
-      const data = await res.json();
+      this.windGrid = grid;
+      this.windReady = true;
+      this.windAppliedDay = day;
+      this.applyWindGrid();
+    };
 
-      if (dayOffset === 0) {
-        const points = data.points || [];
-        const uGrid: number[][] = [];
-        const vGrid: number[][] = [];
-        let idx = 0;
+    const handleError = (): void => {
+      if (token !== this.windLoadToken) return;
 
-        for (let r = 0; r < this.windGridRows; r++) {
-          const uRow: number[] = [];
-          const vRow: number[] = [];
+      console.error('Wind fetch failed, using calm fallback');
+      this.windGrid = null;
+      this.windReady = false;
+    };
 
-          for (let c = 0; c < this.windGridCols; c++) {
-            const entry = points[idx++];
-            const speed = entry?.speed ?? 0;
-            const direction = entry?.direction ?? 0;
-            const { u, v } = this.metDirToUV(speed, direction);
-
-            uRow.push(u);
-            vRow.push(v);
-          }
-
-          uGrid.push(uRow);
-          vGrid.push(vRow);
-        }
-
-        this.windGrid = { uGrid, vGrid };
-        this.windReady = true;
+    if (day === 0) {
+      if (this.windLiveGrid) {
+        apply(this.windLiveGrid);
         return;
       }
 
-      const hoursPerDay = 24;
-      const startIdx = (dayOffset - 1) * hoursPerDay;
-      const forecastPoints = data.points || [];
-      const uGrid: number[][] = [];
-      const vGrid: number[][] = [];
-      let idx = 0;
+      this.loadLiveWindGrid().then(apply, handleError);
+      return;
+    }
 
-      for (let r = 0; r < this.windGridRows; r++) {
-        const uRow: number[] = [];
-        const vRow: number[] = [];
+    if (this.windForecastPayload) {
+      apply(this.buildForecastGrid(this.windForecastPayload.points, day));
+      return;
+    }
 
-        for (let c = 0; c < this.windGridCols; c++) {
-          const point = forecastPoints[idx++];
-          const forecast = point?.forecast || [];
-          let sumU = 0;
-          let sumV = 0;
-          let count = 0;
+    this.loadForecastPayload()
+      .then((payload) => apply(this.buildForecastGrid(payload.points, day)))
+      .catch(handleError);
+  }
 
-          for (
-            let h = startIdx;
-            h < Math.min(startIdx + hoursPerDay, forecast.length);
-            h++
-          ) {
-            const entry = forecast[h];
-            const speed = entry?.speed ?? 0;
-            const direction = entry?.direction ?? 0;
-            const { u, v } = this.metDirToUV(speed, direction);
-            sumU += u;
-            sumV += v;
-            count++;
-          }
+  private applyWindGrid(): void {
+    if (this.windVisible && !this.windMapMoving) {
+      this.stopWindAnimation();
+      this.initWindParticles();
+      this.startWindAnimation();
+    }
+  }
 
-          if (count > 0) {
-            uRow.push(sumU / count);
-            vRow.push(sumV / count);
-          } else {
-            uRow.push(0);
-            vRow.push(0);
-          }
-        }
+  private loadLiveWindGrid(): Promise<WindGrid> {
+    if (this.windLiveGrid) return Promise.resolve(this.windLiveGrid);
 
-        uGrid.push(uRow);
-        vGrid.push(vRow);
+    // Share one in-flight request so rapid clicks don't fetch the same
+    // endpoint multiple times.
+    if (this.windLiveGridPromise) return this.windLiveGridPromise;
+
+    this.windLiveGridPromise = fetch(
+      'https://webgis-static.up.edu.ph/api/wind/wind_grid.json'
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error(`wind API returned ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        this.windLiveGrid = this.buildLiveGrid(data.points || []);
+        return this.windLiveGrid;
+      })
+      .catch((err) => {
+        this.windLiveGridPromise = null;
+        throw err;
+      });
+
+    return this.windLiveGridPromise;
+  }
+
+  private loadForecastPayload(): Promise<{ points: any[] }> {
+    if (this.windForecastPayload) {
+      return Promise.resolve(this.windForecastPayload);
+    }
+
+    // Share one in-flight request so rapid clicks don't fetch the same
+    // endpoint multiple times.
+    if (this.windForecastPayloadPromise) {
+      return this.windForecastPayloadPromise;
+    }
+
+    this.windForecastPayloadPromise = fetch(
+      'https://webgis-static.up.edu.ph/api/wind/wind_forecast_grid.json'
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error(`wind API returned ${res.status}`);
+        return res.json() as Promise<{ points: any[] }>;
+      })
+      .then((payload) => {
+        this.windForecastPayload = payload;
+        return payload;
+      })
+      .catch((err) => {
+        this.windForecastPayloadPromise = null;
+        throw err;
+      });
+
+    return this.windForecastPayloadPromise;
+  }
+
+  private buildLiveGrid(points: any[]): WindGrid {
+    const uGrid: number[][] = [];
+    const vGrid: number[][] = [];
+    let idx = 0;
+
+    for (let r = 0; r < this.windGridRows; r++) {
+      const uRow: number[] = [];
+      const vRow: number[] = [];
+
+      for (let c = 0; c < this.windGridCols; c++) {
+        const entry = points[idx++];
+        const speed = entry?.speed ?? 0;
+        const direction = entry?.direction ?? 0;
+        const { u, v } = this.metDirToUV(speed, direction);
+
+        uRow.push(u);
+        vRow.push(v);
       }
 
-      this.windGrid = { uGrid, vGrid };
-      this.windReady = true;
-    } catch (err) {
-      console.error('Wind fetch failed, using calm fallback:', err);
-      this.windGrid = null;
-      this.windReady = false;
+      uGrid.push(uRow);
+      vGrid.push(vRow);
     }
+
+    return { uGrid, vGrid };
+  }
+
+  private buildForecastGrid(
+    points: any[],
+    dayOffset: WindForecastDay
+  ): WindGrid {
+    const today = new Date();
+    const target = new Date(today);
+    target.setDate(today.getDate() + dayOffset);
+    const targetDateStr = target.toISOString().slice(0, 10);
+
+    const uGrid: number[][] = [];
+    const vGrid: number[][] = [];
+    let idx = 0;
+
+    for (let r = 0; r < this.windGridRows; r++) {
+      const uRow: number[] = [];
+      const vRow: number[] = [];
+
+      for (let c = 0; c < this.windGridCols; c++) {
+        const point = points[idx++];
+        const dayHours = (point?.forecast || []).filter((hour: any) =>
+          (hour?.time || '').startsWith(targetDateStr)
+        );
+
+        if (!dayHours.length) {
+          uRow.push(0);
+          vRow.push(0);
+          continue;
+        }
+
+        // Average speed across the day, midday-ish direction as a
+        // representative single frame (same approach as the reference demo).
+        const speed =
+          dayHours.reduce(
+            (sum: number, hour: any) => sum + (hour?.speed ?? 0),
+            0
+          ) / dayHours.length;
+        const direction =
+          dayHours[Math.floor(dayHours.length / 2)]?.direction ?? 0;
+        const { u, v } = this.metDirToUV(speed, direction);
+
+        uRow.push(u);
+        vRow.push(v);
+      }
+
+      uGrid.push(uRow);
+      vGrid.push(vRow);
+    }
+
+    return { uGrid, vGrid };
   }
 
   private windAt(lng: number, lat: number): { u: number; v: number } {
@@ -3904,18 +3995,14 @@ export class MapPlaygroundComponent
     this.windLastTimestamp = timestamp;
     const timeScale = Math.min(dt, 0.1) * 60;
 
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+    ctx.globalCompositeOperation = 'destination-in';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'source-over';
 
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 0.3;
     ctx.lineCap = 'round';
-    /*
-    ctx.lineWidth = 0.5;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#FF1F80';
-    */
+    ctx.strokeStyle = this.windSettings.color;
     const bounds = this.getSafeMapBounds();
     if (!bounds) {
       this.windAnimationFrame = requestAnimationFrame((ts) =>
@@ -3994,33 +4081,14 @@ export class MapPlaygroundComponent
         continue;
       }
 
-      const tailLengthPx = 4;
-      const headLengthPx = 2;
-
-      const headX = prevPx.x + dirX * headLengthPx;
-      const headY = prevPx.y + dirY * headLengthPx;
-      const tailX = prevPx.x - dirX * tailLengthPx;
-      const tailY = prevPx.y - dirY * tailLengthPx;
-
-      const gradient = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      const { r, g, b } = this.hexToRgb(this.windSettings.color);
-      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
-      gradient.addColorStop(0.65, `rgba(${r}, ${g}, ${b}, 0.45)`);
-      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.95)`);
-
-      ctx.strokeStyle = gradient;
-
       ctx.globalAlpha = 0.95;
-
       ctx.beginPath();
-      ctx.moveTo(tailX, tailY);
-      ctx.lineTo(headX, headY);
+      ctx.moveTo(prevPx.x, prevPx.y);
+      ctx.lineTo(
+        prevPx.x + dirX * dashLengthPx,
+        prevPx.y + dirY * dashLengthPx
+      );
       ctx.stroke();
-
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
-      ctx.beginPath();
-      ctx.arc(headX, headY, 1.1, 0, Math.PI * 2);
-      ctx.fill();
     }
 
     this.windAnimationFrame = requestAnimationFrame((nextTimestamp) =>
