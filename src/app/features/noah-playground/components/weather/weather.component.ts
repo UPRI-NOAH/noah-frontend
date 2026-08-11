@@ -23,7 +23,7 @@ export class WeatherComponent implements OnInit {
 
   get displayName(): string {
     if (this.name === 'NOAA') {
-      return 'NOAA GFS';
+      return 'NOAA Global Forecast System (GFS)';
     }
     return this.name.replace('-', ' + ');
   }
