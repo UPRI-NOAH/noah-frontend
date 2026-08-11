@@ -390,6 +390,7 @@ type NoahPlaygroundState = {
     shown: boolean;
     expanded: boolean;
     selectedType: ContourMapType;
+    opacity: number;
   };
   iotMunicipalities: IotMunicipalitiesState;
   boundaries: BoundariesGroupState;
@@ -649,9 +650,10 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   contourMaps: {
-    shown: false,
+    shown: true,
     expanded: false,
     selectedType: '1hr',
+    opacity: 100,
   },
   typhoonTrack: {
     shown: true,
@@ -701,7 +703,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
     },
   },
   temperature: {
-    shown: true,
+    shown: false,
     expanded: false,
     selectedType: 'heat_index',
     selectedForecastDay: 1,
