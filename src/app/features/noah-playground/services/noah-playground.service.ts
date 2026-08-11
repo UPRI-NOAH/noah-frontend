@@ -14,6 +14,7 @@ import {
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
+  NoaaForecastDay,
   VolcanoGroupState,
   VolcanoType,
   VolcanoState,
@@ -191,6 +192,12 @@ export class NoahPlaygroundService {
   get selectedWeatherSatellite$(): Observable<WeatherSatelliteType> {
     return this.store.state$.pipe(
       map((state) => state.weatherSatellite.selectedType)
+    );
+  }
+
+  get selectedNoaaForecastDay$(): Observable<NoaaForecastDay> {
+    return this.store.state$.pipe(
+      map((state) => state.weatherSatellite.selectedNoaaForecastDay)
     );
   }
 
@@ -1182,6 +1189,15 @@ export class NoahPlaygroundService {
       { weatherSatellite },
       `Select Weather Satellite type: ${weatherType}`
     );
+  }
+
+  selectNoaaForecastDay(day: NoaaForecastDay): void {
+    const weatherSatellite = {
+      ...this.store.state.weatherSatellite,
+      selectedNoaaForecastDay: day,
+    };
+
+    this.store.patch({ weatherSatellite }, `Select NOAA forecast day: ${day}`);
   }
 
   toggleZoomForLaguna(): void {

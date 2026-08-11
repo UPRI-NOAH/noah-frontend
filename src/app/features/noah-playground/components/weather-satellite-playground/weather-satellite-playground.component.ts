@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
-import {
-  WeatherSatelliteType,
-  WEATHER_SATELLITE_ARR,
-} from '@features/noah-playground/store/noah-playground.store';
+import { WEATHER_SATELLITE_ARR } from '@features/noah-playground/store/noah-playground.store';
 import { Observable } from 'rxjs';
 
 @Component({

@@ -85,6 +85,8 @@ import {
   WeatherSatelliteState,
   WeatherSatelliteType,
   WeatherSatelliteTypeState,
+  NoaaForecastDay,
+  NOAA_FORECAST_DAYS,
   WEATHER_SATELLITE_ARR,
   QC_DEFAULT_CENTER,
   QuezonCityCriticalFacilitiesState,
@@ -278,6 +280,7 @@ export class MapPlaygroundComponent
   private windForecastPayloadPromise: Promise<{ points: any[] }> | null = null;
   private windLoadToken = 0;
   private windAppliedDay: WindForecastDay | null = null;
+  private noaaVideos: HTMLVideoElement[] = [];
 
   constructor(
     private mapService: MapService,
@@ -344,6 +347,12 @@ export class MapPlaygroundComponent
     this.stopWindAnimation();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
+    this.noaaVideos.forEach((video) => {
+      video.pause();
+      video.removeAttribute('src');
+      video.remove();
+    });
+    this.noaaVideos = [];
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
@@ -2382,7 +2391,14 @@ export class MapPlaygroundComponent
           'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.mp4',
         type: 'video',
       },
+      NOAA: {
+        url: 'https://webgis-static.up.edu.ph/api/noaa_gfs/noaa_gfs_forecast_day1.mp4',
+        type: 'video',
+      },
     };
+
+    const noaaUrl = (day: NoaaForecastDay): string =>
+      `https://webgis-static.up.edu.ph/api/noaa_gfs/noaa_gfs_forecast_day${day}.mp4`;
 
     const getWeatherSatelliteSource = (weatherSatelliteDetails: {
       url: string;
@@ -2427,9 +2443,86 @@ export class MapPlaygroundComponent
         //    We also append the video element to the DOM (hidden) because iOS
         //    Safari requires a DOM-attached video to render it as a WebGL texture.
         const videoSource = this.map.getSource(weatherType) as any;
+
+        // Cache of preloaded NOAA forecast videos, one per forecast day, so
+        // switching between forecast days is instant (no network wait).
+        const noaaVideoCache: Partial<
+          Record<NoaaForecastDay, HTMLVideoElement>
+        > = {};
+        const noaaVideoReady: Record<NoaaForecastDay, boolean> = {
+          1: false,
+          2: false,
+          3: false,
+          4: false,
+          5: false,
+        };
+
+        const createNoaaVideo = (day: NoaaForecastDay): HTMLVideoElement => {
+          if (noaaVideoCache[day]) return noaaVideoCache[day];
+
+          const video = document.createElement('video');
+          video.crossOrigin = 'anonymous';
+          video.setAttribute('playsinline', '');
+          video.setAttribute('webkit-playsinline', '');
+          video.muted = true;
+          video.loop = true;
+          video.preload = 'auto';
+          video.src = noaaUrl(day);
+          video.style.cssText =
+            'position:absolute;width:0;height:0;opacity:0;pointer-events:none;';
+          document.body.appendChild(video);
+
+          noaaVideoCache[day] = video;
+          this.noaaVideos.push(video);
+          video.addEventListener(
+            'loadeddata',
+            () => {
+              noaaVideoReady[day] = true;
+              // Keep every forecast playing in the background so swapping to
+              // it is seamless and never freezes on a static frame.
+              video.play().catch(() => undefined);
+              if (
+                this.pgService.getWeatherSatellites()
+                  .selectedNoaaForecastDay === day
+              ) {
+                swapToDay(day);
+              }
+            },
+            { once: true }
+          );
+          video.load();
+
+          return video;
+        };
+
+        const swapToDay = (day: NoaaForecastDay) => {
+          if (weatherType !== 'NOAA' || !videoSource.video) return;
+          if (!noaaVideoCache[day] || !noaaVideoReady[day]) return;
+
+          const nextVideo = noaaVideoCache[day];
+          const previousVideo = videoSource.video as HTMLVideoElement;
+          if (previousVideo === nextVideo) return;
+
+          videoSource.video = nextVideo;
+          nextVideo.play().catch(() => undefined);
+          this.map.triggerRepaint();
+          // Only detach videos that are not part of the cached set (e.g. the
+          // mapbox-created video). Cached videos stay attached so they keep
+          // animating in the background and can be switched back to instantly.
+          if (
+            previousVideo !== nextVideo &&
+            !this.noaaVideos.includes(previousVideo)
+          ) {
+            window.setTimeout(() => previousVideo.remove(), 0);
+          }
+        };
+
         Object.defineProperty(videoSource, 'video', {
           configurable: true,
-          set(el: HTMLVideoElement) {
+          set: (el: HTMLVideoElement) => {
+            if (weatherType === 'NOAA') {
+              el.crossOrigin = 'anonymous';
+            }
             el.setAttribute('playsinline', '');
             el.setAttribute('webkit-playsinline', '');
             el.style.cssText =
@@ -2440,8 +2533,22 @@ export class MapPlaygroundComponent
               writable: true,
               configurable: true,
             });
+            if (weatherType === 'NOAA') {
+              swapToDay(
+                this.pgService.getWeatherSatellites().selectedNoaaForecastDay
+              );
+            }
           },
         });
+
+        if (weatherType === 'NOAA') {
+          // Preload every forecast day so switching buttons is instant.
+          NOAA_FORECAST_DAYS.forEach(({ value }) => createNoaaVideo(value));
+
+          this.pgService.selectedNoaaForecastDay$
+            .pipe(takeUntil(this._unsub), takeUntil(this._changeStyle))
+            .subscribe(swapToDay);
+        }
 
         // 3. Add layer per weather satellite source
         this.map.addLayer({

@@ -12,9 +12,41 @@
     <div class="flex flex-col ml-3">
       <label
         for="selected-weather-satellite-{{ name }}"
-        class="text-lg f-f-r capitalize"
+        class="text-base f-f-r capitalize"
         >{{ displayName }}</label
       >
+    </div>
+  </div>
+  <div *ngIf="name === 'NOAA'">
+    <section class="mt-2 md:px-0 mb-1">
+      <p class="italic text-xs tracking-wide mb-2">
+        <span class="font-bold text-xs">Source:</span>
+        <a
+          href="https://nomads.ncep.noaa.gov/"
+          target="_blank"
+          class="text-xs text-left text-primary"
+        >
+          National Weather Service (NOAA)
+        </a>
+      </p>
+    </section>
+    <div class="flex flex-wrap gap-2">
+      <button
+        *ngFor="let day of noaaForecastDays"
+        type="button"
+        class="px-1 py-1 rounded-md border text-sm focus:outline-none"
+        [disabled]="(selectedWeatherSatellite$ | async) !== 'NOAA'"
+        [ngClass]="
+          (selectedWeatherSatellite$ | async) !== 'NOAA'
+            ? 'opacity-50 cursor-not-allowed bg-white text-gray-400 border-gray-300'
+            : (selectedNoaaForecastDay$ | async) === day.value
+            ? 'bg-primary text-white border-primary'
+            : 'bg-white text-gray-800 border-gray-300'
+        "
+        (click)="selectNoaaForecastDay(day.value)"
+      >
+        {{ day.label }}
+      </button>
     </div>
   </div>
   <div class="flex items-center pt-4">
