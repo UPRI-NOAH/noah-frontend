@@ -58,7 +58,11 @@ export type LandslideHazards =
 
 export type ContourMapType = '1hr' | '3hr' | '6hr' | '12hr' | '24hr';
 
-export const WEATHER_SATELLITE_ARR = ['himawari', 'himawari-GSMAP'] as const;
+export const WEATHER_SATELLITE_ARR = [
+  'himawari',
+  'himawari-GSMAP',
+  'NOAA',
+] as const;
 
 export const LIGHTNING_GROUP_ARR = [
   'realtime-lightning',
@@ -70,6 +74,16 @@ export type LightningType = 'realtime-lightning' | '10mins-lightning';
 export type LightningTypes = typeof LIGHTNING_GROUP_ARR[number];
 
 export type WeatherSatelliteType = typeof WEATHER_SATELLITE_ARR[number];
+
+export const NOAA_FORECAST_DAYS = [
+  { label: '+1D', value: 1 },
+  { label: '+2D', value: 2 },
+  { label: '+3D', value: 3 },
+  { label: '+4D', value: 4 },
+  { label: '+5D', value: 5 },
+] as const;
+
+export type NoaaForecastDay = typeof NOAA_FORECAST_DAYS[number]['value'];
 
 export const TEMPERATURE = ['heat_index', 'max_temperature'] as const;
 
@@ -200,6 +214,7 @@ export type WeatherSatelliteState = {
   shown: boolean;
   expanded: boolean;
   selectedType: WeatherSatelliteType;
+  selectedNoaaForecastDay: NoaaForecastDay;
   types: WeatherSatelliteTypesState;
 };
 
@@ -218,6 +233,7 @@ export type WeatherSatelliteTypeState = {
 export type WeatherSatelliteTypesState = {
   himawari: WeatherSatelliteTypeState;
   'himawari-GSMAP': WeatherSatelliteTypeState;
+  NOAA: WeatherSatelliteTypeState;
 };
 
 export type SensorTypeState = {
@@ -555,11 +571,15 @@ const createInitialValue = (): NoahPlaygroundState => ({
     shown: true,
     expanded: false,
     selectedType: 'himawari',
+    selectedNoaaForecastDay: 1,
     types: {
       himawari: {
         opacity: 70,
       },
       'himawari-GSMAP': {
+        opacity: 70,
+      },
+      NOAA: {
         opacity: 70,
       },
     },
