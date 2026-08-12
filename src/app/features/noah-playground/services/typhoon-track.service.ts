@@ -42,6 +42,12 @@ export class TyphoonTrackService {
     );
   }
 
+  getPagasaTyphoonTracks() {
+    return this.http.get<any>(
+      `${this.BASE_URL}/typhoon_track/pagasa_typhoon.geojson`
+    );
+  }
+
   setNoTyphoonTypeData(val: boolean) {
     this.noTyphoon.next(val);
   }

@@ -12,11 +12,13 @@ import {
 import mapboxgl, { AnySourceData, GeolocateControl, Map } from 'mapbox-gl';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import { TyphoonTrackService } from '@features/noah-playground/services/typhoon-track.service';
 import { combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   shareReplay,
   take,
@@ -42,7 +44,8 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
-    private wuService: WeatherUpdatesService
+    private wuService: WeatherUpdatesService,
+    private typhoonService: TyphoonTrackService
   ) {}
 
   ngOnInit(): void {}
@@ -627,6 +630,19 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       type: 'geojson',
       data: typhoonLayerSourceFile,
     });
+
+    // Detect if there are no active/incoming typhoons and surface it to the UI.
+    this.typhoonService
+      .getPagasaTyphoonTracks()
+      .pipe(first())
+      .toPromise()
+      .then((data: any) => {
+        const hasTyphoon = data?.features?.length > 0;
+        this.typhoonService.setNoTyphoonTypeData(!hasTyphoon);
+      })
+      .catch(() => {
+        this.typhoonService.setNoTyphoonTypeData(false);
+      });
 
     // Add PAR outline source
     const parOutlineSource = `par-outline-source`;
