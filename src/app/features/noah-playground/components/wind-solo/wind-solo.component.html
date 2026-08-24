@@ -7,10 +7,10 @@
   </div>
 
   <div class="wl-timeline">
-    <div class="wl-rail">
-      <div class="wl-rail-fill" [style.width.%]="timelineProgress"></div>
-    </div>
     <div class="wl-days">
+      <div class="wl-rail">
+        <div class="wl-rail-fill" [style.width.%]="timelineProgress"></div>
+      </div>
       <button
         *ngFor="let day of forecastDays; let i = index"
         class="wl-day"

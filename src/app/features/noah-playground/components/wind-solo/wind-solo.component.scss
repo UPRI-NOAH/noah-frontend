@@ -43,15 +43,14 @@
 /* ── Timeline ── */
 .wl-timeline {
   position: relative;
-  padding: 0 2px;
   margin-bottom: 6px;
 }
 
 .wl-rail {
   position: absolute;
   top: 9px;
-  left: 14px;
-  right: 14px;
+  left: calc(100% / 12);
+  right: calc(100% / 12);
   height: 2px;
   background: #7e8185;
   border-radius: 2px;
