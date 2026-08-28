@@ -4323,10 +4323,6 @@ export class MapPlaygroundComponent
         url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
         type: 'image',
       },
-      '24hr-lapse': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/ph_contour.webm',
-        type: 'video',
-      },
     };
 
     const getContourMapSource = (contourMapDetails: {
