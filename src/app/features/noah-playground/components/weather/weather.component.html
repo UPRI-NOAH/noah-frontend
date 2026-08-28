@@ -15,9 +15,26 @@
         class="text-lg f-f-r capitalize"
         >{{ displayName }}</label
       >
+      <span
+        *ngIf="name === 'himawari' || name === 'himawari-GSMAP'"
+        class="text-sm"
+      >
+        <section>
+          <p class="italic text-xs tracking-wide mb-2">
+            <span class="font-bold">Source:</span>
+            <a
+              href="https://www.eorc.jaxa.jp/ptree/"
+              target="_blank"
+              class="text-primary"
+            >
+              JAXA Himawari Monitor P-Tree System
+            </a>
+          </p>
+        </section>
+      </span>
     </div>
   </div>
-  <div class="flex items-center pt-4">
+  <div class="flex items-center pt-2">
     <noah-slider
       label="Opacity"
       [initialValue]="initialOpacityValue"
