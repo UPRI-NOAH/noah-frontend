@@ -1,0 +1,492 @@
+<!-- Desktop View -->
+<div
+  class="
+    hidden
+    lg:flex
+    flex-col flex-auto
+    px-8
+    py-4
+    h-full
+    min-h-0
+    bg-[#F4F7FF]
+  "
+>
+  <!-- Date Picker & Download All -->
+  <div class="flex items-center justify-between mb-4 flex-shrink-0 w-full">
+    <!-- Date Picker Input -->
+    <div class="relative">
+      <input
+        [(ngModel)]="selectedDate"
+        (change)="onDateChange()"
+        type="date"
+        [min]="earliestDate"
+        [max]="latestDate"
+        class="
+          bg-white
+          border border-gray-300
+          text-gray-900 text-sm
+          rounded-lg
+          focus:ring-blue-500 focus:border-blue-500
+          block
+          p-2
+          shadow-sm
+          cursor-pointer
+        "
+      />
+    </div>
+
+    <!-- Download All Button -->
+    <button
+      *ngIf="selectedDate && selectedResults.length > 0"
+      (click)="downloadAll()"
+      class="
+        flex
+        items-center
+        gap-2
+        bg-white
+        border border-gray-300
+        hover:bg-gray-100
+        text-gray-700
+        hover:text-gray-900
+        text-sm
+        font-bold
+        py-2
+        px-4
+        rounded-lg
+        transition-colors
+        duration-150
+        shadow-sm
+      "
+    >
+      <!-- Cloud Download Icon -->
+      <svg
+        class="w-4 h-4 fill-current"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96ZM17 13l-5 5-5-5h3V9h4v4h3Z"
+        />
+      </svg>
+      <span>Download as ZIP</span>
+    </button>
+  </div>
+
+  <!-- Table Area -->
+  <div
+    class="
+      table-wrp
+      overflow-y-auto
+      min-h-0
+      relative
+      block
+      rounded-xl
+      border border-[#C8D8FF]
+      shadow-md
+      max-h-[55vh]
+    "
+  >
+    <table class="w-full text-sm text-left text-gray-500">
+      <!-- Table header Pagination -->
+      <thead
+        class="
+          sticky
+          top-0
+          z-10
+          font-extrabold
+          text-sm
+          uppercase
+          bg-primary
+          text-white
+          shadow-sm
+        "
+      >
+        <tr>
+          <th
+            colspan="2"
+            class="px-6 py-3.5 rounded-t-xl border-b border-primary"
+          >
+            <div class="flex items-center justify-center gap-6 w-full">
+              <!-- Earliest Date (<<) -->
+              <button
+                (click)="goToEarliest()"
+                [disabled]="!hasDate || isEarliest"
+                class="
+                  p-1
+                  disabled:opacity-40
+                  hover:text-blue-200
+                  transition-colors
+                  cursor-pointer
+                "
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
+                  />
+                </svg>
+              </button>
+
+              <!-- Previous Day (<) -->
+              <button
+                (click)="goToPreviousDay()"
+                [disabled]="!hasDate || isEarliest"
+                class="
+                  p-1
+                  disabled:opacity-40
+                  hover:text-blue-200
+                  transition-colors
+                  cursor-pointer
+                "
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5"
+                  />
+                </svg>
+              </button>
+
+              <!-- Current Date Text -->
+              <span class="w-48 text-center text-white text-base tracking-wide">
+                {{
+                  selectedDate
+                    ? (selectedDate | date: 'MMMM dd, yyyy')
+                    : 'No Date Selected'
+                }}
+              </span>
+
+              <!-- Next Day (>) -->
+              <button
+                (click)="goToNextDay()"
+                [disabled]="!hasDate || isLatest"
+                class="
+                  p-1
+                  disabled:opacity-40
+                  hover:text-blue-200
+                  transition-colors
+                  cursor-pointer
+                "
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                  />
+                </svg>
+              </button>
+
+              <!-- Latest Date (>>) -->
+              <button
+                (click)="goToLatest()"
+                [disabled]="!hasDate || isLatest"
+                class="
+                  p-1
+                  disabled:opacity-40
+                  hover:text-blue-200
+                  transition-colors
+                  cursor-pointer
+                "
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5.25 4.5l7.5 7.5-7.5 7.5m6-15l7.5 7.5-7.5 7.5"
+                  />
+                </svg>
+              </button>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Empty State -->
+      <tbody *ngIf="selectedResults.length === 0">
+        <tr>
+          <td colspan="2" class="border-b border-gray-200">
+            <div
+              class="
+                flex flex-col
+                items-center
+                justify-center
+                py-16
+                text-center
+                mx-auto
+                bg-white
+                w-full
+              "
+            >
+              <svg
+                class="w-16 h-16 text-gray-400 mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p class="text-xl text-gray-400 font-bold leading-tight">
+                No archives found for
+                {{ selectedDate | date: 'MMMM dd, yyyy' }}.
+              </p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+
+      <!-- Data Rows -->
+      <tbody class="overflow-auto" *ngIf="selectedResults.length > 0">
+        <tr
+          *ngFor="let result of selectedResults"
+          class="
+            bg-white
+            border-b border-gray-200
+            transition
+            duration-300
+            ease-in-out
+            hover:bg-blue-50
+            text-sm
+          "
+        >
+          <td class="text-gray-700 px-6 py-4 whitespace-nowrap font-bold">
+            {{ result.datetime | date: 'hh:mm:ss a':'UTC' }}
+          </td>
+          <td class="px-6 py-4 text-right whitespace-nowrap">
+            <button
+              (click)="downloadData(result)"
+              class="
+                text-primary
+                hover:text-blue-800
+                font-bold
+                underline
+                transition-colors
+                duration-150
+              "
+            >
+              Download CSV
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Mobile View Container -->
+<div class="flex flex-col h-full lg:hidden pb-2">
+  <!-- Mobile Controls -->
+  <div class="w-full pt-4 flex-shrink-0 flex flex-col gap-4">
+    <!-- Combined Date Navigation & Input -->
+    <div class="flex items-center justify-between gap-2 w-full">
+      <!-- Left Arrows -->
+      <div class="flex items-center flex-shrink-0">
+        <button
+          (click)="goToEarliest()"
+          [disabled]="!hasDate || isEarliest"
+          class="p-1 text-primary disabled:opacity-40 transition-opacity"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+        <button
+          (click)="goToPreviousDay()"
+          [disabled]="!hasDate || isEarliest"
+          class="p-1 text-primary disabled:opacity-40 transition-opacity"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Date Input -->
+      <div class="flex-1 px-1">
+        <input
+          [(ngModel)]="selectedDate"
+          (change)="onDateChange()"
+          type="date"
+          [min]="earliestDate"
+          [max]="latestDate"
+          class="
+            bg-white
+            border border-gray-300
+            text-gray-900 text-sm
+            font-bold
+            rounded-lg
+            focus:ring-blue-500 focus:border-blue-500
+            block
+            w-full
+            p-2
+            text-center
+            shadow-sm
+          "
+        />
+      </div>
+
+      <!-- Right Arrows -->
+      <div class="flex items-center flex-shrink-0">
+        <button
+          (click)="goToNextDay()"
+          [disabled]="!hasDate || isLatest"
+          class="p-1 text-primary disabled:opacity-40 transition-opacity"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+        <button
+          (click)="goToLatest()"
+          [disabled]="!hasDate || isLatest"
+          class="p-1 text-primary disabled:opacity-40 transition-opacity"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.25 4.5l7.5 7.5-7.5 7.5m6-15l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Download all zip -->
+    <div class="flex w-full" *ngIf="selectedDate && selectedResults.length > 0">
+      <button
+        (click)="downloadAll()"
+        class="
+          w-full
+          flex
+          items-center
+          justify-center
+          gap-2
+          bg-primary
+          hover:bg-blue-700
+          text-white
+          font-bold
+          text-sm
+          py-2.5
+          px-4
+          rounded-lg
+          transition-colors
+          duration-150
+          shadow-sm
+        "
+      >
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path
+            d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96ZM17 13l-5 5-5-5h3V9h4v4h3Z"
+          />
+        </svg>
+        <span>Download as ZIP</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Scrollable List -->
+  <div class="flex-1 overflow-y-auto min-h-0 mt-3">
+    <!-- Empty State -->
+    <div
+      *ngIf="selectedResults.length === 0"
+      class="p-8 text-center text-gray-500 bg-gray-100 rounded-lg"
+    >
+      No archives found for this date.
+    </div>
+
+    <!-- List Items -->
+    <div class="flex flex-col gap-2" *ngIf="selectedResults.length > 0">
+      <div
+        *ngFor="let result of selectedResults"
+        class="
+          bg-white
+          border border-gray-300
+          rounded-lg
+          p-4
+          flex flex-row
+          items-center
+          justify-between
+          shadow-sm
+        "
+      >
+        <div class="text-sm text-gray-900 font-medium">
+          {{ result.datetime | date: 'hh:mm:ss a':'UTC' }}
+        </div>
+        <button
+          (click)="downloadData(result)"
+          class="text-primary font-bold text-sm underline"
+        >
+          Download
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
