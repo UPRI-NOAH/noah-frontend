@@ -1905,10 +1905,18 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
-          const hasFeatures = data.features?.length > 0;
+          const features = data?.features ?? [];
+          const agencyUpper = agencyType.toUpperCase();
+          const agencyHasFeatures = features.some(
+            (feature: any) =>
+              feature?.properties?.agency?.toUpperCase() === agencyUpper
+          );
+          const hasData = isPagasa
+            ? agencyHasFeatures || hasMainData
+            : agencyHasFeatures;
 
-          // --- If both main data and this agency's data are empty → disable all layers and remove popups ---
-          if (!hasFeatures && !hasMainData) {
+          // --- If both main data and the shared source are empty → no active/incoming typhoon at all ---
+          if (features.length === 0 && !hasMainData) {
             TYPHOON.forEach((t) => {
               const line = `${t}-line`;
               const points = `${t}-points`;
@@ -1926,12 +1934,13 @@ export class MapPlaygroundComponent
             Array.from(popups).forEach((popup: any) => popup.remove());
             this.typhoonService.setNoTyphoonTypeData(true);
             this.typhoonService.setNoData(false);
+            this.pgService.setTyphoonTypeFetched(agencyType, false);
 
             return;
           }
 
-          // --- If GeoJSON is empty and not PAGASA - disable layer ---
-          if (!hasFeatures && !isPagasa) {
+          // --- If this agency has no data in the shared source → keep its layer and toggle disabled ---
+          if (!hasData) {
             if (this.map.getLayer(lineId)) {
               this.map.setLayoutProperty(lineId, 'visibility', 'none');
               this.map.setPaintProperty(lineId, 'line-opacity', 0);
@@ -1942,11 +1951,12 @@ export class MapPlaygroundComponent
             }
             this.typhoonService.setNoData(true);
             this.typhoonService.setNoTyphoonTypeData(false);
+            this.pgService.setTyphoonTypeFetched(agencyType, false);
             return;
           }
 
           // --- PAGASA with data → enable layer (unless we want to hide it) ---
-          if (isPagasa && hasFeatures) {
+          if (isPagasa) {
             const visibility = pagasaShouldBeHidden ? 'none' : 'visible';
             const opacity = pagasaShouldBeHidden ? 0 : 1;
 
@@ -1961,8 +1971,6 @@ export class MapPlaygroundComponent
           }
 
           // add layers if not exists
-          const agencyUpper = agencyType.toUpperCase();
-
           if (!this.map.getLayer(lineId)) {
             this.map.addLayer({
               id: lineId,
@@ -1976,11 +1984,7 @@ export class MapPlaygroundComponent
               paint: {
                 'line-width': 4,
                 'line-color': TYPHOON_TRACK_COLORS[agencyType],
-                'line-opacity': hasFeatures
-                  ? pagasaShouldBeHidden && isPagasa
-                    ? 0
-                    : 1
-                  : 0,
+                'line-opacity': pagasaShouldBeHidden && isPagasa ? 0 : 1,
               },
             });
           }
@@ -1998,11 +2002,7 @@ export class MapPlaygroundComponent
               paint: {
                 'circle-radius': 7,
                 'circle-color': TYPHOON_TRACK_COLORS[agencyType],
-                'circle-opacity': hasFeatures
-                  ? pagasaShouldBeHidden && isPagasa
-                    ? 0
-                    : 1
-                  : 0,
+                'circle-opacity': pagasaShouldBeHidden && isPagasa ? 0 : 1,
               },
             });
           }
@@ -2015,7 +2015,7 @@ export class MapPlaygroundComponent
             .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
             .subscribe(([groupShown, weatherUpdatesShown, soloShown]) => {
               const visibleByToggle =
-                groupShown && weatherUpdatesShown && soloShown && hasFeatures;
+                groupShown && weatherUpdatesShown && soloShown && hasData;
 
               // Apply PAGASA hide condition
               const finalVisibility =
@@ -2052,6 +2052,10 @@ export class MapPlaygroundComponent
 
           this.pgService.setTyphoonTypeFetched(agencyType, true);
           this.showTyphoon(agencyType);
+        })
+        .catch(() => {
+          this.typhoonService.setNoData(true);
+          this.pgService.setTyphoonTypeFetched(agencyType, false);
         });
     });
 
