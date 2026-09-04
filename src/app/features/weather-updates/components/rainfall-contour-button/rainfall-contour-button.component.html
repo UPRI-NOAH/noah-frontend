@@ -81,6 +81,29 @@
     <div class="w-full flex justify-center px-6 md:px-0">
       <img [src]="getLegendSrc(activeRainfallContourType)" />
     </div>
+    <div class="px-6 mt-3">
+      <div class="flex">
+        <div class="w-10/12">
+          <input
+            class="w-full swiper-no-swiping"
+            type="range"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            [formControl]="sliderCtrl"
+            (input)="changeOpacity()"
+          />
+
+          <div class="flex justify-between text-xs text-gray-600 mx-1">
+            <span class="w-8 text-left">{{ min }}</span>
+            <span class="w-8 text-right">{{ max }}</span>
+          </div>
+        </div>
+        <div class="pl-2 w-2/12">
+          {{ sliderCtrl.value }}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -167,6 +190,29 @@
   <div>
     <div class="w-full flex justify-center px-6 md:px-0">
       <img [src]="getLegendSrc('forecast')" />
+    </div>
+    <div class="px-6 mt-3">
+      <div class="flex">
+        <div class="w-10/12">
+          <input
+            class="w-full swiper-no-swiping"
+            type="range"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            [formControl]="sliderCtrl"
+            (input)="changeOpacity()"
+          />
+
+          <div class="flex justify-between text-xs text-gray-600 mx-1">
+            <span class="w-8 text-left">{{ min }}</span>
+            <span class="w-8 text-right">{{ max }}</span>
+          </div>
+        </div>
+        <div class="pl-2 w-2/12">
+          {{ sliderCtrl.value }}
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -304,6 +350,29 @@
         <div class="w-full flex justify-center px-6 md:px-0">
           <img [src]="getLegendSrc(temperatureType)" />
         </div>
+        <div class="px-6 mt-3">
+          <div class="flex">
+            <div class="w-10/12">
+              <input
+                class="w-full swiper-no-swiping"
+                type="range"
+                [min]="min"
+                [max]="max"
+                [step]="step"
+                [formControl]="sliderCtrl"
+                (input)="changeOpacity()"
+              />
+
+              <div class="flex justify-between text-xs text-gray-600 mx-1">
+                <span class="w-8 text-left">{{ min }}</span>
+                <span class="w-8 text-right">{{ max }}</span>
+              </div>
+            </div>
+            <div class="pl-2 w-2/12">
+              {{ sliderCtrl.value }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -410,6 +479,29 @@
       <div class="w-full flex justify-center px-6 md:px-0">
         <img [src]="getLegendSrc(rainfallContourType)" />
       </div>
+      <div class="px-6 mt-3">
+        <div class="flex">
+          <div class="w-10/12">
+            <input
+              class="w-full swiper-no-swiping"
+              type="range"
+              [min]="min"
+              [max]="max"
+              [step]="step"
+              [formControl]="sliderCtrl"
+              (input)="changeOpacity()"
+            />
+
+            <div class="flex justify-between text-xs text-gray-600 mx-1">
+              <span class="w-8 text-left">{{ min }}</span>
+              <span class="w-8 text-right">{{ max }}</span>
+            </div>
+          </div>
+          <div class="pl-2 w-2/12">
+            {{ sliderCtrl.value }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -432,6 +524,15 @@
     </section>
   </ng-container>
 </div>
+
+<!-- More Options (typhoon track) placed below rainfall for tomorrow -->
+<div class="hidden md:block">
+  <header class="text-lg font-bold leading-tight mt-5 pb-1">
+    More Options
+  </header>
+  <noah-typhoon-track-group></noah-typhoon-track-group>
+</div>
+
 <ng-container>
   <section class="px-5 md:px-0 md:block hidden pb-3">
     <p class="mt-5 text-lg tracking-wide">
@@ -563,37 +664,30 @@
         <div class="w-full flex justify-center px-6 md:px-0">
           <img [src]="getLegendSrc(temperatureType)" />
         </div>
+        <div class="px-6 mt-3">
+          <div class="flex">
+            <div class="w-10/12">
+              <input
+                class="w-full swiper-no-swiping"
+                type="range"
+                [min]="min"
+                [max]="max"
+                [step]="step"
+                [formControl]="sliderCtrl"
+                (input)="changeOpacity()"
+              />
+
+              <div class="flex justify-between text-xs text-gray-600 mx-1">
+                <span class="w-8 text-left">{{ min }}</span>
+                <span class="w-8 text-right">{{ max }}</span>
+              </div>
+            </div>
+            <div class="pl-2 w-2/12">
+              {{ sliderCtrl.value }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </ng-container>
-
-<div class="md:mb-4">
-  <section class="px-6 md:px-0 mt-2 md:mt-4">
-    <header class="text-lg font-bold leading-tight">Opacity</header>
-
-    <div class="px-6 mt-4">
-      <div class="flex">
-        <div class="w-10/12">
-          <input
-            class="w-full swiper-no-swiping"
-            type="range"
-            [min]="min"
-            [max]="max"
-            [step]="step"
-            [formControl]="sliderCtrl"
-            (input)="changeOpacity()"
-          />
-
-          <div class="flex justify-between text-xs text-gray-600 mx-1">
-            <span class="w-8 text-left">{{ min }}</span>
-            <span class="w-8 text-right">{{ max }}</span>
-          </div>
-        </div>
-        <div class="pl-2 w-2/12">
-          {{ sliderCtrl.value }}
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
