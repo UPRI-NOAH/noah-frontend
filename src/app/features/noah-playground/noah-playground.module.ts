@@ -41,6 +41,7 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
 import { TemperatureSoloComponent } from './components/temperature-solo/temperature-solo.component';
 import { WindGroupComponent } from './components/wind-group/wind-group.component';
 import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
+import { RiverbasinComponent } from './components/riverbasin/riverbasin.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { WindSoloComponent } from './components/wind-solo/wind-solo.component';
     TemperatureSoloComponent,
     WindGroupComponent,
     WindSoloComponent,
+    RiverbasinComponent,
   ],
   imports: [
     CommonModule,
