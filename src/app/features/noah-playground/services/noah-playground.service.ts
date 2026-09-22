@@ -297,6 +297,18 @@ export class NoahPlaygroundService {
     );
   }
 
+  get riverbasinShown$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riverbasin.shown));
+  }
+
+  get riverbasinExpanded$(): Observable<boolean> {
+    return this.store.state$.pipe(map((state) => state.riverbasin.expanded));
+  }
+
+  get riverbasinOpacity$(): Observable<number> {
+    return this.store.state$.pipe(map((state) => state.riverbasin.opacity));
+  }
+
   getHazardData(): Promise<{ url: string; sourceLayer: string[] }[]> {
     return this.http
       .get<{ url: string; sourceLayer: string[] }[]>(
@@ -1506,5 +1518,42 @@ export class NoahPlaygroundService {
       { weatherUpdates },
       `update Weather Updates state expanded to ${!expanded}`
     );
+  }
+
+  toggleRiverbasinGroupVisibility(): void {
+    const riverbasin = {
+      ...this.store.state.riverbasin,
+    };
+
+    const { shown } = riverbasin;
+    riverbasin.shown = !shown;
+
+    this.store.patch(
+      { riverbasin },
+      `Riverbasin Group State shown to ${!shown}`
+    );
+  }
+
+  toggleRiverbasinGroupExpansion(): void {
+    const riverbasin = {
+      ...this.store.state.riverbasin,
+    };
+
+    const { expanded } = riverbasin;
+    riverbasin.expanded = !expanded;
+
+    this.store.patch(
+      { riverbasin },
+      `update Riverbasin state expanded to ${!expanded}`
+    );
+  }
+
+  setRiverbasinOpacity(opacity: number): void {
+    const riverbasin = {
+      ...this.store.state.riverbasin,
+      opacity,
+    };
+
+    this.store.patch({ riverbasin }, `Riverbasin opacity set to ${opacity}`);
   }
 }
