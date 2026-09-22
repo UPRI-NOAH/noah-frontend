@@ -571,7 +571,7 @@
                 class="w-full"
               ></noah-weather-satellite-playground>
               <noah-typhoon-track-group></noah-typhoon-track-group>
-<!--               <noah-temperature></noah-temperature> -->
+              <!--               <noah-temperature></noah-temperature> -->
               <noah-contour-maps></noah-contour-maps>
               <noah-lightning-group></noah-lightning-group>
               <noah-wind-group></noah-wind-group>
@@ -612,6 +612,7 @@
       <noah-sensors-group></noah-sensors-group> -->
 
       <noah-qc-sensors-group></noah-qc-sensors-group>
+      <noah-riverbasin *ngIf="hideBoundaries" class="w-full"></noah-riverbasin>
       <noah-boundaries-group
         *ngIf="hideBoundaries"
         class="w-full"

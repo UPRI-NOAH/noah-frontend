@@ -337,6 +337,7 @@ export class MapPlaygroundComponent
         this.initTemperature();
         this.initWeatherUpdates();
         this.initWind();
+        this.initRiverbasin();
       });
   }
 
@@ -1710,6 +1711,7 @@ export class MapPlaygroundComponent
           'raster-opacity': 0,
         },
       });
+      this._removeOverlayOnLoadError(rainType, [rainType]);
 
       const soloShown$ = this.pgService.rainForcastShown$.pipe(shareReplay(1));
 
@@ -1729,7 +1731,9 @@ export class MapPlaygroundComponent
             newOpacity = rainForeCast.opacity / 100;
           }
           // let opacity = +(allShown && groupShown);
-          this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
+          if (this.map.getLayer(rainType)) {
+            this.map.setPaintProperty(rainType, 'raster-opacity', newOpacity);
+          }
         });
     });
   }
@@ -2275,6 +2279,7 @@ export class MapPlaygroundComponent
             'raster-opacity': 0,
           },
         });
+        this._removeOverlayOnLoadError(temperatureType, [temperatureType]);
 
         const soloShown$ = this.pgService.temperatureShown$.pipe(
           shareReplay(1)
@@ -2304,11 +2309,13 @@ export class MapPlaygroundComponent
             if (newOpacity) {
               newOpacity = temperatureOpacity / 100;
             }
-            this.map.setPaintProperty(
-              temperatureType,
-              'raster-opacity',
-              newOpacity
-            );
+            if (this.map.getLayer(temperatureType)) {
+              this.map.setPaintProperty(
+                temperatureType,
+                'raster-opacity',
+                newOpacity
+              );
+            }
           });
 
         selectedForecastDay$
@@ -2453,6 +2460,7 @@ export class MapPlaygroundComponent
             'raster-opacity': 0,
           },
         });
+        this._removeOverlayOnLoadError(weatherType, [weatherType]);
 
         // const allShown$ = this.pgService.weatherSatellitesShown$.pipe(
         //   distinctUntilChanged(),
@@ -2502,7 +2510,13 @@ export class MapPlaygroundComponent
                 opacity = weatherTypeOpacity / 100;
               }
 
-              this.map.setPaintProperty(weatherType, 'raster-opacity', opacity);
+              if (this.map.getLayer(weatherType)) {
+                this.map.setPaintProperty(
+                  weatherType,
+                  'raster-opacity',
+                  opacity
+                );
+              }
             }
           );
       }
@@ -3160,6 +3174,183 @@ export class MapPlaygroundComponent
     );
   }
   // end of boundaries
+
+  initRiverbasin() {
+    const riverbasinLayers = [
+      {
+        layerID: 'upri-noah.ph_rb_latest_tls-area',
+        sourceID: 'upri-noah.ph_rb_latest_tls',
+        url: 'mapbox://upri-noah.ph_rb_latest_tls',
+        sourceLayer: 'ph_rb_latest',
+        type: 'fill' as const,
+        paint: {
+          'fill-color': '#000000',
+          'fill-opacity': 0,
+        },
+      },
+      {
+        layerID: 'upri-noah.ph_rb_latest_tls',
+        sourceID: 'upri-noah.ph_rb_latest_tls',
+        url: 'mapbox://upri-noah.ph_rb_latest_tls',
+        sourceLayer: 'ph_rb_latest',
+        type: 'line' as const,
+        paint: {
+          'line-color': '#000000',
+          'line-width': 1.5,
+          'line-opacity': 1,
+        },
+      },
+      {
+        layerID: 'upri-noah.ph_rb_outline_tls',
+        sourceID: 'upri-noah.ph_rb_outline_tls',
+        url: 'mapbox://upri-noah.ph_rb_outline_tls',
+        sourceLayer: 'ph_rb_outline',
+        type: 'line' as const,
+        paint: {
+          'line-color': '#000000',
+          'line-width': 3,
+          'line-opacity': 1,
+        },
+      },
+    ];
+
+    riverbasinLayers.forEach((layer) => {
+      if (!this.map.getSource(layer.sourceID)) {
+        this.map.addSource(layer.sourceID, {
+          type: 'vector',
+          url: layer.url,
+        });
+      }
+
+      if (!this.map.getLayer(layer.layerID)) {
+        this.map.addLayer({
+          id: layer.layerID,
+          type: layer.type,
+          source: layer.sourceID,
+          'source-layer': layer.sourceLayer,
+          layout: {
+            visibility: 'none',
+          },
+          paint: layer.paint,
+        });
+      }
+    });
+
+    this.pgService.riverbasinShown$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((shown) => {
+        const visibility = shown ? 'visible' : 'none';
+        riverbasinLayers.forEach((layer) => {
+          if (this.map.getLayer(layer.layerID)) {
+            this.map.setLayoutProperty(layer.layerID, 'visibility', visibility);
+          }
+        });
+      });
+
+    this.pgService.riverbasinOpacity$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((opacity) => {
+        ['upri-noah.ph_rb_latest_tls', 'upri-noah.ph_rb_outline_tls'].forEach(
+          (layerID) => {
+            if (this.map.getLayer(layerID)) {
+              this.map.setPaintProperty(layerID, 'line-opacity', opacity / 100);
+            }
+          }
+        );
+      });
+
+    const riverbasinPopup = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: true,
+      className: 'riverbasin-popup',
+    });
+
+    this.pgService.riverbasinShown$
+      .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
+      .subscribe((shown) => {
+        if (!shown && riverbasinPopup.isOpen()) {
+          riverbasinPopup.remove();
+        }
+      });
+
+    const riverbasinLayersWithPopups = [
+      {
+        layerID: 'upri-noah.ph_rb_latest_tls-area',
+        fields: [
+          ['Name', 'Final_Name'],
+          ['River Basin', 'RiverBasin'],
+          ['Watershed', 'Watershed_'],
+        ],
+      },
+      {
+        layerID: 'upri-noah.ph_rb_latest_tls',
+        fields: [
+          ['Name', 'Final_Name'],
+          ['River Basin', 'RiverBasin'],
+          ['Watershed', 'Watershed_'],
+        ],
+      },
+    ];
+
+    riverbasinLayersWithPopups.forEach(({ layerID, fields }) => {
+      this.map.on('click', layerID, (e: any) => {
+        const feature = e.features && e.features[0];
+        if (!feature) {
+          return;
+        }
+
+        const props = feature.properties || {};
+        const rows = fields
+          .map(([label, key]) => {
+            const value = props[key];
+            const display =
+              value === null || value === undefined || value === ''
+                ? 'N/A'
+                : value;
+            return `<div><strong>${label}:</strong> ${display}</div>`;
+          })
+          .join('');
+
+        riverbasinPopup
+          .setLngLat(e.lngLat)
+          .setHTML(
+            `<div style="color: #333333; font-size: 13px; line-height: 1.5;">${rows}</div>`
+          )
+          .addTo(this.map);
+      });
+
+      this.map.on('mouseenter', layerID, () => {
+        this.map.getCanvas().style.cursor = 'pointer';
+      });
+
+      this.map.on('mouseleave', layerID, () => {
+        this.map.getCanvas().style.cursor = '';
+      });
+    });
+  }
+
+  private _removeOverlayOnLoadError(sourceId: string, layerIds: string[]) {
+    const source = this.map.getSource(sourceId) as any;
+    if (!source || typeof source.on !== 'function') {
+      return;
+    }
+
+    source.on('error', () => {
+      if (!this.map.getSource(sourceId)) {
+        return;
+      }
+
+      layerIds.forEach((layerId) => {
+        if (this.map.getLayer(layerId)) {
+          this.map.removeLayer(layerId);
+        }
+      });
+
+      if (this.map.getSource(sourceId)) {
+        this.map.removeSource(sourceId);
+      }
+    });
+  }
 
   showDataPoints(sensorType: SensorType) {
     const graphDiv = document.getElementById('graph-dom');
@@ -4371,6 +4562,7 @@ export class MapPlaygroundComponent
           'raster-opacity': 0,
         },
       });
+      this._removeOverlayOnLoadError(contourType, [contourType]);
 
       const weatherUpdateShown$ = this.pgService.weatherUpdatesGroupShown$.pipe(
         shareReplay(1)
@@ -4396,7 +4588,9 @@ export class MapPlaygroundComponent
           )
         )
         .subscribe((opacity: number) => {
-          this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+          if (this.map.getLayer(contourType)) {
+            this.map.setPaintProperty(contourType, 'raster-opacity', opacity);
+          }
         });
     });
   }
