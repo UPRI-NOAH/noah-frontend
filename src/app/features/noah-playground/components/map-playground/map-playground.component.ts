@@ -3260,8 +3260,8 @@ export class MapPlaygroundComponent
       });
 
     const riverbasinPopup = new mapboxgl.Popup({
-      closeButton: true,
-      closeOnClick: true,
+      closeButton: false,
+      closeOnClick: false,
       className: 'riverbasin-popup',
     });
 
