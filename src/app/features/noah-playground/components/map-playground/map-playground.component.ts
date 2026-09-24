@@ -3260,8 +3260,8 @@ export class MapPlaygroundComponent
       });
 
     const riverbasinPopup = new mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false,
+      closeButton: true,
+      closeOnClick: true,
       className: 'riverbasin-popup',
     });
 
@@ -3277,17 +3277,15 @@ export class MapPlaygroundComponent
       {
         layerID: 'upri-noah.93y7a8ygfign-area',
         fields: [
-          ['Name', 'Final_Name'],
-          ['River Basin', 'RiverBasin'],
-          ['Watershed', 'Watershed_'],
+          ['Name:', 'Final_Name'],
+          ['Watershed:', 'Watershed_'],
         ],
       },
       {
         layerID: 'upri-noah.93y7a8ygfign',
         fields: [
-          ['Name', 'Final_Name'],
-          ['River Basin', 'RiverBasin'],
-          ['Watershed', 'Watershed_'],
+          ['Name:', 'Final_Name'],
+          ['Watershed:', 'Watershed_'],
         ],
       },
     ];
