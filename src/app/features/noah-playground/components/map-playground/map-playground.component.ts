@@ -3263,6 +3263,7 @@ export class MapPlaygroundComponent
       closeButton: true,
       closeOnClick: true,
       className: 'riverbasin-popup',
+      maxWidth: 'none',
     });
 
     this.pgService.riverbasinShown$

@@ -96,7 +96,8 @@
 }
 
 .riverbasin-popup .mapboxgl-popup-content {
-  width: 300px;
+  width: max-content;
+  max-width: min(90vw, 480px);
   padding: 14px;
   border: 0;
   border-radius: 8px;
@@ -117,7 +118,7 @@
 
 .riverbasin-popup .mapboxgl-popup-close-button {
   top: 6px;
-  right: 7px;
+  right: 0px;
   width: 22px;
   height: 22px;
   padding: 0;
