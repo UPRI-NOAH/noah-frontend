@@ -6,6 +6,12 @@
     </a>
   </p>
 </section>
+<div
+  class="left-0 bottom-0 md:text-base text-xs italic pl-4 ml-6 text-gray-400"
+  *ngIf="noTyphoon$ | async"
+>
+  (No Active/Incoming Typhoon)
+</div>
 <div class="py-2 flex flex-col">
   <div class="text-xl font-semibold">Legend:</div>
   <img

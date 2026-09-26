@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
+import { TyphoonTrackService } from '@features/noah-playground/services/typhoon-track.service';
 import { WEATHER_SATELLITE_ARR } from '@features/weather-updates/store/weather-updates.store';
 import { Observable } from 'rxjs';
 @Component({
@@ -13,8 +14,12 @@ export class TyphoonTrackSoloComponent implements OnInit {
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
+  noTyphoon$ = this.typhoonService.noTyphoon$;
 
-  constructor(private wuService: WeatherUpdatesService) {}
+  constructor(
+    private wuService: WeatherUpdatesService,
+    private typhoonService: TyphoonTrackService
+  ) {}
 
   displayLegend = [
     {
