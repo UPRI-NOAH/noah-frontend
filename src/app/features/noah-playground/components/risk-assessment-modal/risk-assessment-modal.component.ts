@@ -13,7 +13,7 @@ import { first } from 'rxjs/operators';
 })
 export class RiskAssessmentModalComponent implements OnInit {
   affectedData: AffectedData[] = [];
-  riskModal = false;
+  riskModal = true;
   searchValue: string;
   sortField = '';
   sortDirection = 'descending';
@@ -34,6 +34,8 @@ export class RiskAssessmentModalComponent implements OnInit {
   archieveDateTime: string;
   archieveDownload: string;
   dropdown: string[] = [];
+
+  activeTab = 1;
 
   constructor(
     private riskAssessment: RiskAssessmentService,
@@ -79,6 +81,10 @@ export class RiskAssessmentModalComponent implements OnInit {
     this.loadData(this.currentPage);
     this.loadDateText();
     this.archiveData();
+  }
+
+  setTab(tab: number) {
+    this.activeTab = tab;
   }
 
   showSelectDate() {
