@@ -21,8 +21,8 @@ export class WindSoloComponent implements OnInit, OnDestroy {
   forecastDays = WIND_FORECAST_DAYS;
   selectedForecastDay$: Observable<WindForecastDay>;
 
-  initialParticleCountValue: number = 1000;
-  initialSpeedValue: number = 0.5;
+  initialParticleCountValue: number = 2000;
+  initialSpeedValue: number = 2;
   initialColorValue: string = '#67FF01';
 
   playing = false;

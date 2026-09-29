@@ -3178,10 +3178,10 @@ export class MapPlaygroundComponent
   initRiverbasin() {
     const riverbasinLayers = [
       {
-        layerID: 'upri-noah.ph_rb_latest_tls-area',
-        sourceID: 'upri-noah.ph_rb_latest_tls',
-        url: 'mapbox://upri-noah.ph_rb_latest_tls',
-        sourceLayer: 'ph_rb_latest',
+        layerID: 'upri-noah.93y7a8ygfign-area',
+        sourceID: 'upri-noah.93y7a8ygfign',
+        url: 'mapbox://upri-noah.93y7a8ygfign',
+        sourceLayer: 'a250487fed857cd7bbf4',
         type: 'fill' as const,
         paint: {
           'fill-color': '#000000',
@@ -3189,10 +3189,10 @@ export class MapPlaygroundComponent
         },
       },
       {
-        layerID: 'upri-noah.ph_rb_latest_tls',
-        sourceID: 'upri-noah.ph_rb_latest_tls',
-        url: 'mapbox://upri-noah.ph_rb_latest_tls',
-        sourceLayer: 'ph_rb_latest',
+        layerID: 'upri-noah.93y7a8ygfign',
+        sourceID: 'upri-noah.93y7a8ygfign',
+        url: 'mapbox://upri-noah.93y7a8ygfign',
+        sourceLayer: 'a250487fed857cd7bbf4',
         type: 'line' as const,
         paint: {
           'line-color': '#000000',
@@ -3201,10 +3201,10 @@ export class MapPlaygroundComponent
         },
       },
       {
-        layerID: 'upri-noah.ph_rb_outline_tls',
-        sourceID: 'upri-noah.ph_rb_outline_tls',
-        url: 'mapbox://upri-noah.ph_rb_outline_tls',
-        sourceLayer: 'ph_rb_outline',
+        layerID: 'upri-noah.ck8tzu2h3osy',
+        sourceID: 'upri-noah.ck8tzu2h3osy',
+        url: 'mapbox://upri-noah.ck8tzu2h3osy',
+        sourceLayer: '8bae472c997f7530636b',
         type: 'line' as const,
         paint: {
           'line-color': '#000000',
@@ -3250,7 +3250,7 @@ export class MapPlaygroundComponent
     this.pgService.riverbasinOpacity$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
       .subscribe((opacity) => {
-        ['upri-noah.ph_rb_latest_tls', 'upri-noah.ph_rb_outline_tls'].forEach(
+        ['upri-noah.93y7a8ygfign', 'upri-noah.ck8tzu2h3osy'].forEach(
           (layerID) => {
             if (this.map.getLayer(layerID)) {
               this.map.setPaintProperty(layerID, 'line-opacity', opacity / 100);
@@ -3263,6 +3263,7 @@ export class MapPlaygroundComponent
       closeButton: true,
       closeOnClick: true,
       className: 'riverbasin-popup',
+      maxWidth: 'none',
     });
 
     this.pgService.riverbasinShown$
@@ -3275,19 +3276,17 @@ export class MapPlaygroundComponent
 
     const riverbasinLayersWithPopups = [
       {
-        layerID: 'upri-noah.ph_rb_latest_tls-area',
+        layerID: 'upri-noah.93y7a8ygfign-area',
         fields: [
-          ['Name', 'Final_Name'],
-          ['River Basin', 'RiverBasin'],
-          ['Watershed', 'Watershed_'],
+          ['Name:', 'Final_Name'],
+          ['Watershed:', 'Watershed_'],
         ],
       },
       {
-        layerID: 'upri-noah.ph_rb_latest_tls',
+        layerID: 'upri-noah.93y7a8ygfign',
         fields: [
-          ['Name', 'Final_Name'],
-          ['River Basin', 'RiverBasin'],
-          ['Watershed', 'Watershed_'],
+          ['Name:', 'Final_Name'],
+          ['Watershed:', 'Watershed_'],
         ],
       },
     ];
@@ -3307,15 +3306,16 @@ export class MapPlaygroundComponent
               value === null || value === undefined || value === ''
                 ? 'N/A'
                 : value;
-            return `<div><strong>${label}:</strong> ${display}</div>`;
+            return `<div class="riverbasin-popup__row">
+              <span class="riverbasin-popup__label">${label}</span>
+              <strong class="riverbasin-popup__value">${display}</strong>
+            </div>`;
           })
           .join('');
 
         riverbasinPopup
           .setLngLat(e.lngLat)
-          .setHTML(
-            `<div style="color: #333333; font-size: 13px; line-height: 1.5;">${rows}</div>`
-          )
+          .setHTML(`<div class="riverbasin-popup__body">${rows}</div>`)
           .addTo(this.map);
       });
 
