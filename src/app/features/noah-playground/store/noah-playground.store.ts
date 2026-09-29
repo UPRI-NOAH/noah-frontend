@@ -743,8 +743,8 @@ const createInitialValue = (): NoahPlaygroundState => ({
     types: {
       wind: {
         // shown: true,
-        particleCount: 1000,
-        speed: 0.5,
+        particleCount: 1500,
+        speed: 1.5,
         color: '#67FF01',
       },
     },
