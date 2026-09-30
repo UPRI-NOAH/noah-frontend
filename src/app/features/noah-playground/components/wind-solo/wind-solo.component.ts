@@ -11,6 +11,7 @@ import { Observable, Subscription } from 'rxjs';
 const CYCLE_INTERVAL_MS = 1500;
 
 @Component({
+  standalone: false,
   selector: 'noah-wind-solo',
   templateUrl: './wind-solo.component.html',
   styleUrls: ['./wind-solo.component.scss'],

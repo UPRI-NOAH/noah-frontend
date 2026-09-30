@@ -20,6 +20,7 @@ import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-map-kyh',
   templateUrl: './map-kyh.component.html',
   styleUrls: ['./map-kyh.component.scss'],

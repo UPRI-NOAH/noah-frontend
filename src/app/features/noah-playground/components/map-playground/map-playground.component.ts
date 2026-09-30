@@ -17,7 +17,8 @@ import mapboxgl, {
   Marker,
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as turf from '@turf/turf';
+import turfArea from '@turf/area';
+import turfLength from '@turf/length';
 import { environment } from '@env/environment';
 import {
   BehaviorSubject,
@@ -116,7 +117,7 @@ import {
   TyphoonTrackService,
   TyphoonTrackType,
 } from '@features/noah-playground/services/typhoon-track.service';
-import { url } from 'inspector';
+// import { url } from 'inspector';
 
 type MapStyle = 'terrain' | 'satellite';
 
@@ -163,6 +164,7 @@ HC_Data(Highcharts);
 Accessbility(Highcharts);
 
 @Component({
+  standalone: false,
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
   styleUrls: ['./map-playground.component.scss'],
@@ -4631,10 +4633,10 @@ export class MapPlaygroundComponent
     if (data.features.length > 0) {
       data.features.forEach((feature) => {
         if (feature.geometry.type === 'Polygon') {
-          const area = turf.area(feature);
+          const area = turfArea(feature);
           totalArea += area;
         } else if (feature.geometry.type === 'LineString') {
-          const length = turf.length(feature, { units: 'kilometers' });
+          const length = turfLength(feature, { units: 'kilometers' });
           totalLength += length;
         }
       });

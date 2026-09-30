@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-typhoon-track-group',
   templateUrl: './typhoon-track-group.component.html',
   styleUrls: ['./typhoon-track-group.component.scss'],

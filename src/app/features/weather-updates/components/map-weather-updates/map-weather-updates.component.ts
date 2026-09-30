@@ -23,6 +23,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 @Component({
+  standalone: false,
   selector: 'noah-map-weather-updates',
   templateUrl: './map-weather-updates.component.html',
   styleUrls: ['./map-weather-updates.component.scss'],

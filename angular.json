@@ -31,7 +31,6 @@
             "aot": true,
             "assets": ["src/assets", "src/manifest.webmanifest"],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/mapbox-gl/dist/mapbox-gl.css",
               "./node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "./node_modules/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css",
@@ -106,30 +105,28 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "noah-frontend:build"
+            "buildTarget": "noah-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "noah-frontend:build:production"
+              "buildTarget": "noah-frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "noah-frontend:build"
+            "buildTarget": "noah-frontend:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": ["src/assets", "src/manifest.webmanifest"],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/mapbox-gl/dist/mapbox-gl.css",
               "./node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "./node_modules/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css",
@@ -139,30 +136,12 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "noah-frontend:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "noah-frontend:serve:production"
-            }
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
-  },
-  "defaultProject": "noah-frontend"
+  }
 }

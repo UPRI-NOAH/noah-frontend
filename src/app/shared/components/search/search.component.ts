@@ -28,6 +28,7 @@ import { LocationService } from '@core/services/location.service';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-volcano-group',
   templateUrl: './volcano-group.component.html',
   styleUrls: ['./volcano-group.component.scss'],

@@ -13,19 +13,21 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "resolveJsonModule": true,
-    "target": "es2015",
-    "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "target": "es2022",
+    "module": "es2022",
+    "useDefineForClassFields": false,
+    "lib": ["es2022", "dom"],
     "paths": {
       "@env/*": ["./src/environments/*"],
       "@assets/*": ["./src/assets/*"],
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"],
-      "@utils/*": ["./src/app/utils/*"]
+      "@utils/*": ["./src/app/utils/*"],
+      "swiper/angular": ["./node_modules/swiper/angular"]
     }
   },
   "angularCompilerOptions": {

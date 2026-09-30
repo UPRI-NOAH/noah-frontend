@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 @Component({
+  standalone: false,
   selector: 'noah-storm-surge',
   templateUrl: './storm-surge.component.html',
   styleUrls: ['./storm-surge.component.scss'],

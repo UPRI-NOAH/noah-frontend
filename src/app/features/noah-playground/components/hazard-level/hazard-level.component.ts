@@ -13,6 +13,7 @@ import {
 import { Subject } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-hazard-level',
   templateUrl: './hazard-level.component.html',
   styleUrls: ['./hazard-level.component.scss'],

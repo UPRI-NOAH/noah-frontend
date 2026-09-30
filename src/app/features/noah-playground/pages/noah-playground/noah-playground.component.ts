@@ -12,6 +12,7 @@ import {
 } from '@angular/cdk/layout';
 
 @Component({
+  standalone: false,
   selector: 'noah-noah-playground',
   templateUrl: './noah-playground.component.html',
   styleUrls: ['./noah-playground.component.scss'],

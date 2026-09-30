@@ -9,6 +9,7 @@ import {
 } from '@shared/mocks/noah-colors';
 
 @Component({
+  standalone: false,
   selector: 'noah-hazard-legend',
   templateUrl: './hazard-legend.component.html',
   styleUrls: ['./hazard-legend.component.scss'],
