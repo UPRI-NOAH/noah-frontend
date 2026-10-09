@@ -8,7 +8,9 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  NgZone,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -39,10 +41,21 @@ import {
   map,
   pluck,
   shareReplay,
+  skip,
   takeUntil,
   tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
+import {
+  Basemap,
+  BASEMAP_PRESETS,
+  DEFAULT_BASEMAP,
+  getBasemapForPhilippineTime,
+  hasStandardBasemap,
+  NOAH_HAZARD_SLOT,
+  NOAH_OVERLAY_SLOT,
+  StandardSlot,
+} from '@core/services/standard-style';
 import {
   criticalFacilities,
   CriticalFacility,
@@ -119,7 +132,7 @@ import {
 } from '@features/noah-playground/services/typhoon-track.service';
 // import { url } from 'inspector';
 
-type MapStyle = 'terrain' | 'satellite';
+type MapStyle = 'terrain' | 'satellite' | 'standard';
 
 type WindGrid = {
   uGrid: number[][];
@@ -178,7 +191,40 @@ export class MapPlaygroundComponent
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   pgLocation: string = '';
-  mapStyle: MapStyle = 'terrain';
+  mapStyle: MapStyle = 'standard';
+
+  /** Lighting presets offered when a Mapbox Standard basemap is active. */
+  readonly basemapPresets = BASEMAP_PRESETS;
+
+  /** The currently applied lighting preset. */
+  currentBasemap: Basemap = DEFAULT_BASEMAP;
+
+  /** Mobile-only: expands the lighting preset buttons under the search bar. */
+  isBasemapMenuOpen = false;
+
+  /**
+   * The preset the Philippine-Time schedule last applied.
+   *
+   * Kept apart from {@link currentBasemap} so a manual preset click is
+   * respected until the *next* schedule boundary instead of being reverted on
+   * the next timer tick. `null` before the first tick.
+   */
+  private scheduledBasemap: Basemap | null = null;
+
+  /**
+   * Interval id for the realtime basemap clock. Created outside Angular so the
+   * once-a-minute wake-up does not, on its own, trigger change detection.
+   */
+  private basemapClockTimer: number | null = null;
+
+  /**
+   * Id of the NOAH-owned DEM source backing the 3D Terrain exaggeration.
+   *
+   * The legacy `terrain` / `satellite` basemaps ship their own terrain with a
+   * fixed exaggeration, so the source is re-declared on every `style.load` to
+   * take precedence over whatever the incoming style asks for.
+   */
+  private readonly terrainSourceId = 'noah-terrain-dem';
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
@@ -282,6 +328,7 @@ export class MapPlaygroundComponent
   private windAppliedDay: WindForecastDay | null = null;
 
   constructor(
+    private http: HttpClient,
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
@@ -289,7 +336,8 @@ export class MapPlaygroundComponent
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService,
-    private typhoonService: TyphoonTrackService
+    private typhoonService: TyphoonTrackService,
+    private zone: NgZone
   ) {
     // this.getScreenSize();
   }
@@ -298,6 +346,14 @@ export class MapPlaygroundComponent
 
   ngAfterViewInit(): void {
     this.initMap();
+
+    // Keep the preset buttons in sync with the shared selection.
+    this.mapService.basemap$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((basemap) => {
+        this.currentBasemap = basemap;
+      });
+
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
@@ -316,6 +372,10 @@ export class MapPlaygroundComponent
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        // The playground basemap is a Mapbox Standard style. Apply its
+        // configuration before any custom layer is added so slots resolve
+        // against a fully configured basemap.
+        this.mapService.applyStandardConfig(this.map);
         // this.getScreenSize();
         this.addExaggerationControl();
         this.addCriticalFacilityLayers();
@@ -341,16 +401,26 @@ export class MapPlaygroundComponent
         this.initWind();
         this.initRiverbasin();
       });
+
+    // Follow the Philippine clock (dawn → day → dusk → night) for as long as
+    // the playground is on screen.
+    this.startRealtimeBasemap();
   }
 
   ngOnDestroy(): void {
+    // Cancel the wind particle RAF loop first: it reads from `this.map` and
+    // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
+    // Stop the realtime basemap clock so it cannot re-light a map that is about
+    // to be discarded, then release the map reference.
+    this.stopRealtimeBasemap();
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
     this._changeStyle.complete();
+    this.mapService.releaseMap(this.map);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -544,14 +614,14 @@ export class MapPlaygroundComponent
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
           const qcTextID = `${qcSensorType}-text`;
           const minZoom = 12;
+          // Both layers share one GeoJSON source. Mapbox GL JS v3 requires a
+          // named source referenced by id, so declare it explicitly.
+          this.addNoahSource(qcSensorType, { type: 'geojson', data });
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: qcSensorType,
             type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: qcSensorType,
             paint: {
               'circle-color': IOT_SENSOR_COLORS[qcSensorType],
               'circle-radius': [
@@ -568,13 +638,10 @@ export class MapPlaygroundComponent
               'circle-opacity': 0,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: qcTextID,
             type: 'symbol',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: qcSensorType,
             layout: {
               'text-field': [
                 'case',
@@ -773,8 +840,8 @@ export class MapPlaygroundComponent
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
 
               const popupContent = `
@@ -855,8 +922,8 @@ export class MapPlaygroundComponent
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
               popUp.setLngLat(coordinates).setHTML(
                 `
@@ -1384,16 +1451,23 @@ export class MapPlaygroundComponent
             },
           ];
 
+          // All critical-facility layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${qcCriticalFacilities}-qc-critfac`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layers to map
           critFacLayers.forEach(({ id, type, color, filter }) => {
             const paint: any =
               type === 'fill'
                 ? { 'fill-color': color, 'fill-opacity': 0.75 }
                 : { 'line-color': color, 'line-width': 3, 'line-opacity': 1 };
-            this.map.addLayer({
+            this.addNoahLayer({
               id,
               type: type as any,
-              source: { type: 'geojson', data },
+              source: `${qcCriticalFacilities}-qc-critfac`,
               layout: { visibility: 'none' },
               paint,
               filter: ['==', 'CF Type', filter],
@@ -1428,14 +1502,18 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // Both boundary layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${qcMunicipalBoundary}-qc-muni-boundary`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'qc_muni_boundary',
             type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${qcMunicipalBoundary}-qc-muni-boundary`,
             layout: {
               visibility: 'none',
             },
@@ -1444,13 +1522,10 @@ export class MapPlaygroundComponent
               'fill-opacity': 0.01,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'qc_muni_boudline',
             type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${qcMunicipalBoundary}-qc-muni-boundary`,
             layout: {
               visibility: 'none',
             },
@@ -1496,14 +1571,18 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // Both boundary layers share one GeoJSON source. Mapbox GL JS v3 requires
+          // a named source referenced by id.
+          this.addNoahSource(`${barangayBoundary}-brgy-boundary-source`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'brgy-boundary',
             type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${barangayBoundary}-brgy-boundary-source`,
             layout: {
               visibility: 'none',
             },
@@ -1512,13 +1591,10 @@ export class MapPlaygroundComponent
               'fill-opacity': 0.01,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'brgy_boundline',
             type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${barangayBoundary}-brgy-boundary-source`,
             layout: {
               visibility: 'none',
             },
@@ -1559,12 +1635,12 @@ export class MapPlaygroundComponent
   }
 
   initPar() {
-    this.map.addSource('par-outline', {
+    this.addNoahSource('par-outline', {
       type: 'geojson',
       data: 'https://webgis-static.up.edu.ph/api/par/par_outline.json',
     });
 
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'par-outline-layer',
       type: 'line',
       source: 'par-outline',
@@ -1632,7 +1708,7 @@ export class MapPlaygroundComponent
   //       .toPromise()
   //       .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
   //         // add layer to map
-  //         this.map.addLayer({
+  //         this.addNoahLayer({
   //           id: sensorType,
   //           type: 'circle',
   //           source: {
@@ -1702,9 +1778,9 @@ export class MapPlaygroundComponent
     };
     Object.keys(rainForcastImage).forEach((rainType) => {
       const rainForcastDetails = rainForcastImage[rainType];
-      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
+      this.addNoahSource(rainType, getRainForcastSource(rainForcastDetails));
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: rainType,
         type: 'raster',
         source: rainType,
@@ -1794,13 +1870,13 @@ export class MapPlaygroundComponent
 
     // 3) ADD PRIMARY SOURCE
     if (!this.map.getSource(typhoonMapSource)) {
-      this.map.addSource(typhoonMapSource, { type: 'geojson', data: mainData });
+      this.addNoahSource(typhoonMapSource, { type: 'geojson', data: mainData });
     } else {
       (this.map.getSource(typhoonMapSource) as any).setData(mainData);
     }
     // MAIN POINTS
     if (!this.map.getLayer('typhoon-track-icon')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-icon',
         type: 'symbol',
         source: typhoonMapSource,
@@ -1819,7 +1895,7 @@ export class MapPlaygroundComponent
 
     // MAIN LINE
     if (!this.map.getLayer('typhoon-track-line')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-line',
         type: 'line',
         source: typhoonMapSource,
@@ -1834,7 +1910,7 @@ export class MapPlaygroundComponent
 
     // FORECAST - IF EXISTING
     if (!this.map.getLayer('typhoon-forecast-circles-fill')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-forecast-circles-fill',
         type: 'fill',
         source: typhoonMapSource,
@@ -1850,7 +1926,7 @@ export class MapPlaygroundComponent
         ],
       });
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-forecast-circles-outline',
         type: 'line',
         source: typhoonMapSource,
@@ -1869,7 +1945,7 @@ export class MapPlaygroundComponent
 
     // TRACK LINE
     if (!this.map.getLayer('typhoon-track-line')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-line',
         type: 'line',
         source: typhoonMapSource,
@@ -1969,11 +2045,18 @@ export class MapPlaygroundComponent
           // add layers if not exists
           const agencyUpper = agencyType.toUpperCase();
 
+          // Both track layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${agencyType}-typhoon-track-source`, {
+            type: 'geojson',
+            data,
+          });
+
           if (!this.map.getLayer(lineId)) {
-            this.map.addLayer({
+            this.addNoahLayer({
               id: lineId,
               type: 'line',
-              source: { type: 'geojson', data },
+              source: `${agencyType}-typhoon-track-source`,
               filter: [
                 'all',
                 ['==', ['geometry-type'], 'LineString'],
@@ -1992,10 +2075,10 @@ export class MapPlaygroundComponent
           }
 
           if (!this.map.getLayer(pointsId)) {
-            this.map.addLayer({
+            this.addNoahLayer({
               id: pointsId,
               type: 'circle',
-              source: { type: 'geojson', data },
+              source: `${agencyType}-typhoon-track-source`,
               filter: [
                 'all',
                 ['==', ['geometry-type'], 'Point'],
@@ -2100,18 +2183,20 @@ export class MapPlaygroundComponent
         (error, image) => {
           if (error) throw error;
           // 3 - add volcano icon
-          _this.map.addImage(volcanoType, image);
+          if (!_this.map.hasImage(volcanoType)) {
+            _this.map.addImage(volcanoType, image);
+          }
 
           // 4 - add source
           const volcanoMapSource = `${volcanoType}-map-source`;
-          _this.map.addSource(volcanoMapSource, {
+          _this.addNoahSource(volcanoMapSource, {
             type: 'geojson',
             data: volcanoObjData.url,
           });
 
           // 5 - add layer
           const layerID = `${volcanoType}-map-layer`;
-          this.map.addLayer({
+          this.addNoahLayer({
             id: layerID,
             type: 'symbol',
             source: volcanoMapSource,
@@ -2267,12 +2352,12 @@ export class MapPlaygroundComponent
     Object.keys(temperatureImages).forEach(
       (temperatureType: TemperatureType) => {
         const temperatureDetails = temperatureImages[temperatureType];
-        this.map.addSource(
+        this.addNoahSource(
           temperatureType,
           getTemperatureSource(temperatureDetails)
         );
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: temperatureType,
           type: 'raster',
           source: temperatureType,
@@ -2424,7 +2509,7 @@ export class MapPlaygroundComponent
         const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
 
         // 1. Add source per weather satellite type
-        this.map.addSource(
+        this.addNoahSource(
           weatherType,
           getWeatherSatelliteSource(weatherSatelliteDetails)
         );
@@ -2453,7 +2538,7 @@ export class MapPlaygroundComponent
         });
 
         // 3. Add layer per weather satellite source
-        this.map.addLayer({
+        this.addNoahLayer({
           id: weatherType,
           type: 'raster',
           source: weatherType,
@@ -2557,7 +2642,7 @@ export class MapPlaygroundComponent
             reject(error);
             return;
           }
-          if (image) {
+          if (image && !this.map.hasImage(imageName)) {
             this.map.addImage(imageName, image);
           }
           resolve();
@@ -2600,7 +2685,7 @@ export class MapPlaygroundComponent
         const lightningObjData = lightningSourceFile[lightningType];
 
         // 1 - add source
-        this.map.addSource(
+        this.addNoahSource(
           lightningType,
           getLightningSource(lightningObjData, lightningType)
         );
@@ -2625,7 +2710,7 @@ export class MapPlaygroundComponent
           .catch(() => dataAvailable$.next(false));
 
         // 2 - add layer using symbol icons instead of colored circles
-        this.map.addLayer({
+        this.addNoahLayer({
           id: lightningType,
           type: 'symbol',
           source: lightningType,
@@ -2974,14 +3059,14 @@ export class MapPlaygroundComponent
 
         const boundariesMapSource = `${boundariesType}-map-source`;
         // 2 - add source
-        this.map.addSource(boundariesMapSource, {
+        this.addNoahSource(boundariesMapSource, {
           type: 'vector',
           url: boundariesObjData.url,
         });
         // 3 - add layer
         const layerID = `${boundariesType}-map-layer`;
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
@@ -2992,7 +3077,6 @@ export class MapPlaygroundComponent
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
-          interactive: true,
         });
 
         // Add line layer
@@ -3013,7 +3097,7 @@ export class MapPlaygroundComponent
           linePaint['line-dasharray'] = [1, 1]; // Dashed
         }
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
@@ -3022,14 +3106,13 @@ export class MapPlaygroundComponent
             visibility: 'none',
           },
           paint: linePaint,
-          interactive: false,
         });
         let municipalTextLayerID;
         let provincialTextLayerID;
 
         if (boundariesType === 'municipal' || boundariesType === 'provincial') {
           const textLayerID = `${boundariesType}-text-layer`;
-          this.map.addLayer({
+          this.addNoahLayer({
             id: textLayerID,
             type: 'symbol',
             source: boundariesMapSource,
@@ -3218,14 +3301,14 @@ export class MapPlaygroundComponent
 
     riverbasinLayers.forEach((layer) => {
       if (!this.map.getSource(layer.sourceID)) {
-        this.map.addSource(layer.sourceID, {
+        this.addNoahSource(layer.sourceID, {
           type: 'vector',
           url: layer.url,
         });
       }
 
       if (!this.map.getLayer(layer.layerID)) {
-        this.map.addLayer({
+        this.addNoahLayer({
           id: layer.layerID,
           type: layer.type,
           source: layer.sourceID,
@@ -3577,46 +3660,95 @@ export class MapPlaygroundComponent
   /**
    * Manually update the exaggeration of the map.
    *
+   * The store is the single source of truth. Every path that can change what
+   * the map should render (a slider move, the 3D Terrain checkbox, or a
+   * `style.load` that wiped the style) funnels into
+   * `applyTerrainExaggeration()`, which always sends a *complete* terrain
+   * specification. That matters because of two `setTerrain` behaviours in
+   * mapbox-gl 3.32.0:
+   *
+   * - `Style.setTerrain` calls `_checkLoaded()` first, so calling it while a
+   *   `setStyle()` is still in flight throws `Style is not done loading`.
+   * - `TerrainSpecification.source` is required. When it is omitted,
+   *   `setTerrain` only fills it in from the terrain that is *already* applied;
+   *   if there is none, the spec fails validation and the update is silently
+   *   dropped, leaving the slider doing nothing. Always passing `source` makes
+   *   the call self-contained and idempotent.
+   *
+   * A single subscription folds the store's `shown` flag and `level` into one
+   * effective exaggeration, which replaces the two competing subscriptions that
+   * used to fight over `setTerrain`. It deliberately survives `style.load`
+   * (it is no longer torn down by `_changeStyle`): the map reference does not
+   * change when the style does, and `addExaggerationControl()` re-reads the
+   * store on every `style.load`, so re-subscribing would only add another
+   * writer. `distinctUntilChanged` runs after the mapping so it compares the
+   * effective exaggeration and ignores changes that cannot alter the terrain
+   * (e.g. toggling the expand chevron).
+   *
    * Reference:
    * https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
    */
   addExaggerationControl() {
-    this.map.addSource('mapbox-dem', {
-      type: 'raster-dem',
-      url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-      volatile: true,
-    } as any);
+    this.applyTerrainExaggeration(this.getEffectiveExaggeration());
 
-    // Watch exaggeration level
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
+        map((exaggeration) => (exaggeration.shown ? exaggeration.level : 0)),
         distinctUntilChanged(),
-        map((exaggeration) => exaggeration.level)
+        skip(1)
       )
-      .subscribe((level) =>
-        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
-      );
+      .subscribe((exaggeration) => this.applyTerrainExaggeration(exaggeration));
+  }
 
-    // Watch exaggeration visibility
-    this.pgService.exagerration$
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged()
-      )
-      .subscribe((exaggeration) => {
-        if (exaggeration.shown) {
-          this.map.setTerrain({
-            source: 'mapbox-dem',
-            exaggeration: exaggeration.level,
-          });
-          return;
-        }
+  /**
+   * The exaggeration the map should currently render: the slider level while
+   * 3D Terrain is enabled, and a flat `0` while it is disabled.
+   */
+  private getEffectiveExaggeration(): number {
+    const exaggeration = this.pgService.getExaggeration();
+    return exaggeration.shown ? exaggeration.level : 0;
+  }
 
-        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: 0 });
+  /**
+   * Applies `exaggeration` to the map, re-adding the DEM source if needed.
+   *
+   * Intended to be called from the `style.load` handler, which is the point
+   * where `setTerrain` is allowed to run: `Style.setTerrain` only requires the
+   * style's own `_loaded` flag, and `style.load` is fired once that is set.
+   * `map.isStyleLoaded()` is deliberately *not* used as a guard here, because
+   * it additionally waits for every source, glyph and sprite to finish
+   * loading, so it is still `false` for a while after `style.load` and would
+   * silently drop the initial terrain.
+   *
+   * The `try`/`catch` covers the remaining race: a store emission arriving
+   * while a `setStyle()` is in flight makes `setTerrain` throw
+   * `Style is not done loading`. That must not escape (these run inside the
+   * `style.load` initialisation chain) and does not lose the value, because
+   * `addExaggerationControl()` runs again on the next `style.load` and
+   * re-reads the store.
+   */
+  private applyTerrainExaggeration(exaggeration: number) {
+    if (!this.map) {
+      return;
+    }
+
+    try {
+      this.addNoahSource(this.terrainSourceId, {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        tileSize: 512,
+        maxzoom: 14,
+        encoding: 'mapbox',
       });
+
+      this.map.setTerrain({
+        source: this.terrainSourceId,
+        exaggeration,
+      });
+    } catch (error) {
+      console.warn('Unable to apply the terrain exaggeration', error);
+    }
   }
 
   /**
@@ -3631,7 +3763,7 @@ export class MapPlaygroundComponent
       } as mapboxgl.AnySourceData;
       const sourceID = tileset.url.replace('mapbox://upri-noah.', '');
       // 1. Add source first
-      this.map.addSource(sourceID, sourceData);
+      this.addNoahSource(sourceID, sourceData);
 
       // 2. Get the hazard type and level
       const [rawHazardType, rawHazardLevel] = [
@@ -3668,13 +3800,108 @@ export class MapPlaygroundComponent
 
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: environment.mapbox.styles.terrain,
+      style: environment.mapbox.styles.standard,
       zoom: 5.5,
       minZoom: 4,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
+      antialias: false,
+      // The Standard basemap declares `globe`, but NOAH is a flat hazard map
+      // and the legacy terrain / satellite styles are mercator. Pinning
+      // mercator keeps the basemap, the hazard polygons and the coordinates
+      // the rest of the app writes into the store visually unchanged. Without
+      // it the basemap would start curving and the exaggeration control would
+      // look different from every other layer.
+      projection: 'mercator',
     });
+  }
+
+  /**
+   * True when the currently loaded basemap is a Mapbox Standard style.
+   *
+   * Standard exposes `bottom` / `middle` / `top` slots; the legacy satellite
+   * style does not, so a slot must not be sent for it.
+   */
+  private get isStandardBasemap(): boolean {
+    return hasStandardBasemap(this.map);
+  }
+
+  /**
+   * Adds a NOAH layer, skipping it when it already exists.
+   *
+   * Several NOAH initialisers re-run on every `style.load`, so this guard keeps
+   * the additions idempotent without changing any layer id, filter or paint
+   * value. `slot` defaults to the Standard `top` slot so custom overlays keep
+   * the same visual position they had when appended to the end of a classic
+   * style's layer array; a layer that already declares a slot (the flood
+   * hazard fills, which use `middle`) keeps it.
+   */
+  private addNoahLayer(
+    layer: mapboxgl.AnyLayer,
+    slot: StandardSlot = NOAH_OVERLAY_SLOT
+  ) {
+    if (this.map.getLayer(layer.id)) {
+      return;
+    }
+
+    let paint: mapboxgl.AnyLayer['paint'] | undefined = layer.paint;
+    if (this.isStandardBasemap) {
+      paint = this.withStandardLightingNoop(layer);
+      this.map.addLayer({
+        ...layer,
+        slot,
+        paint,
+      } as mapboxgl.AnyLayer);
+    } else {
+      this.map.addLayer(layer);
+    }
+  }
+
+  /**
+   * Opts a custom layer out of Mapbox Standard's `light-3d` lighting.
+   *
+   * Standard's day/dawn/dusk/night presets swap the ambient and directional
+   * lights. In mapbox-gl v3.32 every layer that renders inside a basemap
+   * slot is illuminated by those lights — `*-emissive-strength` defaults to
+   * 0, so the preset's lights multiply the layer's *literal* paint colour.
+   * That is what made NOAH data (hazard fills, rainfall contours, satellite /
+   * weather-satellite rasters, boundaries) visibly shift at dusk/night while
+   * the basemap re-lit. Setting `*-emissive-strength: 1` marks the layer as
+   * fully self-lit: it renders with exactly its declared paint in every
+   * preset (day pixel output is unchanged) while the basemap keeps
+   * re-lighting around it. This runs only for layer types that ship an
+   * emissive-strength paint (fill, line, raster, circle, hillshade; symbols
+   * already default to emissive and are untouched).
+   */
+  private withStandardLightingNoop(
+    layer: mapboxgl.AnyLayer
+  ): mapboxgl.AnyLayer['paint'] {
+    const base = (layer.paint ?? {}) as Record<string, unknown>;
+    switch (layer.type) {
+      case 'fill':
+        return { 'fill-emissive-strength': 1, ...base } as never;
+      case 'line':
+        return { 'line-emissive-strength': 1, ...base } as never;
+      case 'raster':
+        return { 'raster-emissive-strength': 1, ...base } as never;
+      case 'circle':
+        return { 'circle-emissive-strength': 1, ...base } as never;
+      case 'hillshade':
+        return { 'hillshade-emissive-strength': 1, ...base } as never;
+      default:
+        return layer.paint;
+    }
+  }
+
+  /**
+   * Adds a source, skipping it when it already exists.
+   */
+  private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
+    if (this.map.getSource(sourceId)) {
+      return;
+    }
+    this.map.addSource(sourceId, source);
   }
 
   initWind(): void {
@@ -4417,9 +4644,9 @@ export class MapPlaygroundComponent
 
         await Promise.all(
           layerData.sourceLayer.map(async (sourceLayer) => {
-            this.map.addSource(sourceLayer, sourceData);
+            this.addNoahSource(sourceLayer, sourceData);
 
-            this.map.addLayer({
+            this.addNoahLayer({
               id: sourceLayer,
               type: 'fill',
               source: sourceLayer,
@@ -4553,9 +4780,9 @@ export class MapPlaygroundComponent
     Object.keys(contourMapImages).forEach((contourType) => {
       const contourMapDetails = contourMapImages[contourType];
 
-      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
+      this.addNoahSource(contourType, getContourMapSource(contourMapDetails));
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: contourType,
         type: 'raster',
         source: contourType,
@@ -4597,13 +4824,94 @@ export class MapPlaygroundComponent
     });
   }
 
+  /**
+   * Starts the realtime Philippine-Time basemap cycle for the playground.
+   *
+   * The preset is applied immediately (so a 3 AM visit opens on `night`, not
+   * the shared `day` default) and then re-checked every minute so a long-lived
+   * tab crosses each boundary without a reload. A manual preset click still
+   * works: the schedule acts only when the Philippine-Time window changes, so
+   * the user's choice survives until the next dawn / day / dusk / night
+   * boundary.
+   */
+  private startRealtimeBasemap(): void {
+    this.stopRealtimeBasemap();
+    this.applyRealtimeBasemap();
+
+    this.zone.runOutsideAngular(() => {
+      this.basemapClockTimer = window.setInterval(() => {
+        this.applyRealtimeBasemap();
+      }, 60_000);
+    });
+  }
+
+  /**
+   * Switches the basemap when the Philippine-Time window has changed.
+   *
+   * Only a window transition triggers a switch, which is what lets a manual
+   * selection stand between boundaries.
+   */
+  private applyRealtimeBasemap(): void {
+    const scheduled = getBasemapForPhilippineTime();
+
+    if (scheduled === this.scheduledBasemap) {
+      return;
+    }
+
+    this.scheduledBasemap = scheduled;
+    // Re-enter Angular only when the preset actually changes, so the preset
+    // buttons' active state updates without per-tick change detection.
+    this.zone.run(() => this.mapService.switchBasemap(scheduled));
+  }
+
+  /** Cancels the realtime basemap clock, if one is running. */
+  private stopRealtimeBasemap(): void {
+    if (this.basemapClockTimer === null) {
+      return;
+    }
+
+    window.clearInterval(this.basemapClockTimer);
+    this.basemapClockTimer = null;
+  }
+
+  /**
+   * Applies a Mapbox Standard lighting preset. Only meaningful while the
+   * Standard basemap is loaded; the buttons that call this are hidden
+   * otherwise.
+   */
+  switchBasemap(preset: Basemap) {
+    this.mapService.switchBasemap(preset);
+  }
+
   switchMapStyle(style: MapStyle) {
     if (this.mapStyle === style) return;
 
     if (style in environment.mapbox.styles) {
       this.mapStyle = style;
-      this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next(null);
+      const currentCenter = this.map.getCenter();
+      const currentZoom = this.map.getZoom();
+      const currentBearing = this.map.getBearing();
+      const currentPitch = this.map.getPitch();
+      const currentTerrain = (this.map as any).getTerrain
+        ? (this.map as any).getTerrain()
+        : null;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this.map.once('style.load', () => {
+        if (currentCenter) {
+          this.map.setCenter(currentCenter);
+          this.map.setZoom(currentZoom);
+          this.map.setBearing(currentBearing);
+          this.map.setPitch(currentPitch);
+        }
+        if (currentTerrain) {
+          try {
+            this.map.setTerrain(currentTerrain);
+          } catch (e) {
+            console.warn('Could not restore terrain after style change', e);
+          }
+        }
+      });
     }
   }
 
@@ -4718,17 +5026,23 @@ export class MapPlaygroundComponent
    */
   private _addFillHazardLayer(params: LayerSettingsParam) {
     const { layerID, sourceID, sourceLayer, hazardType, hazardLevel } = params;
-    this.map.addLayer({
-      id: layerID,
-      type: 'fill',
-      source: sourceID,
-      'source-layer': sourceLayer,
-      layout: { visibility: 'none' },
-      paint: {
-        'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
-        'fill-opacity': 0.75,
+    // `middle` keeps the flood polygons above terrain / 3D buildings but below
+    // Standard's own labels, so hazard data stays readable.
+    this.addNoahLayer(
+      {
+        id: layerID,
+        type: 'fill',
+        source: sourceID,
+        'source-layer': sourceLayer,
+        layout: { visibility: 'none' },
+        paint: {
+          'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
+          'fill-opacity': 0.75,
+        },
+        slot: 'middle',
       },
-    });
+      NOAH_HAZARD_SLOT
+    );
   }
 
   /**
@@ -4744,44 +5058,50 @@ export class MapPlaygroundComponent
     lh2Subtype: LH2Subtype
   ) {
     if (lh2Subtype === 'af') {
-      this.map.addLayer({
-        id: layerName,
-        type: 'line',
-        source: sourceID,
-        'source-layer': layerName,
-        layout: { visibility: 'none' },
-        paint: {
-          'line-width': 2,
-          'line-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'ALLUVIAL'],
-            4,
-            NOAH_COLORS['noah-black'].high,
-          ],
-          'line-opacity': 0.75,
+      this.addNoahLayer(
+        {
+          id: layerName,
+          type: 'line',
+          source: sourceID,
+          'source-layer': layerName,
+          layout: { visibility: 'none' },
+          paint: {
+            'line-width': 2,
+            'line-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'ALLUVIAL'],
+              4,
+              NOAH_COLORS['noah-black'].high,
+            ],
+            'line-opacity': 0.75,
+          },
         },
-      });
+        NOAH_HAZARD_SLOT
+      );
     }
 
     if (lh2Subtype === 'df') {
-      this.map.addLayer({
-        id: layerName,
-        type: 'fill',
-        source: sourceID,
-        'source-layer': layerName,
-        layout: { visibility: 'none' },
-        paint: {
-          'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'ALLUVIAL'],
-            3,
-            NOAH_COLORS['noah-red'].high,
-          ],
-          'fill-opacity': 0.75,
+      this.addNoahLayer(
+        {
+          id: layerName,
+          type: 'fill',
+          source: sourceID,
+          'source-layer': layerName,
+          layout: { visibility: 'none' },
+          paint: {
+            'fill-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'ALLUVIAL'],
+              3,
+              NOAH_COLORS['noah-red'].high,
+            ],
+            'fill-opacity': 0.75,
+          },
         },
-      });
+        NOAH_HAZARD_SLOT
+      );
     }
   }
 
@@ -4945,9 +5265,13 @@ export class MapPlaygroundComponent
     const _this = this;
     this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
       if (error) throw error;
-      _this.map.addImage(name, image);
+      // This runs again on every style change, so guard against re-registering
+      // an image that Mapbox GL JS already has.
+      if (!_this.map.hasImage(name)) {
+        _this.map.addImage(name, image);
+      }
 
-      _this.map.addSource(name, {
+      _this.addNoahSource(name, {
         type: 'geojson',
         data: criticalFacilities[name].data,
         cluster: true,
@@ -4955,9 +5279,9 @@ export class MapPlaygroundComponent
         clusterMinPoints: 3,
       });
 
-      _this.map.addLayer(getCircleLayer(name));
-      _this.map.addLayer(getSymbolLayer(name, this.mapStyle));
-      _this.map.addLayer(getClusterTextCount(name));
+      _this.addNoahLayer(getCircleLayer(name));
+      _this.addNoahLayer(getSymbolLayer(name, this.mapStyle));
+      _this.addNoahLayer(getClusterTextCount(name));
 
       // opacity
       this.pgService

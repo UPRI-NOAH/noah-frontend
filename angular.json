@@ -40,7 +40,10 @@
             "allowedCommonJsDependencies": [
               "mapbox-gl",
               "@mapbox/mapbox-gl-draw",
-              "@mapbox/mapbox-gl-geocoder"
+              "@mapbox/mapbox-gl-geocoder",
+              "@mapbox/geojson-area",
+              "@mapbox/geojson-normalize",
+              "fast-deep-equal"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
