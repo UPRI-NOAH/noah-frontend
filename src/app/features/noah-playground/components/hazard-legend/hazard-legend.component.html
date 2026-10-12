@@ -1,78 +1,48 @@
-<div class="px-6">
-  <div class="flex flex-col">
-    <div class="text-lg f-f-r mb-2">Legend</div>
-    <div class="flex items-center mb-1" *ngFor="let level of levels">
-      <label class="inline-flex items-center">
-        <div
-          class="h-6 w-6 mx-auto rounded-md"
+<div class="hazard-legend">
+  <div class="hazard-legend__group">
+    <div class="hazard-legend__title">{{ typeLabel }} Risk Legend</div>
+    <div class="hazard-legend__levels">
+      <div class="hazard-legend__chip" *ngFor="let level of levels">
+        <span
+          class="hazard-legend__swatch hazard-legend__swatch--small"
           [ngStyle]="{ 'background-color': getColor(selectedColor, level) }"
-        ></div>
-      </label>
-      <div class="flex flex-col ml-3">
-        <div class="text-m leading-none capitalize">{{ level }}</div>
+        ></span>
+        <span class="hazard-legend__level-name">{{ level }}</span>
       </div>
     </div>
   </div>
 
-  <div class="flex flex-col mt-3">
-    <div class="text-sm uppercase f-f-r mb-1">Choose Color</div>
-    <div class="flex items-center">
-      <div
-        class="
-          grid
-          gap-1
-          grid-cols-4
-          sm:grid-cols-7
-          md:grid-cols-7
-          lg:grid-cols-7
-        "
+  <div class="hazard-legend__group">
+    <div class="hazard-legend__title">Color Scheme</div>
+    <div class="hazard-legend__palette">
+      <button
+        class="hazard-legend__swatch-button"
+        *ngFor="let noahColor of noahColors"
+        [ngStyle]="{ 'background-color': getColor(noahColor, 'high') }"
+        [class.selected]="selectedColor === noahColor"
+        (click)="this.selectColor(noahColor)"
+        type="button"
       >
-        <div *ngFor="let noahColor of noahColors">
-          <button
-            class="h-6 w-6 mx-auto rounded-md"
-            [ngStyle]="{ 'background-color': getColor(noahColor, 'high') }"
-            [class.selected]="selectedColor === noahColor"
-            (click)="this.selectColor(noahColor)"
-            role="button"
-          ></button>
-        </div>
-        <label
-          class="
-            h-6
-            w-6
-            mx-auto
-            rounded-md
-            cursor-pointer
-            border-2 border-gray-700
-            relative
-            overflow-hidden
-            flex
-            items-center
-            justify-center
-          "
-          [class.selected]="selectedColor === customColor"
-          [ngStyle]="{
-            'background-color': getColor(customColor, 'high')
-          }"
+        <span class="hazard-legend__check" *ngIf="selectedColor === noahColor"
+          >✓</span
         >
-          <span
-            class="
-              text-white text-lg
-              leading-none
-              font-bold
-              drop-shadow
-              select-none
-            "
-            >+</span
-          >
-          <input
-            class="sr-only"
-            type="color"
-            [value]="customPalette.high"
-            (input)="updateCustomColor($event)"
-          />
-        </label>
-      </div>
+      </button>
+      <label
+        class="hazard-legend__swatch-button hazard-legend__custom"
+        [class.selected]="selectedColor === customColor"
+        [ngStyle]="{
+          'background-color':
+            selectedColor === customColor ? getColor(customColor, 'high') : ''
+        }"
+      >
+        <span class="hazard-legend__custom-plus">+</span>
+        <input
+          class="sr-only"
+          type="color"
+          [value]="customPalette.high"
+          (input)="updateCustomColor($event)"
+        />
+      </label>
     </div>
   </div>
 </div>

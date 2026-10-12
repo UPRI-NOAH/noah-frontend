@@ -1,5 +1,103 @@
-.selected {
-  -webkit-box-shadow: inset 0px 0px 0px 4px grey;
-  -moz-box-shadow: inset 0px 0px 0px 4px grey;
-  box-shadow: inset 0px 0px 0px 4px grey;
+.hazard-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hazard-legend__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hazard-legend__title {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+.hazard-legend__levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hazard-legend__chip {
+  align-items: center;
+  border: 1px solid #dbe3ef;
+  border-radius: 6px;
+  display: flex;
+  gap: 8px;
+  min-height: 32px;
+  min-width: 0;
+  padding: 6px 8px;
+}
+
+.hazard-legend__swatch {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.hazard-legend__swatch--small {
+  border-radius: 4px;
+  height: 14px;
+  width: 14px;
+}
+
+.hazard-legend__level-name {
+  color: #0f172a;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: capitalize;
+}
+
+.hazard-legend__palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hazard-legend__swatch-button {
+  align-items: center;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px #cbd5e1;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  width: 28px;
+}
+
+.hazard-legend__check {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.45);
+}
+
+.hazard-legend__custom {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.hazard-legend__custom-plus {
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 360px) {
+  .hazard-legend__levels {
+    grid-template-columns: 1fr;
+  }
 }

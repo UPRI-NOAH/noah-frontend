@@ -1,0 +1,36 @@
+.slider-control {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slider-control__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.slider-control__label {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+.slider-control__value {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 18px;
+}
+
+.slider-control__range {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
