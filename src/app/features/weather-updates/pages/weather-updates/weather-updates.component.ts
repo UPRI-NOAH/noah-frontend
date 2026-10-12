@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
+  standalone: false,
   selector: 'noah-weather-updates',
   templateUrl: './weather-updates.component.html',
   styleUrls: ['./weather-updates.component.scss'],

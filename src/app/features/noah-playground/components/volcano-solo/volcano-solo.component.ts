@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-volcano-solo',
   templateUrl: './volcano-solo.component.html',
   styleUrls: ['./volcano-solo.component.scss'],

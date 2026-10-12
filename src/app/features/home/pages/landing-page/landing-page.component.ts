@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
 @Component({
+  standalone: false,
   selector: 'noah-landing-page',
   templateUrl: './landing-page.component.html',
 })

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MapStyle } from '@features/know-your-hazards/store/kyh.store';
 
 @Component({
+  standalone: false,
   selector: 'noah-change-style-button',
   templateUrl: './change-style-button.component.html',
   styleUrls: ['./change-style-button.component.scss'],

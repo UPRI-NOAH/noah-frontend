@@ -4,6 +4,7 @@ import { ContourMapType } from '@features/noah-playground/store/noah-playground.
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-contour-maps',
   templateUrl: './contour-maps.component.html',
   styleUrls: ['./contour-maps.component.scss'],

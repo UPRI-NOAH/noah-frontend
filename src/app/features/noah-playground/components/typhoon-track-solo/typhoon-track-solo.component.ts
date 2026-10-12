@@ -19,6 +19,7 @@ export const TYPHOON_TRACK_NAMES: Record<TyphoonTrackType, string> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'noah-typhoon-track-solo',
   templateUrl: './typhoon-track-solo.component.html',
   styleUrls: ['./typhoon-track-solo.component.scss'],
