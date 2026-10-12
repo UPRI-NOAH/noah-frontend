@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, NgZone } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
@@ -12,6 +12,11 @@ import {
 import mapboxgl, { AnySourceData, GeolocateControl, Map } from 'mapbox-gl';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import {
+  hasStandardBasemap,
+  NOAH_OVERLAY_SLOT,
+  StandardSlot,
+} from '@core/services/standard-style';
 import { combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import {
   debounceTime,
@@ -23,6 +28,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 @Component({
+  standalone: false,
   selector: 'noah-map-weather-updates',
   templateUrl: './map-weather-updates.component.html',
   styleUrls: ['./map-weather-updates.component.scss'],
@@ -42,7 +48,8 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
-    private wuService: WeatherUpdatesService
+    private wuService: WeatherUpdatesService,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {}
@@ -59,6 +66,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe((shown) => {
+        // No-op for the legacy terrain / satellite basemaps, but this map can be
+        // switched to a Mapbox Standard style, so configure it whenever the
+        // loaded style actually is Standard.
+        this.mapService.applyStandardConfig(this.map);
+
         // Only initialize these controls once
         if (!this.isInitialized) {
           this.map.resize();
@@ -74,18 +86,70 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           });
         }
 
-        // Always re-initialize these layers when style changes
-        this.showRainfallContour();
-        this.initWeatherSatellite();
-        this.initTyphoonTrackLayers();
-        this.initTemperature();
+        // Initialize only active/needed layers to improve load time
+        if (this.wuService.getRainfallContourShown()) {
+          this.showRainfallContour();
+          this.layerInitialized.rainfall = true;
+        }
+        if (this.wuService.getWeatherSatellites()?.shown) {
+          this.initWeatherSatellite();
+          this.layerInitialized.satellite = true;
+        }
+        if (this.wuService.getTyphoonTrack()?.shown) {
+          this.initTyphoonTrackLayers();
+          this.layerInitialized.typhoon = true;
+        }
+        if (this.wuService.getTemperatureShown()) {
+          this.initTemperature();
+          this.layerInitialized.temperature = true;
+        }
+        this.setupLayerToggleSubscriptions();
       });
+  }
+
+  /**
+   * True when the currently loaded basemap is a Mapbox Standard style.
+   *
+   * Standard exposes `bottom` / `middle` / `top` slots; the legacy satellite
+   * style does not, so a slot must not be sent for it.
+   */
+  private get isStandardBasemap(): boolean {
+    return hasStandardBasemap(this.map);
+  }
+
+  /**
+   * Adds a NOAH layer, skipping it when it already exists, and placing it in
+   * the Standard `top` slot so overlays stay above the basemap surface.
+   */
+  private addNoahLayer(
+    layer: mapboxgl.AnyLayer,
+    slot: StandardSlot = NOAH_OVERLAY_SLOT
+  ) {
+    if (this.map.getLayer(layer.id)) {
+      return;
+    }
+
+    if (this.isStandardBasemap) {
+      this.map.addLayer({ ...layer, slot } as mapboxgl.AnyLayer);
+      return;
+    }
+
+    this.map.addLayer(layer);
+  }
+
+  private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
+    if (this.map.getSource(sourceId)) {
+      return;
+    }
+    this.map.addSource(sourceId, source);
   }
 
   ngOnDestroy(): void {
     this.closeAllTyphoonPopups();
     this._unsub.next(null);
     this._unsub.complete();
+    // Stop tracking the map so it is not re-lit after it is discarded.
+    this.mapService.releaseMap(this.map);
   }
 
   selectPlace(selectedPlace) {
@@ -191,7 +255,19 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         mapboxStyle = environment.mapbox.styles.terrain;
     }
 
+    const currentCenter = this.map.getCenter();
+    const currentZoom = this.map.getZoom();
+    const currentBearing = this.map.getBearing();
+    const currentPitch = this.map.getPitch();
     this.map.setStyle(mapboxStyle);
+    this.map.once('style.load', () => {
+      if (currentCenter) {
+        this.map.setCenter(currentCenter);
+        this.map.setZoom(currentZoom);
+        this.map.setBearing(currentBearing);
+        this.map.setPitch(currentPitch);
+      }
+    });
     this._changeStyle.next(null);
   }
 
@@ -309,6 +385,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
+      antialias: false,
     });
   }
 
@@ -346,8 +423,14 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     ): AnySourceData => {
       switch (rainfallContourMapDetails.type) {
         case 'image':
-          // Use special coordinates for forecast
-          const coordinates =
+          // Use special coordinates for forecast. Mapbox GL JS v3 types image
+          // source coordinates as an ordered 4-tuple of [lng, lat] pairs.
+          const coordinates: [
+            [number, number],
+            [number, number],
+            [number, number],
+            [number, number]
+          ] =
             key === 'forecast'
               ? [
                   [116.855, 19.402], // top-left
@@ -377,7 +460,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       (rainfallContourType: RainfallContourTypes) => {
         const rainfallContourMapDetails =
           rainfallContourMapImages[rainfallContourType];
-        this.map.addSource(
+        this.addNoahSource(
           rainfallContourType,
           getRainfallContourSource(
             rainfallContourType,
@@ -385,7 +468,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           )
         );
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: rainfallContourType,
           type: 'raster',
           source: rainfallContourType,
@@ -475,12 +558,12 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     Object.keys(temperatureImages).forEach(
       (temperatureType: TemperatureType) => {
         const temperatureDetails = temperatureImages[temperatureType];
-        this.map.addSource(
+        this.addNoahSource(
           temperatureType,
           getTemperatureSource(temperatureDetails)
         );
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: temperatureType,
           type: 'raster',
           source: temperatureType,
@@ -617,26 +700,30 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     Object.entries(typhoonLegend).forEach(([legend, url]) => {
       this.map.loadImage(url, (error, image) => {
         if (error) throw error;
-        this.map.addImage(`custom-marker-${legend}`, image);
+        // This runs again on every style change; Mapbox GL JS throws if an
+        // image id is registered twice.
+        if (!this.map.hasImage(`custom-marker-${legend}`)) {
+          this.map.addImage(`custom-marker-${legend}`, image);
+        }
       });
     });
 
     // 2 - add map sources.
     const typhoonMapSource = `typhoon-track-map-source`;
-    _this.map.addSource(typhoonMapSource, {
+    _this.addNoahSource(typhoonMapSource, {
       type: 'geojson',
       data: typhoonLayerSourceFile,
     });
 
     // Add PAR outline source
     const parOutlineSource = `par-outline-source`;
-    _this.map.addSource(parOutlineSource, {
+    _this.addNoahSource(parOutlineSource, {
       type: 'geojson',
       data: parOutlineSourceFile,
     });
 
     // 3 - add point layer.
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'typhoon-track-icon',
       type: 'symbol',
       source: typhoonMapSource,
@@ -787,7 +874,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     };
 
     // Add forecast circle fill layer
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'typhoon-forecast-circles-fill',
       type: 'fill',
       source: typhoonMapSource,
@@ -804,7 +891,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     });
 
     // Add forecast circle outline layer
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'typhoon-forecast-circles-outline',
       type: 'line',
       source: typhoonMapSource,
@@ -822,7 +909,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     });
 
     // 5 - Add line layer
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'typhoon-track-line',
       type: 'line',
       source: typhoonMapSource,
@@ -834,7 +921,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     });
 
     // 6 - Add PAR outline layer
-    this.map.addLayer({
+    this.addNoahLayer({
       id: 'par-outline',
       type: 'line',
       source: parOutlineSource,
@@ -939,7 +1026,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           weatherSatelliteMapImage[weatherSatelliteType];
 
         // Add source
-        this.map.addSource(
+        this.addNoahSource(
           weatherSatelliteType,
           getWeatherSatelliteSource(weatherSatelliteMapDetails)
         );
@@ -968,7 +1055,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         });
 
         // Add layer
-        this.map.addLayer({
+        this.addNoahLayer({
           id: weatherSatelliteType,
           type: 'raster',
           source: weatherSatelliteType,
@@ -997,5 +1084,47 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           });
       }
     );
+  }
+
+  private layerInitialized = {
+    rainfall: false,
+    satellite: false,
+    typhoon: false,
+    temperature: false,
+  };
+
+  private setupLayerToggleSubscriptions() {
+    this.wuService.rainfallContourShown$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((shown) => {
+        if (shown && !this.layerInitialized.rainfall) {
+          this.showRainfallContour();
+          this.layerInitialized.rainfall = true;
+        }
+      });
+    this.wuService.weatherSatellitesShown$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((shown) => {
+        if (shown && !this.layerInitialized.satellite) {
+          this.initWeatherSatellite();
+          this.layerInitialized.satellite = true;
+        }
+      });
+    this.wuService.typhoonTrackShown$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((shown) => {
+        if (shown && !this.layerInitialized.typhoon) {
+          this.initTyphoonTrackLayers();
+          this.layerInitialized.typhoon = true;
+        }
+      });
+    this.wuService.temperatureShown$
+      .pipe(takeUntil(this._unsub))
+      .subscribe((shown) => {
+        if (shown && !this.layerInitialized.temperature) {
+          this.initTemperature();
+          this.layerInitialized.temperature = true;
+        }
+      });
   }
 }

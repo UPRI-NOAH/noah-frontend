@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
@@ -6,6 +6,12 @@ import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
+import {
+  hasStandardBasemap,
+  NOAH_HAZARD_SLOT,
+  NOAH_OVERLAY_SLOT,
+  StandardSlot,
+} from '@core/services/standard-style';
 
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
@@ -20,6 +26,7 @@ import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-map-kyh',
   templateUrl: './map-kyh.component.html',
   styleUrls: ['./map-kyh.component.scss'],
@@ -40,7 +47,8 @@ export class MapKyhComponent implements OnInit {
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
-    private kyhService: KyhService
+    private kyhService: KyhService,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +68,10 @@ export class MapKyhComponent implements OnInit {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        // No-op for the legacy terrain / satellite basemaps, but this map can be
+        // switched to a Mapbox Standard style, so configure it whenever the
+        // loaded style actually is Standard.
+        this.mapService.applyStandardConfig(this.map);
         this.initLayers();
         this.initMarkers();
       });
@@ -68,6 +80,8 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next(null);
     this._unsub.complete();
+    // Stop tracking the map so it is not re-lit after it is discarded.
+    this.mapService.releaseMap(this.map);
   }
 
   selectPlace(selectedPlace) {
@@ -168,7 +182,7 @@ export class MapKyhComponent implements OnInit {
       } as mapboxgl.AnySourceData;
       const sourceID = tileset.url.replace('mapbox://upri-noah.', '');
       // 1. Add source first
-      this.map.addSource(sourceID, sourceData);
+      this.addNoahSource(sourceID, sourceData);
 
       // 2. Get the hazard type and level
       const [rawHazardType, rawHazardLevel] = [
@@ -187,54 +201,67 @@ export class MapKyhComponent implements OnInit {
             ...layerName.toLowerCase().split('_').splice(1),
           ];
           if (lh2Subtype === 'af') {
-            this.map.addLayer({
-              id: layerName,
-              type: 'line',
-              source: sourceID,
-              'source-layer': layerName,
-              paint: {
-                'line-width': 2,
-                'line-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'ALLUVIAL'],
-                  4,
-                  NOAH_COLORS['noah-black'].high,
-                ],
-                'line-opacity': 0.75,
+            this.addNoahLayer(
+              {
+                id: layerName,
+                type: 'line',
+                source: sourceID,
+                'source-layer': layerName,
+                paint: {
+                  'line-width': 2,
+                  'line-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'ALLUVIAL'],
+                    4,
+                    NOAH_COLORS['noah-black'].high,
+                  ],
+                  'line-opacity': 0.75,
+                },
               },
-            });
+              NOAH_HAZARD_SLOT
+            );
           }
 
           if (lh2Subtype === 'df') {
-            this.map.addLayer({
+            this.addNoahLayer(
+              {
+                id: layerName,
+                type: 'fill',
+                source: sourceID,
+                'source-layer': layerName,
+                paint: {
+                  'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'ALLUVIAL'],
+                    3,
+                    NOAH_COLORS['noah-red'].high,
+                  ],
+                  'fill-opacity': 0.75,
+                },
+              },
+              NOAH_HAZARD_SLOT
+            );
+          }
+        } else {
+          this.addNoahLayer(
+            {
               id: layerName,
               type: 'fill',
               source: sourceID,
               'source-layer': layerName,
               paint: {
-                'fill-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'ALLUVIAL'],
-                  3,
-                  NOAH_COLORS['noah-red'].high,
-                ],
+                'fill-color': getHazardColor(
+                  hazardType,
+                  'noah-red',
+                  hazardLevel
+                ),
                 'fill-opacity': 0.75,
               },
-            });
-          }
-        } else {
-          this.map.addLayer({
-            id: layerName,
-            type: 'fill',
-            source: sourceID,
-            'source-layer': layerName,
-            paint: {
-              'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
-              'fill-opacity': 0.75,
             },
-          });
+            NOAH_HAZARD_SLOT
+          );
         }
 
         // add visibility watcher
@@ -247,10 +274,49 @@ export class MapKyhComponent implements OnInit {
           )
           .subscribe((shown: boolean) => {
             const visibility = shown ? 'visible' : 'none';
+            if (!this.map.getLayer(layerName)) return;
             this.map.setLayoutProperty(layerName, 'visibility', visibility);
           });
       });
     });
+  }
+
+  /**
+   * True when the currently loaded basemap is a Mapbox Standard style.
+   *
+   * Standard exposes `bottom` / `middle` / `top` slots; the legacy satellite
+   * style does not, so a slot must not be sent for it.
+   */
+  private get isStandardBasemap(): boolean {
+    return hasStandardBasemap(this.map);
+  }
+
+  /**
+   * Adds a NOAH layer, skipping it when it already exists, and placing it in
+   * the Standard `top` slot by default so overlays keep the visual position
+   * they had when appended to a classic style's layer array.
+   */
+  private addNoahLayer(
+    layer: mapboxgl.AnyLayer,
+    slot: StandardSlot = NOAH_OVERLAY_SLOT
+  ) {
+    if (this.map.getLayer(layer.id)) {
+      return;
+    }
+
+    if (this.isStandardBasemap) {
+      this.map.addLayer({ ...layer, slot } as mapboxgl.AnyLayer);
+      return;
+    }
+
+    this.map.addLayer(layer);
+  }
+
+  private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
+    if (this.map.getSource(sourceId)) {
+      return;
+    }
+    this.map.addSource(sourceId, source);
   }
 
   initMap() {
@@ -265,6 +331,7 @@ export class MapKyhComponent implements OnInit {
       bearing: 30,
       center: this.kyhService.currentCoords,
       attributionControl: false,
+      antialias: false,
     });
   }
 
@@ -317,7 +384,11 @@ export class MapKyhComponent implements OnInit {
               reject(error);
               return;
             }
-            map.addImage(id, image);
+            // initMarkers runs again after every style change; Mapbox GL JS
+            // throws if an image id is registered twice.
+            if (!map.hasImage(id)) {
+              map.addImage(id, image);
+            }
             resolve(image);
           });
         });
@@ -341,15 +412,17 @@ export class MapKyhComponent implements OnInit {
         const criticalFacilitiesLayer = this.map.getLayer('criticalFacilities');
         if (criticalFacilitiesLayer) {
           this.map.removeLayer('criticalFacilities');
-          this.map.removeSource('cfSource');
+          if (this.map.getSource('cfSource')) {
+            this.map.removeSource('cfSource');
+          }
         }
 
-        this.map.addSource('cfSource', {
+        this.addNoahSource('cfSource', {
           type: 'geojson',
           data: criticalFacilities,
         });
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: 'criticalFacilities',
           type: 'symbol',
           source: 'cfSource',
@@ -455,7 +528,19 @@ export class MapKyhComponent implements OnInit {
     if (style in environment.mapbox.styles) {
       this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
+      const currentCenter = this.map.getCenter();
+      const currentZoom = this.map.getZoom();
+      const currentBearing = this.map.getBearing();
+      const currentPitch = this.map.getPitch();
       this.map.setStyle(environment.mapbox.styles[style]);
+      this.map.once('style.load', () => {
+        if (currentCenter) {
+          this.map.setCenter(currentCenter);
+          this.map.setZoom(currentZoom);
+          this.map.setBearing(currentBearing);
+          this.map.setPitch(currentPitch);
+        }
+      });
       this._changeStyle.next(null);
     }
     if (this.centerMarker) {

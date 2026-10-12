@@ -16,23 +16,40 @@ import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 
-const modules = [CommonModule, FormsModule, ReactiveFormsModule];
-const components = [
-  ChangeStyleButtonComponent,
-  SearchComponent,
-  BannerComponent,
-  DisclaimerComponent,
-  SummaryComponent,
-  LoginComponent,
-  QcLoginComponent,
-  PaginationComponent,
-  AlertComponent,
-];
-const directives = [];
-const pipes = [ReplacePipe, SortPipe, SearchfilterPipe, SearchRiskAffectedPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
-  imports: [...modules],
-  exports: [...modules, ...components, ...directives, ...pipes],
+  declarations: [
+    ChangeStyleButtonComponent,
+    SearchComponent,
+    BannerComponent,
+    DisclaimerComponent,
+    SummaryComponent,
+    LoginComponent,
+    QcLoginComponent,
+    PaginationComponent,
+    AlertComponent,
+    ReplacePipe,
+    SortPipe,
+    SearchfilterPipe,
+    SearchRiskAffectedPipe,
+  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ChangeStyleButtonComponent,
+    SearchComponent,
+    BannerComponent,
+    DisclaimerComponent,
+    SummaryComponent,
+    LoginComponent,
+    QcLoginComponent,
+    PaginationComponent,
+    AlertComponent,
+    ReplacePipe,
+    SortPipe,
+    SearchfilterPipe,
+    SearchRiskAffectedPipe,
+  ],
 })
 export class SharedModule {}
