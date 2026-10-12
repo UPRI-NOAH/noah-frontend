@@ -1,26 +1,84 @@
+.volcano-layer {
+  color: #071b3a;
+}
+
+.volcano-layer + .volcano-layer {
+  margin-top: 30px;
+}
+
+.volcano-layer__heading {
+  display: flex;
+  align-items: center;
+}
+
+.volcano-layer__checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volcano-layer__checkbox input {
+  width: 21px;
+  height: 21px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--volcano-color);
+}
+
+.volcano-layer__title {
+  margin-left: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.volcano-layer__slider,
+.volcano-layer__legend {
+  margin-left: 33px;
+}
+
+.volcano-layer__slider {
+  margin-top: 16px;
+}
+
+.volcano-layer__legend {
+  margin-top: 20px;
+}
+
+.volcano-layer__legend-title {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.volcano-layer__legend-row {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.volcano-layer__legend-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+.volcano-layer__legend-label {
+  margin-left: 12px;
+  color: #1f2937;
+  font-size: 16px;
+  line-height: 20px;
+  text-transform: capitalize;
+}
+
 .active {
-  --color: #de4545;
-  background-color: #de4545;
-  &,
-  input {
-    --border-color: #de4545;
-  }
+  --volcano-color: #de4545;
 }
 
 .potentially-active {
-  --color: #f2c94c;
-  background-color: #f2c94c;
-  &,
-  input {
-    --border-color: #f2c94c;
-  }
+  --volcano-color: #f2b635;
 }
 
 .inactive {
-  --color: #828282;
-  background-color: #828282;
-  &,
-  input {
-    --border-color: #828282;
-  }
+  --volcano-color: #828282;
 }
