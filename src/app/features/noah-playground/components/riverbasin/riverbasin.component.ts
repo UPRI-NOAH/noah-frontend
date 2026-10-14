@@ -4,6 +4,7 @@ import { first } from 'rxjs/operators';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 
 @Component({
+  standalone: false,
   selector: 'noah-riverbasin',
   templateUrl: './riverbasin.component.html',
   styleUrls: ['./riverbasin.component.scss'],

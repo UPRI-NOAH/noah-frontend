@@ -51,11 +51,8 @@ import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
-import { state } from '@angular/animations';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
-import { get } from 'http';
 
 @Injectable({
   providedIn: 'root',

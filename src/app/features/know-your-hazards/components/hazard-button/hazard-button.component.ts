@@ -9,6 +9,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-hazard-button',
   templateUrl: './hazard-button.component.html',
   styleUrls: ['./hazard-button.component.scss'],

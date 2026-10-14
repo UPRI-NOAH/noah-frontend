@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-disclaimer',
   templateUrl: './disclaimer.component.html',
   styleUrls: ['./disclaimer.component.scss'],
