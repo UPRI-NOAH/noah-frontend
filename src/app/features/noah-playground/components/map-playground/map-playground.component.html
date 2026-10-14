@@ -26,7 +26,7 @@
     map-icon
     absolute
     z-10
-    right-0
+    right-0.5
     pl-0.5
     flex flex-row
     items-center
@@ -180,8 +180,11 @@
 </div>
 
 <!-- Mobile: lighting preset toggle, under the search bar at the top-left.
-     Expands to show the Dawn / Day / Dusk / Night buttons. -->
-<div *ngIf="mapStyle === 'standard'" class="fixed z-30 top-14 left-2 md:hidden">
+     Expands to show the Dawn / Day / Dusk / Night buttons beside the toggle. -->
+<div
+  *ngIf="mapStyle === 'standard'"
+  class="fixed z-30 top-14 left-2 flex flex-row items-start md:hidden"
+>
   <button
     type="button"
     class="base-icon bg-white text-gray-800 rounded p-2 focus:outline-none"
@@ -206,7 +209,7 @@
   </button>
   <div
     *ngIf="isBasemapMenuOpen"
-    class="mt-1.5 flex flex-row overflow-hidden rounded shadow"
+    class="ml-1.5 flex flex-row overflow-hidden rounded shadow"
   >
     <button
       *ngFor="let preset of basemapPresets"

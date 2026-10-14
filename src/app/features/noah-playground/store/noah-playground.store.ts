@@ -745,7 +745,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
         // shown: true,
         particleCount: 1500,
         speed: 1.5,
-        color: '#67FF01',
+        color: '#ffffff',
       },
     },
   },

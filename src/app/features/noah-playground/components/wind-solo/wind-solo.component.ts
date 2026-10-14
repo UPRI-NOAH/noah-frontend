@@ -24,7 +24,7 @@ export class WindSoloComponent implements OnInit, OnDestroy {
 
   initialParticleCountValue: number = 2000;
   initialSpeedValue: number = 2;
-  initialColorValue: string = '#67FF01';
+  initialColorValue: string = '#ffffff';
 
   playing = false;
   currentDayIndex = 0;
