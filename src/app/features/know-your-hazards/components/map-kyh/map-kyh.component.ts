@@ -323,6 +323,8 @@ export class MapKyhComponent implements OnInit {
     this.currentLocation$ = this.kyhService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map-kyh',
       style: environment.mapbox.styles[this.mapStyle],
       zoom: 13,

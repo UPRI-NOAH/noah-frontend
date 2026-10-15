@@ -378,6 +378,8 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     this.currentLocation$ = this.wuService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map-weather-updates',
       style: environment.mapbox.styles.terrain,
       zoom: 4.4, // Initial zoom level for Rainfall Contour and Typhoon Track

@@ -46,6 +46,7 @@ export class NoahPlaygroundComponent implements OnInit {
   height = 256; // Default height (64 * 4 = 256px)
   private initialTouchY = 0;
   private initialHeight = this.height;
+  private onWindowResize: (() => void) | null = null;
   isVisible = false;
 
   expanded$: Observable<boolean>;
@@ -116,7 +117,12 @@ export class NoahPlaygroundComponent implements OnInit {
     }
 
     this.updateVisibility();
-    window.addEventListener('resize', this.updateVisibility.bind(this));
+    // Keep a single stable reference so the listener can be removed on destroy.
+    // `this.updateVisibility.bind(this)` created a fresh function that could
+    // never be removed, so every visit to the playground leaked another
+    // resize listener that kept firing on a destroyed component.
+    this.onWindowResize = this.updateVisibility.bind(this);
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   toggleShown(event: Event) {
@@ -163,6 +169,10 @@ export class NoahPlaygroundComponent implements OnInit {
   ngOnDestroy() {
     if (this.localStorageCheckInterval) {
       clearInterval(this.localStorageCheckInterval); // Clean up when the component is destroyed
+    }
+    if (this.onWindowResize) {
+      window.removeEventListener('resize', this.onWindowResize);
+      this.onWindowResize = null;
     }
   }
 
