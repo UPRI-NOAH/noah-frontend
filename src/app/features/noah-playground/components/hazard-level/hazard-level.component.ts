@@ -33,6 +33,17 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
     return this.name === 'Debris Flow and Alluvial Fan';
   }
 
+  get legendTypeLabel(): string {
+    switch (this.type) {
+      case 'landslide':
+        return 'Landslide';
+      case 'storm-surge':
+        return 'Storm Surge';
+      default:
+        return 'Flood';
+    }
+  }
+
   private _unsub = new Subject();
 
   constructor(private pgService: NoahPlaygroundService) {}

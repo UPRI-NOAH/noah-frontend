@@ -70,11 +70,28 @@
   }
 }
 
+/* Basemap lighting toggle + presets. Sits directly above the custom scale bar
+   (see iniScaleControl) on the right edge; the top values here mirror the
+   scale's own 430px / 380px breakpoints so the two never overlap. */
+.basemap-preset-control {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  right: 10px;
+  top: 430px;
+  transform: translateY(calc(-100% - 6px));
+  @media only screen and (min-width: 768px) {
+    top: 380px;
+  }
+}
+
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 386px;
+  top: 421px;
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -84,8 +101,8 @@
   border-radius: 3px;
   display: none;
   @media only screen and (max-width: 768px) {
-    top: 60px;
-    left: 10px;
+    top: 102px;
+    left: 7px;
     width: fit-content;
   }
 }

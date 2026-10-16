@@ -42,6 +42,7 @@ import {
   pluck,
   shareReplay,
   skip,
+  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
@@ -199,8 +200,15 @@ export class MapPlaygroundComponent
   /** The currently applied lighting preset. */
   currentBasemap: Basemap = DEFAULT_BASEMAP;
 
-  /** Mobile-only: expands the lighting preset buttons under the search bar. */
-  isBasemapMenuOpen = false;
+  /**
+   * When `false` (the default) the basemap is driven manually: it is pinned to
+   * {@link DEFAULT_BASEMAP} (`day`), the Philippine clock is not consulted, and
+   * the preset buttons are hidden.
+   *
+   * When `true` the basemap follows Philippine time and the Dawn / Day / Dusk /
+   * Night buttons are shown so the schedule can still be overridden.
+   */
+  isAutoBasemap = false;
 
   /**
    * The preset the Philippine-Time schedule last applied.
@@ -225,6 +233,15 @@ export class MapPlaygroundComponent
    * take precedence over whatever the incoming style asks for.
    */
   private readonly terrainSourceId = 'noah-terrain-dem';
+
+  /**
+   * Handle of the pending idle callback that runs the deferred (non-essential)
+   * layer initialisation, and its `setTimeout` fallback for browsers without
+   * `requestIdleCallback`. Tracked so a queued pass can be cancelled on destroy
+   * or superseded by a newer `style.load`.
+   */
+  private deferredInitHandle: number | null = null;
+  private deferredInitFallbackTimer: number | null = null;
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
@@ -372,42 +389,165 @@ export class MapPlaygroundComponent
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        // The playground basemap is a Mapbox Standard style. Apply its
-        // configuration before any custom layer is added so slots resolve
-        // against a fully configured basemap.
-        this.mapService.applyStandardConfig(this.map);
-        // this.getScreenSize();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
-        //this.initSensors();
-        this.initQuezonCitySensors();
-        this.initQCCritFac();
-        this.initQCMunicipalBoundary();
-        this.initVolcanoes();
-        this.initBoundaries();
-        this.initWeatherSatelliteLayers();
-        this.showContourMaps();
-        this.initQcCenterListener();
-        this.initLagunaCenterListener();
-        this.initBarangayBoundary();
-        this.initAffectedExposure();
-        this.initRainForcast();
-        this.initTyphoonTrack();
-        this.initPar();
-        this.initLightning();
-        this.initTemperature();
-        this.initWeatherUpdates();
-        this.initWind();
-        this.initRiverbasin();
+        // Essential work first: the Standard basemap configuration, the 3D
+        // terrain and the initial camera. These are cheap, define the first
+        // frame the user sees, and must not be delayed. They add no data
+        // layers, so moving them out of the previous single chain does not
+        // change layer stacking.
+        this.initEssentialLayers();
+        // Everything else (≈20 hazard / weather layer groups, several large
+        // image and video downloads, the hazard tileset) is deferred until the
+        // browser is idle so it cannot delay the first basemap paint or the
+        // first pan/zoom gesture. See scheduleDeferredInit().
+        this.scheduleDeferredInit();
       });
 
-    // Follow the Philippine clock (dawn → day → dusk → night) for as long as
-    // the playground is on screen.
-    this.startRealtimeBasemap();
+    // Lighting starts in manual mode: the basemap is pinned to Day and the
+    // Philippine clock is not followed until the user flips the toggle to
+    // "Auto". See toggleAutoBasemap().
+    this.applyManualBasemap();
+  }
+
+  /**
+   * Layer groups that must exist the moment the style is ready.
+   *
+   * These are the pieces that define the first frame the user actually sees:
+   * the Mapbox Standard basemap configuration, the 3D terrain, and the initial
+   * camera (including the QC / Laguna admin camera). None of them adds a data
+   * layer, so the relative stacking of the NOAH overlays is unaffected by the
+   * split from {@link initDeferredLayers}.
+   */
+  private initEssentialLayers(): void {
+    // The playground basemap is a Mapbox Standard style. Apply its
+    // configuration before any custom layer is added so slots resolve
+    // against a fully configured basemap.
+    this.mapService.applyStandardConfig(this.map);
+    this.addExaggerationControl();
+    this.initQcCenterListener();
+    this.initLagunaCenterListener();
+    this.initWeatherUpdates();
+  }
+
+  /**
+   * The remaining layer groups, run lazily once the map is interactive.
+   *
+   * Every layer produced here is either hidden at start-up (hazard fills,
+   * boundaries, volcanoes, critical facilities, risk-assessment rainfall)
+   * or gated behind the weather-updates toggle (satellite video, rainfall
+   * contours, wind). Initialising them outside the first paint keeps the
+   * basemap responsive while the data loads progressively behind it. The
+   * order is unchanged from the original chain so overlay stacking is
+   * identical.
+   */
+  private initDeferredLayers(): void {
+    this.addCriticalFacilityLayers();
+    this.initHazardLayers();
+    //this.initSensors();
+    this.initQuezonCitySensors();
+    this.initQCCritFac();
+    this.initQCMunicipalBoundary();
+    this.initVolcanoes();
+    this.initBoundaries();
+    this.initWeatherSatelliteLayers();
+    this.showContourMaps();
+    this.initBarangayBoundary();
+    this.initAffectedExposure();
+    this.initRainForcast();
+    this.initTyphoonTrack();
+    this.initPar();
+    //this.initLightning();
+    this.initTemperature();
+    this.initWind();
+    this.initRiverbasin();
+  }
+
+  /**
+   * Schedules {@link initDeferredLayers} for the next idle period.
+   *
+   * `requestIdleCallback` (Chrome / Edge / Firefox) runs the work in a gap in
+   * the main thread — after the first basemap paint and while the user is not
+   * interacting — with a 1500ms timeout so the layers still appear promptly on
+   * a busy page. Safari has no `requestIdleCallback`; a zero-delay macrotask is
+   * used there, which still runs after the current frame rather than blocking
+   * it. Any pending pass is cancelled first so a second `style.load` cannot
+   * queue a duplicate run.
+   */
+  private scheduleDeferredInit(): void {
+    this.cancelDeferredInit();
+
+    const run = () => {
+      this.deferredInitHandle = null;
+      this.deferredInitFallbackTimer = null;
+
+      // The component may have been destroyed (or the map released) while the
+      // callback waited for an idle gap.
+      if (this._unsub.isStopped) {
+        return;
+      }
+
+      this.initDeferredLayers();
+    };
+
+    const win = window as typeof window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number }
+      ) => number;
+    };
+
+    if (typeof win.requestIdleCallback === 'function') {
+      this.deferredInitHandle = win.requestIdleCallback(run, { timeout: 1500 });
+    } else {
+      this.deferredInitFallbackTimer = window.setTimeout(run, 0);
+    }
+  }
+
+  /** Cancels a pending {@link scheduleDeferredInit} pass, if any. */
+  private cancelDeferredInit(): void {
+    const win = window as typeof window & {
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (this.deferredInitHandle !== null && win.cancelIdleCallback) {
+      win.cancelIdleCallback(this.deferredInitHandle);
+    }
+    this.deferredInitHandle = null;
+
+    if (this.deferredInitFallbackTimer !== null) {
+      window.clearTimeout(this.deferredInitFallbackTimer);
+    }
+    this.deferredInitFallbackTimer = null;
+  }
+
+  /**
+   * Runs `build` immediately if `shown$` already emits `true`, otherwise the
+   * first time it does.
+   *
+   * This is how the expensive optional overlays (weather-satellite video,
+   * rainfall contours, temperature / rainfall-forecast rasters, wind) avoid
+   * downloading anything while they are hidden: the source, layer and their
+   * subscriptions are not created until the layer is actually requested.
+   *
+   * The callers re-arm this on every `style.load`, and the subscription is
+   * torn down by `_changeStyle` / destroy, so a basemap switch rebuilds the
+   * overlay if it is still shown while a switch while it is hidden simply
+   * waits for the next show.
+   */
+  private runWhenFirstShown(shown$: Observable<boolean>, build: () => void) {
+    shown$
+      .pipe(
+        filter((shown) => shown === true),
+        take(1),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe(() => build());
   }
 
   ngOnDestroy(): void {
+    // Drop any queued deferred layer initialisation before the map is torn
+    // down so it cannot run against a destroyed map.
+    this.cancelDeferredInit();
     // Cancel the wind particle RAF loop first: it reads from `this.map` and
     // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
@@ -526,9 +666,7 @@ export class MapPlaygroundComponent
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -561,10 +699,13 @@ export class MapPlaygroundComponent
     }
 
     const applyPosition = () => {
+      // Kept in sync with `.basemap-preset-control` in the component SCSS: the
+      // lighting toggle is anchored to the same `top` and lifted above it, so
+      // these values must match or the two would overlap.
       if (window.innerWidth <= 767) {
-        container.style.top = '423px';
+        container.style.top = '430px';
       } else {
-        container.style.top = '359px';
+        container.style.top = '380px';
       }
     };
     applyPosition();
@@ -1748,7 +1889,23 @@ export class MapPlaygroundComponent
   //   });
   // }
 
+  /**
+   * Risk-assessment rainfall forecast is a raster image that is hidden until
+   * the risk-assessment group is turned on (`riskAssessment.shown` defaults to
+   * `false`). The image is only created once both the group and the rainfall
+   * layer are shown.
+   */
   initRainForcast() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.riskAssessmentGroupShown$,
+        this.pgService.rainForcastShown$,
+      ]).pipe(map(([groupShown, rainShown]) => groupShown && rainShown)),
+      () => this.buildRainForcastLayer()
+    );
+  }
+
+  private buildRainForcastLayer() {
     const rainForcastImage = {
       'rain-forecast': {
         url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
@@ -2309,7 +2466,18 @@ export class MapPlaygroundComponent
     });
   }
 
+  /**
+   * Temperature is a raster image source (heat index / max temperature) that is
+   * hidden on load (`temperature.shown` defaults to `false`). The images are
+   * only created once the temperature group is actually shown.
+   */
   initTemperature() {
+    this.runWhenFirstShown(this.pgService.temperatureShown$, () =>
+      this.buildTemperatureLayers()
+    );
+  }
+
+  private buildTemperatureLayers() {
     const temperatureImages = {
       heat_index: {
         urlPrefix: 'HI',
@@ -2463,7 +2631,28 @@ export class MapPlaygroundComponent
       });
   }
 
+  /**
+   * Weather-satellite overlays are the heaviest optional download in the
+   * playground: each source is a WebM *and* an MP4 loop that renders as a
+   * `<video>` texture. The weather-updates group is off on load, so building
+   * these eagerly downloaded video the user was never looking at. The source,
+   * layer and subscriptions are now created the first time the group (and the
+   * satellite layer) is actually shown, and rebuilt after a style change while
+   * it stays shown.
+   */
   initWeatherSatelliteLayers() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.weatherSatellitesShown$,
+      ]).pipe(
+        map(([groupShown, satelliteShown]) => groupShown && satelliteShown)
+      ),
+      () => this.buildWeatherSatelliteLayers()
+    );
+  }
+
+  private buildWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
         url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
@@ -3677,11 +3866,14 @@ export class MapPlaygroundComponent
    *
    * A single subscription folds the store's `shown` flag and `level` into one
    * effective exaggeration, which replaces the two competing subscriptions that
-   * used to fight over `setTerrain`. It deliberately survives `style.load`
-   * (it is no longer torn down by `_changeStyle`): the map reference does not
-   * change when the style does, and `addExaggerationControl()` re-reads the
-   * store on every `style.load`, so re-subscribing would only add another
-   * writer. `distinctUntilChanged` runs after the mapping so it compares the
+   * used to fight over `setTerrain`. Because `addExaggerationControl()` runs
+   * again on *every* `style.load` and `setTerrain` is wiped by `setStyle`, the
+   * subscription is scoped with `takeUntil(this._changeStyle)`: each style
+   * change tears the previous writer down and the following `style.load`
+   * installs exactly one replacement. Without it, every basemap switch would
+   * leave another live subscription behind, each one re-calling `setTerrain` —
+   * the very "another writer" accumulation this was meant to avoid.
+   * `distinctUntilChanged` runs after the mapping so it compares the
    * effective exaggeration and ignores changes that cannot alter the terrain
    * (e.g. toggling the expand chevron).
    *
@@ -3694,6 +3886,7 @@ export class MapPlaygroundComponent
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
         map((exaggeration) => (exaggeration.shown ? exaggeration.level : 0)),
         distinctUntilChanged(),
         skip(1)
@@ -3799,6 +3992,9 @@ export class MapPlaygroundComponent
     this.mapService.init();
 
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map. See
+      // MapService.getMapPerformanceOptions() for the rationale of each option.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map',
       style: environment.mapbox.styles.standard,
       zoom: 5.5,
@@ -3904,7 +4100,23 @@ export class MapPlaygroundComponent
     this.map.addSource(sourceId, source);
   }
 
+  /**
+   * The animated wind layer is off on load (it lives inside the weather-updates
+   * group). Initialising it eagerly fetched the wind grid and forecast payload
+   * and spun up the particle canvas that was never visible, so the whole setup
+   * now waits until the group and the wind layer are both shown.
+   */
   initWind(): void {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.windShown$,
+      ]).pipe(map(([groupShown, windShown]) => groupShown && windShown)),
+      () => this.buildWind()
+    );
+  }
+
+  private buildWind(): void {
     this.resizeWindCanvas();
     this.initWindParticles();
     this.requestWindDay(0);
@@ -4721,7 +4933,23 @@ export class MapPlaygroundComponent
     );
   }
 
+  /**
+   * Rainfall contours are five large PNG raster overlays, all hidden until the
+   * weather-updates group is turned on. Building them eagerly downloaded five
+   * images that were transparent (opacity 0) on the default view, so they are
+   * now created the first time the group and the contour layer are both shown.
+   */
   showContourMaps() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.contourMapGroupShown$,
+      ]).pipe(map(([groupShown, contourShown]) => groupShown && contourShown)),
+      () => this.buildContourMaps()
+    );
+  }
+
+  private buildContourMaps() {
     const contourMapImages = {
       '1hr': {
         url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
@@ -4827,12 +5055,12 @@ export class MapPlaygroundComponent
   /**
    * Starts the realtime Philippine-Time basemap cycle for the playground.
    *
-   * The preset is applied immediately (so a 3 AM visit opens on `night`, not
-   * the shared `day` default) and then re-checked every minute so a long-lived
-   * tab crosses each boundary without a reload. A manual preset click still
-   * works: the schedule acts only when the Philippine-Time window changes, so
-   * the user's choice survives until the next dawn / day / dusk / night
-   * boundary.
+   * Only used in automatic mode (see {@link toggleAutoBasemap}). The preset is
+   * applied immediately (so a 3 AM visit opens on `night`, not the manual `day`
+   * default) and then re-checked every minute so a long-lived tab crosses each
+   * boundary without a reload. A manual preset click still works: the schedule
+   * acts only when the Philippine-Time window changes, so the user's choice
+   * survives until the next dawn / day / dusk / night boundary.
    */
   private startRealtimeBasemap(): void {
     this.stopRealtimeBasemap();
@@ -4872,6 +5100,33 @@ export class MapPlaygroundComponent
 
     window.clearInterval(this.basemapClockTimer);
     this.basemapClockTimer = null;
+  }
+
+  /**
+   * Pins the basemap to the manual default (`day`).
+   *
+   * Called on load and whenever the user turns automatic lighting off. The
+   * Philippine-Time clock is stopped so nothing re-lights the map in the
+   * background.
+   */
+  private applyManualBasemap(): void {
+    this.stopRealtimeBasemap();
+    this.scheduledBasemap = null;
+    this.mapService.switchBasemap(DEFAULT_BASEMAP);
+  }
+
+  /**
+   * Flips between manual lighting (Day, presets hidden) and automatic
+   * Philippine-Time lighting (presets shown).
+   */
+  toggleAutoBasemap(): void {
+    this.isAutoBasemap = !this.isAutoBasemap;
+
+    if (this.isAutoBasemap) {
+      this.startRealtimeBasemap();
+    } else {
+      this.applyManualBasemap();
+    }
   }
 
   /**
