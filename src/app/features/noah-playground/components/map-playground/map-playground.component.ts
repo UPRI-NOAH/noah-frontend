@@ -200,8 +200,15 @@ export class MapPlaygroundComponent
   /** The currently applied lighting preset. */
   currentBasemap: Basemap = DEFAULT_BASEMAP;
 
-  /** Mobile-only: expands the lighting preset buttons under the search bar. */
-  isBasemapMenuOpen = false;
+  /**
+   * When `false` (the default) the basemap is driven manually: it is pinned to
+   * {@link DEFAULT_BASEMAP} (`day`), the Philippine clock is not consulted, and
+   * the preset buttons are hidden.
+   *
+   * When `true` the basemap follows Philippine time and the Dawn / Day / Dusk /
+   * Night buttons are shown so the schedule can still be overridden.
+   */
+  isAutoBasemap = false;
 
   /**
    * The preset the Philippine-Time schedule last applied.
@@ -395,9 +402,10 @@ export class MapPlaygroundComponent
         this.scheduleDeferredInit();
       });
 
-    // Follow the Philippine clock (dawn → day → dusk → night) for as long as
-    // the playground is on screen.
-    this.startRealtimeBasemap();
+    // Lighting starts in manual mode: the basemap is pinned to Day and the
+    // Philippine clock is not followed until the user flips the toggle to
+    // "Auto". See toggleAutoBasemap().
+    this.applyManualBasemap();
   }
 
   /**
@@ -658,9 +666,7 @@ export class MapPlaygroundComponent
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -693,10 +699,13 @@ export class MapPlaygroundComponent
     }
 
     const applyPosition = () => {
+      // Kept in sync with `.basemap-preset-control` in the component SCSS: the
+      // lighting toggle is anchored to the same `top` and lifted above it, so
+      // these values must match or the two would overlap.
       if (window.innerWidth <= 767) {
-        container.style.top = '423px';
+        container.style.top = '430px';
       } else {
-        container.style.top = '359px';
+        container.style.top = '380px';
       }
     };
     applyPosition();
@@ -5046,12 +5055,12 @@ export class MapPlaygroundComponent
   /**
    * Starts the realtime Philippine-Time basemap cycle for the playground.
    *
-   * The preset is applied immediately (so a 3 AM visit opens on `night`, not
-   * the shared `day` default) and then re-checked every minute so a long-lived
-   * tab crosses each boundary without a reload. A manual preset click still
-   * works: the schedule acts only when the Philippine-Time window changes, so
-   * the user's choice survives until the next dawn / day / dusk / night
-   * boundary.
+   * Only used in automatic mode (see {@link toggleAutoBasemap}). The preset is
+   * applied immediately (so a 3 AM visit opens on `night`, not the manual `day`
+   * default) and then re-checked every minute so a long-lived tab crosses each
+   * boundary without a reload. A manual preset click still works: the schedule
+   * acts only when the Philippine-Time window changes, so the user's choice
+   * survives until the next dawn / day / dusk / night boundary.
    */
   private startRealtimeBasemap(): void {
     this.stopRealtimeBasemap();
@@ -5091,6 +5100,33 @@ export class MapPlaygroundComponent
 
     window.clearInterval(this.basemapClockTimer);
     this.basemapClockTimer = null;
+  }
+
+  /**
+   * Pins the basemap to the manual default (`day`).
+   *
+   * Called on load and whenever the user turns automatic lighting off. The
+   * Philippine-Time clock is stopped so nothing re-lights the map in the
+   * background.
+   */
+  private applyManualBasemap(): void {
+    this.stopRealtimeBasemap();
+    this.scheduledBasemap = null;
+    this.mapService.switchBasemap(DEFAULT_BASEMAP);
+  }
+
+  /**
+   * Flips between manual lighting (Day, presets hidden) and automatic
+   * Philippine-Time lighting (presets shown).
+   */
+  toggleAutoBasemap(): void {
+    this.isAutoBasemap = !this.isAutoBasemap;
+
+    if (this.isAutoBasemap) {
+      this.startRealtimeBasemap();
+    } else {
+      this.applyManualBasemap();
+    }
   }
 
   /**

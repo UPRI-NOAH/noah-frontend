@@ -33,35 +33,6 @@
     py-1.5
   "
 >
-  <!-- Day/dusk/night lighting presets (Mapbox Standard basemap only).
-       Desktop: always-visible row beside the style button. On mobile these
-       move to a toggle under the search bar (see below). -->
-  <div
-    *ngIf="mapStyle === 'standard'"
-    class="hidden mr-1 overflow-hidden rounded shadow md:flex md:flex-row"
-  >
-    <button
-      *ngFor="let preset of basemapPresets"
-      type="button"
-      class="
-        bg-white
-        px-2
-        py-1.5
-        text-xs
-        font-semibold
-        text-gray-800
-        transition
-        duration-150
-        ease-in-out
-        hover:bg-gray-200
-      "
-      [class.bg-gray-300]="currentBasemap === preset.value"
-      [attr.aria-pressed]="currentBasemap === preset.value"
-      (click)="switchBasemap(preset.value)"
-    >
-      {{ preset.label }}
-    </button>
-  </div>
   <div class="p-2">
     <div class="dropdown inline-block relative">
       <button
@@ -179,37 +150,58 @@
   </div>
 </div>
 
-<!-- Mobile: lighting preset toggle, under the search bar at the top-left.
-     Expands to show the Dawn / Day / Dusk / Night buttons beside the toggle. -->
-<div
-  *ngIf="mapStyle === 'standard'"
-  class="fixed z-30 top-14 left-2 flex flex-row items-start md:hidden"
->
+<!-- Basemap lighting control. Sits directly above the custom scale bar on the
+     right edge of the map.
+
+     Manual is the default: the basemap stays on Day and the preset buttons
+     stay hidden. Flipping the toggle to "Auto" reveals the Dawn / Day / Dusk /
+     Night presets and lets the basemap follow Philippine time. -->
+<div *ngIf="mapStyle === 'standard'" class="basemap-preset-control">
   <button
     type="button"
-    class="base-icon bg-white text-gray-800 rounded p-2 focus:outline-none"
-    [attr.aria-expanded]="isBasemapMenuOpen"
-    aria-label="Toggle lighting presets"
-    (click)="isBasemapMenuOpen = !isBasemapMenuOpen"
+    role="switch"
+    class="
+      base-icon
+      bg-white
+      text-gray-800
+      inline-flex
+      items-center
+      gap-1.5
+      px-2
+      py-2
+      text-xs
+      font-semibold
+      hover:bg-gray-200
+      focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50
+    "
+    [attr.aria-checked]="isAutoBasemap"
+    aria-label="Follow Philippine time for basemap lighting"
+    (click)="toggleAutoBasemap()"
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
+    <span
+      class="relative inline-block h-3.5 w-6 rounded-full transition-colors"
+      [class.bg-green-500]="isAutoBasemap"
+      [class.bg-gray-400]="!isAutoBasemap"
     >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 3v1.5M12 19.5V21M4.5 12H3m18 0h-1.5M5.6 5.6l1.06 1.06m10.68 10.68l1.06 1.06M18.4 5.6l-1.06 1.06M7.7 16.7l-1.06 1.06M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-      />
-    </svg>
+      <span
+        class="
+          absolute
+          top-0.5
+          left-0.5
+          h-2.5
+          w-2.5
+          rounded-full
+          bg-white
+          transition-transform
+        "
+        [style.transform]="isAutoBasemap ? 'translateX(10px)' : 'translateX(0)'"
+      ></span>
+    </span>
+    <span>{{ isAutoBasemap ? 'Auto' : 'Day' }}</span>
   </button>
   <div
-    *ngIf="isBasemapMenuOpen"
-    class="ml-1.5 flex flex-row overflow-hidden rounded shadow"
+    *ngIf="isAutoBasemap"
+    class="ml-1 flex flex-row overflow-hidden rounded shadow"
   >
     <button
       *ngFor="let preset of basemapPresets"
@@ -221,6 +213,9 @@
         text-xs
         font-semibold
         text-gray-800
+        transition
+        duration-150
+        ease-in-out
         hover:bg-gray-200
       "
       [class.bg-gray-300]="currentBasemap === preset.value"
