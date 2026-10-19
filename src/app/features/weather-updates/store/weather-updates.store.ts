@@ -18,7 +18,7 @@ export const RainfallContourType = [
   'forecast',
 ] as const;
 
-export type MapStyle = 'terrain' | 'satellite';
+export type MapStyle = 'terrain' | 'satellite' | 'standard';
 
 export type RainfallContourTypes = typeof RainfallContourType[number];
 

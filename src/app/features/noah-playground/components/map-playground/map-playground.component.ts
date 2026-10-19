@@ -8,7 +8,6 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
-  NgZone,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
@@ -48,14 +47,11 @@ import {
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
-  Basemap,
-  BASEMAP_PRESETS,
-  DEFAULT_BASEMAP,
-  getBasemapForPhilippineTime,
   hasStandardBasemap,
   NOAH_HAZARD_SLOT,
   NOAH_OVERLAY_SLOT,
   StandardSlot,
+  withStandardLightingNoop,
 } from '@core/services/standard-style';
 import {
   criticalFacilities,
@@ -195,37 +191,6 @@ export class MapPlaygroundComponent
   pgLocation: string = '';
   mapStyle: MapStyle = 'standard';
 
-  /** Lighting presets offered when a Mapbox Standard basemap is active. */
-  readonly basemapPresets = BASEMAP_PRESETS;
-
-  /** The currently applied lighting preset. */
-  currentBasemap: Basemap = DEFAULT_BASEMAP;
-
-  /**
-   * When `false` (the default) the basemap is driven manually: it is pinned to
-   * {@link DEFAULT_BASEMAP} (`day`), the Philippine clock is not consulted, and
-   * the preset buttons are hidden.
-   *
-   * When `true` the basemap follows Philippine time and the Dawn / Day / Dusk /
-   * Night buttons are shown so the schedule can still be overridden.
-   */
-  isAutoBasemap = false;
-
-  /**
-   * The preset the Philippine-Time schedule last applied.
-   *
-   * Kept apart from {@link currentBasemap} so a manual preset click is
-   * respected until the *next* schedule boundary instead of being reverted on
-   * the next timer tick. `null` before the first tick.
-   */
-  private scheduledBasemap: Basemap | null = null;
-
-  /**
-   * Interval id for the realtime basemap clock. Created outside Angular so the
-   * once-a-minute wake-up does not, on its own, trigger change detection.
-   */
-  private basemapClockTimer: number | null = null;
-
   /**
    * Id of the NOAH-owned DEM source backing the 3D Terrain exaggeration.
    *
@@ -357,8 +322,7 @@ export class MapPlaygroundComponent
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService,
-    private typhoonService: TyphoonTrackService,
-    private zone: NgZone
+    private typhoonService: TyphoonTrackService
   ) {
     // this.getScreenSize();
   }
@@ -367,13 +331,6 @@ export class MapPlaygroundComponent
 
   ngAfterViewInit(): void {
     this.initMap();
-
-    // Keep the preset buttons in sync with the shared selection.
-    this.mapService.basemap$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((basemap) => {
-        this.currentBasemap = basemap;
-      });
 
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
@@ -405,11 +362,6 @@ export class MapPlaygroundComponent
         // first pan/zoom gesture. See scheduleDeferredInit().
         this.scheduleDeferredInit();
       });
-
-    // Lighting starts in manual mode: the basemap is pinned to Day and the
-    // Philippine clock is not followed until the user flips the toggle to
-    // "Auto". See toggleAutoBasemap().
-    this.applyManualBasemap();
   }
 
   /**
@@ -557,9 +509,8 @@ export class MapPlaygroundComponent
     this.stopWindAnimation();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
-    // Stop the realtime basemap clock so it cannot re-light a map that is about
-    // to be discarded, then release the map reference.
-    this.stopRealtimeBasemap();
+    // The lighting control owns the Philippine-Time clock; it stops itself on
+    // destroy. Release the map reference last.
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
@@ -707,9 +658,9 @@ export class MapPlaygroundComponent
       // lighting toggle is anchored to the same `top` and lifted above it, so
       // these values must match or the two would overlap.
       if (window.innerWidth <= 767) {
-        container.style.top = '430px';
+        container.style.top = '386px';
       } else {
-        container.style.top = '380px';
+        container.style.top = '375px';
       }
     };
     applyPosition();
@@ -4047,7 +3998,7 @@ export class MapPlaygroundComponent
 
     let paint: mapboxgl.AnyLayer['paint'] | undefined = layer.paint;
     if (this.isStandardBasemap) {
-      paint = this.withStandardLightingNoop(layer);
+      paint = withStandardLightingNoop(layer);
       this.map.addLayer({
         ...layer,
         slot,
@@ -4055,42 +4006,6 @@ export class MapPlaygroundComponent
       } as mapboxgl.AnyLayer);
     } else {
       this.map.addLayer(layer);
-    }
-  }
-
-  /**
-   * Opts a custom layer out of Mapbox Standard's `light-3d` lighting.
-   *
-   * Standard's day/dawn/dusk/night presets swap the ambient and directional
-   * lights. In mapbox-gl v3.32 every layer that renders inside a basemap
-   * slot is illuminated by those lights — `*-emissive-strength` defaults to
-   * 0, so the preset's lights multiply the layer's *literal* paint colour.
-   * That is what made NOAH data (hazard fills, rainfall contours, satellite /
-   * weather-satellite rasters, boundaries) visibly shift at dusk/night while
-   * the basemap re-lit. Setting `*-emissive-strength: 1` marks the layer as
-   * fully self-lit: it renders with exactly its declared paint in every
-   * preset (day pixel output is unchanged) while the basemap keeps
-   * re-lighting around it. This runs only for layer types that ship an
-   * emissive-strength paint (fill, line, raster, circle, hillshade; symbols
-   * already default to emissive and are untouched).
-   */
-  private withStandardLightingNoop(
-    layer: mapboxgl.AnyLayer
-  ): mapboxgl.AnyLayer['paint'] {
-    const base = (layer.paint ?? {}) as Record<string, unknown>;
-    switch (layer.type) {
-      case 'fill':
-        return { 'fill-emissive-strength': 1, ...base } as never;
-      case 'line':
-        return { 'line-emissive-strength': 1, ...base } as never;
-      case 'raster':
-        return { 'raster-emissive-strength': 1, ...base } as never;
-      case 'circle':
-        return { 'circle-emissive-strength': 1, ...base } as never;
-      case 'hillshade':
-        return { 'hillshade-emissive-strength': 1, ...base } as never;
-      default:
-        return layer.paint;
     }
   }
 
@@ -5122,92 +5037,6 @@ export class MapPlaygroundComponent
           }
         });
     });
-  }
-
-  /**
-   * Starts the realtime Philippine-Time basemap cycle for the playground.
-   *
-   * Only used in automatic mode (see {@link toggleAutoBasemap}). The preset is
-   * applied immediately (so a 3 AM visit opens on `night`, not the manual `day`
-   * default) and then re-checked every minute so a long-lived tab crosses each
-   * boundary without a reload. A manual preset click still works: the schedule
-   * acts only when the Philippine-Time window changes, so the user's choice
-   * survives until the next dawn / day / dusk / night boundary.
-   */
-  private startRealtimeBasemap(): void {
-    this.stopRealtimeBasemap();
-    this.applyRealtimeBasemap();
-
-    this.zone.runOutsideAngular(() => {
-      this.basemapClockTimer = window.setInterval(() => {
-        this.applyRealtimeBasemap();
-      }, 60_000);
-    });
-  }
-
-  /**
-   * Switches the basemap when the Philippine-Time window has changed.
-   *
-   * Only a window transition triggers a switch, which is what lets a manual
-   * selection stand between boundaries.
-   */
-  private applyRealtimeBasemap(): void {
-    const scheduled = getBasemapForPhilippineTime();
-
-    if (scheduled === this.scheduledBasemap) {
-      return;
-    }
-
-    this.scheduledBasemap = scheduled;
-    // Re-enter Angular only when the preset actually changes, so the preset
-    // buttons' active state updates without per-tick change detection.
-    this.zone.run(() => this.mapService.switchBasemap(scheduled));
-  }
-
-  /** Cancels the realtime basemap clock, if one is running. */
-  private stopRealtimeBasemap(): void {
-    if (this.basemapClockTimer === null) {
-      return;
-    }
-
-    window.clearInterval(this.basemapClockTimer);
-    this.basemapClockTimer = null;
-  }
-
-  /**
-   * Pins the basemap to the manual default (`day`).
-   *
-   * Called on load and whenever the user turns automatic lighting off. The
-   * Philippine-Time clock is stopped so nothing re-lights the map in the
-   * background.
-   */
-  private applyManualBasemap(): void {
-    this.stopRealtimeBasemap();
-    this.scheduledBasemap = null;
-    this.mapService.switchBasemap(DEFAULT_BASEMAP);
-  }
-
-  /**
-   * Flips between manual lighting (Day, presets hidden) and automatic
-   * Philippine-Time lighting (presets shown).
-   */
-  toggleAutoBasemap(): void {
-    this.isAutoBasemap = !this.isAutoBasemap;
-
-    if (this.isAutoBasemap) {
-      this.startRealtimeBasemap();
-    } else {
-      this.applyManualBasemap();
-    }
-  }
-
-  /**
-   * Applies a Mapbox Standard lighting preset. Only meaningful while the
-   * Standard basemap is loaded; the buttons that call this are hidden
-   * otherwise.
-   */
-  switchBasemap(preset: Basemap) {
-    this.mapService.switchBasemap(preset);
   }
 
   switchMapStyle(style: MapStyle) {

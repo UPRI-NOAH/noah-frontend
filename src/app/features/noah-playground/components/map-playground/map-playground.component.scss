@@ -76,14 +76,23 @@
 .basemap-preset-control {
   position: absolute;
   z-index: 20;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  right: 10px;
-  top: 430px;
-  transform: translateY(calc(-100% - 6px));
+  right: auto;
+  left: 10px;
+  top: 60px;
+  border-radius: 3px;
+  transform: translateY(0);
   @media only screen and (min-width: 768px) {
-    top: 380px;
+    right: 10px;
+    left: auto;
+    top: 374px;
+    border-radius: 3px;
+    transform: translateY(calc(-100% - 6px));
+  }
+
+  /* Hidden (not removed) while a legacy terrain / satellite basemap is loaded,
+     so the Auto selection survives a basemap switch. */
+  &.is-hidden {
+    display: none;
   }
 }
 
