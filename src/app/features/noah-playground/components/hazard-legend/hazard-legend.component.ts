@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   NoahColor,
   NoahColorLevel,
@@ -14,9 +14,10 @@ import {
   templateUrl: './hazard-legend.component.html',
   styleUrls: ['./hazard-legend.component.scss'],
 })
-export class HazardLegendComponent implements OnInit {
+export class HazardLegendComponent {
   @Input() selectedColor: NoahColor = 'noah-red';
   @Input() highOnly = false;
+  @Input() typeLabel = 'Flood';
   @Input() set customPalette(palette: NoahColorPalette | undefined) {
     this._customPalette = this.clonePalette(
       palette ?? NOAH_COLORS[this.customColor]
@@ -40,10 +41,6 @@ export class HazardLegendComponent implements OnInit {
 
     return ['high', 'medium', 'low'];
   }
-
-  constructor() {}
-
-  ngOnInit(): void {}
 
   selectColor(color: NoahColor) {
     this.selectedColor = color;

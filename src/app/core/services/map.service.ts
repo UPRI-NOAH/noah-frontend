@@ -141,6 +141,56 @@ export class MapService {
     });
   }
 
+  /**
+   * Map options shared by every NOAH map for a fast, cache-friendly first load.
+   *
+   * These are deliberately about *resource behaviour* only — none of them
+   * changes the visual output of the basemap or of any NOAH layer — so they are
+   * kept in one place instead of drifting between the three map pages
+   * (playground, weather updates, know-your-hazards). Spread the result into
+   * the `mapboxgl.Map` constructor:
+   *
+   * ```ts
+   * new mapboxgl.Map({
+   *   ...this.mapService.getMapPerformanceOptions(),
+   *   container: 'map',
+   *   // page-specific options …
+   * });
+   * ```
+   *
+   * - `renderWorldCopies: false` — NOAH only ever shows the Philippines, so the
+   *   horizontal copies of the world that Mapbox renders by default are pure
+   *   waste: they request and draw extra basemap tiles on every frame.
+   * - `refreshExpiredTiles: false` — Mapbox serves basemap tiles with
+   *   short-lived cache directives. Left at the default (`true`) the map
+   *   silently re-requests tiles it already holds as they "expire" mid-session,
+   *   which is exactly the duplicate traffic that makes an online basemap feel
+   *   slower than a local one. The basemap does not change within a session, so
+   *   keeping already-downloaded tiles is safe; dynamic NOAH layers are separate
+   *   sources and are unaffected.
+   * - `maxTileCacheSize: 200` — a bounded increase over the viewport-derived
+   *   default (~70 tiles on a 1080p window) so panning back to a previously
+   *   viewed area re-uses tiles instead of re-downloading them, while staying
+   *   safe on low-memory devices.
+   * - `fadeDuration: 100` — shortens the cross-fade from the 300ms default so a
+   *   freshly fetched tile becomes legible sooner (the "snap-in" feel) without
+   *   reintroducing the flicker the fade exists to hide.
+   */
+  getMapPerformanceOptions(): Pick<
+    mapboxgl.MapOptions,
+    | 'renderWorldCopies'
+    | 'refreshExpiredTiles'
+    | 'maxTileCacheSize'
+    | 'fadeDuration'
+  > {
+    return {
+      renderWorldCopies: false,
+      refreshExpiredTiles: false,
+      maxTileCacheSize: 200,
+      fadeDuration: 100,
+    };
+  }
+
   getNewAttributionControl() {
     return new mapboxgl.AttributionControl({
       customAttribution:

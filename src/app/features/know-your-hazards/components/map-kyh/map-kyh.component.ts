@@ -11,6 +11,7 @@ import {
   NOAH_HAZARD_SLOT,
   NOAH_OVERLAY_SLOT,
   StandardSlot,
+  withStandardLightingNoop,
 } from '@core/services/standard-style';
 
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
@@ -35,7 +36,7 @@ export class MapKyhComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
   //centerMarker!: Marker;
-  mapStyle: MapStyle = 'terrain';
+  mapStyle: MapStyle = 'standard';
   currentLocation$: Observable<string>;
 
   kyhLegend: boolean = true;
@@ -44,6 +45,8 @@ export class MapKyhComponent implements OnInit {
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   private centerMarker: mapboxgl.Marker | null = null;
+  private readonly terrainSourceId = 'noah-terrain-dem';
+  private readonly defaultTerrainExaggeration = 1.8;
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
@@ -72,6 +75,7 @@ export class MapKyhComponent implements OnInit {
         // switched to a Mapbox Standard style, so configure it whenever the
         // loaded style actually is Standard.
         this.mapService.applyStandardConfig(this.map);
+        this.applyDefaultTerrain();
         this.initLayers();
         this.initMarkers();
       });
@@ -295,6 +299,11 @@ export class MapKyhComponent implements OnInit {
    * Adds a NOAH layer, skipping it when it already exists, and placing it in
    * the Standard `top` slot by default so overlays keep the visual position
    * they had when appended to a classic style's layer array.
+   *
+   * Inside a Standard basemap the layer is also opted out of Standard's
+   * `light-3d` lighting (see `withStandardLightingNoop`), so hazard colours
+   * stay identical in every dawn / day / dusk / night preset — exactly as they
+   * do in the playground.
    */
   private addNoahLayer(
     layer: mapboxgl.AnyLayer,
@@ -305,7 +314,11 @@ export class MapKyhComponent implements OnInit {
     }
 
     if (this.isStandardBasemap) {
-      this.map.addLayer({ ...layer, slot } as mapboxgl.AnyLayer);
+      this.map.addLayer({
+        ...layer,
+        slot,
+        paint: withStandardLightingNoop(layer),
+      } as mapboxgl.AnyLayer);
       return;
     }
 
@@ -319,10 +332,41 @@ export class MapKyhComponent implements OnInit {
     this.map.addSource(sourceId, source);
   }
 
+  /**
+   * Applies the default 3D terrain and exaggeration, matching the playground.
+   *
+   * `setTerrain` is wiped by `setStyle`, so this is called from the
+   * `style.load` handler and therefore re-runs after every basemap switch.
+   */
+  private applyDefaultTerrain() {
+    if (!this.map) {
+      return;
+    }
+
+    try {
+      this.addNoahSource(this.terrainSourceId, {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        tileSize: 512,
+        maxzoom: 14,
+        encoding: 'mapbox',
+      });
+
+      this.map.setTerrain({
+        source: this.terrainSourceId,
+        exaggeration: this.defaultTerrainExaggeration,
+      });
+    } catch (error) {
+      console.warn('Unable to apply the default terrain exaggeration', error);
+    }
+  }
+
   initMap() {
     this.currentLocation$ = this.kyhService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map-kyh',
       style: environment.mapbox.styles[this.mapStyle],
       zoom: 13,

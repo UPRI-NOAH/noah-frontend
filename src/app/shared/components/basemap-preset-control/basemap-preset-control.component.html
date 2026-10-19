@@ -1,0 +1,69 @@
+<button
+  type="button"
+  role="switch"
+  class="
+    base-icon
+    bg-white
+    text-gray-800
+    inline-flex
+    items-center
+    gap-1.5
+    px-2
+    py-2
+    text-xs
+    font-semibold
+    rounded-md
+    hover:bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50
+  "
+  [attr.aria-checked]="isAutoBasemap"
+  aria-label="Follow Philippine time for basemap lighting"
+  (click)="toggleAutoBasemap()"
+>
+  <span
+    class="relative inline-block h-3.5 w-6 rounded-full transition-colors"
+    [class.bg-green-500]="isAutoBasemap"
+    [class.bg-gray-400]="!isAutoBasemap"
+  >
+    <span
+      class="
+        absolute
+        top-0.5
+        left-0.5
+        h-2.5
+        w-2.5
+        rounded-full
+        bg-white
+        transition-transform
+      "
+      [style.transform]="isAutoBasemap ? 'translateX(10px)' : 'translateX(0)'"
+    ></span>
+  </span>
+  <span>{{ isAutoBasemap ? 'Auto' : 'Day' }}</span>
+</button>
+<div
+  *ngIf="isAutoBasemap"
+  class="ml-1 flex flex-row overflow-hidden rounded shadow"
+>
+  <button
+    *ngFor="let preset of basemapPresets"
+    type="button"
+    class="
+      bg-white
+      px-2
+      py-1.5
+      text-xs
+      font-semibold
+      text-gray-800
+      transition
+      duration-150
+      ease-in-out
+      hover:bg-gray-200
+    "
+    [class.bg-gray-300]="currentBasemap === preset.value"
+    [attr.aria-pressed]="currentBasemap === preset.value"
+    (click)="switchBasemap(preset.value)"
+  >
+    {{ preset.label }}
+  </button>
+</div>
