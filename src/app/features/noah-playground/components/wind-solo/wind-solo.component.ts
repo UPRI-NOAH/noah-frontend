@@ -8,7 +8,10 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { first } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 
-const CYCLE_INTERVAL_MS = 1500;
+/** How long the sweep takes to move from one forecast day into the next. */
+const DAY_BLEND_MS = 1500;
+/** How often the sweep position (and the map's blend) is updated. */
+const CYCLE_TICK_MS = 60;
 
 @Component({
   standalone: false,
@@ -28,6 +31,8 @@ export class WindSoloComponent implements OnInit, OnDestroy {
 
   playing = false;
   currentDayIndex = 0;
+  /** 0..1 position of the sweep between the current day and the next one. */
+  private dayProgress = 0;
   private cycleTimer: ReturnType<typeof setInterval> | null = null;
   private selectedSub: Subscription | null = null;
 
@@ -49,9 +54,14 @@ export class WindSoloComponent implements OnInit, OnDestroy {
       this.pgService.getWindParticleCount('wind');
 
     this.selectedSub = this.selectedForecastDay$.subscribe((day) => {
-      this.currentDayIndex = this.forecastDays.findIndex(
-        (d) => d.value === day
-      );
+      const index = this.forecastDays.findIndex((d) => d.value === day);
+
+      if (index === -1 || index === this.currentDayIndex) return;
+
+      // A day change that came from outside the player (the map only ever
+      // follows it) snaps the sweep to that day.
+      this.currentDayIndex = index;
+      this.dayProgress = 0;
     });
   }
 
@@ -65,7 +75,12 @@ export class WindSoloComponent implements OnInit, OnDestroy {
   }
 
   get timelineProgress(): number {
-    return (this.currentDayIndex / (this.forecastDays.length - 1)) * 100;
+    const span = this.forecastDays.length - 1;
+
+    return Math.min(
+      ((this.currentDayIndex + this.dayProgress) / span) * 100,
+      100
+    );
   }
 
   togglePlay(): void {
@@ -78,11 +93,29 @@ export class WindSoloComponent implements OnInit, OnDestroy {
 
   private startCycle(): void {
     this.playing = true;
-    this.cycleTimer = setInterval(() => {
+    this.cycleTimer = setInterval(() => this.tickCycle(), CYCLE_TICK_MS);
+  }
+
+  /**
+   * Advances the sweep continuously instead of jumping a whole day at a
+   * time. Each tick pushes the current position to the map, which
+   * cross-fades the wind grid from the current day into the next one, so
+   * the particle flow keeps moving straight through without ever
+   * restarting.
+   */
+  private tickCycle(): void {
+    this.dayProgress += CYCLE_TICK_MS / DAY_BLEND_MS;
+
+    if (this.dayProgress >= 1) {
+      this.dayProgress -= 1;
       this.currentDayIndex =
         (this.currentDayIndex + 1) % this.forecastDays.length;
-      this.selectForecastDay(this.forecastDays[this.currentDayIndex].value);
-    }, CYCLE_INTERVAL_MS);
+    }
+
+    this.pgService.setWindTimeline(
+      this.forecastDays[this.currentDayIndex].value,
+      this.dayProgress
+    );
   }
 
   private stopCycle(): void {
@@ -106,6 +139,14 @@ export class WindSoloComponent implements OnInit, OnDestroy {
   }
 
   selectForecastDay(day: WindForecastDay): void {
+    const index = this.forecastDays.findIndex((d) => d.value === day);
+
+    if (index !== -1) {
+      this.currentDayIndex = index;
+    }
+
+    // A day picked by hand snaps the map straight to it (no sweep).
+    this.dayProgress = 0;
     this.pgService.selectWindForecastDay(day);
   }
 }

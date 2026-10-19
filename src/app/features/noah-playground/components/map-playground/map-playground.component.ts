@@ -113,6 +113,7 @@ import {
   TemperatureType,
   TemperatureForecastDay,
   WindForecastDay,
+  WIND_FORECAST_DAYS,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -328,7 +329,12 @@ export class MapPlaygroundComponent
     color: '#67FF01',
   };
   private windGrid: WindGrid | null = null;
-  private windReady = false;
+  private windNextGrid: WindGrid | null = null;
+  private windGridDay: WindForecastDay | null = null;
+  private windNextGridDay: WindForecastDay | null = null;
+  private windBlend = 0;
+  private windGridCache: { [day: number]: WindGrid } = {};
+  private windCacheDate = '';
   private windParticles: WindParticle[] = [];
   private windAnimationFrame: number | null = null;
   private windLastTimestamp: number | null = null;
@@ -337,12 +343,10 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
-  private windLiveGrid: WindGrid | null = null;
   private windLiveGridPromise: Promise<WindGrid> | null = null;
   private windForecastPayload: { points: any[] } | null = null;
   private windForecastPayloadPromise: Promise<{ points: any[] }> | null = null;
   private windLoadToken = 0;
-  private windAppliedDay: WindForecastDay | null = null;
 
   constructor(
     private http: HttpClient,
@@ -4119,7 +4123,6 @@ export class MapPlaygroundComponent
   private buildWind(): void {
     this.resizeWindCanvas();
     this.initWindParticles();
-    this.requestWindDay(0);
 
     // Prefetch the forecast payload in the background so the advance
     // forecast buttons apply instantly when clicked (the JSON is large and
@@ -4182,14 +4185,10 @@ export class MapPlaygroundComponent
         this.windSettings.color = color;
       });
 
-    this.pgService.selectedWindForecastDay$
+    this.pgService.windTimeline$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((day) => {
-        // Skip only when this exact day is already on screen. A fresh click
-        // always (re)triggers loading/applying so no click is ever dropped.
-        if (day === this.windAppliedDay && this.windReady) return;
-
-        this.requestWindDay(day);
+      .subscribe(({ day, blend }) => {
+        this.requestWindTimeline(day, blend);
       });
   }
 
@@ -4310,61 +4309,113 @@ export class MapPlaygroundComponent
       : { r: 103, g: 255, b: 1 };
   }
 
-  private requestWindDay(day: WindForecastDay): void {
+  /**
+   * The wind forecast plays as one continuous sweep: every update carries
+   * the day the sweep starts from plus a 0..1 blend into the following day.
+   * The day pair is loaded (and cached) once per transition; blend-only
+   * updates just move the pointer the running particles sample from, so the
+   * flow keeps going straight through without stopping, restarting or
+   * jumping when the day changes.
+   */
+  private requestWindTimeline(day: WindForecastDay, blend: number): void {
+    this.pruneWindGridCache();
+
+    this.windBlend = Number.isFinite(blend)
+      ? Math.max(0, Math.min(1, blend))
+      : 0;
+
+    const nextDay = this.nextWindForecastDay(day);
+
+    if (day === this.windGridDay && nextDay === this.windNextGridDay) {
+      return;
+    }
+
+    // A newer pair supersedes any load still in flight, so live and
+    // forecast data can never overwrite each other.
     const token = ++this.windLoadToken;
 
-    const apply = (grid: WindGrid): void => {
-      // A newer request superseded this one; discard stale results so live
-      // and forecast data never overwrite each other.
-      if (token !== this.windLoadToken) return;
+    this.windGridDay = day;
+    this.windNextGridDay = nextDay;
 
+    this.applyWindDay(day, token, (grid) => {
       this.windGrid = grid;
-      this.windReady = true;
-      this.windAppliedDay = day;
-      this.applyWindGrid();
-    };
+    });
 
-    const handleError = (): void => {
-      if (token !== this.windLoadToken) return;
-
-      console.error('Wind fetch failed, using calm fallback');
-      this.windGrid = null;
-      this.windReady = false;
-    };
-
-    if (day === 0) {
-      if (this.windLiveGrid) {
-        apply(this.windLiveGrid);
-        return;
-      }
-
-      this.loadLiveWindGrid().then(apply, handleError);
-      return;
-    }
-
-    if (this.windForecastPayload) {
-      apply(this.buildForecastGrid(this.windForecastPayload.points, day));
-      return;
-    }
-
-    this.loadForecastPayload()
-      .then((payload) => apply(this.buildForecastGrid(payload.points, day)))
-      .catch(handleError);
+    this.applyWindDay(nextDay, token, (grid) => {
+      this.windNextGrid = grid;
+    });
   }
 
-  private applyWindGrid(): void {
-    if (this.windVisible && !this.windMapMoving) {
-      this.stopWindAnimation();
-      this.initWindParticles();
-      this.startWindAnimation();
+  /**
+   * Loads one day of the sweep, applying it synchronously when it is
+   * already cached (the sweep revisits every day, so every pass after the
+   * first is instant) and asynchronously the first time around.
+   */
+  private applyWindDay(
+    day: WindForecastDay,
+    token: number,
+    assign: (grid: WindGrid | null) => void
+  ): void {
+    const cached = this.windGridCache[day];
+
+    if (cached) {
+      assign(cached);
+      return;
     }
+
+    this.loadWindDay(day)
+      .then((grid) => {
+        if (token !== this.windLoadToken) return;
+        assign(grid);
+      })
+      .catch(() => {
+        if (token !== this.windLoadToken) return;
+
+        console.error('Wind fetch failed, using calm fallback');
+        assign(null);
+      });
+  }
+
+  private loadWindDay(day: WindForecastDay): Promise<WindGrid> {
+    if (day === 0) {
+      return this.loadLiveWindGrid().then((grid) => {
+        this.windGridCache[day] = grid;
+        return grid;
+      });
+    }
+
+    return this.loadForecastPayload().then((payload) => {
+      const grid = this.buildForecastGrid(payload.points, day);
+      this.windGridCache[day] = grid;
+      return grid;
+    });
+  }
+
+  /**
+   * After today (+5D is the last entry) the sweep flows back to the live
+   * "Today" grid, so even the wrap around the end of the timeline is a
+   * smooth morph instead of a jump.
+   */
+  private nextWindForecastDay(day: WindForecastDay): WindForecastDay {
+    const lastDay = WIND_FORECAST_DAYS[WIND_FORECAST_DAYS.length - 1].value;
+
+    return day >= lastDay ? 0 : ((day + 1) as WindForecastDay);
+  }
+
+  /** Forecast grids are keyed to the date they were built for. */
+  private pruneWindGridCache(): void {
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (this.windCacheDate === today) return;
+
+    this.windCacheDate = today;
+    this.windGridCache = {};
   }
 
   private loadLiveWindGrid(): Promise<WindGrid> {
-    if (this.windLiveGrid) return Promise.resolve(this.windLiveGrid);
-
     // Share one in-flight request so rapid clicks don't fetch the same
-    // endpoint multiple times.
+    // endpoint multiple times. Once it resolves, the grid is served from
+    // the day cache, so this only ever runs once per session.
     if (this.windLiveGridPromise) return this.windLiveGridPromise;
 
     this.windLiveGridPromise = fetch(
@@ -4374,10 +4425,7 @@ export class MapPlaygroundComponent
         if (!res.ok) throw new Error(`wind API returned ${res.status}`);
         return res.json();
       })
-      .then((data) => {
-        this.windLiveGrid = this.buildLiveGrid(data.points || []);
-        return this.windLiveGrid;
-      })
+      .then((data) => this.buildLiveGrid(data.points || []))
       .catch((err) => {
         this.windLiveGridPromise = null;
         throw err;
@@ -4493,8 +4541,32 @@ export class MapPlaygroundComponent
     return { uGrid, vGrid };
   }
 
+  /**
+   * Wind at a point, blended between the day the sweep is on and the day it
+   * is moving into, so day changes morph the flow smoothly instead of
+   * snapping the whole field over at once.
+   */
   private windAt(lng: number, lat: number): { u: number; v: number } {
-    if (!this.windReady || !this.windGrid) return { u: 0, v: 0 };
+    const from = this.sampleWindGrid(this.windGrid, lng, lat);
+    const to = this.sampleWindGrid(this.windNextGrid, lng, lat);
+
+    // Either side can still be loading (or have failed); use whichever is
+    // available and only blend once both are on screen.
+    if (from === null) return to ?? { u: 0, v: 0 };
+    if (to === null || this.windBlend <= 0) return from;
+
+    return {
+      u: from.u + (to.u - from.u) * this.windBlend,
+      v: from.v + (to.v - from.v) * this.windBlend,
+    };
+  }
+
+  private sampleWindGrid(
+    grid: WindGrid | null,
+    lng: number,
+    lat: number
+  ): { u: number; v: number } | null {
+    if (!grid) return null;
 
     const bounds = this.windGridBounds;
     const clampedLng = Math.max(bounds.west, Math.min(bounds.east, lng));
@@ -4511,7 +4583,7 @@ export class MapPlaygroundComponent
     const r1 = Math.min(r0 + 1, this.windGridRows - 1);
     const fc = colF - c0;
     const fr = rowF - r0;
-    const { uGrid, vGrid } = this.windGrid;
+    const { uGrid, vGrid } = grid;
     const u00 = uGrid[r0][c0];
     const u10 = uGrid[r0][c1];
     const u01 = uGrid[r1][c0];
