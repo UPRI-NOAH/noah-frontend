@@ -44,6 +44,7 @@ import {
   WindState,
   WindForecastDay,
   WindTimeline,
+  WIND_FORECAST_DAYS,
 } from '../store/noah-playground.store';
 import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
 import { BehaviorSubject, Observable, pipe } from 'rxjs';
@@ -54,6 +55,18 @@ import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
+
+/*
+ * The forecast sweep (the wind player's "Animate" button) is owned by this
+ * service rather than by `WindSoloComponent` on purpose: the side panel is
+ * rendered behind an `*ngIf`, which destroys that component whenever the
+ * panel is hidden, and a timer owned by it would die along with it.
+ */
+
+/** How long the sweep takes to move from one forecast day into the next. */
+const WIND_SWEEP_DAY_BLEND_MS = 1500;
+/** How often the sweep position (and the map's blend) is updated. */
+const WIND_SWEEP_TICK_MS = 60;
 
 @Injectable({
   providedIn: 'root',
@@ -68,6 +81,12 @@ export class NoahPlaygroundService {
    * while the forecast animates, which is far too chatty for the store.
    */
   private readonly windTimeline: BehaviorSubject<WindTimeline>;
+
+  /** Whether the forecast sweep is currently animating. */
+  private readonly windSweepPlaying = new BehaviorSubject<boolean>(false);
+
+  /** The sweep tick itself: owned here so it survives the side panel. */
+  private windSweepTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private gaService: GoogleAnalyticsService,
@@ -291,6 +310,14 @@ export class NoahPlaygroundService {
    */
   get windTimeline$(): Observable<WindTimeline> {
     return this.windTimeline.asObservable();
+  }
+
+  /**
+   * Whether the forecast sweep is running. The player component mirrors this,
+   * so a panel that is rebuilt while the sweep plays comes back on "Pause".
+   */
+  get windSweepPlaying$(): Observable<boolean> {
+    return this.windSweepPlaying.asObservable();
   }
 
   get selectedTemperature$(): Observable<TemperatureType> {
@@ -743,8 +770,8 @@ export class NoahPlaygroundService {
 
   /**
    * Moves the wind sweep to `blend` (0..1) of the way from `day` into the
-   * next forecast day. Called on every tick of the playground's wind player,
-   * so the store is only touched when the day itself changes.
+   * next forecast day. Called on every tick of the sweep, so the store is
+   * only touched when the day itself changes.
    */
   setWindTimeline(day: WindForecastDay, blend: number): void {
     const nextBlend = Number.isFinite(blend)
@@ -753,6 +780,55 @@ export class NoahPlaygroundService {
 
     this.windTimeline.next({ day, blend: nextBlend });
     this.persistWindForecastDay(day);
+  }
+
+  /** Starts or stops the forecast sweep (the wind player's Animate button). */
+  toggleWindSweep(): void {
+    if (this.windSweepTimer === null) {
+      this.startWindSweep();
+    } else {
+      this.stopWindSweep();
+    }
+  }
+
+  /**
+   * The sweep runs from the service, not from `WindSoloComponent`, so it keeps
+   * animating while the side panel is collapsed or hidden (that panel is
+   * behind an `*ngIf`, which destroys the player component with it).
+   */
+  startWindSweep(): void {
+    if (this.windSweepTimer !== null) return;
+
+    this.windSweepPlaying.next(true);
+    this.windSweepTimer = setInterval(
+      () => this.tickWindSweep(),
+      WIND_SWEEP_TICK_MS
+    );
+  }
+
+  stopWindSweep(): void {
+    this.windSweepPlaying.next(false);
+
+    if (this.windSweepTimer === null) return;
+
+    clearInterval(this.windSweepTimer);
+    this.windSweepTimer = null;
+  }
+
+  /** One sweep step: advance the blend, rolling into the next day at 1. */
+  private tickWindSweep(): void {
+    const { day, blend } = this.windTimeline.value;
+    const nextBlend = blend + WIND_SWEEP_TICK_MS / WIND_SWEEP_DAY_BLEND_MS;
+
+    if (nextBlend < 1) {
+      this.setWindTimeline(day, nextBlend);
+      return;
+    }
+
+    const lastDay = WIND_FORECAST_DAYS[WIND_FORECAST_DAYS.length - 1].value;
+    const nextDay = (day >= lastDay ? 0 : day + 1) as WindForecastDay;
+
+    this.setWindTimeline(nextDay, nextBlend - 1);
   }
 
   /** Keeps the store's selected day in sync (it drives the day labels). */

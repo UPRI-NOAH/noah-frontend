@@ -507,6 +507,9 @@ export class MapPlaygroundComponent
     // Cancel the wind particle RAF loop first: it reads from `this.map` and
     // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
+    // The forecast sweep is owned by the service so the side panel cannot
+    // stop it; with the map gone there is nothing left for it to drive.
+    this.pgService.stopWindSweep();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
     // The lighting control owns the Philippine-Time clock; it stops itself on
