@@ -50,3 +50,10 @@
   (selectedStyleChange)="switchMapStyle($event)"
 >
 </noah-change-style-button>
+
+<!-- Basemap lighting control. Anchored above the style button (the scale bar
+     below it leaves no room); see the class in the component SCSS. -->
+<noah-basemap-preset-control
+  class="basemap-preset-control"
+  [class.is-hidden]="mapStyle !== 'standard'"
+></noah-basemap-preset-control>

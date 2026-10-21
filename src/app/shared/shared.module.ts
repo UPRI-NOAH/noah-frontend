@@ -6,6 +6,7 @@ import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
 import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
+import { BasemapPresetControlComponent } from './components/basemap-preset-control/basemap-preset-control.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
@@ -19,6 +20,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 @NgModule({
   declarations: [
     ChangeStyleButtonComponent,
+    BasemapPresetControlComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,
@@ -38,6 +40,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
     FormsModule,
     ReactiveFormsModule,
     ChangeStyleButtonComponent,
+    BasemapPresetControlComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,

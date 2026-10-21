@@ -16,6 +16,7 @@ import {
   hasStandardBasemap,
   NOAH_OVERLAY_SLOT,
   StandardSlot,
+  withStandardLightingNoop,
 } from '@core/services/standard-style';
 import { combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import {
@@ -36,12 +37,16 @@ import {
 export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   map!: Map;
   geolocateControl: GeolocateControl;
-  mapStyle: MapStyle = 'terrain';
+  // Same default as noah-playground / noah-studio: the map opens on the
+  // Mapbox Standard basemap.
+  mapStyle: MapStyle = 'standard';
   currentLocation$: Observable<string>;
 
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   private centerMarker: mapboxgl.Marker | null = null;
+  private readonly terrainSourceId = 'noah-terrain-dem';
+  private readonly defaultTerrainExaggeration = 1.8;
   private attributionControl: mapboxgl.AttributionControl | null = null;
   private isInitialized = false;
 
@@ -70,6 +75,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         // switched to a Mapbox Standard style, so configure it whenever the
         // loaded style actually is Standard.
         this.mapService.applyStandardConfig(this.map);
+        this.applyDefaultTerrain();
 
         // Only initialize these controls once
         if (!this.isInitialized) {
@@ -120,6 +126,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   /**
    * Adds a NOAH layer, skipping it when it already exists, and placing it in
    * the Standard `top` slot so overlays stay above the basemap surface.
+   *
+   * Inside a Standard basemap the layer is also opted out of Standard's
+   * `light-3d` lighting (see `withStandardLightingNoop`), so rainfall /
+   * contour / satellite colours stay identical in every dawn / day / dusk /
+   * night preset — exactly as they do in the playground.
    */
   private addNoahLayer(
     layer: mapboxgl.AnyLayer,
@@ -130,7 +141,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     }
 
     if (this.isStandardBasemap) {
-      this.map.addLayer({ ...layer, slot } as mapboxgl.AnyLayer);
+      this.map.addLayer({
+        ...layer,
+        slot,
+        paint: withStandardLightingNoop(layer),
+      } as mapboxgl.AnyLayer);
       return;
     }
 
@@ -251,8 +266,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       case 'satellite':
         mapboxStyle = environment.mapbox.styles.satellite;
         break;
+      case 'standard':
+        mapboxStyle = environment.mapbox.styles.standard;
+        break;
       default:
-        mapboxStyle = environment.mapbox.styles.terrain;
+        mapboxStyle = environment.mapbox.styles.standard;
     }
 
     const currentCenter = this.map.getCenter();
@@ -269,6 +287,29 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       }
     });
     this._changeStyle.next(null);
+  }
+
+  private applyDefaultTerrain() {
+    if (!this.map) {
+      return;
+    }
+
+    try {
+      this.addNoahSource(this.terrainSourceId, {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        tileSize: 512,
+        maxzoom: 14,
+        encoding: 'mapbox',
+      });
+
+      this.map.setTerrain({
+        source: this.terrainSourceId,
+        exaggeration: this.defaultTerrainExaggeration,
+      });
+    } catch (error) {
+      console.warn('Unable to apply the default terrain exaggeration', error);
+    }
   }
 
   initAttribution() {
@@ -378,8 +419,10 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     this.currentLocation$ = this.wuService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map-weather-updates',
-      style: environment.mapbox.styles.terrain,
+      style: environment.mapbox.styles[this.mapStyle],
       zoom: 4.4, // Initial zoom level for Rainfall Contour and Typhoon Track
       minZoom: 4,
       touchZoomRotate: true,

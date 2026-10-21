@@ -36,6 +36,13 @@
   >
     <button
       class="p-2 rounded-t hover:bg-gray-100"
+      [class.bg-gray-100]="selectedStyle === 'standard'"
+      (click)="changeStyle('standard')"
+    >
+      Standard
+    </button>
+    <button
+      class="p-2 hover:bg-gray-100"
       [class.bg-gray-100]="selectedStyle === 'terrain'"
       (click)="changeStyle('terrain')"
     >

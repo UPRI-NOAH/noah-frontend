@@ -8,7 +8,6 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
-  NgZone,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
@@ -42,19 +41,17 @@ import {
   pluck,
   shareReplay,
   skip,
+  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
-  Basemap,
-  BASEMAP_PRESETS,
-  DEFAULT_BASEMAP,
-  getBasemapForPhilippineTime,
   hasStandardBasemap,
   NOAH_HAZARD_SLOT,
   NOAH_OVERLAY_SLOT,
   StandardSlot,
+  withStandardLightingNoop,
 } from '@core/services/standard-style';
 import {
   criticalFacilities,
@@ -112,6 +109,7 @@ import {
   TemperatureType,
   TemperatureForecastDay,
   WindForecastDay,
+  WIND_FORECAST_DAYS,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -193,30 +191,6 @@ export class MapPlaygroundComponent
   pgLocation: string = '';
   mapStyle: MapStyle = 'standard';
 
-  /** Lighting presets offered when a Mapbox Standard basemap is active. */
-  readonly basemapPresets = BASEMAP_PRESETS;
-
-  /** The currently applied lighting preset. */
-  currentBasemap: Basemap = DEFAULT_BASEMAP;
-
-  /** Mobile-only: expands the lighting preset buttons under the search bar. */
-  isBasemapMenuOpen = false;
-
-  /**
-   * The preset the Philippine-Time schedule last applied.
-   *
-   * Kept apart from {@link currentBasemap} so a manual preset click is
-   * respected until the *next* schedule boundary instead of being reverted on
-   * the next timer tick. `null` before the first tick.
-   */
-  private scheduledBasemap: Basemap | null = null;
-
-  /**
-   * Interval id for the realtime basemap clock. Created outside Angular so the
-   * once-a-minute wake-up does not, on its own, trigger change detection.
-   */
-  private basemapClockTimer: number | null = null;
-
   /**
    * Id of the NOAH-owned DEM source backing the 3D Terrain exaggeration.
    *
@@ -225,6 +199,15 @@ export class MapPlaygroundComponent
    * take precedence over whatever the incoming style asks for.
    */
   private readonly terrainSourceId = 'noah-terrain-dem';
+
+  /**
+   * Handle of the pending idle callback that runs the deferred (non-essential)
+   * layer initialisation, and its `setTimeout` fallback for browsers without
+   * `requestIdleCallback`. Tracked so a queued pass can be cancelled on destroy
+   * or superseded by a newer `style.load`.
+   */
+  private deferredInitHandle: number | null = null;
+  private deferredInitFallbackTimer: number | null = null;
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
@@ -311,7 +294,12 @@ export class MapPlaygroundComponent
     color: '#67FF01',
   };
   private windGrid: WindGrid | null = null;
-  private windReady = false;
+  private windNextGrid: WindGrid | null = null;
+  private windGridDay: WindForecastDay | null = null;
+  private windNextGridDay: WindForecastDay | null = null;
+  private windBlend = 0;
+  private windGridCache: { [day: number]: WindGrid } = {};
+  private windCacheDate = '';
   private windParticles: WindParticle[] = [];
   private windAnimationFrame: number | null = null;
   private windLastTimestamp: number | null = null;
@@ -320,12 +308,10 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
-  private windLiveGrid: WindGrid | null = null;
   private windLiveGridPromise: Promise<WindGrid> | null = null;
   private windForecastPayload: { points: any[] } | null = null;
   private windForecastPayloadPromise: Promise<{ points: any[] }> | null = null;
   private windLoadToken = 0;
-  private windAppliedDay: WindForecastDay | null = null;
 
   constructor(
     private http: HttpClient,
@@ -336,8 +322,7 @@ export class MapPlaygroundComponent
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService,
-    private typhoonService: TyphoonTrackService,
-    private zone: NgZone
+    private typhoonService: TyphoonTrackService
   ) {
     // this.getScreenSize();
   }
@@ -346,13 +331,6 @@ export class MapPlaygroundComponent
 
   ngAfterViewInit(): void {
     this.initMap();
-
-    // Keep the preset buttons in sync with the shared selection.
-    this.mapService.basemap$
-      .pipe(takeUntil(this._unsub))
-      .subscribe((basemap) => {
-        this.currentBasemap = basemap;
-      });
 
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
@@ -372,50 +350,167 @@ export class MapPlaygroundComponent
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        // The playground basemap is a Mapbox Standard style. Apply its
-        // configuration before any custom layer is added so slots resolve
-        // against a fully configured basemap.
-        this.mapService.applyStandardConfig(this.map);
-        // this.getScreenSize();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
-        //this.initSensors();
-        this.initQuezonCitySensors();
-        this.initQCCritFac();
-        this.initQCMunicipalBoundary();
-        this.initVolcanoes();
-        this.initBoundaries();
-        this.initWeatherSatelliteLayers();
-        this.showContourMaps();
-        this.initQcCenterListener();
-        this.initLagunaCenterListener();
-        this.initBarangayBoundary();
-        this.initAffectedExposure();
-        this.initRainForcast();
-        this.initTyphoonTrack();
-        this.initPar();
-        this.initLightning();
-        this.initTemperature();
-        this.initWeatherUpdates();
-        this.initWind();
-        this.initRiverbasin();
+        // Essential work first: the Standard basemap configuration, the 3D
+        // terrain and the initial camera. These are cheap, define the first
+        // frame the user sees, and must not be delayed. They add no data
+        // layers, so moving them out of the previous single chain does not
+        // change layer stacking.
+        this.initEssentialLayers();
+        // Everything else (≈20 hazard / weather layer groups, several large
+        // image and video downloads, the hazard tileset) is deferred until the
+        // browser is idle so it cannot delay the first basemap paint or the
+        // first pan/zoom gesture. See scheduleDeferredInit().
+        this.scheduleDeferredInit();
       });
+  }
 
-    // Follow the Philippine clock (dawn → day → dusk → night) for as long as
-    // the playground is on screen.
-    this.startRealtimeBasemap();
+  /**
+   * Layer groups that must exist the moment the style is ready.
+   *
+   * These are the pieces that define the first frame the user actually sees:
+   * the Mapbox Standard basemap configuration, the 3D terrain, and the initial
+   * camera (including the QC / Laguna admin camera). None of them adds a data
+   * layer, so the relative stacking of the NOAH overlays is unaffected by the
+   * split from {@link initDeferredLayers}.
+   */
+  private initEssentialLayers(): void {
+    // The playground basemap is a Mapbox Standard style. Apply its
+    // configuration before any custom layer is added so slots resolve
+    // against a fully configured basemap.
+    this.mapService.applyStandardConfig(this.map);
+    this.addExaggerationControl();
+    this.initQcCenterListener();
+    this.initLagunaCenterListener();
+    this.initWeatherUpdates();
+  }
+
+  /**
+   * The remaining layer groups, run lazily once the map is interactive.
+   *
+   * Every layer produced here is either hidden at start-up (hazard fills,
+   * boundaries, volcanoes, critical facilities, risk-assessment rainfall)
+   * or gated behind the weather-updates toggle (satellite video, rainfall
+   * contours, wind). Initialising them outside the first paint keeps the
+   * basemap responsive while the data loads progressively behind it. The
+   * order is unchanged from the original chain so overlay stacking is
+   * identical.
+   */
+  private initDeferredLayers(): void {
+    this.addCriticalFacilityLayers();
+    this.initHazardLayers();
+    //this.initSensors();
+    this.initQuezonCitySensors();
+    this.initQCCritFac();
+    this.initQCMunicipalBoundary();
+    this.initVolcanoes();
+    this.initBoundaries();
+    this.initWeatherSatelliteLayers();
+    this.showContourMaps();
+    this.initBarangayBoundary();
+    this.initAffectedExposure();
+    this.initRainForcast();
+    this.initTyphoonTrack();
+    this.initPar();
+    //this.initLightning();
+    this.initTemperature();
+    this.initWind();
+    this.initRiverbasin();
+  }
+
+  /**
+   * Schedules {@link initDeferredLayers} for the next idle period.
+   *
+   * `requestIdleCallback` (Chrome / Edge / Firefox) runs the work in a gap in
+   * the main thread — after the first basemap paint and while the user is not
+   * interacting — with a 1500ms timeout so the layers still appear promptly on
+   * a busy page. Safari has no `requestIdleCallback`; a zero-delay macrotask is
+   * used there, which still runs after the current frame rather than blocking
+   * it. Any pending pass is cancelled first so a second `style.load` cannot
+   * queue a duplicate run.
+   */
+  private scheduleDeferredInit(): void {
+    this.cancelDeferredInit();
+
+    const run = () => {
+      this.deferredInitHandle = null;
+      this.deferredInitFallbackTimer = null;
+
+      // The component may have been destroyed (or the map released) while the
+      // callback waited for an idle gap.
+      if (this._unsub.isStopped) {
+        return;
+      }
+
+      this.initDeferredLayers();
+    };
+
+    const win = window as typeof window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number }
+      ) => number;
+    };
+
+    if (typeof win.requestIdleCallback === 'function') {
+      this.deferredInitHandle = win.requestIdleCallback(run, { timeout: 1500 });
+    } else {
+      this.deferredInitFallbackTimer = window.setTimeout(run, 0);
+    }
+  }
+
+  /** Cancels a pending {@link scheduleDeferredInit} pass, if any. */
+  private cancelDeferredInit(): void {
+    const win = window as typeof window & {
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (this.deferredInitHandle !== null && win.cancelIdleCallback) {
+      win.cancelIdleCallback(this.deferredInitHandle);
+    }
+    this.deferredInitHandle = null;
+
+    if (this.deferredInitFallbackTimer !== null) {
+      window.clearTimeout(this.deferredInitFallbackTimer);
+    }
+    this.deferredInitFallbackTimer = null;
+  }
+
+  /**
+   * Runs `build` immediately if `shown$` already emits `true`, otherwise the
+   * first time it does.
+   *
+   * This is how the expensive optional overlays (weather-satellite video,
+   * rainfall contours, temperature / rainfall-forecast rasters, wind) avoid
+   * downloading anything while they are hidden: the source, layer and their
+   * subscriptions are not created until the layer is actually requested.
+   *
+   * The callers re-arm this on every `style.load`, and the subscription is
+   * torn down by `_changeStyle` / destroy, so a basemap switch rebuilds the
+   * overlay if it is still shown while a switch while it is hidden simply
+   * waits for the next show.
+   */
+  private runWhenFirstShown(shown$: Observable<boolean>, build: () => void) {
+    shown$
+      .pipe(
+        filter((shown) => shown === true),
+        take(1),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe(() => build());
   }
 
   ngOnDestroy(): void {
+    // Drop any queued deferred layer initialisation before the map is torn
+    // down so it cannot run against a destroyed map.
+    this.cancelDeferredInit();
     // Cancel the wind particle RAF loop first: it reads from `this.map` and
     // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
-    // Stop the realtime basemap clock so it cannot re-light a map that is about
-    // to be discarded, then release the map reference.
-    this.stopRealtimeBasemap();
+    // The lighting control owns the Philippine-Time clock; it stops itself on
+    // destroy. Release the map reference last.
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
@@ -526,9 +621,7 @@ export class MapPlaygroundComponent
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
     container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
     container.style.padding = '5px'; // padding around the box
     container.style.background = 'white';
     container.style.borderRadius = '6px';
@@ -561,10 +654,13 @@ export class MapPlaygroundComponent
     }
 
     const applyPosition = () => {
+      // Kept in sync with `.basemap-preset-control` in the component SCSS: the
+      // lighting toggle is anchored to the same `top` and lifted above it, so
+      // these values must match or the two would overlap.
       if (window.innerWidth <= 767) {
-        container.style.top = '423px';
+        container.style.top = '386px';
       } else {
-        container.style.top = '359px';
+        container.style.top = '375px';
       }
     };
     applyPosition();
@@ -1748,7 +1844,23 @@ export class MapPlaygroundComponent
   //   });
   // }
 
+  /**
+   * Risk-assessment rainfall forecast is a raster image that is hidden until
+   * the risk-assessment group is turned on (`riskAssessment.shown` defaults to
+   * `false`). The image is only created once both the group and the rainfall
+   * layer are shown.
+   */
   initRainForcast() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.riskAssessmentGroupShown$,
+        this.pgService.rainForcastShown$,
+      ]).pipe(map(([groupShown, rainShown]) => groupShown && rainShown)),
+      () => this.buildRainForcastLayer()
+    );
+  }
+
+  private buildRainForcastLayer() {
     const rainForcastImage = {
       'rain-forecast': {
         url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
@@ -2309,7 +2421,18 @@ export class MapPlaygroundComponent
     });
   }
 
+  /**
+   * Temperature is a raster image source (heat index / max temperature) that is
+   * hidden on load (`temperature.shown` defaults to `false`). The images are
+   * only created once the temperature group is actually shown.
+   */
   initTemperature() {
+    this.runWhenFirstShown(this.pgService.temperatureShown$, () =>
+      this.buildTemperatureLayers()
+    );
+  }
+
+  private buildTemperatureLayers() {
     const temperatureImages = {
       heat_index: {
         urlPrefix: 'HI',
@@ -2463,7 +2586,28 @@ export class MapPlaygroundComponent
       });
   }
 
+  /**
+   * Weather-satellite overlays are the heaviest optional download in the
+   * playground: each source is a WebM *and* an MP4 loop that renders as a
+   * `<video>` texture. The weather-updates group is off on load, so building
+   * these eagerly downloaded video the user was never looking at. The source,
+   * layer and subscriptions are now created the first time the group (and the
+   * satellite layer) is actually shown, and rebuilt after a style change while
+   * it stays shown.
+   */
   initWeatherSatelliteLayers() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.weatherSatellitesShown$,
+      ]).pipe(
+        map(([groupShown, satelliteShown]) => groupShown && satelliteShown)
+      ),
+      () => this.buildWeatherSatelliteLayers()
+    );
+  }
+
+  private buildWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
         url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
@@ -3677,11 +3821,14 @@ export class MapPlaygroundComponent
    *
    * A single subscription folds the store's `shown` flag and `level` into one
    * effective exaggeration, which replaces the two competing subscriptions that
-   * used to fight over `setTerrain`. It deliberately survives `style.load`
-   * (it is no longer torn down by `_changeStyle`): the map reference does not
-   * change when the style does, and `addExaggerationControl()` re-reads the
-   * store on every `style.load`, so re-subscribing would only add another
-   * writer. `distinctUntilChanged` runs after the mapping so it compares the
+   * used to fight over `setTerrain`. Because `addExaggerationControl()` runs
+   * again on *every* `style.load` and `setTerrain` is wiped by `setStyle`, the
+   * subscription is scoped with `takeUntil(this._changeStyle)`: each style
+   * change tears the previous writer down and the following `style.load`
+   * installs exactly one replacement. Without it, every basemap switch would
+   * leave another live subscription behind, each one re-calling `setTerrain` —
+   * the very "another writer" accumulation this was meant to avoid.
+   * `distinctUntilChanged` runs after the mapping so it compares the
    * effective exaggeration and ignores changes that cannot alter the terrain
    * (e.g. toggling the expand chevron).
    *
@@ -3694,6 +3841,7 @@ export class MapPlaygroundComponent
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
+        takeUntil(this._changeStyle),
         map((exaggeration) => (exaggeration.shown ? exaggeration.level : 0)),
         distinctUntilChanged(),
         skip(1)
@@ -3799,6 +3947,9 @@ export class MapPlaygroundComponent
     this.mapService.init();
 
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map. See
+      // MapService.getMapPerformanceOptions() for the rationale of each option.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map',
       style: environment.mapbox.styles.standard,
       zoom: 5.5,
@@ -3847,7 +3998,7 @@ export class MapPlaygroundComponent
 
     let paint: mapboxgl.AnyLayer['paint'] | undefined = layer.paint;
     if (this.isStandardBasemap) {
-      paint = this.withStandardLightingNoop(layer);
+      paint = withStandardLightingNoop(layer);
       this.map.addLayer({
         ...layer,
         slot,
@@ -3855,42 +4006,6 @@ export class MapPlaygroundComponent
       } as mapboxgl.AnyLayer);
     } else {
       this.map.addLayer(layer);
-    }
-  }
-
-  /**
-   * Opts a custom layer out of Mapbox Standard's `light-3d` lighting.
-   *
-   * Standard's day/dawn/dusk/night presets swap the ambient and directional
-   * lights. In mapbox-gl v3.32 every layer that renders inside a basemap
-   * slot is illuminated by those lights — `*-emissive-strength` defaults to
-   * 0, so the preset's lights multiply the layer's *literal* paint colour.
-   * That is what made NOAH data (hazard fills, rainfall contours, satellite /
-   * weather-satellite rasters, boundaries) visibly shift at dusk/night while
-   * the basemap re-lit. Setting `*-emissive-strength: 1` marks the layer as
-   * fully self-lit: it renders with exactly its declared paint in every
-   * preset (day pixel output is unchanged) while the basemap keeps
-   * re-lighting around it. This runs only for layer types that ship an
-   * emissive-strength paint (fill, line, raster, circle, hillshade; symbols
-   * already default to emissive and are untouched).
-   */
-  private withStandardLightingNoop(
-    layer: mapboxgl.AnyLayer
-  ): mapboxgl.AnyLayer['paint'] {
-    const base = (layer.paint ?? {}) as Record<string, unknown>;
-    switch (layer.type) {
-      case 'fill':
-        return { 'fill-emissive-strength': 1, ...base } as never;
-      case 'line':
-        return { 'line-emissive-strength': 1, ...base } as never;
-      case 'raster':
-        return { 'raster-emissive-strength': 1, ...base } as never;
-      case 'circle':
-        return { 'circle-emissive-strength': 1, ...base } as never;
-      case 'hillshade':
-        return { 'hillshade-emissive-strength': 1, ...base } as never;
-      default:
-        return layer.paint;
     }
   }
 
@@ -3904,10 +4019,25 @@ export class MapPlaygroundComponent
     this.map.addSource(sourceId, source);
   }
 
+  /**
+   * The animated wind layer is off on load (it lives inside the weather-updates
+   * group). Initialising it eagerly fetched the wind grid and forecast payload
+   * and spun up the particle canvas that was never visible, so the whole setup
+   * now waits until the group and the wind layer are both shown.
+   */
   initWind(): void {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.windShown$,
+      ]).pipe(map(([groupShown, windShown]) => groupShown && windShown)),
+      () => this.buildWind()
+    );
+  }
+
+  private buildWind(): void {
     this.resizeWindCanvas();
     this.initWindParticles();
-    this.requestWindDay(0);
 
     // Prefetch the forecast payload in the background so the advance
     // forecast buttons apply instantly when clicked (the JSON is large and
@@ -3970,14 +4100,10 @@ export class MapPlaygroundComponent
         this.windSettings.color = color;
       });
 
-    this.pgService.selectedWindForecastDay$
+    this.pgService.windTimeline$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((day) => {
-        // Skip only when this exact day is already on screen. A fresh click
-        // always (re)triggers loading/applying so no click is ever dropped.
-        if (day === this.windAppliedDay && this.windReady) return;
-
-        this.requestWindDay(day);
+      .subscribe(({ day, blend }) => {
+        this.requestWindTimeline(day, blend);
       });
   }
 
@@ -4098,61 +4224,113 @@ export class MapPlaygroundComponent
       : { r: 103, g: 255, b: 1 };
   }
 
-  private requestWindDay(day: WindForecastDay): void {
+  /**
+   * The wind forecast plays as one continuous sweep: every update carries
+   * the day the sweep starts from plus a 0..1 blend into the following day.
+   * The day pair is loaded (and cached) once per transition; blend-only
+   * updates just move the pointer the running particles sample from, so the
+   * flow keeps going straight through without stopping, restarting or
+   * jumping when the day changes.
+   */
+  private requestWindTimeline(day: WindForecastDay, blend: number): void {
+    this.pruneWindGridCache();
+
+    this.windBlend = Number.isFinite(blend)
+      ? Math.max(0, Math.min(1, blend))
+      : 0;
+
+    const nextDay = this.nextWindForecastDay(day);
+
+    if (day === this.windGridDay && nextDay === this.windNextGridDay) {
+      return;
+    }
+
+    // A newer pair supersedes any load still in flight, so live and
+    // forecast data can never overwrite each other.
     const token = ++this.windLoadToken;
 
-    const apply = (grid: WindGrid): void => {
-      // A newer request superseded this one; discard stale results so live
-      // and forecast data never overwrite each other.
-      if (token !== this.windLoadToken) return;
+    this.windGridDay = day;
+    this.windNextGridDay = nextDay;
 
+    this.applyWindDay(day, token, (grid) => {
       this.windGrid = grid;
-      this.windReady = true;
-      this.windAppliedDay = day;
-      this.applyWindGrid();
-    };
+    });
 
-    const handleError = (): void => {
-      if (token !== this.windLoadToken) return;
-
-      console.error('Wind fetch failed, using calm fallback');
-      this.windGrid = null;
-      this.windReady = false;
-    };
-
-    if (day === 0) {
-      if (this.windLiveGrid) {
-        apply(this.windLiveGrid);
-        return;
-      }
-
-      this.loadLiveWindGrid().then(apply, handleError);
-      return;
-    }
-
-    if (this.windForecastPayload) {
-      apply(this.buildForecastGrid(this.windForecastPayload.points, day));
-      return;
-    }
-
-    this.loadForecastPayload()
-      .then((payload) => apply(this.buildForecastGrid(payload.points, day)))
-      .catch(handleError);
+    this.applyWindDay(nextDay, token, (grid) => {
+      this.windNextGrid = grid;
+    });
   }
 
-  private applyWindGrid(): void {
-    if (this.windVisible && !this.windMapMoving) {
-      this.stopWindAnimation();
-      this.initWindParticles();
-      this.startWindAnimation();
+  /**
+   * Loads one day of the sweep, applying it synchronously when it is
+   * already cached (the sweep revisits every day, so every pass after the
+   * first is instant) and asynchronously the first time around.
+   */
+  private applyWindDay(
+    day: WindForecastDay,
+    token: number,
+    assign: (grid: WindGrid | null) => void
+  ): void {
+    const cached = this.windGridCache[day];
+
+    if (cached) {
+      assign(cached);
+      return;
     }
+
+    this.loadWindDay(day)
+      .then((grid) => {
+        if (token !== this.windLoadToken) return;
+        assign(grid);
+      })
+      .catch(() => {
+        if (token !== this.windLoadToken) return;
+
+        console.error('Wind fetch failed, using calm fallback');
+        assign(null);
+      });
+  }
+
+  private loadWindDay(day: WindForecastDay): Promise<WindGrid> {
+    if (day === 0) {
+      return this.loadLiveWindGrid().then((grid) => {
+        this.windGridCache[day] = grid;
+        return grid;
+      });
+    }
+
+    return this.loadForecastPayload().then((payload) => {
+      const grid = this.buildForecastGrid(payload.points, day);
+      this.windGridCache[day] = grid;
+      return grid;
+    });
+  }
+
+  /**
+   * After today (+5D is the last entry) the sweep flows back to the live
+   * "Today" grid, so even the wrap around the end of the timeline is a
+   * smooth morph instead of a jump.
+   */
+  private nextWindForecastDay(day: WindForecastDay): WindForecastDay {
+    const lastDay = WIND_FORECAST_DAYS[WIND_FORECAST_DAYS.length - 1].value;
+
+    return day >= lastDay ? 0 : ((day + 1) as WindForecastDay);
+  }
+
+  /** Forecast grids are keyed to the date they were built for. */
+  private pruneWindGridCache(): void {
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (this.windCacheDate === today) return;
+
+    this.windCacheDate = today;
+    this.windGridCache = {};
   }
 
   private loadLiveWindGrid(): Promise<WindGrid> {
-    if (this.windLiveGrid) return Promise.resolve(this.windLiveGrid);
-
     // Share one in-flight request so rapid clicks don't fetch the same
-    // endpoint multiple times.
+    // endpoint multiple times. Once it resolves, the grid is served from
+    // the day cache, so this only ever runs once per session.
     if (this.windLiveGridPromise) return this.windLiveGridPromise;
 
     this.windLiveGridPromise = fetch(
@@ -4162,10 +4340,7 @@ export class MapPlaygroundComponent
         if (!res.ok) throw new Error(`wind API returned ${res.status}`);
         return res.json();
       })
-      .then((data) => {
-        this.windLiveGrid = this.buildLiveGrid(data.points || []);
-        return this.windLiveGrid;
-      })
+      .then((data) => this.buildLiveGrid(data.points || []))
       .catch((err) => {
         this.windLiveGridPromise = null;
         throw err;
@@ -4281,8 +4456,32 @@ export class MapPlaygroundComponent
     return { uGrid, vGrid };
   }
 
+  /**
+   * Wind at a point, blended between the day the sweep is on and the day it
+   * is moving into, so day changes morph the flow smoothly instead of
+   * snapping the whole field over at once.
+   */
   private windAt(lng: number, lat: number): { u: number; v: number } {
-    if (!this.windReady || !this.windGrid) return { u: 0, v: 0 };
+    const from = this.sampleWindGrid(this.windGrid, lng, lat);
+    const to = this.sampleWindGrid(this.windNextGrid, lng, lat);
+
+    // Either side can still be loading (or have failed); use whichever is
+    // available and only blend once both are on screen.
+    if (from === null) return to ?? { u: 0, v: 0 };
+    if (to === null || this.windBlend <= 0) return from;
+
+    return {
+      u: from.u + (to.u - from.u) * this.windBlend,
+      v: from.v + (to.v - from.v) * this.windBlend,
+    };
+  }
+
+  private sampleWindGrid(
+    grid: WindGrid | null,
+    lng: number,
+    lat: number
+  ): { u: number; v: number } | null {
+    if (!grid) return null;
 
     const bounds = this.windGridBounds;
     const clampedLng = Math.max(bounds.west, Math.min(bounds.east, lng));
@@ -4299,7 +4498,7 @@ export class MapPlaygroundComponent
     const r1 = Math.min(r0 + 1, this.windGridRows - 1);
     const fc = colF - c0;
     const fr = rowF - r0;
-    const { uGrid, vGrid } = this.windGrid;
+    const { uGrid, vGrid } = grid;
     const u00 = uGrid[r0][c0];
     const u10 = uGrid[r0][c1];
     const u01 = uGrid[r1][c0];
@@ -4721,7 +4920,23 @@ export class MapPlaygroundComponent
     );
   }
 
+  /**
+   * Rainfall contours are five large PNG raster overlays, all hidden until the
+   * weather-updates group is turned on. Building them eagerly downloaded five
+   * images that were transparent (opacity 0) on the default view, so they are
+   * now created the first time the group and the contour layer are both shown.
+   */
   showContourMaps() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.contourMapGroupShown$,
+      ]).pipe(map(([groupShown, contourShown]) => groupShown && contourShown)),
+      () => this.buildContourMaps()
+    );
+  }
+
+  private buildContourMaps() {
     const contourMapImages = {
       '1hr': {
         url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
@@ -4822,65 +5037,6 @@ export class MapPlaygroundComponent
           }
         });
     });
-  }
-
-  /**
-   * Starts the realtime Philippine-Time basemap cycle for the playground.
-   *
-   * The preset is applied immediately (so a 3 AM visit opens on `night`, not
-   * the shared `day` default) and then re-checked every minute so a long-lived
-   * tab crosses each boundary without a reload. A manual preset click still
-   * works: the schedule acts only when the Philippine-Time window changes, so
-   * the user's choice survives until the next dawn / day / dusk / night
-   * boundary.
-   */
-  private startRealtimeBasemap(): void {
-    this.stopRealtimeBasemap();
-    this.applyRealtimeBasemap();
-
-    this.zone.runOutsideAngular(() => {
-      this.basemapClockTimer = window.setInterval(() => {
-        this.applyRealtimeBasemap();
-      }, 60_000);
-    });
-  }
-
-  /**
-   * Switches the basemap when the Philippine-Time window has changed.
-   *
-   * Only a window transition triggers a switch, which is what lets a manual
-   * selection stand between boundaries.
-   */
-  private applyRealtimeBasemap(): void {
-    const scheduled = getBasemapForPhilippineTime();
-
-    if (scheduled === this.scheduledBasemap) {
-      return;
-    }
-
-    this.scheduledBasemap = scheduled;
-    // Re-enter Angular only when the preset actually changes, so the preset
-    // buttons' active state updates without per-tick change detection.
-    this.zone.run(() => this.mapService.switchBasemap(scheduled));
-  }
-
-  /** Cancels the realtime basemap clock, if one is running. */
-  private stopRealtimeBasemap(): void {
-    if (this.basemapClockTimer === null) {
-      return;
-    }
-
-    window.clearInterval(this.basemapClockTimer);
-    this.basemapClockTimer = null;
-  }
-
-  /**
-   * Applies a Mapbox Standard lighting preset. Only meaningful while the
-   * Standard basemap is loaded; the buttons that call this are hidden
-   * otherwise.
-   */
-  switchBasemap(preset: Basemap) {
-    this.mapService.switchBasemap(preset);
   }
 
   switchMapStyle(style: MapStyle) {

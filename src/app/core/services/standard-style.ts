@@ -1,4 +1,4 @@
-import { ConfigSpecification, Map } from 'mapbox-gl';
+import mapboxgl, { ConfigSpecification, Map } from 'mapbox-gl';
 
 /**
  * Import id used by `mapbox://styles/mapbox/standard` for its basemap
@@ -121,6 +121,42 @@ export function getBasemapConfig(basemap: Basemap): ConfigSpecification {
  */
 export function hasStandardBasemap(map: Map): boolean {
   return map.getConfig(STANDARD_BASEMAP_IMPORT) != null;
+}
+
+/**
+ * Opts a custom layer out of Mapbox Standard's `light-3d` lighting.
+ *
+ * Standard's day/dawn/dusk/night presets swap the ambient and directional
+ * lights. In mapbox-gl v3.32 every layer that renders inside a basemap slot is
+ * illuminated by those lights — `*-emissive-strength` defaults to 0, so the
+ * preset's lights multiply the layer's *literal* paint colour. That is what
+ * makes NOAH data (hazard fills, rainfall contours, satellite /
+ * weather-satellite rasters, boundaries) visibly shift at dusk/night while the
+ * basemap re-lights. Setting `*-emissive-strength: 1` marks the layer as fully
+ * self-lit: it renders with exactly its declared paint in every preset (day
+ * pixel output is unchanged) while the basemap keeps re-lighting around it.
+ *
+ * Only layer types that ship an emissive-strength paint are touched (fill,
+ * line, raster, circle, hillshade; symbols already default to emissive).
+ */
+export function withStandardLightingNoop(
+  layer: mapboxgl.AnyLayer
+): mapboxgl.AnyLayer['paint'] {
+  const base = (layer.paint ?? {}) as Record<string, unknown>;
+  switch (layer.type) {
+    case 'fill':
+      return { 'fill-emissive-strength': 1, ...base } as never;
+    case 'line':
+      return { 'line-emissive-strength': 1, ...base } as never;
+    case 'raster':
+      return { 'raster-emissive-strength': 1, ...base } as never;
+    case 'circle':
+      return { 'circle-emissive-strength': 1, ...base } as never;
+    case 'hillshade':
+      return { 'hillshade-emissive-strength': 1, ...base } as never;
+    default:
+      return layer.paint;
+  }
 }
 
 /**
