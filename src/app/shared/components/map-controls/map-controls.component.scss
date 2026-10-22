@@ -27,7 +27,8 @@
   }
 }
 
-/* Zoom / compass: one white panel, separated by hairlines. */
+/* Zoom / compass and the measurement tools: one white panel, separated by
+   hairlines. */
 .map-controls-group {
   display: flex;
   flex-direction: column;
@@ -89,6 +90,26 @@
 /* Hairline between the grouped buttons. */
 .map-controls-group .map-controls-button + .map-controls-button {
   border-top: 1px solid #f1f5f9;
+}
+
+/* A grouped button that is doing something (a measurement tool that is
+   running) is tinted, so the active tool is obvious. */
+.map-controls-group .map-controls-button.is-active {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* The measurement panel: the clear action is destructive, so it sits behind
+   a slightly stronger rule and warns on hover. */
+.map-controls-group--measure
+  .map-controls-button
+  + .map-controls-button--clear {
+  border-top-color: #e5e7eb;
+
+  &:hover {
+    color: #dc2626;
+    background: #fef2f2;
+  }
 }
 
 /* The stacked buttons carry their own surface. */

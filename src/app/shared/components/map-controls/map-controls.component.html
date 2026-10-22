@@ -1,7 +1,11 @@
 <!-- Floating toolbar on the right edge of the map. -->
 <div class="map-controls-toolbar" #toolbar>
   <!-- Zoom and orientation, grouped in a single white panel. -->
-  <div class="map-controls-group">
+  <div
+    class="map-controls-group"
+    role="group"
+    aria-label="Zoom and orientation"
+  >
     <button
       type="button"
       class="map-controls-button"
@@ -69,6 +73,91 @@
     </button>
   </div>
 
+  <!-- The measurement tools, grouped in their own white panel. -->
+  <div
+    class="map-controls-group map-controls-group--measure"
+    *ngIf="draw"
+    role="group"
+    aria-label="Measurements"
+  >
+    <button
+      type="button"
+      class="map-controls-button"
+      [class.is-active]="activeDrawMode === 'draw_polygon'"
+      title="Measure area"
+      aria-label="Measure area"
+      [attr.aria-pressed]="activeDrawMode === 'draw_polygon'"
+      (click)="toggleDraw('draw_polygon')"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          d="M5.5 6.2l7-3.4 7.6 4.6-1.6 8.4-8.6 3.2-5-6.4z"
+          stroke-dasharray="3 2.4"
+        />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="map-controls-button"
+      [class.is-active]="activeDrawMode === 'draw_line_string'"
+      title="Measure distance"
+      aria-label="Measure distance"
+      [attr.aria-pressed]="activeDrawMode === 'draw_line_string'"
+      (click)="toggleDraw('draw_line_string')"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          d="M2.9 14.2l7.6-7.6a1 1 0 0 1 1.4 0l6.1 6.1a1 1 0 0 1 0 1.4l-7.6 7.6a1 1 0 0 1-1.4 0l-6.1-6.1a1 1 0 0 1 0-1.4z"
+        />
+        <path d="M7.3 11.1l1.8 1.8M10.2 8.2l1.8 1.8M13.1 5.3l1.8 1.8" />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="map-controls-button map-controls-button--clear"
+      title="Clear measurements"
+      aria-label="Clear measurements"
+      (click)="clearDrawings()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 7h16" />
+        <path d="M6.5 7l.9 11.2a2 2 0 0 0 2 1.8h5.2a2 2 0 0 0 2-1.8L17.5 7" />
+        <path
+          d="M9.5 7V5.4a1.9 1.9 0 0 1 1.9-1.9h1.2a1.9 1.9 0 0 1 1.9 1.9V7"
+        />
+        <path d="M10.3 10.6v6M13.7 10.6v6" />
+      </svg>
+    </button>
+  </div>
+
   <!-- The other map actions, as individual floating buttons. -->
   <div class="map-controls-stack">
     <button
@@ -130,85 +219,6 @@
         >A</span
       >
     </button>
-
-    <ng-container *ngIf="draw">
-      <button
-        type="button"
-        class="map-controls-button"
-        [class.is-active]="activeDrawMode === 'draw_polygon'"
-        title="Measure area"
-        aria-label="Measure area"
-        [attr.aria-pressed]="activeDrawMode === 'draw_polygon'"
-        (click)="toggleDraw('draw_polygon')"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M5.5 6.2l7-3.4 7.6 4.6-1.6 8.4-8.6 3.2-5-6.4z"
-            stroke-dasharray="3 2.4"
-          />
-        </svg>
-      </button>
-
-      <button
-        type="button"
-        class="map-controls-button"
-        [class.is-active]="activeDrawMode === 'draw_line_string'"
-        title="Measure distance"
-        aria-label="Measure distance"
-        [attr.aria-pressed]="activeDrawMode === 'draw_line_string'"
-        (click)="toggleDraw('draw_line_string')"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M2.9 14.2l7.6-7.6a1 1 0 0 1 1.4 0l6.1 6.1a1 1 0 0 1 0 1.4l-7.6 7.6a1 1 0 0 1-1.4 0l-6.1-6.1a1 1 0 0 1 0-1.4z"
-          />
-          <path d="M7.3 11.1l1.8 1.8M10.2 8.2l1.8 1.8M13.1 5.3l1.8 1.8" />
-        </svg>
-      </button>
-
-      <button
-        type="button"
-        class="map-controls-button"
-        title="Clear measurements"
-        aria-label="Clear measurements"
-        (click)="clearDrawings()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 7h16" />
-          <path d="M6.5 7l.9 11.2a2 2 0 0 0 2 1.8h5.2a2 2 0 0 0 2-1.8L17.5 7" />
-          <path
-            d="M9.5 7V5.4a1.9 1.9 0 0 1 1.9-1.9h1.2a1.9 1.9 0 0 1 1.9 1.9V7"
-          />
-          <path d="M10.3 10.6v6M13.7 10.6v6" />
-        </svg>
-      </button>
-    </ng-container>
   </div>
 </div>
 
