@@ -5038,7 +5038,8 @@ export class MapPlaygroundComponent
 
   private updateCalculate(event) {
     const data = this.draw.getAll();
-    const answer = document.getElementById('area');
+    const areaEl = document.getElementById('area');
+    const distanceEl = document.getElementById('distance');
     let totalArea = 0;
     let totalLength = 0;
 
@@ -5053,20 +5054,26 @@ export class MapPlaygroundComponent
         }
       });
 
-      let output = '';
-
-      if (totalLength > 0) {
+      if (totalLength > 0 && distanceEl) {
         const roundedLength = Math.round(totalLength * 100) / 100;
-        output += `<p style="margin-bottom:2px;"><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
-      }
-      if (totalArea > 0) {
-        const roundedArea = Math.round(totalArea * 100) / 100;
-        output += `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+        distanceEl.innerHTML = `<p><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
+      } else if (distanceEl) {
+        distanceEl.innerHTML = '';
       }
 
-      answer.innerHTML = output;
+      if (totalArea > 0 && areaEl) {
+        const roundedArea = Math.round(totalArea * 100) / 100;
+        areaEl.innerHTML = `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+      } else if (areaEl) {
+        areaEl.innerHTML = '';
+      }
     } else {
-      answer.innerHTML = '';
+      if (areaEl) {
+        areaEl.innerHTML = '';
+      }
+      if (distanceEl) {
+        distanceEl.innerHTML = '';
+      }
     }
   }
 

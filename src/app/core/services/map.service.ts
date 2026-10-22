@@ -32,9 +32,10 @@ import {
 })
 export class MapService implements OnDestroy {
   constructor(private httpClient: HttpClient, private zone: NgZone) {
-    // The default selection is "auto", so the map must open lit for the local
-    // time rather than for the static `day` default.
-    this.applyScheduledBasemap(getBasemapForPhilippineTime());
+    // Default to manual Day basemap lighting.
+    this.lightingSelectionSubject.next('day');
+    this.basemapSubject.next('day');
+    this.scheduledBasemapSubject.next(getBasemapForPhilippineTime());
     this.startLightingClock();
   }
   private addressSubject = new Subject<string>();

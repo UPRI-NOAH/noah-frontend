@@ -124,7 +124,7 @@ export class MapControlsComponent
   bearing = 0;
 
   /** Whether the style / lighting panel is expanded. */
-  panelOpen = true;
+  panelOpen = false;
 
   /** The MapboxDraw mode currently active, if any. */
   activeDrawMode: DrawMode | null = null;
@@ -331,6 +331,15 @@ export class MapControlsComponent
     this.draw.deleteAll();
     this.draw.changeMode('simple_select');
     this.activeDrawMode = null;
+
+    const areaEl = document.getElementById('area');
+    const distanceEl = document.getElementById('distance');
+    if (areaEl) {
+      areaEl.innerHTML = '';
+    }
+    if (distanceEl) {
+      distanceEl.innerHTML = '';
+    }
   }
 
   /**

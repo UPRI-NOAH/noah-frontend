@@ -20,58 +20,43 @@
   right: 5px;
 }
 
-/* The measurement results sit at the bottom-left of the map, clear of the
-   map controls toolbar and the style / lighting panel on the right. On wide
-   screens the navigation drawer covers the left 24rem (md:w-96) of the map,
-   so they move to the edge of the visible map; on phones the drawer is a
-   bottom sheet, so they sit just above it. */
-.distance-container {
+/* The measurement results sit below the scale bar on the right side, stacked
+   above the attribution area. */
+.measurements-wrapper {
   position: absolute;
-  bottom: 44px;
-  left: 10px;
-  z-index: 1;
-  @media only screen and (min-width: 769px) {
-    bottom: 10px;
-    left: calc(24rem + 10px);
-  }
-  @media only screen and (max-width: 768px) {
-    bottom: calc(16rem + 44px);
-  }
+  right: 10px;
+  top: 376px;
+  z-index: 15;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
 }
 
-.distance-container > * {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 11px;
-  line-height: 18px;
-  display: block;
-  margin: 0;
-  padding: 5px 10px;
-  border-radius: 3px;
-}
+.distance-container,
 .area-container {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  z-index: 1;
-  margin-right: 3px;
-  @media only screen and (min-width: 769px) {
-    left: calc(24rem + 10px);
-  }
-  @media only screen and (max-width: 768px) {
-    bottom: calc(16rem + 10px);
-  }
+  position: static;
+  pointer-events: none;
 }
 
+.distance-container > *,
 .area-container > * {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 11px;
-  line-height: 18px;
+  line-height: 16px;
   display: block;
   margin: 0;
-  padding: 5px 10px;
-  border-radius: 3px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: right;
+}
+
+@media only screen and (max-width: 768px) {
+  .measurements-wrapper {
+    top: 399px;
+  }
 }
 
 /* The coordinate readout sits in the right-hand column, right below the map
