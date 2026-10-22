@@ -22,6 +22,63 @@
   --color-5: #1a994e;
   --color-6: #333333;
   font-size: 16px;
+
+  // Width of the floating map style / lighting panel. Exposed globally so the
+  // other map overlays (the know-your-hazards legend, for one) can sit clear
+  // of it without hard-coding the width a second time.
+  --noah-map-controls-panel-width: 336px;
+
+  // Where the NOAH map controls toolbar starts and how tall it is. The
+  // controls component publishes both; the scale bar and the coordinate
+  // readout use them to stack below the toolbar without hard-coded offsets.
+  --noah-map-controls-toolbar-top: 10px;
+  --noah-map-controls-toolbar-height: 120px;
+}
+
+/* The custom scale bar. It shares the right-hand column with the NOAH map
+   controls toolbar and sits right below it on pages that have the toolbar
+   (playground). On pages without the toolbar (KYH, Weather Updates) it sits
+   just above the Mapbox attribution in the bottom-right corner so it remains
+   visible and responsive. */
+#custom-scale-control {
+  position: absolute;
+  right: 10px;
+  z-index: 15;
+  padding: 6px 10px 5px 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#custom-scale-control[data-position='right-top'] {
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 12px
+  );
+}
+
+#custom-scale-control[data-position='bottom-right'] {
+  bottom: 28px;
+}
+
+#custom-scale-control .mapboxgl-ctrl-scale {
+  height: 14px;
+  border: 1px solid #1f2937;
+  border-top: none;
+  background: transparent;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  color: #111827;
+}
+
+@media only screen and (max-width: 768px) {
+  #custom-scale-control[data-position='bottom-right'] {
+    bottom: 38px;
+  }
 }
 
 .mapboxgl-ctrl-group button {

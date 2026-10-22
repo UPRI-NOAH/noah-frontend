@@ -11,11 +11,16 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* The coordinate readout sits in the right-hand column, right below the map
+   controls toolbar and the scale bar that follows it. */
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 301px;
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 50px
+  );
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -24,41 +29,4 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
-  @media only screen and (max-width: 768px) {
-    /* Below the lighting control (which sits under the mobile top bar). */
-    top: 110px;
-    left: 10px;
-    width: fit-content;
-  }
-}
-
-.mapStyle {
-  top: 167px;
-  @media only screen and (max-width: 768px) {
-    top: 216px;
-  }
-}
-
-/* Basemap lighting toggle + presets. On mobile, sits left side below the top bar;
-   on desktop, right side stacked above the style button. */
-.basemap-preset-control {
-  position: absolute;
-  z-index: 20;
-  right: auto;
-  left: 10px;
-  top: 70px;
-  border-radius: 3px;
-  transform: translateY(0);
-  @media only screen and (min-width: 768px) {
-    right: 10px;
-    left: auto;
-    top: 298px;
-    transform: translateY(calc(-100% - 6px));
-  }
-
-  /* Hidden (not removed) while a legacy terrain / satellite basemap is loaded,
-     so the Auto selection survives a basemap switch. */
-  &.is-hidden {
-    display: none;
-  }
 }

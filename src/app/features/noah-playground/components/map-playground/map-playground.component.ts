@@ -336,12 +336,10 @@ export class MapPlaygroundComponent
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
         this.map.resize();
-        this.addNavigationControls();
         this.addGeolocationControls();
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
-        this.addCustomTooltips();
         this.getScreenSize();
         this.iniScaleControl();
       });
@@ -525,14 +523,11 @@ export class MapPlaygroundComponent
   }
 
   /**
-   * Adds the plus and minus zoom map controls
-   */
-  addNavigationControls() {
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-  }
-
-  /**
    * Adds the geolocation map control
+   *
+   * The control's own button is hidden (`showButton: false`); the locate
+   * action lives in the NOAH map controls toolbar, which triggers the control
+   * programmatically.
    */
   addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
@@ -612,58 +607,7 @@ export class MapPlaygroundComponent
   }
 
   iniScaleControl() {
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: 'metric',
-    });
-
-    // Create a custom container for the scale control
-    const container = document.createElement('div');
-    container.id = 'custom-scale-control';
-    container.style.position = 'absolute';
-    container.style.right = '10px'; // some margin from right edge
-    container.style.padding = '5px'; // padding around the box
-    container.style.background = 'white';
-    container.style.borderRadius = '6px';
-    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-
-    // Append container to the map
-    this.map.getContainer().appendChild(container);
-
-    // Add the scale control using Mapbox’s API
-    const scaleEl = scale.onAdd(this.map);
-    container.appendChild(scaleEl);
-
-    // Style adjustments
-    const scaleElem = scaleEl as HTMLElement;
-    scaleElem.style.fontSize = '12px';
-    scaleElem.style.lineHeight = '20px';
-    scaleElem.style.fontWeight = 'bold';
-
-    // Align the text and scale bar like Mapbox example
-    scaleElem.style.display = 'flex';
-    scaleElem.style.flexDirection = 'column'; // puts number above the bar
-    scaleElem.style.alignItems = 'center'; // center horizontal alignment
-
-    if (scaleElem.style.flexDirection === 'row') {
-      // find the label element inside the scaleEl
-      const label = scaleElem.querySelector('div');
-      if (label) {
-        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
-      }
-    }
-
-    const applyPosition = () => {
-      // Kept in sync with `.basemap-preset-control` in the component SCSS: the
-      // lighting toggle is anchored to the same `top` and lifted above it, so
-      // these values must match or the two would overlap.
-      if (window.innerWidth <= 767) {
-        container.style.top = '386px';
-      } else {
-        container.style.top = '375px';
-      }
-    };
-    applyPosition();
+    this.mapService.attachScaleControl(this.map);
   }
 
   /**
@@ -5071,14 +5015,18 @@ export class MapPlaygroundComponent
     }
   }
 
+  /**
+   * Sets up the drawing tool used to measure areas and distances.
+   *
+   * MapboxDraw's own button bar is hidden (`displayControlsDefault: false`
+   * with `controls: false`): the draw, measure and clear actions live in the
+   * NOAH map controls toolbar, which drives the control through
+   * `changeMode()` / `deleteAll()`.
+   */
   initCalculation() {
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        line_string: true,
-        trash: true,
-      },
+      controls: false,
     });
 
     this.map.addControl(this.draw);
@@ -5121,19 +5069,6 @@ export class MapPlaygroundComponent
       answer.innerHTML = '';
     }
   }
-
-  // Add custom tooltips for are and distance
-  private addCustomTooltips = () => {
-    const buttons = document.querySelectorAll('.mapbox-gl-draw_ctrl-draw-btn');
-    buttons.forEach((button) => {
-      if (button.classList.contains('mapbox-gl-draw_polygon')) {
-        button.setAttribute('title', 'Measure Area');
-      }
-      if (button.classList.contains('mapbox-gl-draw_line')) {
-        button.setAttribute('title', 'Measure Distance');
-      }
-    });
-  };
 
   /**
    * All hazard maps except the debris flow and alluvial fan are

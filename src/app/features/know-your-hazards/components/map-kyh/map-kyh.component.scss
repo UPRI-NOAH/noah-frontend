@@ -1,41 +1,103 @@
-.map-icon {
-  top: 166px;
-  right: 2px;
-  @media only screen and (max-width: 768px) {
-    top: 216px;
-  }
-}
-
-/* Basemap lighting toggle + presets. On mobile, sits left side below the top bar;
-   on desktop, right side stacked above the style button. */
-.basemap-preset-control {
+/* Hazard level legend: compact floating panel at top-left */
+.kyh-hazard-legend {
   position: absolute;
-  z-index: 20;
-  right: auto;
+  bottom: 36px;
   left: 10px;
-  top: 70px;
-  border-radius: 3px;
-  transform: translateY(0);
-  @media only screen and (min-width: 768px) {
-    right: 10px;
-    left: auto;
-    top: 304px;
-    border-radius: 3px;
-    transform: translateY(calc(-100% - 6px));
-  }
-
-  /* Hidden (not removed) while a legacy terrain / satellite basemap is loaded,
-     so the Auto selection survives a basemap switch. */
-  &.is-hidden {
-    display: none;
-  }
+  z-index: 20;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  min-width: 150px;
 }
 
+.kyh-hazard-legend__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px 8px 12px;
+  cursor: pointer;
+}
+
+.kyh-hazard-legend.is-collapsed .kyh-hazard-legend__header {
+  padding: 10px 12px;
+}
+
+.kyh-hazard-legend__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.kyh-hazard-legend__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.kyh-hazard-legend__toggle svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.kyh-hazard-legend__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 10px 12px;
+}
+
+.kyh-hazard-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kyh-hazard-legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+
+.kyh-hazard-legend__swatch--low {
+  background: #f6c744;
+}
+
+.kyh-hazard-legend__swatch--medium {
+  background: #f79445;
+}
+
+.kyh-hazard-legend__swatch--high {
+  background: #eb5b5b;
+}
+
+.kyh-hazard-legend__label {
+  font-size: 12px;
+  line-height: 1;
+  color: #1f2937;
+}
+
+/* The coordinate readout sits in the right-hand column, right below the map
+   controls toolbar and the scale bar that follows it. */
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 305px;
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 50px
+  );
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -44,10 +106,4 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
-  @media only screen and (max-width: 768px) {
-    /* Below the lighting control (which sits under the mobile top bar). */
-    top: 110px;
-    left: 10px;
-    width: fit-content;
-  }
 }

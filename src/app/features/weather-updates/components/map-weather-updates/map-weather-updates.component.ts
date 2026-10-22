@@ -189,56 +189,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   iniScaleControl() {
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: 'metric',
-    });
-
-    // Create a custom container for the scale control
-    const container = document.createElement('div');
-    container.id = 'custom-scale-control';
-    container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
-    container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
-    container.style.padding = '5px'; // padding around the box
-    container.style.background = 'white';
-    container.style.borderRadius = '6px';
-    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-
-    // Append container to the map
-    this.map.getContainer().appendChild(container);
-
-    // Add the scale control using Mapbox’s API
-    const scaleEl = scale.onAdd(this.map);
-    container.appendChild(scaleEl);
-
-    // Style adjustments
-    const scaleElem = scaleEl as HTMLElement;
-    scaleElem.style.fontSize = '12px';
-    scaleElem.style.lineHeight = '20px';
-    scaleElem.style.fontWeight = 'bold';
-
-    // Align the text and scale bar like Mapbox example
-    scaleElem.style.display = 'flex';
-    scaleElem.style.flexDirection = 'column'; // puts number above the bar
-    scaleElem.style.alignItems = 'center'; // center horizontal alignment
-
-    if (scaleElem.style.flexDirection === 'row') {
-      // find the label element inside the scaleEl
-      const label = scaleElem.querySelector('div');
-      if (label) {
-        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
-      }
-    }
-    const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '287px';
-      } else {
-        container.style.top = '235px';
-      }
-    };
-    applyPosition();
+    this.mapService.attachScaleControl(this.map, 'bottom-right');
   }
 
   zoomTyphoon() {
@@ -381,14 +332,19 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         maxZoom: 13,
       },
     });
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
     geocoder.on('result', (e) => {
       this.wuService.setCurrentLocation(e.result['place_name']);
       console.log(e.result);
     });
   }
 
+  /**
+   * Adds the geolocation control.
+   *
+   * The control's own button is hidden (`showButton: false`); the locate
+   * action lives in the NOAH map controls toolbar, which triggers the control
+   * programmatically.
+   */
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');

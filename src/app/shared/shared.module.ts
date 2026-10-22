@@ -5,8 +5,7 @@ import { SearchComponent } from './components/search/search.component';
 import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
-import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
-import { BasemapPresetControlComponent } from './components/basemap-preset-control/basemap-preset-control.component';
+import { MapControlsComponent } from './components/map-controls/map-controls.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
@@ -19,8 +18,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 
 @NgModule({
   declarations: [
-    ChangeStyleButtonComponent,
-    BasemapPresetControlComponent,
+    MapControlsComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,
@@ -39,8 +37,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ChangeStyleButtonComponent,
-    BasemapPresetControlComponent,
+    MapControlsComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,
