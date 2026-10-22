@@ -6,6 +6,7 @@ import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
 import { MapControlsComponent } from './components/map-controls/map-controls.component';
+import { MapAttributionComponent } from './components/map-attribution/map-attribution.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
@@ -19,6 +20,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 @NgModule({
   declarations: [
     MapControlsComponent,
+    MapAttributionComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,
@@ -38,6 +40,7 @@ import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
     FormsModule,
     ReactiveFormsModule,
     MapControlsComponent,
+    MapAttributionComponent,
     SearchComponent,
     BannerComponent,
     DisclaimerComponent,

@@ -1,0 +1,26 @@
+<!-- The credits the map owes: the shared NOAH credits, the credits of the
+     loaded style and of its data sources, and the Mapbox feedback link. -->
+<div class="map-attribution">
+  <ng-container *ngFor="let credit of credits; let last = last">
+    <a
+      *ngIf="credit.href; else plainCredit"
+      class="map-attribution__credit"
+      [href]="credit.href"
+      [title]="credit.title || credit.label"
+      [attr.aria-label]="credit.title || credit.label"
+      target="_blank"
+      rel="noopener noreferrer"
+      >{{ credit.label }}</a
+    >
+    <ng-template #plainCredit>
+      <span
+        class="map-attribution__credit"
+        [title]="credit.title || credit.label"
+        >{{ credit.label }}</span
+      >
+    </ng-template>
+    <span class="map-attribution__separator" *ngIf="!last" aria-hidden="true"
+      >|</span
+    >
+  </ng-container>
+</div>

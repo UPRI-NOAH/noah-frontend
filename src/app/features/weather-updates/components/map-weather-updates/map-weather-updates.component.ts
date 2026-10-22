@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, NgZone } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, NgZone } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { WeatherUpdatesService } from '@features/weather-updates/services/weather-updates.service';
@@ -42,12 +42,19 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   mapStyle: MapStyle = 'standard';
   currentLocation$: Observable<string>;
 
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the sidebar panel covers the bottom of
+   * the map on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
+
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   private centerMarker: mapboxgl.Marker | null = null;
   private readonly terrainSourceId = 'noah-terrain-dem';
   private readonly defaultTerrainExaggeration = 1.8;
-  private attributionControl: mapboxgl.AttributionControl | null = null;
   private isInitialized = false;
 
   constructor(
@@ -82,7 +89,6 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           this.map.resize();
           this.initGeocoder();
           this.initGeolocation();
-          this.initAttribution();
           this.initCenterListener();
           this.initGeolocationListener();
           this.iniScaleControl();
@@ -260,14 +266,6 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       });
     } catch (error) {
       console.warn('Unable to apply the default terrain exaggeration', error);
-    }
-  }
-
-  initAttribution() {
-    // Only create attribution control if it doesn't exist
-    if (!this.attributionControl) {
-      this.attributionControl = this.mapService.getNewAttributionControl();
-      this.map.addControl(this.attributionControl, 'bottom-right');
     }
   }
 

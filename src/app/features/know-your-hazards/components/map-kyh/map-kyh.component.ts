@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
@@ -39,6 +39,14 @@ export class MapKyhComponent implements OnInit {
   mapStyle: MapStyle = 'standard';
   currentLocation$: Observable<string>;
 
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the sidebar panel covers the bottom of
+   * the map on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
+
   kyhLegend: boolean = true;
   btnLegend: boolean = false;
 
@@ -62,7 +70,6 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initGeocoder();
         this.initGeolocation();
-        this.initAttribution();
         this.initCenterListener();
         this.initGeolocationListener();
         this.iniScaleControl();
@@ -107,11 +114,6 @@ export class MapKyhComponent implements OnInit {
     const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
-  }
-
-  initAttribution() {
-    const attribution = this.mapService.getNewAttributionControl();
-    this.map.addControl(attribution, 'bottom-right');
   }
 
   initCenterListener() {

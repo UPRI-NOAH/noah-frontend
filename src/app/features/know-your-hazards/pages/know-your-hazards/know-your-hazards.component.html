@@ -130,10 +130,14 @@
     </div>
   </div>
 
-  <noah-map-kyh class="relative h-full w-full"></noah-map-kyh>
+  <noah-map-kyh
+    class="relative h-full w-full"
+    [attributionBottomOffset]="attributionBottomOffset"
+  ></noah-map-kyh>
 
   <!-- MOBILE VIEW -->
   <div
+    #mobilePanel
     class="
       bg-gray-50
       md:bottom-0
@@ -224,6 +228,7 @@
       </svg>
     </div>
     <div
+      #legendPanel
       *ngIf="kyhLegend"
       class="absolute transform -top-20 z-40 right-0 block md:hidden"
     >

@@ -33,13 +33,23 @@
   // readout use them to stack below the toolbar without hard-coded offsets.
   --noah-map-controls-toolbar-top: 10px;
   --noah-map-controls-toolbar-height: 120px;
+
+  // How tall the shared map attribution is. The attribution component
+  // publishes it, so the scale bar can sit above the credits without
+  // hard-coding an offset that breaks as soon as the credits wrap.
+  --noah-map-attribution-height: 24px;
+
+  // How far above the bottom edge of the map the shared map attribution
+  // sits. The attribution component publishes it, so a page that covers the
+  // bottom of the map can raise the credits and the scale bar follows.
+  --noah-map-attribution-bottom: 10px;
 }
 
 /* The custom scale bar. It shares the right-hand column with the NOAH map
    controls toolbar and sits right below it on pages that have the toolbar
    (playground). On pages without the toolbar (KYH, Weather Updates) it sits
-   just above the Mapbox attribution in the bottom-right corner so it remains
-   visible and responsive. */
+   just above the shared map attribution in the bottom-right corner so it
+   remains visible and responsive. */
 #custom-scale-control {
   position: absolute;
   right: 10px;
@@ -61,7 +71,10 @@
 }
 
 #custom-scale-control[data-position='bottom-right'] {
-  bottom: 28px;
+  bottom: calc(
+    var(--noah-map-attribution-bottom, 10px) +
+      var(--noah-map-attribution-height, 24px) + 2px
+  );
 }
 
 #custom-scale-control .mapboxgl-ctrl-scale {
@@ -73,12 +86,6 @@
   line-height: 14px;
   text-align: center;
   color: #111827;
-}
-
-@media only screen and (max-width: 768px) {
-  #custom-scale-control[data-position='bottom-right'] {
-    bottom: 38px;
-  }
 }
 
 .mapboxgl-ctrl-group button {

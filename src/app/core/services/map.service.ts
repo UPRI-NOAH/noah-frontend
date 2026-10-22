@@ -321,22 +321,14 @@ export class MapService implements OnDestroy {
     };
   }
 
-  getNewAttributionControl() {
-    return new mapboxgl.AttributionControl({
-      customAttribution:
-        '<a href="https://doh.gov.ph" target="_blank">© Department of Health</a>',
-    });
-  }
-
   /**
    * Adds the custom scale bar to a map.
    *
    * By default the bar sits in the right-hand column below the NOAH map
    * controls toolbar (positioned by CSS via `--noah-map-controls-toolbar-*`).
    * For pages where the toolbar isn't present or where it needs to sit above
-   * the Mapbox attribution (e.g. KYH and Weather Updates), pass
-   * `'bottom-right'` to place it just above the bottom-right attribution
-   * control.
+   * the map attribution (e.g. KYH and Weather Updates), pass
+   * `'bottom-right'` to place it just above the shared attribution.
    *
    * Sharing one implementation keeps the three map pages (playground, weather
    * updates, know your hazards) from drifting apart.

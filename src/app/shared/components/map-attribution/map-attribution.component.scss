@@ -1,0 +1,62 @@
+/* The attribution belongs to the map, not to the page around it: the
+   component moves its host element into the map container, so the credits
+   always sit in the bottom-right corner of the map itself. */
+:host {
+  position: absolute;
+  right: 10px;
+  /* A page that covers the bottom of the map raises the credits by
+     publishing `--noah-map-attribution-bottom` on the map container. */
+  bottom: var(--noah-map-attribution-bottom, 10px);
+  z-index: 12;
+  /* The credits keep room for the Mapbox logo in the bottom-left corner of
+     the map, and a page may narrow them further. */
+  max-width: var(--noah-map-attribution-max-width, calc(100% - 114px));
+  pointer-events: none;
+  font-family: 'Nunito', sans-serif;
+  /* Hidden until the component knows which map it belongs to. */
+  visibility: hidden;
+}
+
+:host(.is-attached) {
+  visibility: visible;
+}
+
+/* One translucent bar. The credits stay on a single line when there is room
+   and wrap onto a second one when there is not, so nothing is ever cut off. */
+.map-attribution {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  max-width: 100%;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  font-size: 11px;
+  line-height: 16px;
+  color: #111827;
+  pointer-events: auto;
+}
+
+.map-attribution__credit {
+  color: #111827;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+/* The separator between two credits. */
+.map-attribution__separator {
+  color: #9ca3af;
+  user-select: none;
+}

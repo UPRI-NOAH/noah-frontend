@@ -11,6 +11,13 @@
 ></noah-map-controls>
 <pre id="coordinates" class="coords"></pre>
 
+<!-- Map attribution: the shared credits of every NOAH map, in the
+     bottom-right corner of the map. -->
+<noah-map-attribution
+  [map]="map"
+  [bottomOffset]="attributionBottomOffset"
+></noah-map-attribution>
+
 <div class="md:hidden flex items-center absolute w-full space-x-2 p-2 top-0">
   <!-- Back Button -->
   <button

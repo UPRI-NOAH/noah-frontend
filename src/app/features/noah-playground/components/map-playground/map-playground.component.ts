@@ -8,6 +8,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Input,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
@@ -226,6 +227,21 @@ export class MapPlaygroundComponent
   private measurementActive: boolean = false;
   screenWidth: number;
   screenHeight: number;
+
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the drawer covers the bottom of the map
+   * on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
+
+  /**
+   * How wide the shared attribution may take.
+   *
+   * The page narrows the credits when the sidebar covers the map.
+   */
+  @Input() attributionMaxWidth: number | null = null;
 
   private realtimeLightningSocket: WebSocket | null = null;
   private realtimeLightningResetTimer: number | null = null;

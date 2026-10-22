@@ -1,7 +1,9 @@
-/* Hazard level legend: compact floating panel at top-left */
+/* Hazard level legend: compact floating panel at bottom-left.
+   It sits above the Mapbox logo and above the shared map attribution, which
+   shares the bottom of the map with it. */
 .kyh-hazard-legend {
   position: absolute;
-  bottom: 36px;
+  bottom: 64px;
   left: 10px;
   z-index: 20;
   background: #ffffff;
