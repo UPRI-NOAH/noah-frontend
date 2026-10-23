@@ -54,13 +54,20 @@ import {
   withStandardLightingNoop,
 } from '@core/services/standard-style';
 import {
+  CRIT_FAC_CLUSTER_MAX_ZOOM,
+  CRIT_FAC_CLUSTER_MIN_POINTS,
+  CRIT_FAC_CLUSTER_RADIUS,
   criticalFacilities,
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
   getCircleLayer,
+  getClusterSourceId,
   getClusterTextCount,
   getSymbolLayer,
+  getTilesetCollectorLayer,
+  getTilesetSourceId,
 } from '@shared/mocks/critical-facilities';
+import Supercluster from 'supercluster';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import {
@@ -170,6 +177,34 @@ export type RawLandslideHazards =
 
 type LH2Subtype = 'af' | 'df';
 
+/**
+ * Client-side cluster state for one critical facility type.
+ *
+ * Mapbox GL JS can only cluster GeoJSON sources and a vector tileset cannot
+ * be clustered natively, so the points of the tileset are clustered with
+ * Supercluster and written back into a GeoJSON source that the cluster
+ * layers read from.
+ *
+ * The state outlives a basemap switch: the points are only fetched once and
+ * the index is reused for the next style.
+ */
+type CritFacilityClusterState = {
+  /** The points harvested from the tileset (or from the GeoJSON fallback). */
+  points: GeoJSON.Feature<GeoJSON.Point>[];
+  /** The dedupe keys of the harvested points. */
+  seen: Set<string>;
+  /** The Supercluster index over `points`. */
+  index: Supercluster;
+  /** True once the GeoJSON fallback replaced the unreachable tileset. */
+  usedFallback: boolean;
+  /** True when the index has to be rebuilt from `points`. */
+  dirty: boolean;
+  /** Writes the current clusters into the cluster source. */
+  rebuild: () => void;
+  /** Removes the listeners that belong to the current style. */
+  cleanup: () => void;
+};
+
 HC_exporting(Highcharts);
 HC_Data(Highcharts);
 Accessbility(Highcharts);
@@ -214,6 +249,15 @@ export class MapPlaygroundComponent
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
+  /**
+   * The client-side cluster state of every critical facility type.
+   *
+   * It is kept outside of the style so the points survive a basemap switch:
+   * the style is rebuilt from scratch, the data is not.
+   */
+  private _critFacClusterStates: Partial<
+    Record<CriticalFacility, CritFacilityClusterState>
+  > = {};
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
   private subscriptions: Subscription[] = [];
@@ -5417,8 +5461,18 @@ export class MapPlaygroundComponent
       });
   }
 
+  /**
+   * Adds the layers of one critical facility type.
+   *
+   * The points come from the Mapbox vector tileset in `criticalFacilities`
+   * and are clustered on the client, because Mapbox GL JS can only cluster
+   * GeoJSON sources. The layers read from a plain GeoJSON source that
+   * Supercluster writes into; the tileset is only the raw point source.
+   */
   private _loadCriticalFacilityIcon(name: CriticalFacility) {
     const _this = this;
+    const { url, sourceLayer } = criticalFacilities[name];
+
     this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
       if (error) throw error;
       // This runs again on every style change, so guard against re-registering
@@ -5427,17 +5481,26 @@ export class MapPlaygroundComponent
         _this.map.addImage(name, image);
       }
 
-      _this.addNoahSource(name, {
+      _this.addNoahSource(getClusterSourceId(name), {
         type: 'geojson',
-        data: criticalFacilities[name].data,
-        cluster: true,
-        clusterMaxZoom: 12,
-        clusterMinPoints: 3,
-      });
+        data: { type: 'FeatureCollection', features: [] },
+      } as mapboxgl.AnySourceData);
+
+      _this.addNoahSource(getTilesetSourceId(name), {
+        type: 'vector',
+        url,
+      } as mapboxgl.AnySourceData);
+
+      // Mapbox GL JS only asks a source for tiles when a visible layer uses
+      // it, so the tileset needs a layer of its own for
+      // `querySourceFeatures` to return anything. It draws nothing.
+      _this.addNoahLayer(getTilesetCollectorLayer(name, sourceLayer));
 
       _this.addNoahLayer(getCircleLayer(name));
       _this.addNoahLayer(getSymbolLayer(name, this.mapStyle));
       _this.addNoahLayer(getClusterTextCount(name));
+
+      _this._initCriticalFacilityClusters(name, sourceLayer);
 
       // opacity
       this.pgService
@@ -5492,6 +5555,339 @@ export class MapPlaygroundComponent
           );
         });
     });
+  }
+
+  /**
+   * Loads the published GeoJSON of one critical facility type.
+   *
+   * This is the fallback for the Mapbox vector tileset: the tilesets of
+   * `criticalFacilities` are not published under the `upri-noah` account, so
+   * the tileset never delivers a feature and the layer would stay empty
+   * without this path.
+   */
+  private _loadCriticalFacilityGeoJSON(name: CriticalFacility) {
+    const clusterState = this._critFacClusterStates[name];
+
+    if (!clusterState || clusterState.usedFallback) return;
+    clusterState.usedFallback = true;
+
+    this.http.get(criticalFacilities[name].data).subscribe({
+      next: (data: any) => {
+        if (!this.map || !data) return;
+
+        const features = Array.isArray(data?.features) ? data.features : [];
+        const points: GeoJSON.Feature<GeoJSON.Point>[] = [];
+
+        features.forEach((feature: any) => {
+          if (!feature || !feature.geometry) return;
+          if (feature.geometry.type !== 'Point') return;
+
+          const coords = feature.geometry.coordinates;
+          if (!Array.isArray(coords) || coords.length < 2) return;
+
+          points.push({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [coords[0], coords[1]] },
+            properties: { ...(feature.properties || {}) },
+          });
+        });
+
+        clusterState.points = points;
+        clusterState.seen = new Set<string>();
+        clusterState.index = new Supercluster({
+          radius: CRIT_FAC_CLUSTER_RADIUS,
+          maxZoom: CRIT_FAC_CLUSTER_MAX_ZOOM,
+          minPoints: CRIT_FAC_CLUSTER_MIN_POINTS,
+        });
+        clusterState.dirty = true;
+
+        clusterState.rebuild();
+      },
+      error: (err) => {
+        console.error(
+          `Failed to load the critical facilities GeoJSON for ${name}`,
+          err
+        );
+      },
+    });
+  }
+
+  /**
+   * Wires the client-side clustering of one critical facility type.
+   *
+   * The points are harvested from the vector tileset with
+   * `querySourceFeatures`, clustered with Supercluster and written back into
+   * the GeoJSON cluster source the layers read from. Harvesting repeats
+   * whenever new tiles arrive, so the cluster set grows while the user pans.
+   */
+  private _initCriticalFacilityClusters(
+    name: CriticalFacility,
+    sourceLayer: string
+  ) {
+    const _this = this;
+    const tilesetSourceId = getTilesetSourceId(name);
+    const clusterSourceId = getClusterSourceId(name);
+
+    const existing = this._critFacClusterStates[name];
+    const clusterState: CritFacilityClusterState = existing || {
+      points: [],
+      seen: new Set<string>(),
+      index: new Supercluster({
+        radius: CRIT_FAC_CLUSTER_RADIUS,
+        maxZoom: CRIT_FAC_CLUSTER_MAX_ZOOM,
+        minPoints: CRIT_FAC_CLUSTER_MIN_POINTS,
+      }),
+      usedFallback: false,
+      dirty: true,
+      rebuild: () => undefined,
+      cleanup: () => undefined,
+    };
+
+    if (!existing) {
+      this._critFacClusterStates[name] = clusterState;
+
+      // The teardown is registered once per facility type. It drops the
+      // listeners of the current style when the style changes or when the
+      // component is destroyed.
+      this._changeStyle.pipe(takeUntil(this._unsub)).subscribe(() => {
+        clusterState.cleanup();
+      });
+      this._unsub.subscribe(() => {
+        clusterState.cleanup();
+      });
+    } else {
+      // A basemap switch re-creates the sources and the layers, so the
+      // listeners of the previous style have to go before new ones are added.
+      existing.cleanup();
+    }
+
+    const rebuild = () => {
+      if (!_this.map) return;
+
+      if (clusterState.dirty) {
+        try {
+          clusterState.index.load(clusterState.points);
+        } catch (err) {
+          console.warn(
+            `Critical facilities clustering failed for ${name}`,
+            err
+          );
+          clusterState.points = [];
+          clusterState.index.load([]);
+        }
+        clusterState.dirty = false;
+      }
+
+      let clusters: GeoJSON.Feature[] = [];
+
+      try {
+        clusters = clusterState.index.getClusters(
+          _this._criticalFacilityBounds(),
+          _this.map.getZoom()
+        ) as unknown as GeoJSON.Feature[];
+      } catch {
+        clusters = [];
+      }
+
+      const source = _this.map.getSource(clusterSourceId) as
+        | mapboxgl.GeoJSONSource
+        | undefined;
+
+      source?.setData({
+        type: 'FeatureCollection',
+        features: clusters,
+      } as GeoJSON.FeatureCollection);
+    };
+
+    clusterState.rebuild = rebuild;
+
+    /**
+     * Copies the points of the loaded tiles into the cluster index.
+     */
+    const harvest = () => {
+      if (clusterState.usedFallback || !_this.map) return;
+
+      let features: mapboxgl.GeoJSONFeature[] = [];
+
+      try {
+        features = _this.map.querySourceFeatures(tilesetSourceId, {
+          sourceLayer,
+        });
+      } catch {
+        return;
+      }
+
+      let added = 0;
+
+      features.forEach((feature) => {
+        if (!feature.geometry || feature.geometry.type !== 'Point') return;
+
+        const coords = feature.geometry.coordinates as number[];
+        if (!coords || coords.length < 2) return;
+
+        // A tile boundary can report the same facility twice, so the points
+        // are deduped by their feature id, or by their coordinates when the
+        // tileset does not carry one.
+        const key =
+          feature.id !== undefined && feature.id !== null
+            ? `id:${feature.id}`
+            : `${coords[0]},${coords[1]},${JSON.stringify(feature.properties)}`;
+
+        if (clusterState.seen.has(key)) return;
+        clusterState.seen.add(key);
+
+        clusterState.points.push({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [coords[0], coords[1]] },
+          properties: { ...feature.properties },
+        });
+        added += 1;
+      });
+
+      if (added > 0) {
+        clusterState.dirty = true;
+        rebuild();
+      }
+    };
+
+    const onSourceData = (event: mapboxgl.MapSourceDataEvent) => {
+      if (event.sourceId !== tilesetSourceId) return;
+      harvest();
+    };
+
+    const onMoveEnd = () => {
+      harvest();
+      rebuild();
+    };
+
+    const onSourceError = () => {
+      _this._loadCriticalFacilityGeoJSON(name);
+    };
+
+    // The tileset is the primary source. The GeoJSON is only used when the
+    // tileset cannot be reached, either because it errored or because it did
+    // not deliver a single point in time.
+    const fallbackTimer = window.setTimeout(() => {
+      if (clusterState.usedFallback || clusterState.points.length > 0) return;
+      onSourceError();
+    }, 8000);
+
+    this.map.on('sourcedata', onSourceData);
+    this.map.on('moveend', onMoveEnd);
+    this.map.on('zoomend', onMoveEnd);
+
+    const tilesetSource = this.map.getSource(tilesetSourceId) as
+      | mapboxgl.VectorTileSource
+      | undefined;
+    tilesetSource?.on('error', onSourceError);
+
+    const removeClickListeners = this._initCriticalFacilityClusterClicks(name);
+
+    clusterState.cleanup = () => {
+      window.clearTimeout(fallbackTimer);
+      this.map?.off('sourcedata', onSourceData);
+      this.map?.off('moveend', onMoveEnd);
+      this.map?.off('zoomend', onMoveEnd);
+      tilesetSource?.off('error', onSourceError);
+      removeClickListeners();
+    };
+
+    rebuild();
+    harvest();
+  }
+
+  /**
+   * Makes the clusters and the single facilities of one critical facility
+   * type clickable.
+   *
+   * A cluster zooms in to the zoom level at which it breaks up, a single
+   * facility zooms in by two levels. The returned function removes the
+   * listeners again.
+   */
+  private _initCriticalFacilityClusterClicks(name: CriticalFacility) {
+    const _this = this;
+    const clusterLayerId = `${name}-cluster`;
+    const pointLayerId = `${name}-image`;
+
+    const onClusterClick = (
+      event: mapboxgl.MapLayerMouseEvent | mapboxgl.MapMouseEvent
+    ) => {
+      const feature = event.features && event.features[0];
+      if (!feature || !feature.properties) return;
+
+      const clusterId = feature.properties.cluster_id;
+      if (clusterId === undefined || clusterId === null) return;
+
+      const clusterState = _this._critFacClusterStates[name];
+      let zoom = _this.map.getZoom() + 2;
+
+      if (clusterState) {
+        try {
+          zoom = clusterState.index.getClusterExpansionZoom(clusterId);
+        } catch {
+          // The cluster is not in the index anymore, so the fixed zoom step
+          // above is used instead.
+        }
+      }
+
+      _this.map.easeTo({
+        center: event.lngLat,
+        zoom: Math.min(zoom, _this.map.getMaxZoom()),
+      });
+    };
+
+    const onPointClick = (event: mapboxgl.MapLayerMouseEvent) => {
+      const feature = event.features && event.features[0];
+      if (!feature || !feature.geometry) return;
+      if (feature.geometry.type !== 'Point') return;
+
+      const coords = feature.geometry.coordinates as number[];
+
+      _this.map.easeTo({
+        center: [coords[0], coords[1]],
+        zoom: Math.min(_this.map.getZoom() + 2, _this.map.getMaxZoom()),
+      });
+    };
+
+    const onMouseEnter = () => {
+      _this.map.getCanvas().style.cursor = 'pointer';
+    };
+
+    const onMouseLeave = () => {
+      _this.map.getCanvas().style.cursor = '';
+    };
+
+    this.map.on('click', clusterLayerId, onClusterClick);
+    this.map.on('click', pointLayerId, onPointClick);
+    this.map.on('mouseenter', clusterLayerId, onMouseEnter);
+    this.map.on('mouseleave', clusterLayerId, onMouseLeave);
+    this.map.on('mouseenter', pointLayerId, onMouseEnter);
+    this.map.on('mouseleave', pointLayerId, onMouseLeave);
+
+    return () => {
+      this.map?.off('click', clusterLayerId, onClusterClick);
+      this.map?.off('click', pointLayerId, onPointClick);
+      this.map?.off('mouseenter', clusterLayerId, onMouseEnter);
+      this.map?.off('mouseleave', clusterLayerId, onMouseLeave);
+      this.map?.off('mouseenter', pointLayerId, onMouseEnter);
+      this.map?.off('mouseleave', pointLayerId, onMouseLeave);
+    };
+  }
+
+  /**
+   * The visible extent, padded so that the clusters just outside of the
+   * viewport are drawn as well.
+   */
+  private _criticalFacilityBounds(): [number, number, number, number] {
+    const bounds = this.map.getBounds();
+    const pad = 0.1;
+
+    return [
+      bounds.getWest() - pad,
+      bounds.getSouth() - pad,
+      bounds.getEast() + pad,
+      bounds.getNorth() + pad,
+    ];
   }
 }
 
