@@ -24,13 +24,23 @@ import {
 } from '@core/services/standard-style';
 import { MapStyle } from '@features/know-your-hazards/store/kyh.store';
 
-/** The preview drawn for each basemap style. */
-type StylePreview = 'streets' | 'satellite' | 'light';
-
 interface StyleOption {
   value: MapStyle;
   label: string;
-  preview: StylePreview;
+  /**
+   * The screenshot that shows what the style looks like.
+   *
+   * They are real screenshots of the three basemaps, so the user recognises
+   * the style they are about to load.
+   */
+  preview: string;
+  /**
+   * Whether the style is new.
+   *
+   * The newest styles get a badge on their card, so the user can see at a
+   * glance what the panel has just added.
+   */
+  isNew?: boolean;
 }
 
 interface LightingOption {
@@ -103,9 +113,22 @@ export class MapControlsComponent
    * labels and previews describe what the user actually sees.
    */
   readonly styleOptions: StyleOption[] = [
-    { value: 'terrain', label: 'Streets', preview: 'streets' },
-    { value: 'satellite', label: 'Satellite', preview: 'satellite' },
-    { value: 'standard', label: 'Standard', preview: 'light' },
+    {
+      value: 'terrain',
+      label: 'Streets',
+      preview: 'assets/images/streets-thumb.jpg',
+    },
+    {
+      value: 'satellite',
+      label: 'Satellite',
+      preview: 'assets/images/satellite-thumb.jpg',
+    },
+    {
+      value: 'standard',
+      label: 'Standard',
+      preview: 'assets/images/standard-thumb.jpg',
+      isNew: true,
+    },
   ];
 
   /** The lighting options offered by the panel: `Auto` plus the presets. */

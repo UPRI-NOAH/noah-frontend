@@ -20,15 +20,14 @@
   right: 5px;
 }
 
-/* The measurement results sit below the scale bar on the right side, stacked
-   above the attribution area. They follow the toolbar height, so they stay
-   clear of the coordinate readout that sits just above them. */
+/* The measurement results sit in the right-hand column, stacked below the
+   controls toolbar. */
 .measurements-wrapper {
   position: absolute;
   right: 10px;
   top: calc(
     var(--noah-map-controls-toolbar-top, 10px) +
-      var(--noah-map-controls-toolbar-height, 120px) + 86px
+      var(--noah-map-controls-toolbar-height, 120px) + 6px
   );
   z-index: 15;
   display: flex;
@@ -61,23 +60,30 @@
   .measurements-wrapper {
     top: calc(
       var(--noah-map-controls-toolbar-top, 58px) +
-        var(--noah-map-controls-toolbar-height, 120px) + 86px
+        var(--noah-map-controls-toolbar-height, 120px) + 6px
     );
   }
 }
 
-/* The coordinate readout sits in the right-hand column, right below the map
-   controls toolbar and the scale bar that follows it. */
-.coords {
+/* The coordinate readout sits in the bottom-left corner of the map, directly
+   above the scale bar. Both follow the Mapbox logo, which moves with the
+   sidebar and with the drawer on a phone, so the playground publishes where
+   the scale bar is as `--noah-scale-left`, `--noah-scale-bottom` and
+   `--noah-scale-height`. The 6px is the gap between the two.
+
+   The rule is scoped to this component because it has no style encapsulation:
+   the other maps have a readout of their own that must keep its place. */
+noah-map-playground .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: calc(
-    var(--noah-map-controls-toolbar-top, 10px) +
-      var(--noah-map-controls-toolbar-height, 120px) + 50px
+  left: var(--noah-scale-left, 10px);
+  bottom: calc(
+    var(--noah-scale-bottom, 35px) + var(--noah-scale-height, 25px) + 6px
   );
+  right: auto;
+  top: auto;
   z-index: 40;
-  right: 10px;
   padding: 5px 10px;
   margin: 0;
   font-size: 12px;

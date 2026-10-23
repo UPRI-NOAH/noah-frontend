@@ -329,13 +329,16 @@ export class MapService implements OnDestroy {
    * For pages where the toolbar isn't present or where it needs to sit above
    * the map attribution (e.g. KYH and Weather Updates), pass
    * `'bottom-right'` to place it just above the shared attribution.
+   * `'bottom-left'` puts the bar in the bottom-left corner of the map, where
+   * the page publishes the place of the Mapbox logo it sits above as
+   * `--noah-scale-left` and `--noah-scale-bottom`.
    *
    * Sharing one implementation keeps the three map pages (playground, weather
    * updates, know your hazards) from drifting apart.
    */
   attachScaleControl(
     map: mapboxgl.Map,
-    position: 'right-top' | 'bottom-right' = 'right-top'
+    position: 'right-top' | 'bottom-right' | 'bottom-left' = 'right-top'
   ): void {
     // Remove any existing custom scale control to avoid duplicates
     const existing = document.getElementById('custom-scale-control');

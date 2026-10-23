@@ -164,7 +164,7 @@
   position: absolute;
   right: 51px;
   // bottom: 619px;
-  top: 85px;
+  top: 74px;
   width: var(--noah-map-controls-panel-width, 336px);
   max-width: calc(100vw - 20px);
   /* Never grow into the toolbar above it, and leave room for the scale bar
@@ -185,7 +185,7 @@
     /* On a phone the bottom of the map belongs to the page itself (the
        bottom sheets of the survival kit and the navigation drawer), so the
        panel moves under the mobile top bar instead of floating over them. */
-    top: 64px;
+    top: 106px;
     width: 280px;
     max-width: calc(100vw - 20px);
     max-height: calc(100% - 84px);
@@ -264,6 +264,7 @@
 
 .map-controls-style__preview {
   display: block;
+  position: relative;
   width: 100%;
   height: 56px;
   overflow: hidden;
@@ -272,11 +273,30 @@
   border-radius: 8px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-  svg {
+  img {
     display: block;
     width: 100%;
     height: 100%;
+    /* The screenshots are wider than the card, so they are cropped to fill
+       it rather than squeezed into it. */
+    object-fit: cover;
   }
+}
+
+/* The badge that marks a style as new. It sits in the corner of the picture,
+   in the same blue as the badge on the toolbar button. */
+.map-controls-style__badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.3);
 }
 
 .map-controls-style.is-selected .map-controls-style__preview {

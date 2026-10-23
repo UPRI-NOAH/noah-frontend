@@ -1,26 +1,51 @@
 <!-- The credits the map owes: the shared NOAH credits, the credits of the
      loaded style and of its data sources, and the Mapbox feedback link. -->
-<div class="map-attribution">
-  <ng-container *ngFor="let credit of credits; let last = last">
-    <a
-      *ngIf="credit.href; else plainCredit"
-      class="map-attribution__credit"
-      [href]="credit.href"
-      [title]="credit.title || credit.label"
-      [attr.aria-label]="credit.title || credit.label"
-      target="_blank"
-      rel="noopener noreferrer"
-      >{{ credit.label }}</a
-    >
-    <ng-template #plainCredit>
-      <span
+<div
+  class="map-attribution"
+  [class.is-narrow]="isNarrow"
+  [class.is-expanded]="expanded"
+>
+  <div class="map-attribution__credits">
+    <ng-container *ngFor="let credit of credits; let last = last">
+      <a
+        *ngIf="credit.href; else plainCredit"
         class="map-attribution__credit"
+        [href]="credit.href"
         [title]="credit.title || credit.label"
-        >{{ credit.label }}</span
+        [attr.aria-label]="credit.title || credit.label"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ credit.label }}</a
       >
-    </ng-template>
-    <span class="map-attribution__separator" *ngIf="!last" aria-hidden="true"
-      >|</span
-    >
-  </ng-container>
+      <ng-template #plainCredit>
+        <span
+          class="map-attribution__credit"
+          [title]="credit.title || credit.label"
+          >{{ credit.label }}</span
+        >
+      </ng-template>
+      <span class="map-attribution__separator" *ngIf="!last" aria-hidden="true"
+        >|</span
+      >
+    </ng-container>
+  </div>
+
+  <!-- On a phone the credits take too much room, so they collapse into this
+       round button, the way the native Mapbox attribution control collapses
+       on a narrow screen. Tapping it shows the credits again. -->
+  <button
+    type="button"
+    class="map-attribution__toggle"
+    aria-label="Toggle attribution"
+    title="Toggle attribution"
+    [attr.aria-expanded]="expanded"
+    (click)="toggle()"
+  >
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <path
+        fill-rule="evenodd"
+        d="M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0"
+      />
+    </svg>
+  </button>
 </div>

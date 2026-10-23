@@ -89,6 +89,34 @@ const LOGO_GAP = 10;
 const RIGHT_GAP = 10;
 
 /**
+ * The width below which the credits collapse into a round button.
+ *
+ * It is the same width the rest of the app calls a phone: the `md` breakpoint
+ * of Tailwind, which is where the pages hide their desktop chrome.
+ */
+const NARROW_WIDTH = 768;
+
+/**
+ * The media query that tells whether the map is narrow enough for the credits
+ * to collapse.
+ */
+const NARROW_QUERY = `(max-width: ${NARROW_WIDTH}px)`;
+
+/**
+ * Tells whether the screen is narrow enough for the credits to collapse.
+ *
+ * The answer is read before the first render, so the credits are already
+ * collapsed when the map appears on a phone.
+ */
+function isNarrowScreen(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return false;
+  }
+
+  return window.matchMedia(NARROW_QUERY).matches;
+}
+
+/**
  * Normalises a label so two spellings of the same credit compare equal.
  *
  * The `©` symbol, the case and the punctuation carry no meaning here.
@@ -243,11 +271,31 @@ export class MapAttributionComponent
   /** The credits to render, in the order they are shown. */
   credits: MapAttributionCredit[] = [];
 
+  /**
+   * Whether the map is narrow enough for the credits to collapse.
+   *
+   * On a phone the credits take up too much room, so they collapse behind a
+   * round button, the way the native Mapbox attribution control collapses on
+   * a narrow screen.
+   */
+  isNarrow = isNarrowScreen();
+
+  /**
+   * Whether the credits are spread out.
+   *
+   * Only the round button on a phone changes this; on a wider screen the
+   * credits are always shown.
+   */
+  expanded = false;
+
   /** The attributions the last render was built from, to skip empty updates. */
   private signature: string | null = null;
 
   /** Watches the credits so their height never goes stale. */
   private resizeObserver: ResizeObserver | null = null;
+
+  /** Tells whether the map is narrow enough for the credits to collapse. */
+  private narrowQuery: MediaQueryList | null = null;
 
   /** Mapbox fires this whenever the style or a source may bring new credits. */
   private readonly mapDataHandler = () => this.refreshCredits();
@@ -261,6 +309,7 @@ export class MapAttributionComponent
     this.attachToMap();
     this.publishHeight();
     this.observeSize();
+    this.watchWidth();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -302,6 +351,8 @@ export class MapAttributionComponent
     this.detachMapListeners();
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
+    this.narrowQuery?.removeEventListener('change', this.narrowHandler);
+    this.narrowQuery = null;
 
     const container = this.map?.getContainer?.();
 
@@ -309,6 +360,46 @@ export class MapAttributionComponent
     container?.style.removeProperty(BOTTOM_VARIABLE);
     container?.style.removeProperty(MAX_WIDTH_VARIABLE);
   }
+
+  /**
+   * Shows or hides the credits.
+   *
+   * Only the round button on a phone does this; on a wider screen the
+   * credits are always shown.
+   */
+  toggle(): void {
+    this.expanded = !this.expanded;
+  }
+
+  /**
+   * Watches how wide the screen is, so the credits collapse again when the
+   * phone is turned and the map becomes narrow once more.
+   */
+  private watchWidth(): void {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return;
+    }
+
+    this.narrowQuery = window.matchMedia(NARROW_QUERY);
+
+    this.zone.runOutsideAngular(() => {
+      this.narrowQuery?.addEventListener('change', this.narrowHandler);
+    });
+  }
+
+  /**
+   * Collapses the credits whenever the screen becomes narrow or wide again.
+   *
+   * The native Mapbox attribution control does the same: the credits are
+   * collapsed on a narrow screen, and they collapse again when the screen is
+   * rotated and the map becomes narrow once more.
+   */
+  private readonly narrowHandler = (event: MediaQueryListEvent) => {
+    this.zone.run(() => {
+      this.isNarrow = event.matches;
+      this.expanded = false;
+    });
+  };
 
   /**
    * Moves the host element into the map container.

@@ -3,7 +3,7 @@
    shares the bottom of the map with it. */
 .kyh-hazard-legend {
   position: absolute;
-  bottom: 64px;
+  bottom: 32px;
   left: 10px;
   z-index: 20;
   background: #ffffff;
@@ -11,6 +11,18 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   overflow: hidden;
   min-width: 150px;
+}
+
+/* On a phone the sidebar panel covers the bottom of the map, so the legend
+   moves just above it, its bottom edge level with the map credits. The page
+   measures the panel and publishes those values; without them the legend
+   keeps its place at the bottom of the map. */
+@media only screen and (max-width: 768px) {
+  .kyh-hazard-legend {
+    top: auto;
+    left: var(--noah-kyh-panel-left, 10px);
+    bottom: var(--noah-kyh-legend-bottom, 32px);
+  }
 }
 
 .kyh-hazard-legend__header {

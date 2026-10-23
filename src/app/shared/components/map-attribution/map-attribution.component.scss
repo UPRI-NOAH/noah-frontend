@@ -22,21 +22,33 @@
 }
 
 /* One translucent bar. The credits stay on a single line when there is room
-   and wrap onto a second one when there is not, so nothing is ever cut off. */
+   and wrap onto a second one when there is not, so nothing is ever cut off.
+   The round button that shows and hides them on a phone sits at the end of
+   the bar, the way the native Mapbox attribution control does. */
 .map-attribution {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 2px 6px;
+  gap: 4px;
   max-width: 100%;
   padding: 4px 8px;
   background: rgba(255, 255, 255, 0.92);
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
   color: #111827;
   pointer-events: auto;
+}
+
+/* The credits themselves, which wrap onto a second line when the bar is
+   too narrow for them. */
+.map-attribution__credits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .map-attribution__credit {
@@ -59,4 +71,55 @@
 .map-attribution__separator {
   color: #9ca3af;
   user-select: none;
+}
+
+/* The round button that shows and hides the credits. It is only used on a
+   phone, where the credits would otherwise cover a good part of the map. */
+.map-attribution__toggle {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: #111827;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+/* On a phone the credits collapse into the round button, and tapping it
+   shows them again. */
+.map-attribution.is-narrow {
+  padding: 2px;
+  border-radius: 12px;
+
+  .map-attribution__credits {
+    display: none;
+  }
+
+  &.is-expanded .map-attribution__credits {
+    display: flex;
+  }
+
+  .map-attribution__toggle {
+    display: inline-flex;
+  }
 }
