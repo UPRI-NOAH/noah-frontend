@@ -4,6 +4,7 @@ import { RiskAssessmentRainType } from '@features/noah-playground/store/noah-pla
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-risk-assessment-rain',
   templateUrl: './risk-assessment-rain.component.html',
   styleUrls: ['./risk-assessment-rain.component.scss'],

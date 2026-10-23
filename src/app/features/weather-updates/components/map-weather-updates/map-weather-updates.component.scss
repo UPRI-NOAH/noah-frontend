@@ -11,11 +11,16 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* The coordinate readout sits in the right-hand column, right below the map
+   controls toolbar and the scale bar that follows it. */
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 273px;
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 50px
+  );
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -24,16 +29,4 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
-  @media only screen and (max-width: 768px) {
-    top: 60px;
-    left: 10px;
-    width: fit-content;
-  }
-}
-
-.mapStyle {
-  top: 167px;
-  @media only screen and (max-width: 768px) {
-    top: 216px;
-  }
 }

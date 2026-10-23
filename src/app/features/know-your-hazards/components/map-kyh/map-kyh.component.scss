@@ -1,16 +1,117 @@
-.map-icon {
-  top: 166px;
-  right: 2px;
-  @media only screen and (max-width: 768px) {
-    top: 216px;
+/* Hazard level legend: compact floating panel at bottom-left.
+   It sits above the Mapbox logo and above the shared map attribution, which
+   shares the bottom of the map with it. */
+.kyh-hazard-legend {
+  position: absolute;
+  bottom: 32px;
+  left: 10px;
+  z-index: 20;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  min-width: 150px;
+}
+
+/* On a phone the sidebar panel covers the bottom of the map, so the legend
+   moves just above it, its bottom edge level with the map credits. The page
+   measures the panel and publishes those values; without them the legend
+   keeps its place at the bottom of the map. */
+@media only screen and (max-width: 768px) {
+  .kyh-hazard-legend {
+    top: auto;
+    left: var(--noah-kyh-panel-left, 10px);
+    bottom: var(--noah-kyh-legend-bottom, 32px);
   }
 }
 
+.kyh-hazard-legend__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px 8px 12px;
+  cursor: pointer;
+}
+
+.kyh-hazard-legend.is-collapsed .kyh-hazard-legend__header {
+  padding: 10px 12px;
+}
+
+.kyh-hazard-legend__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.kyh-hazard-legend__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.kyh-hazard-legend__toggle svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.kyh-hazard-legend__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 10px 12px;
+}
+
+.kyh-hazard-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kyh-hazard-legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+}
+
+.kyh-hazard-legend__swatch--low {
+  background: #f6c744;
+}
+
+.kyh-hazard-legend__swatch--medium {
+  background: #f79445;
+}
+
+.kyh-hazard-legend__swatch--high {
+  background: #eb5b5b;
+}
+
+.kyh-hazard-legend__label {
+  font-size: 12px;
+  line-height: 1;
+  color: #1f2937;
+}
+
+/* The coordinate readout sits in the right-hand column, right below the map
+   controls toolbar and the scale bar that follows it. */
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 273px;
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 50px
+  );
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -19,9 +120,4 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
-  @media only screen and (max-width: 768px) {
-    top: 60px;
-    left: 10px;
-    width: fit-content;
-  }
 }

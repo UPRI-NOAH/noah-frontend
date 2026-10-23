@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
   mapbox: {
-    accessToken:
-      'pk.eyJ1IjoidXByaS1ub2FoIiwiYSI6ImNrcmExaDdydzRldWYyb21udmw1ejY3ZDYifQ.cs3Ahz2S6fERoI1BAwFO9g',
+    accessToken: '',
     styles: {
       terrain: 'mapbox://styles/upri-noah/ckupb1t4ybxq517s530madpso',
       satellite: 'mapbox://styles/upri-noah/ckupb79jmahqr17loikd0hcwi',
+      standard: 'mapbox://styles/upri-noah/cmunmmxmg001101r7apoj9nap',
     },
   },
   gaTag: 'G-2LP2ZPT4BG',

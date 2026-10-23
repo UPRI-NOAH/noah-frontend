@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-wu-temperature-group',
   templateUrl: './wu-temperature-group.component.html',
   styleUrls: ['./wu-temperature-group.component.scss'],

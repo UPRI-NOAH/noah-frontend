@@ -11,7 +11,32 @@ import {
   Breakpoints,
 } from '@angular/cdk/layout';
 
+/**
+ * The height of the button that opens the drawer on a phone. It sits at the
+ * bottom of the screen, over the map.
+ */
+const MENU_BUTTON_HEIGHT = 40;
+
+/**
+ * The width of the sidebar that covers the left of the map on a wide
+ * screen.
+ */
+const SIDEBAR_WIDTH = 384;
+
+/**
+ * The room the Mapbox logo of the page takes at the bottom-left of the map,
+ * right next to the sidebar.
+ */
+const LOGO_SPACE = 94;
+
+/**
+ * The gap between the map attribution and whatever covers the bottom of the
+ * map.
+ */
+const ATTRIBUTION_GAP = 10;
+
 @Component({
+  standalone: false,
   selector: 'noah-noah-playground',
   templateUrl: './noah-playground.component.html',
   styleUrls: ['./noah-playground.component.scss'],
@@ -45,7 +70,9 @@ export class NoahPlaygroundComponent implements OnInit {
   height = 256; // Default height (64 * 4 = 256px)
   private initialTouchY = 0;
   private initialHeight = this.height;
+  private onWindowResize: (() => void) | null = null;
   isVisible = false;
+  screenWidth = 0;
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
@@ -115,7 +142,12 @@ export class NoahPlaygroundComponent implements OnInit {
     }
 
     this.updateVisibility();
-    window.addEventListener('resize', this.updateVisibility.bind(this));
+    // Keep a single stable reference so the listener can be removed on destroy.
+    // `this.updateVisibility.bind(this)` created a fresh function that could
+    // never be removed, so every visit to the playground leaked another
+    // resize listener that kept firing on a destroyed component.
+    this.onWindowResize = this.updateVisibility.bind(this);
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   toggleShown(event: Event) {
@@ -132,6 +164,40 @@ export class NoahPlaygroundComponent implements OnInit {
     // Update visibility based on window width
     const width = window.innerWidth;
     this.isVisible = width < 768; // Tailwind sm breakpoint is 640px, md is 768px
+    this.screenWidth = width;
+  }
+
+  /**
+   * How high the shared map attribution has to sit on this page.
+   *
+   * On a phone the drawer covers the bottom of the map while it is open, and
+   * the "open menu" button covers it while it is closed, so the credits move
+   * above whatever is in the way. On a wider screen the drawer is a sidebar
+   * on the left and the credits stay in the corner of the map.
+   */
+  get attributionBottomOffset(): number | null {
+    if (!this.isVisible) {
+      return null;
+    }
+
+    const covered = this.isMenu ? this.height : MENU_BUTTON_HEIGHT;
+
+    return covered + ATTRIBUTION_GAP;
+  }
+
+  /**
+   * How wide the shared map attribution may take on this page.
+   *
+   * On a wide screen the sidebar covers the left of the map and the page
+   * shows its own Mapbox logo right next to it, so the credits must not
+   * reach under either of them.
+   */
+  get attributionMaxWidth(): number | null {
+    if (this.isVisible) {
+      return null;
+    }
+
+    return this.screenWidth - SIDEBAR_WIDTH - LOGO_SPACE - 2 * ATTRIBUTION_GAP;
   }
 
   // Called when the user touches the screen
@@ -162,6 +228,10 @@ export class NoahPlaygroundComponent implements OnInit {
   ngOnDestroy() {
     if (this.localStorageCheckInterval) {
       clearInterval(this.localStorageCheckInterval); // Clean up when the component is destroyed
+    }
+    if (this.onWindowResize) {
+      window.removeEventListener('resize', this.onWindowResize);
+      this.onWindowResize = null;
     }
   }
 

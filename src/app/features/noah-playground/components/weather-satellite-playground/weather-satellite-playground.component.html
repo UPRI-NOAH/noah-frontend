@@ -1,20 +1,20 @@
 <div
-  class="
-    flex flex-col
-    p-4
-    w-full
-    bg-sidebar
-    shadow-md
-    hover:shodow-lg
-    rounded-lg
-    mt-4
-  "
+  class="flex flex-col w-full border shadow-md rounded-lg overflow-hidden mt-4"
 >
   <div
     (click)="toggleExpanded()"
-    class="select-none flex items-center justify-between cursor-pointer"
+    class="
+      select-none
+      flex
+      items-center
+      justify-between
+      gap-3
+      px-4
+      py-3
+      cursor-pointer
+    "
   >
-    <div class="flex items-center">
+    <div class="flex items-center min-w-0">
       <label class="inline-flex items-center checkbox">
         <input
           type="checkbox"
@@ -23,13 +23,13 @@
           (click)="toggleShown($event)"
         />
       </label>
-      <div class="flex flex-col ml-3">
+      <div class="flex flex-col ml-3 min-w-0">
         <div class="text-base leading-none font-bold">
           Weather Satellite Image
         </div>
       </div>
     </div>
-    <div class="cursor-pointer">
+    <div class="flex items-center justify-center">
       <button
         class="
           w-6
@@ -68,18 +68,15 @@
       </button>
     </div>
   </div>
-  <div [ngClass]="(expanded$ | async) ? ' pt-5 ' : ' hidden '">
-    <hr class="pb-4" />
-    <div class="pl-3">
-      <div class="items-center">
-        <!-- CRITICAL FACILITY START -->
-        <noah-weather
-          *ngFor="let weatherSat of weatherSatellite"
-          [name]="weatherSat"
-        ></noah-weather>
-        <!-- CRITICAL FACILITY END -->
-        <hr class="p-2" />
-      </div>
-    </div>
+
+  <div
+    class="border-t border-gray-200 px-4 py-3 space-y-2"
+    [ngClass]="(expanded$ | async) ? ' ' : ' hidden '"
+  >
+    <noah-weather
+      class="block"
+      *ngFor="let weatherSat of weatherSatellite"
+      [name]="weatherSat"
+    ></noah-weather>
   </div>
 </div>

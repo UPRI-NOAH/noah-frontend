@@ -43,10 +43,19 @@
   </div>
 </div>
 
-<!-- Switch Map Style -->
-<noah-change-style-button
-  class="mapStyle absolute right-0 mr-1 p-1.5"
+<!-- Map controls: the floating toolbar on the right edge of the map and the
+     map style / lighting panel in the bottom-right corner. Shared with the
+     playground and know-your-hazards maps. -->
+<noah-map-controls
+  [map]="map"
   [selectedStyle]="mapStyle"
   (selectedStyleChange)="switchMapStyle($event)"
->
-</noah-change-style-button>
+  [geolocateControl]="geolocateControl"
+></noah-map-controls>
+
+<!-- Map attribution: the shared credits of every NOAH map, in the
+     bottom-right corner of the map. -->
+<noah-map-attribution
+  [map]="map"
+  [bottomOffset]="attributionBottomOffset"
+></noah-map-attribution>
