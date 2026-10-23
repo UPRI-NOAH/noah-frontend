@@ -179,6 +179,34 @@ export type RawLandslideHazards =
 type LH2Subtype = 'af' | 'df';
 
 /**
+ * Client-side cluster state for one critical facility type.
+ *
+ * Mapbox GL JS can only cluster GeoJSON sources and a vector tileset cannot
+ * be clustered natively, so the points of the tileset are clustered with
+ * Supercluster and written back into a GeoJSON source that the cluster
+ * layers read from.
+ *
+ * The state outlives a basemap switch: the points are only fetched once and
+ * the index is reused for the next style.
+ */
+type CritFacilityClusterState = {
+  /** The points harvested from the tileset (or from the GeoJSON fallback). */
+  points: GeoJSON.Feature<GeoJSON.Point>[];
+  /** The dedupe keys of the harvested points. */
+  seen: Set<string>;
+  /** The Supercluster index over `points`. */
+  index: Supercluster;
+  /** True once the GeoJSON fallback replaced the unreachable tileset. */
+  usedFallback: boolean;
+  /** True when the index has to be rebuilt from `points`. */
+  dirty: boolean;
+  /** Writes the current clusters into the cluster source. */
+  rebuild: () => void;
+  /** Removes the listeners that belong to the current style. */
+  cleanup: () => void;
+};
+
+/**
  * The gap between the Mapbox logo and the scale bar that sits above it.
  */
 const SCALE_LOGO_GAP = 6;
