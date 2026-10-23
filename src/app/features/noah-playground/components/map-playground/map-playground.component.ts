@@ -8,6 +8,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Input,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
@@ -178,32 +179,29 @@ export type RawLandslideHazards =
 type LH2Subtype = 'af' | 'df';
 
 /**
- * Client-side cluster state for one critical facility type.
- *
- * Mapbox GL JS can only cluster GeoJSON sources and a vector tileset cannot
- * be clustered natively, so the points of the tileset are clustered with
- * Supercluster and written back into a GeoJSON source that the cluster
- * layers read from.
- *
- * The state outlives a basemap switch: the points are only fetched once and
- * the index is reused for the next style.
+ * The gap between the Mapbox logo and the scale bar that sits above it.
  */
-type CritFacilityClusterState = {
-  /** The points harvested from the tileset (or from the GeoJSON fallback). */
-  points: GeoJSON.Feature<GeoJSON.Point>[];
-  /** The dedupe keys of the harvested points. */
-  seen: Set<string>;
-  /** The Supercluster index over `points`. */
-  index: Supercluster;
-  /** True once the GeoJSON fallback replaced the unreachable tileset. */
-  usedFallback: boolean;
-  /** True when the index has to be rebuilt from `points`. */
-  dirty: boolean;
-  /** Writes the current clusters into the cluster source. */
-  rebuild: () => void;
-  /** Removes the listeners that belong to the current style. */
-  cleanup: () => void;
-};
+const SCALE_LOGO_GAP = 6;
+
+/**
+ * The CSS variables the playground publishes so the overlays that follow the
+ * scale bar can find it.
+ *
+ * They are set on the host element of the playground, which holds the map (and
+ * with it the scale bar) as well as the coordinate readout, so both read the
+ * same numbers.
+ */
+const SCALE_LEFT_VARIABLE = '--noah-scale-left';
+const SCALE_BOTTOM_VARIABLE = '--noah-scale-bottom';
+const SCALE_HEIGHT_VARIABLE = '--noah-scale-height';
+
+/**
+ * How long the scale bar waits before it follows a change of the layout.
+ *
+ * The Mapbox logo moves while the drawer is dragged on a phone, so the short
+ * delay turns a burst of changes into a single measurement.
+ */
+const SCALE_REPOSITION_DELAY = 100;
 
 HC_exporting(Highcharts);
 HC_Data(Highcharts);
@@ -243,6 +241,16 @@ export class MapPlaygroundComponent
    */
   private deferredInitHandle: number | null = null;
   private deferredInitFallbackTimer: number | null = null;
+
+  /**
+   * Watches the layout for the changes that move the Mapbox logo the scale
+   * bar follows. See {@link watchLogoPosition}.
+   */
+  private logoObserver: MutationObserver | null = null;
+
+  /** The pending repositioning of the scale bar, if any. */
+  private scaleRepositionTimer: number | null = null;
+
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
@@ -270,6 +278,21 @@ export class MapPlaygroundComponent
   private measurementActive: boolean = false;
   screenWidth: number;
   screenHeight: number;
+
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the drawer covers the bottom of the map
+   * on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
+
+  /**
+   * How wide the shared attribution may take.
+   *
+   * The page narrows the credits when the sidebar covers the map.
+   */
+  @Input() attributionMaxWidth: number | null = null;
 
   private realtimeLightningSocket: WebSocket | null = null;
   private realtimeLightningResetTimer: number | null = null;
@@ -366,7 +389,8 @@ export class MapPlaygroundComponent
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService,
-    private typhoonService: TyphoonTrackService
+    private typhoonService: TyphoonTrackService,
+    private elementRef: ElementRef<HTMLElement>
   ) {
     // this.getScreenSize();
   }
@@ -380,12 +404,10 @@ export class MapPlaygroundComponent
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
         this.map.resize();
-        this.addNavigationControls();
         this.addGeolocationControls();
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
-        this.addCustomTooltips();
         this.getScreenSize();
         this.iniScaleControl();
       });
@@ -548,6 +570,22 @@ export class MapPlaygroundComponent
     // Drop any queued deferred layer initialisation before the map is torn
     // down so it cannot run against a destroyed map.
     this.cancelDeferredInit();
+    // Stop watching the layout for the Mapbox logo and drop a pending
+    // repositioning of the scale bar.
+    if (this.logoObserver) {
+      this.logoObserver.disconnect();
+      this.logoObserver = null;
+    }
+    if (this.scaleRepositionTimer !== null) {
+      window.clearTimeout(this.scaleRepositionTimer);
+      this.scaleRepositionTimer = null;
+    }
+    // The place of the scale bar is published to the host element, so drop it
+    // again instead of leaving it behind for the next playground.
+    const host = this.elementRef.nativeElement;
+    host.style.removeProperty(SCALE_LEFT_VARIABLE);
+    host.style.removeProperty(SCALE_BOTTOM_VARIABLE);
+    host.style.removeProperty(SCALE_HEIGHT_VARIABLE);
     // Cancel the wind particle RAF loop first: it reads from `this.map` and
     // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
@@ -566,17 +604,16 @@ export class MapPlaygroundComponent
   getScreenSize(event?) {
     this.screenWidth = window.innerWidth;
     this.screenHeight = window.innerHeight;
-  }
-
-  /**
-   * Adds the plus and minus zoom map controls
-   */
-  addNavigationControls() {
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // The Mapbox logo the scale bar follows moves with the window.
+    this.scheduleScaleReposition();
   }
 
   /**
    * Adds the geolocation map control
+   *
+   * The control's own button is hidden (`showButton: false`); the locate
+   * action lives in the NOAH map controls toolbar, which triggers the control
+   * programmatically.
    */
   addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
@@ -656,58 +693,137 @@ export class MapPlaygroundComponent
   }
 
   iniScaleControl() {
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: 'metric',
-    });
+    // The playground shows its Mapbox logo in the bottom-left corner of the
+    // map, so the scale bar sits right above it instead of in the right-hand
+    // column of the controls toolbar.
+    this.mapService.attachScaleControl(this.map, 'bottom-left');
+    this.positionScaleAboveLogo();
+    this.watchLogoPosition();
+  }
 
-    // Create a custom container for the scale control
-    const container = document.createElement('div');
-    container.id = 'custom-scale-control';
-    container.style.position = 'absolute';
-    container.style.right = '10px'; // some margin from right edge
-    container.style.padding = '5px'; // padding around the box
-    container.style.background = 'white';
-    container.style.borderRadius = '6px';
-    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+  /**
+   * Moves the scale bar directly above the Mapbox logo in the bottom-left
+   * corner of the map.
+   *
+   * The playground draws its own Mapbox logo next to the sidebar (the logo of
+   * the map itself sits behind the sidebar) and on a phone that logo moves to
+   * the top of the drawer. The logo is therefore measured instead of being
+   * hard-coded, so the scale bar follows it wherever it is.
+   */
+  private positionScaleAboveLogo(): void {
+    const container = document.getElementById('custom-scale-control');
+    const mapContainer = this.map?.getContainer();
 
-    // Append container to the map
-    this.map.getContainer().appendChild(container);
+    if (!container || !mapContainer) {
+      return;
+    }
 
-    // Add the scale control using Mapbox’s API
-    const scaleEl = scale.onAdd(this.map);
-    container.appendChild(scaleEl);
+    const logo = this.findVisibleMapboxLogo();
 
-    // Style adjustments
-    const scaleElem = scaleEl as HTMLElement;
-    scaleElem.style.fontSize = '12px';
-    scaleElem.style.lineHeight = '20px';
-    scaleElem.style.fontWeight = 'bold';
+    if (!logo) {
+      return;
+    }
 
-    // Align the text and scale bar like Mapbox example
-    scaleElem.style.display = 'flex';
-    scaleElem.style.flexDirection = 'column'; // puts number above the bar
-    scaleElem.style.alignItems = 'center'; // center horizontal alignment
+    const logoRect = logo.getBoundingClientRect();
+    const mapRect = mapContainer.getBoundingClientRect();
 
-    if (scaleElem.style.flexDirection === 'row') {
-      // find the label element inside the scaleEl
-      const label = scaleElem.querySelector('div');
-      if (label) {
-        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
+    const left = Math.round(logoRect.left - mapRect.left);
+    const bottom = Math.round(mapRect.bottom - logoRect.top + SCALE_LOGO_GAP);
+    const height = Math.round(container.getBoundingClientRect().height);
+
+    this.publishScalePosition(left, bottom, height);
+  }
+
+  /**
+   * Publishes where the scale bar is, so the overlays that follow it can find
+   * it.
+   *
+   * The variables go on the host element of the playground, which is the one
+   * ancestor shared by the map (and with it the scale bar) and the coordinate
+   * readout that sits above the scale bar.
+   */
+  private publishScalePosition(
+    left: number,
+    bottom: number,
+    height: number
+  ): void {
+    const host = this.elementRef.nativeElement;
+
+    host.style.setProperty(SCALE_LEFT_VARIABLE, `${left}px`);
+    host.style.setProperty(SCALE_BOTTOM_VARIABLE, `${bottom}px`);
+    host.style.setProperty(SCALE_HEIGHT_VARIABLE, `${height}px`);
+  }
+
+  /**
+   * The Mapbox logo the reader can actually see.
+   *
+   * The playground has up to three logos in the page: the one of the map
+   * itself, the one next to the sidebar and the one on top of the drawer on a
+   * phone. Only one of them is on screen at a time, the others are hidden
+   * behind the sidebar or the drawer. A logo counts as visible when the point
+   * in its middle hits the logo itself and not the panel that covers it.
+   */
+  private findVisibleMapboxLogo(): HTMLElement | null {
+    const logos = Array.from(
+      document.querySelectorAll<HTMLElement>('.mapboxgl-ctrl-logo')
+    );
+
+    for (const logo of logos) {
+      const rect = logo.getBoundingClientRect();
+
+      if (rect.width === 0 || rect.height === 0) {
+        continue;
+      }
+
+      const hit = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      );
+
+      if (hit && (hit === logo || logo.contains(hit) || hit.contains(logo))) {
+        return logo;
       }
     }
 
-    const applyPosition = () => {
-      // Kept in sync with `.basemap-preset-control` in the component SCSS: the
-      // lighting toggle is anchored to the same `top` and lifted above it, so
-      // these values must match or the two would overlap.
-      if (window.innerWidth <= 767) {
-        container.style.top = '386px';
-      } else {
-        container.style.top = '375px';
-      }
-    };
-    applyPosition();
+    return null;
+  }
+
+  /**
+   * Watches the layout for the changes that move the Mapbox logo: the
+   * sidebar being opened or closed, the drawer being dragged on a phone and
+   * the window being resized.
+   */
+  private watchLogoPosition(): void {
+    if (typeof MutationObserver === 'undefined') {
+      return;
+    }
+
+    this.logoObserver = new MutationObserver(() =>
+      this.scheduleScaleReposition()
+    );
+    this.logoObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style'],
+    });
+  }
+
+  /**
+   * Repositions the scale bar after the layout settled.
+   *
+   * The repositioning is delayed and only done once per burst of changes, so
+   * dragging the drawer does not measure the logo on every pixel.
+   */
+  private scheduleScaleReposition(): void {
+    if (this.scaleRepositionTimer !== null) {
+      return;
+    }
+
+    this.scaleRepositionTimer = window.setTimeout(() => {
+      this.scaleRepositionTimer = null;
+      this.positionScaleAboveLogo();
+    }, SCALE_REPOSITION_DELAY);
   }
 
   /**
@@ -5115,14 +5231,18 @@ export class MapPlaygroundComponent
     }
   }
 
+  /**
+   * Sets up the drawing tool used to measure areas and distances.
+   *
+   * MapboxDraw's own button bar is hidden (`displayControlsDefault: false`
+   * with `controls: false`): the draw, measure and clear actions live in the
+   * NOAH map controls toolbar, which drives the control through
+   * `changeMode()` / `deleteAll()`.
+   */
   initCalculation() {
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        line_string: true,
-        trash: true,
-      },
+      controls: false,
     });
 
     this.map.addControl(this.draw);
@@ -5134,7 +5254,8 @@ export class MapPlaygroundComponent
 
   private updateCalculate(event) {
     const data = this.draw.getAll();
-    const answer = document.getElementById('area');
+    const areaEl = document.getElementById('area');
+    const distanceEl = document.getElementById('distance');
     let totalArea = 0;
     let totalLength = 0;
 
@@ -5149,35 +5270,28 @@ export class MapPlaygroundComponent
         }
       });
 
-      let output = '';
-
-      if (totalLength > 0) {
+      if (totalLength > 0 && distanceEl) {
         const roundedLength = Math.round(totalLength * 100) / 100;
-        output += `<p style="margin-bottom:2px;"><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
-      }
-      if (totalArea > 0) {
-        const roundedArea = Math.round(totalArea * 100) / 100;
-        output += `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+        distanceEl.innerHTML = `<p><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
+      } else if (distanceEl) {
+        distanceEl.innerHTML = '';
       }
 
-      answer.innerHTML = output;
+      if (totalArea > 0 && areaEl) {
+        const roundedArea = Math.round(totalArea * 100) / 100;
+        areaEl.innerHTML = `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+      } else if (areaEl) {
+        areaEl.innerHTML = '';
+      }
     } else {
-      answer.innerHTML = '';
+      if (areaEl) {
+        areaEl.innerHTML = '';
+      }
+      if (distanceEl) {
+        distanceEl.innerHTML = '';
+      }
     }
   }
-
-  // Add custom tooltips for are and distance
-  private addCustomTooltips = () => {
-    const buttons = document.querySelectorAll('.mapbox-gl-draw_ctrl-draw-btn');
-    buttons.forEach((button) => {
-      if (button.classList.contains('mapbox-gl-draw_polygon')) {
-        button.setAttribute('title', 'Measure Area');
-      }
-      if (button.classList.contains('mapbox-gl-draw_line')) {
-        button.setAttribute('title', 'Measure Distance');
-      }
-    });
-  };
 
   /**
    * All hazard maps except the debris flow and alluvial fan are

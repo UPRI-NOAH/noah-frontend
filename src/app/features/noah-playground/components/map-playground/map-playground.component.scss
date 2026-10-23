@@ -14,106 +14,82 @@
   z-index: 1;
 }
 
-.dropdown:hover .dropdown-menu {
-  display: block;
-}
 .mapboxgl-popup-close-button {
   z-index: 1;
   font-size: 20px;
   right: 5px;
 }
-.distance-container {
+
+/* The measurement results sit in the right-hand column, stacked below the
+   controls toolbar. */
+.measurements-wrapper {
   position: absolute;
-  top: 216px;
-  right: 47px;
-  z-index: 1;
+  right: 10px;
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 6px
+  );
+  z-index: 15;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: none;
 }
 
-.distance-container > * {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 11px;
-  line-height: 18px;
-  display: block;
-  margin: 0;
-  padding: 5px 10px;
-  border-radius: 3px;
-}
+.distance-container,
 .area-container {
-  position: absolute;
-  top: 174px;
-  right: 50px;
-  z-index: 1;
-  margin-right: 3px;
+  position: static;
+  pointer-events: none;
 }
 
-.base-icon {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
+.distance-container > *,
 .area-container > * {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 11px;
-  line-height: 18px;
+  line-height: 16px;
   display: block;
   margin: 0;
-  padding: 5px 10px;
-  border-radius: 3px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: right;
 }
 
-.map-icon {
-  top: 278px;
-  @media only screen and (max-width: 768px) {
-    top: 328px;
+@media only screen and (max-width: 768px) {
+  .measurements-wrapper {
+    top: calc(
+      var(--noah-map-controls-toolbar-top, 58px) +
+        var(--noah-map-controls-toolbar-height, 120px) + 6px
+    );
   }
 }
 
-/* Basemap lighting toggle + presets. Sits directly above the custom scale bar
-   (see iniScaleControl) on the right edge; the top values here mirror the
-   scale's own 430px / 380px breakpoints so the two never overlap. */
-.basemap-preset-control {
-  position: absolute;
-  z-index: 20;
-  right: auto;
-  left: 10px;
-  top: 60px;
-  border-radius: 3px;
-  transform: translateY(0);
-  @media only screen and (min-width: 768px) {
-    right: 10px;
-    left: auto;
-    top: 374px;
-    border-radius: 3px;
-    transform: translateY(calc(-100% - 6px));
-  }
+/* The coordinate readout sits in the bottom-left corner of the map, directly
+   above the scale bar. Both follow the Mapbox logo, which moves with the
+   sidebar and with the drawer on a phone, so the playground publishes where
+   the scale bar is as `--noah-scale-left`, `--noah-scale-bottom` and
+   `--noah-scale-height`. The 6px is the gap between the two.
 
-  /* Hidden (not removed) while a legacy terrain / satellite basemap is loaded,
-     so the Auto selection survives a basemap switch. */
-  &.is-hidden {
-    display: none;
-  }
-}
-
-.coords {
+   The rule is scoped to this component because it has no style encapsulation:
+   the other maps have a readout of their own that must keep its place. */
+noah-map-playground .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 421px;
+  left: var(--noah-scale-left, 10px);
+  bottom: calc(
+    var(--noah-scale-bottom, 35px) + var(--noah-scale-height, 25px) + 6px
+  );
+  right: auto;
+  top: auto;
   z-index: 40;
-  right: 10px;
   padding: 5px 10px;
   margin: 0;
   font-size: 12px;
   line-height: 18px;
   border-radius: 3px;
   display: none;
-  @media only screen and (max-width: 768px) {
-    top: 102px;
-    left: 7px;
-    width: fit-content;
-  }
 }
 
 .mapboxgl-popup-content {

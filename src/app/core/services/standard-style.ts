@@ -67,6 +67,27 @@ export const BASEMAP_PRESETS: ReadonlyArray<{
 ];
 
 /**
+ * The lighting selection offered by the map controls panel.
+ *
+ * `auto` follows the Philippine clock (see {@link getBasemapForPhilippineTime});
+ * every other value pins the map to that preset until the user picks `auto`
+ * again. The distinction is what lets the panel show "Follows local time" while
+ * still allowing a manual override.
+ */
+export type LightingSelection = 'auto' | Basemap;
+
+/**
+ * Human-readable label of a lighting preset (`Dawn`, `Day`, `Dusk`, `Night`).
+ *
+ * Resolved from {@link BASEMAP_PRESETS} so the label shown in the controls can
+ * never drift apart from the label used by the preset list itself.
+ */
+export function getBasemapLabel(basemap: Basemap): string {
+  const preset = BASEMAP_PRESETS.find(({ value }) => value === basemap);
+  return preset ? preset.label : basemap;
+}
+
+/**
  * Basemap configuration, centralised here so the four lighting definitions
  * cannot drift apart and the service has a single thing to read.
  *

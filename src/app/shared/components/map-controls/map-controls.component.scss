@@ -1,0 +1,399 @@
+/* The controls float above the map: the host covers the whole map area but
+   never swallows a map gesture. Only the controls themselves are clickable. */
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* ---------------------------------------------------------------- toolbar */
+
+.map-controls-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+
+  @media only screen and (max-width: 768px) {
+    /* Clears the mobile top bar (back button + search). */
+    top: 58px;
+    gap: 8px;
+  }
+}
+
+/* Zoom / compass and the measurement tools: one white panel, separated by
+   hairlines. */
+.map-controls-group {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 6px 16px rgba(15, 23, 42, 0.1);
+  pointer-events: auto;
+}
+
+/* The other actions: individual floating buttons. */
+.map-controls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.map-controls-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: #4b5563;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: #111827;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+}
+
+/* Hairline between the grouped buttons. */
+.map-controls-group .map-controls-button + .map-controls-button {
+  border-top: 1px solid #f1f5f9;
+}
+
+/* A grouped button that is doing something (a measurement tool that is
+   running) is tinted, so the active tool is obvious. */
+.map-controls-group .map-controls-button.is-active {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* The measurement panel: the clear action is destructive, so it sits behind
+   a slightly stronger rule and warns on hover. */
+.map-controls-group--measure
+  .map-controls-button
+  + .map-controls-button--clear {
+  border-top-color: #e5e7eb;
+
+  &:hover {
+    color: #dc2626;
+    background: #fef2f2;
+  }
+}
+
+/* The stacked buttons carry their own surface. */
+.map-controls-stack .map-controls-button {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 6px 16px rgba(15, 23, 42, 0.1);
+  pointer-events: auto;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  &.is-active {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+  }
+}
+
+.map-controls-button--style {
+  position: relative;
+}
+
+.map-controls-auto-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+}
+
+/* The needle spins around the centre of the compass. */
+.map-controls-compass g {
+  transform-origin: 12px 12px;
+}
+
+/* ------------------------------------------------------------------ panel */
+
+.map-controls-panel {
+  position: absolute;
+  right: 51px;
+  // bottom: 619px;
+  top: 74px;
+  width: var(--noah-map-controls-panel-width, 336px);
+  max-width: calc(100vw - 20px);
+  /* Never grow into the toolbar above it, and leave room for the scale bar
+     that sits between the two. */
+  max-height: calc(
+    100% - 106px - var(--noah-map-controls-toolbar-height, 120px)
+  );
+  overflow-y: auto;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08),
+    0 12px 32px rgba(15, 23, 42, 0.12);
+  pointer-events: auto;
+
+  @media only screen and (max-width: 768px) {
+    /* On a phone the bottom of the map belongs to the page itself (the
+       bottom sheets of the survival kit and the navigation drawer), so the
+       panel moves under the mobile top bar instead of floating over them. */
+    top: 106px;
+    width: 280px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100% - 84px);
+    padding: 12px;
+  }
+}
+
+.map-controls-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.map-controls-panel__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.map-controls-panel__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: #9ca3af;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: #4b5563;
+    background: #f3f4f6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+}
+
+/* ------------------------------------------------------------ style cards */
+
+.map-controls-styles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.map-controls-style {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+.map-controls-style__preview {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 56px;
+  overflow: hidden;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* The screenshots are wider than the card, so they are cropped to fill
+       it rather than squeezed into it. */
+    object-fit: cover;
+  }
+}
+
+/* The badge that marks a style as new. It sits in the corner of the picture,
+   in the same blue as the badge on the toolbar button. */
+.map-controls-style__badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.3);
+}
+
+.map-controls-style.is-selected .map-controls-style__preview {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
+}
+
+.map-controls-style__label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #6b7280;
+}
+
+.map-controls-style.is-selected .map-controls-style__label {
+  color: #2563eb;
+}
+
+/* -------------------------------------------------------------- lighting */
+
+.map-controls-divider {
+  height: 0;
+  margin: 14px 0 12px;
+  border: 0;
+  border-top: 1px solid #eef2f6;
+}
+
+.map-controls-status {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #6b7280;
+  text-align: right;
+
+  &.is-disabled {
+    color: #9ca3af;
+  }
+}
+
+.map-controls-lighting {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.map-controls-lighting__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 2px;
+  color: #4b5563;
+  background: #f4f5f7;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #eceef1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &.is-selected {
+    color: #2563eb;
+    background: #ffffff;
+    border-color: #e5e7eb;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1),
+      0 4px 10px rgba(15, 23, 42, 0.08);
+  }
+}
+
+.map-controls-lighting__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.map-controls-lighting__label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: inherit;
+}

@@ -1,7 +1,0 @@
-/* The host is positioned by the map component that uses it (it always sits
-   just above that map's own scale bar); only the row layout lives here. */
-:host {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}

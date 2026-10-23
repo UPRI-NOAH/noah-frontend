@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { environment } from '@env/environment';
 import mapboxgl from 'mapbox-gl';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -7,7 +7,9 @@ import {
   Basemap,
   DEFAULT_BASEMAP,
   getBasemapConfig,
+  getBasemapForPhilippineTime,
   hasStandardBasemap,
+  LightingSelection,
   STANDARD_BASEMAP_IMPORT,
 } from '@core/services/standard-style';
 
@@ -15,16 +17,27 @@ import {
  * Shared map configuration plus the Mapbox Standard lighting preset.
  *
  * The preset is shared across every map page so re-lighting is not duplicated
- * per page. This service only *stores* the selection; the playground
- * additionally feeds it a preset derived from the Philippine clock (see
- * `getBasemapForPhilippineTime`), which is why the scheduling lives in the
- * calling component rather than here.
+ * per page. This service owns the whole lighting state machine:
+ *
+ * - which preset is applied ({@link basemap$}),
+ * - whether that preset was picked by hand or derived from the Philippine
+ *   clock ({@link lightingSelection$}),
+ * - the preset the clock currently points at ({@link scheduledBasemap$}),
+ *
+ * so the controls panel can render an accurate status line without knowing
+ * anything about the schedule itself.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class MapService {
-  constructor(private httpClient: HttpClient) {}
+export class MapService implements OnDestroy {
+  constructor(private httpClient: HttpClient, private zone: NgZone) {
+    // Default to manual Day basemap lighting.
+    this.lightingSelectionSubject.next('day');
+    this.basemapSubject.next('day');
+    this.scheduledBasemapSubject.next(getBasemapForPhilippineTime());
+    this.startLightingClock();
+  }
   private addressSubject = new Subject<string>();
   private sessionToken: string = this.generateUUID();
 
@@ -44,11 +57,61 @@ export class MapService {
    */
   basemap$: Observable<Basemap> = this.basemapSubject.asObservable();
 
+  /**
+   * The lighting *selection*: `auto` follows the Philippine clock, any other
+   * value is a manual preset that stays pinned until the user switches back.
+   */
+  private lightingSelectionSubject = new BehaviorSubject<LightingSelection>(
+    'auto'
+  );
+
+  /** Emits the current lighting selection (`auto` or a manual preset). */
+  lightingSelection$: Observable<LightingSelection> =
+    this.lightingSelectionSubject.asObservable();
+
+  /**
+   * The preset the Philippine clock currently points at.
+   *
+   * Kept apart from {@link basemap$} so a manual selection is not immediately
+   * overwritten: the clock only switches when the Philippine-Time window
+   * changes, and the manual choice stands until then.
+   */
+  private scheduledBasemapSubject = new BehaviorSubject<Basemap>(
+    getBasemapForPhilippineTime()
+  );
+
+  /** Emits the preset the Philippine clock currently points at. */
+  scheduledBasemap$: Observable<Basemap> =
+    this.scheduledBasemapSubject.asObservable();
+
   /** Maps handed to {@link applyStandardConfig} and still alive. */
   private readonly configuredMaps = new Set<mapboxgl.Map>();
 
+  /**
+   * Interval id of the Philippine-Time lighting clock. Created outside Angular
+   * so it cannot trigger change detection on every tick.
+   */
+  private lightingClockTimer: number | null = null;
+
   get currentBasemap(): Basemap {
     return this.basemapSubject.value;
+  }
+
+  /** The lighting selection currently in effect. */
+  get currentLightingSelection(): LightingSelection {
+    return this.lightingSelectionSubject.value;
+  }
+
+  /** The lighting preset the Philippine clock currently points at. */
+  get currentScheduledBasemap(): Basemap {
+    return this.scheduledBasemapSubject.value;
+  }
+
+  ngOnDestroy(): void {
+    if (this.lightingClockTimer !== null) {
+      window.clearInterval(this.lightingClockTimer);
+      this.lightingClockTimer = null;
+    }
   }
 
   init() {
@@ -99,6 +162,64 @@ export class MapService {
   }
 
   /**
+   * Selects the lighting mode.
+   *
+   * `auto` re-lights the map from the Philippine clock; any other value pins
+   * the map to that preset. This is the only entry point the controls panel
+   * uses, so the manual override and the automatic schedule can never fight
+   * over the same state.
+   */
+  setLighting(selection: LightingSelection) {
+    this.lightingSelectionSubject.next(selection);
+
+    if (selection === 'auto') {
+      this.applyScheduledBasemap(getBasemapForPhilippineTime());
+      return;
+    }
+
+    this.switchBasemap(selection);
+  }
+
+  /**
+   * Records the preset the Philippine clock points at and, while the
+   * selection is `auto`, applies it to every registered map.
+   */
+  private applyScheduledBasemap(scheduled: Basemap) {
+    if (scheduled !== this.currentScheduledBasemap) {
+      this.scheduledBasemapSubject.next(scheduled);
+    }
+
+    if (this.currentLightingSelection === 'auto') {
+      this.switchBasemap(scheduled);
+    }
+  }
+
+  /**
+   * Starts the Philippine-Time lighting clock.
+   *
+   * The preset is applied immediately (so a 3 AM visit opens on `night`, not
+   * the static `day` default) and re-checked every minute, so a long-lived
+   * tab crosses each dawn / day / dusk / night boundary without a reload. A
+   * manual selection still works: the schedule only acts when the
+   * Philippine-Time window changes.
+   */
+  private startLightingClock(): void {
+    this.zone.runOutsideAngular(() => {
+      this.lightingClockTimer = window.setInterval(() => {
+        const scheduled = getBasemapForPhilippineTime();
+
+        // Nothing changed: stay outside Angular so the tick cannot trigger
+        // change detection.
+        if (scheduled === this.currentScheduledBasemap) {
+          return;
+        }
+
+        this.zone.run(() => this.applyScheduledBasemap(scheduled));
+      }, 60_000);
+    });
+  }
+
+  /**
    * Writes the current basemap config into every registered Mapbox Standard
    * map. Styles without the Standard `basemap` import are skipped.
    */
@@ -132,12 +253,21 @@ export class MapService {
     });
   }
 
+  /**
+   * The geolocation control used by every NOAH map.
+   *
+   * `showButton: false` hides Mapbox's own button: the location action lives
+   * in the NOAH map controls toolbar instead, which triggers the control
+   * programmatically (`geolocateControl.trigger()`). The control still draws
+   * the user dot and the accuracy circle.
+   */
   getNewGeolocateControl() {
     return new mapboxgl.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: false,
       },
       trackUserLocation: true,
+      showButton: false,
     });
   }
 
@@ -191,11 +321,57 @@ export class MapService {
     };
   }
 
-  getNewAttributionControl() {
-    return new mapboxgl.AttributionControl({
-      customAttribution:
-        '<a href="https://doh.gov.ph" target="_blank">© Department of Health</a>',
+  /**
+   * Adds the custom scale bar to a map.
+   *
+   * By default the bar sits in the right-hand column below the NOAH map
+   * controls toolbar (positioned by CSS via `--noah-map-controls-toolbar-*`).
+   * For pages where the toolbar isn't present or where it needs to sit above
+   * the map attribution (e.g. KYH and Weather Updates), pass
+   * `'bottom-right'` to place it just above the shared attribution.
+   * `'bottom-left'` puts the bar in the bottom-left corner of the map, where
+   * the page publishes the place of the Mapbox logo it sits above as
+   * `--noah-scale-left` and `--noah-scale-bottom`.
+   *
+   * Sharing one implementation keeps the three map pages (playground, weather
+   * updates, know your hazards) from drifting apart.
+   */
+  attachScaleControl(
+    map: mapboxgl.Map,
+    position: 'right-top' | 'bottom-right' | 'bottom-left' = 'right-top'
+  ): void {
+    // Remove any existing custom scale control to avoid duplicates
+    const existing = document.getElementById('custom-scale-control');
+    if (existing && existing.parentElement) {
+      existing.parentElement.removeChild(existing);
+    }
+
+    const scale = new mapboxgl.ScaleControl({
+      maxWidth: 80,
+      unit: 'metric',
     });
+
+    const container = document.createElement('div');
+    container.id = 'custom-scale-control';
+    container.dataset.position = position;
+
+    map.getContainer().appendChild(container);
+
+    const scaleEl = scale.onAdd(map);
+    container.appendChild(scaleEl);
+
+    // Style adjustments: the number sits above the bar; center it in the background.
+    const scaleElem = scaleEl as HTMLElement;
+    scaleElem.style.fontSize = '11px';
+    scaleElem.style.lineHeight = '14px';
+    scaleElem.style.fontWeight = '500';
+    scaleElem.style.display = 'flex';
+    scaleElem.style.flexDirection = 'column-reverse';
+    scaleElem.style.alignItems = 'center';
+    scaleElem.style.textAlign = 'center';
+    scaleElem.style.color = '#111827';
+    scaleElem.style.width = '100%';
+    scaleElem.style.gap = '2px';
   }
 
   // Simple UUID generator (to replace crypto.randomUUID for Angular compatibility)
