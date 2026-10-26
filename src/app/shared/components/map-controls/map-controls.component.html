@@ -199,6 +199,8 @@
       "
       [attr.aria-expanded]="panelOpen"
       (click)="togglePanel()"
+      (pointerenter)="onStyleButtonEnter($event)"
+      (pointerleave)="onStyleButtonLeave($event)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -223,7 +225,13 @@
 </div>
 
 <!-- Map style panel, anchored in the bottom-right corner. -->
-<section class="map-controls-panel" *ngIf="panelOpen" aria-label="Map style">
+<section
+  class="map-controls-panel"
+  *ngIf="panelOpen"
+  aria-label="Map style"
+  (pointerenter)="onPanelEnter($event)"
+  (pointerleave)="onPanelLeave($event)"
+>
   <div class="map-controls-panel__header">
     <h2 class="map-controls-panel__title">Map style</h2>
     <button

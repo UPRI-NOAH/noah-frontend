@@ -28,6 +28,28 @@ import {
   take,
   takeUntil,
 } from 'rxjs/operators';
+
+/**
+ * GeoJSON source of the PAR / Philippine outline boundary.
+ */
+const PAR_SOURCE_ID = 'par-outline-source';
+
+/**
+ * The PAR / Philippine outline line layer.
+ *
+ * It must remain above the weather rasters (Himawari, rainfall contours,
+ * temperature) and the typhoon track, so its position is re-asserted whenever
+ * another layer is created.
+ */
+const PAR_LAYER_ID = 'par-outline';
+
+/**
+ * Typhoon forecast/shading fill layers that represent the gray shaded area
+ * associated with the typhoon track. These must remain visible above Himawari
+ * satellite imagery and other raster overlays, but below the PAR boundary.
+ */
+const TYPHOON_SHADING_LAYER_IDS = ['typhoon-forecast-circles-fill'];
+
 @Component({
   standalone: false,
   selector: 'noah-map-weather-updates',
@@ -116,6 +138,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
           this.layerInitialized.temperature = true;
         }
         this.setupLayerToggleSubscriptions();
+
+        // The style reload recreated the overlays above; keep the PAR
+        // boundary on top. Layers toggled on later re-assert it through
+        // addNoahLayer().
+        this.moveParToTop();
       });
   }
 
@@ -152,10 +179,55 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
         slot,
         paint: withStandardLightingNoop(layer),
       } as mapboxgl.AnyLayer);
+    } else {
+      this.map.addLayer(layer);
+    }
+
+    // Layers are appended to the style, so one created after the PAR boundary
+    // would paint over it. Re-assert the boundary order right after the
+    // addition; this runs on layer creation, never on a render frame.
+    if (layer.id !== PAR_LAYER_ID) {
+      this.moveParToTop();
+    }
+  }
+
+  /**
+   * Keeps the PAR boundary above every other weather overlay.
+   *
+   * `moveLayer(id)` without a `beforeId` appends the layer to the end of the
+   * style order, which is the top of the Standard `top` slot. The source and
+   * layer are checked first because this also runs from the deferred layer
+   * initialisers before the typhoon (and therefore PAR) layers exist. A style
+   * switch in flight makes `moveLayer` throw; the following `style.load`
+   * recreates the layer and calls this again.
+   */
+  private moveParToTop(): void {
+    if (!this.map.getLayer(PAR_LAYER_ID)) {
+      return;
+    }
+    if (!this.map.getSource(PAR_SOURCE_ID)) {
       return;
     }
 
-    this.map.addLayer(layer);
+    try {
+      // Ensure typhoon shading sits above rasters (Himawari/contours/temp)
+      // but below the PAR boundary.
+      TYPHOON_SHADING_LAYER_IDS.forEach((layerId) => {
+        if (this.map.getLayer(layerId)) {
+          try {
+            this.map.moveLayer(layerId);
+          } catch (e) {
+            // ignore ordering errors for non-existent/rebuilding layers
+          }
+        }
+      });
+      this.map.moveLayer(PAR_LAYER_ID);
+    } catch (error) {
+      console.warn(
+        'Unable to move the PAR boundary above the map layers',
+        error
+      );
+    }
   }
 
   private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
@@ -645,7 +717,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       'visibility',
       visibility
     );
-    this.map.setLayoutProperty('par-outline', 'visibility', visibility);
+    this.map.setLayoutProperty(PAR_LAYER_ID, 'visibility', visibility);
 
     if (!shown) {
       this.closeAllTyphoonPopups();
@@ -713,8 +785,7 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
     });
 
     // Add PAR outline source
-    const parOutlineSource = `par-outline-source`;
-    _this.addNoahSource(parOutlineSource, {
+    _this.addNoahSource(PAR_SOURCE_ID, {
       type: 'geojson',
       data: parOutlineSourceFile,
     });
@@ -919,9 +990,9 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
 
     // 6 - Add PAR outline layer
     this.addNoahLayer({
-      id: 'par-outline',
+      id: PAR_LAYER_ID,
       type: 'line',
-      source: parOutlineSource,
+      source: PAR_SOURCE_ID,
       paint: {
         'line-color': [
           'case',
@@ -975,7 +1046,11 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
       'visibility',
       initialVisibility
     );
-    this.map.setLayoutProperty('par-outline', 'visibility', initialVisibility);
+    this.map.setLayoutProperty(PAR_LAYER_ID, 'visibility', initialVisibility);
+
+    // Keep the boundary above the typhoon track layers and anything added
+    // before it (rainfall contours / Himawari).
+    this.moveParToTop();
   }
 
   initWeatherSatellite() {
