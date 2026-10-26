@@ -179,6 +179,55 @@ export type RawLandslideHazards =
 type LH2Subtype = 'af' | 'df';
 
 /**
+ * GeoJSON source of the PAR / Philippine outline boundary.
+ */
+const PAR_SOURCE_ID = 'par-outline';
+
+/**
+ * The PAR / Philippine outline line layer.
+ *
+ * It is the topmost geographic overlay of the playground and must stay above
+ * every raster, video, fill, line and symbol layer the map adds, so its
+ * position is re-asserted whenever another layer is created.
+ */
+const PAR_LAYER_ID = 'par-outline-layer';
+
+/**
+ * Typhoon forecast/shading fill layers that represent the gray shaded area
+ * associated with the typhoon track. These must remain visible above Himawari
+ * satellite imagery and other raster overlays, but below the PAR boundary.
+ */
+const TYPHOON_SHADING_LAYER_IDS = ['typhoon-forecast-circles-fill'];
+
+/**
+ * Client-side cluster state for one critical facility type.
+ *
+ * Mapbox GL JS can only cluster GeoJSON sources and a vector tileset cannot
+ * be clustered natively, so the points of the tileset are clustered with
+ * Supercluster and written back into a GeoJSON source that the cluster
+ * layers read from.
+ *
+ * The state outlives a basemap switch: the points are only fetched once and
+ * the index is reused for the next style.
+ */
+type CritFacilityClusterState = {
+  /** The points harvested from the tileset (or from the GeoJSON fallback). */
+  points: GeoJSON.Feature<GeoJSON.Point>[];
+  /** The dedupe keys of the harvested points. */
+  seen: Set<string>;
+  /** The Supercluster index over `points`. */
+  index: Supercluster;
+  /** True once the GeoJSON fallback replaced the unreachable tileset. */
+  usedFallback: boolean;
+  /** True when the index has to be rebuilt from `points`. */
+  dirty: boolean;
+  /** Writes the current clusters into the cluster source. */
+  rebuild: () => void;
+  /** Removes the listeners that belong to the current style. */
+  cleanup: () => void;
+};
+
+/**
  * The gap between the Mapbox logo and the scale bar that sits above it.
  */
 const SCALE_LOGO_GAP = 6;
@@ -508,6 +557,10 @@ export class MapPlaygroundComponent
       }
 
       this.initDeferredLayers();
+      // The style (re)load recreated the PAR boundary alongside every other
+      // overlay. Pin it above the synchronous initialisers that just ran; the
+      // async ones below re-assert the order through addNoahLayer().
+      this.moveParToTop();
     };
 
     const win = window as typeof window & {
@@ -1891,15 +1944,15 @@ export class MapPlaygroundComponent
   }
 
   initPar() {
-    this.addNoahSource('par-outline', {
+    this.addNoahSource(PAR_SOURCE_ID, {
       type: 'geojson',
       data: 'https://webgis-static.up.edu.ph/api/par/par_outline.json',
     });
 
     this.addNoahLayer({
-      id: 'par-outline-layer',
+      id: PAR_LAYER_ID,
       type: 'line',
-      source: 'par-outline',
+      source: PAR_SOURCE_ID,
       layout: { visibility: 'none' },
       paint: {
         'line-color': [
@@ -1947,12 +2000,13 @@ export class MapPlaygroundComponent
             ? 'visible'
             : 'none';
 
-        this.map.setLayoutProperty(
-          'par-outline-layer',
-          'visibility',
-          finalVisibility
-        );
+        this.map.setLayoutProperty(PAR_LAYER_ID, 'visibility', finalVisibility);
       });
+
+    // The layer is appended last on creation, but another initialiser may
+    // already have added overlay layers above it (or will add them later).
+    // Re-assert the boundary order once the source and layer exist.
+    this.moveParToTop();
   }
 
   // END OF QC IOT
@@ -4166,6 +4220,58 @@ export class MapPlaygroundComponent
       } as mapboxgl.AnyLayer);
     } else {
       this.map.addLayer(layer);
+    }
+
+    // Every NOAH overlay is appended to the style, so a layer created after
+    // the PAR boundary would otherwise paint over it. Re-assert the boundary
+    // order immediately after the addition instead of on a render frame or a
+    // high-frequency map event.
+    if (layer.id !== PAR_LAYER_ID) {
+      this.moveParToTop();
+    }
+  }
+
+  /**
+   * Keeps the PAR boundary above every other NOAH overlay.
+   *
+   * `moveLayer(id)` without a `beforeId` appends the layer to the end of the
+   * style's layer order. Within the Standard `top` slot that is the topmost
+   * render position, so the boundary stays above satellite / contour /
+   * temperature rasters, typhoon tracks, hazard fills and any layer added
+   * after it.
+   *
+   * The source and layer are checked first because this is also called while
+   * the deferred initialisers and async fetches are still running, i.e. before
+   * `initPar()` has created them. The `try`/`catch` covers a style switch in
+   * flight (`moveLayer` throws while the style is loading); the following
+   * `style.load` rebuilds the layer and calls this again.
+   */
+  private moveParToTop(): void {
+    if (!this.map.getLayer(PAR_LAYER_ID)) {
+      return;
+    }
+    if (!this.map.getSource(PAR_SOURCE_ID)) {
+      return;
+    }
+
+    try {
+      // Ensure typhoon shading sits above rasters (Himawari/contours/temp)
+      // but below the PAR boundary.
+      TYPHOON_SHADING_LAYER_IDS.forEach((layerId) => {
+        if (this.map.getLayer(layerId)) {
+          try {
+            this.map.moveLayer(layerId);
+          } catch (e) {
+            // ignore ordering errors for non-existent/rebuilding layers
+          }
+        }
+      });
+      this.map.moveLayer(PAR_LAYER_ID);
+    } catch (error) {
+      console.warn(
+        'Unable to move the PAR boundary above the map layers',
+        error
+      );
     }
   }
 

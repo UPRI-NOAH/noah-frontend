@@ -149,6 +149,12 @@ export class MapControlsComponent
   /** Whether the style / lighting panel is expanded. */
   panelOpen = false;
 
+  /** Pending close after the pointer leaves the style button / panel. */
+  private hoverCloseTimer: number | null = null;
+
+  /** True while the open panel was opened by hovering, not by clicking. */
+  private panelOpenedByHover = false;
+
   /** The MapboxDraw mode currently active, if any. */
   activeDrawMode: DrawMode | null = null;
 
@@ -235,6 +241,7 @@ export class MapControlsComponent
   }
 
   ngOnDestroy(): void {
+    this.cancelHoverClose();
     this.detachMapListeners();
     this.toolbarResizeObserver?.disconnect();
     this.toolbarResizeObserver = null;
@@ -307,7 +314,94 @@ export class MapControlsComponent
 
   /** Expands or collapses the style / lighting panel. */
   togglePanel(): void {
-    this.panelOpen = !this.panelOpen;
+    this.cancelHoverClose();
+
+    if (this.panelOpen) {
+      this.panelOpen = false;
+      this.panelOpenedByHover = false;
+      return;
+    }
+
+    // A click opens the panel in its persistent (pinned) state; only a panel
+    // opened by hovering closes again when the pointer leaves.
+    this.panelOpen = true;
+    this.panelOpenedByHover = false;
+  }
+
+  /**
+   * Opens the style panel when the pointer enters the toolbar button.
+   *
+   * Only real mouse pointers open the panel this way: on touch and pen the
+   * button keeps its normal click/tap toggle, so a tap cannot open the panel
+   * and immediately close it again through the click handler.
+   */
+  onStyleButtonEnter(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') {
+      return;
+    }
+
+    this.cancelHoverClose();
+
+    if (!this.panelOpen) {
+      this.panelOpen = true;
+      this.panelOpenedByHover = true;
+    }
+  }
+
+  /** Schedules closing a hover-opened panel when the pointer leaves. */
+  onStyleButtonLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') {
+      return;
+    }
+
+    this.scheduleHoverClose();
+  }
+
+  /** Cancels the pending close when the pointer moves onto the panel. */
+  onPanelEnter(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') {
+      return;
+    }
+
+    this.cancelHoverClose();
+  }
+
+  /** Schedules closing a hover-opened panel when the pointer leaves it. */
+  onPanelLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') {
+      return;
+    }
+
+    this.scheduleHoverClose();
+  }
+
+  /**
+   * Delays the close just long enough to cross the gap between the button and
+   * the panel, so moving the pointer from one to the other keeps it open.
+   *
+   * A panel opened by clicking is left alone: it stays open until the user
+   * closes it again with the button or the panel's own collapse control.
+   */
+  private scheduleHoverClose(): void {
+    if (!this.panelOpenedByHover) {
+      return;
+    }
+
+    this.cancelHoverClose();
+    this.hoverCloseTimer = window.setTimeout(() => {
+      this.hoverCloseTimer = null;
+      if (this.panelOpenedByHover) {
+        this.panelOpen = false;
+        this.panelOpenedByHover = false;
+      }
+    }, 150);
+  }
+
+  private cancelHoverClose(): void {
+    if (this.hoverCloseTimer !== null) {
+      window.clearTimeout(this.hoverCloseTimer);
+      this.hoverCloseTimer = null;
+    }
   }
 
   /** Asks the map page to load the picked basemap style. */
