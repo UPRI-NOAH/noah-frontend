@@ -2077,7 +2077,7 @@ export class MapPlaygroundComponent
   private buildRainForcastLayer() {
     const rainForcastImage = {
       'rain-forecast': {
-        url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/rainmap_gtif_day1.png',
         type: 'image',
       },
     };
@@ -2144,7 +2144,7 @@ export class MapPlaygroundComponent
 
   async initTyphoonTrack() {
     const typhoonLayerSourceFile: string =
-      'https://webgis-static.up.edu.ph/api/typhoon_track/pagasa_typhoon.geojson';
+      'https://webgis-static.up.edu.ph/api/test/pagasa_typhoon.geojson';
 
     // Legends
     const typhoonLegend = {
@@ -2824,14 +2824,13 @@ export class MapPlaygroundComponent
   private buildWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
-        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
-        urlMp4: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.mp4',
+        url: 'https://webgis-static.up.edu.ph/api/test/ph_himawari.webm',
+        urlMp4: 'https://webgis-static.up.edu.ph/api/test/ph_himawari.mp4',
         type: 'video',
       },
       'himawari-GSMAP': {
-        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.webm',
-        urlMp4:
-          'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.mp4',
+        url: 'https://webgis-static.up.edu.ph/api/test/ph_hima_gsmap.webm',
+        urlMp4: 'https://webgis-static.up.edu.ph/api/test/ph_hima_gsmap.mp4',
         type: 'video',
       },
     };
@@ -5205,23 +5204,23 @@ export class MapPlaygroundComponent
   private buildContourMaps() {
     const contourMapImages = {
       '1hr': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/1hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '3hr': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/3hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/3hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '6hr': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/6hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/6hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '12hr': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/12hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/12hr_latest_rainfall_contour.png',
         type: 'image',
       },
       '24hr': {
-        url: 'https://webgis-static.up.edu.ph/api/contours/24hr_latest_rainfall_contour.png',
+        url: 'https://webgis-static.up.edu.ph/api/test/24hr_latest_rainfall_contour.png',
         type: 'image',
       },
     };

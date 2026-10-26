@@ -37,9 +37,7 @@ export class TyphoonTrackService {
   constructor(private http: HttpClient) {}
 
   getTyphoonTracks(type: TyphoonTrackType) {
-    return this.http.get<any>(
-      `${this.BASE_URL}/typhoon_track/multi_typhoon.geojson`
-    );
+    return this.http.get<any>(`${this.BASE_URL}/test/multi_typhoon.geojson`);
   }
 
   setNoTyphoonTypeData(val: boolean) {
