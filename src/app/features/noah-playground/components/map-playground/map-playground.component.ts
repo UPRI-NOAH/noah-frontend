@@ -8,7 +8,9 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Input,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MapService } from '@core/services/map.service';
 import mapboxgl, {
   AnySourceData,
@@ -17,7 +19,8 @@ import mapboxgl, {
   Marker,
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as turf from '@turf/turf';
+import turfArea from '@turf/area';
+import turfLength from '@turf/length';
 import { environment } from '@env/environment';
 import {
   BehaviorSubject,
@@ -38,18 +41,34 @@ import {
   map,
   pluck,
   shareReplay,
+  skip,
+  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
 import { getHazardColor } from '@shared/mocks/flood';
 import {
+  hasStandardBasemap,
+  NOAH_HAZARD_SLOT,
+  NOAH_OVERLAY_SLOT,
+  StandardSlot,
+  withStandardLightingNoop,
+} from '@core/services/standard-style';
+import {
+  CRIT_FAC_CLUSTER_MAX_ZOOM,
+  CRIT_FAC_CLUSTER_MIN_POINTS,
+  CRIT_FAC_CLUSTER_RADIUS,
   criticalFacilities,
   CriticalFacility,
   CRITICAL_FACILITIES_ARR,
   getCircleLayer,
+  getClusterSourceId,
   getClusterTextCount,
   getSymbolLayer,
+  getTilesetCollectorLayer,
+  getTilesetSourceId,
 } from '@shared/mocks/critical-facilities';
+import Supercluster from 'supercluster';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import {
@@ -98,6 +117,7 @@ import {
   TemperatureType,
   TemperatureForecastDay,
   WindForecastDay,
+  WIND_FORECAST_DAYS,
 } from '@features/noah-playground/store/noah-playground.store';
 import {
   QCSensorChartOpts,
@@ -116,9 +136,9 @@ import {
   TyphoonTrackService,
   TyphoonTrackType,
 } from '@features/noah-playground/services/typhoon-track.service';
-import { url } from 'inspector';
+// import { url } from 'inspector';
 
-type MapStyle = 'terrain' | 'satellite';
+type MapStyle = 'terrain' | 'satellite' | 'standard';
 
 type WindGrid = {
   uGrid: number[][];
@@ -158,11 +178,86 @@ export type RawLandslideHazards =
 
 type LH2Subtype = 'af' | 'df';
 
+/**
+ * GeoJSON source of the PAR / Philippine outline boundary.
+ */
+const PAR_SOURCE_ID = 'par-outline';
+
+/**
+ * The PAR / Philippine outline line layer.
+ *
+ * It is the topmost geographic overlay of the playground and must stay above
+ * every raster, video, fill, line and symbol layer the map adds, so its
+ * position is re-asserted whenever another layer is created.
+ */
+const PAR_LAYER_ID = 'par-outline-layer';
+
+/**
+ * Typhoon forecast/shading fill layers that represent the gray shaded area
+ * associated with the typhoon track. These must remain visible above Himawari
+ * satellite imagery and other raster overlays, but below the PAR boundary.
+ */
+const TYPHOON_SHADING_LAYER_IDS = ['typhoon-forecast-circles-fill'];
+
+/**
+ * Client-side cluster state for one critical facility type.
+ *
+ * Mapbox GL JS can only cluster GeoJSON sources and a vector tileset cannot
+ * be clustered natively, so the points of the tileset are clustered with
+ * Supercluster and written back into a GeoJSON source that the cluster
+ * layers read from.
+ *
+ * The state outlives a basemap switch: the points are only fetched once and
+ * the index is reused for the next style.
+ */
+type CritFacilityClusterState = {
+  /** The points harvested from the tileset (or from the GeoJSON fallback). */
+  points: GeoJSON.Feature<GeoJSON.Point>[];
+  /** The dedupe keys of the harvested points. */
+  seen: Set<string>;
+  /** The Supercluster index over `points`. */
+  index: Supercluster;
+  /** True once the GeoJSON fallback replaced the unreachable tileset. */
+  usedFallback: boolean;
+  /** True when the index has to be rebuilt from `points`. */
+  dirty: boolean;
+  /** Writes the current clusters into the cluster source. */
+  rebuild: () => void;
+  /** Removes the listeners that belong to the current style. */
+  cleanup: () => void;
+};
+
+/**
+ * The gap between the Mapbox logo and the scale bar that sits above it.
+ */
+const SCALE_LOGO_GAP = 6;
+
+/**
+ * The CSS variables the playground publishes so the overlays that follow the
+ * scale bar can find it.
+ *
+ * They are set on the host element of the playground, which holds the map (and
+ * with it the scale bar) as well as the coordinate readout, so both read the
+ * same numbers.
+ */
+const SCALE_LEFT_VARIABLE = '--noah-scale-left';
+const SCALE_BOTTOM_VARIABLE = '--noah-scale-bottom';
+const SCALE_HEIGHT_VARIABLE = '--noah-scale-height';
+
+/**
+ * How long the scale bar waits before it follows a change of the layout.
+ *
+ * The Mapbox logo moves while the drawer is dragged on a phone, so the short
+ * delay turns a burst of changes into a single measurement.
+ */
+const SCALE_REPOSITION_DELAY = 100;
+
 HC_exporting(Highcharts);
 HC_Data(Highcharts);
 Accessbility(Highcharts);
 
 @Component({
+  standalone: false,
   selector: 'noah-map-playground',
   templateUrl: './map-playground.component.html',
   styleUrls: ['./map-playground.component.scss'],
@@ -176,13 +271,50 @@ export class MapPlaygroundComponent
   geolocateControl!: GeolocateControl;
   centerMarker!: Marker;
   pgLocation: string = '';
-  mapStyle: MapStyle = 'terrain';
+  mapStyle: MapStyle = 'standard';
+
+  /**
+   * Id of the NOAH-owned DEM source backing the 3D Terrain exaggeration.
+   *
+   * The legacy `terrain` / `satellite` basemaps ship their own terrain with a
+   * fixed exaggeration, so the source is re-declared on every `style.load` to
+   * take precedence over whatever the incoming style asks for.
+   */
+  private readonly terrainSourceId = 'noah-terrain-dem';
+
+  /**
+   * Handle of the pending idle callback that runs the deferred (non-essential)
+   * layer initialisation, and its `setTimeout` fallback for browsers without
+   * `requestIdleCallback`. Tracked so a queued pass can be cancelled on destroy
+   * or superseded by a newer `style.load`.
+   */
+  private deferredInitHandle: number | null = null;
+  private deferredInitFallbackTimer: number | null = null;
+
+  /**
+   * Watches the layout for the changes that move the Mapbox logo the scale
+   * bar follows. See {@link watchLogoPosition}.
+   */
+  private logoObserver: MutationObserver | null = null;
+
+  /** The pending repositioning of the scale bar, if any. */
+  private scaleRepositionTimer: number | null = null;
+
   isMapboxAttrib;
   disclaimerModal: boolean;
   showAlert: boolean = false;
   private _graphShown = false;
   private _unsub = new Subject();
   private _changeStyle = new Subject();
+  /**
+   * The client-side cluster state of every critical facility type.
+   *
+   * It is kept outside of the style so the points survive a basemap switch:
+   * the style is rebuilt from scratch, the data is not.
+   */
+  private _critFacClusterStates: Partial<
+    Record<CriticalFacility, CritFacilityClusterState>
+  > = {};
   LoginStatus$: Observable<boolean>;
   showAlert$ = new Subject<boolean>();
   private subscriptions: Subscription[] = [];
@@ -195,6 +327,21 @@ export class MapPlaygroundComponent
   private measurementActive: boolean = false;
   screenWidth: number;
   screenHeight: number;
+
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the drawer covers the bottom of the map
+   * on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
+
+  /**
+   * How wide the shared attribution may take.
+   *
+   * The page narrows the credits when the sidebar covers the map.
+   */
+  @Input() attributionMaxWidth: number | null = null;
 
   private realtimeLightningSocket: WebSocket | null = null;
   private realtimeLightningResetTimer: number | null = null;
@@ -263,7 +410,12 @@ export class MapPlaygroundComponent
     color: '#67FF01',
   };
   private windGrid: WindGrid | null = null;
-  private windReady = false;
+  private windNextGrid: WindGrid | null = null;
+  private windGridDay: WindForecastDay | null = null;
+  private windNextGridDay: WindForecastDay | null = null;
+  private windBlend = 0;
+  private windGridCache: { [day: number]: WindGrid } = {};
+  private windCacheDate = '';
   private windParticles: WindParticle[] = [];
   private windAnimationFrame: number | null = null;
   private windLastTimestamp: number | null = null;
@@ -272,14 +424,13 @@ export class MapPlaygroundComponent
   private windMapMoving = false;
   private windMoveStartListener: (() => void) | null = null;
   private windMoveEndListener: (() => void) | null = null;
-  private windLiveGrid: WindGrid | null = null;
   private windLiveGridPromise: Promise<WindGrid> | null = null;
   private windForecastPayload: { points: any[] } | null = null;
   private windForecastPayloadPromise: Promise<{ points: any[] }> | null = null;
   private windLoadToken = 0;
-  private windAppliedDay: WindForecastDay | null = null;
 
   constructor(
+    private http: HttpClient,
     private mapService: MapService,
     private pgService: NoahPlaygroundService,
     private sensorChartService: SensorChartService,
@@ -287,7 +438,8 @@ export class MapPlaygroundComponent
     private qcSensorService: QcSensorService,
     private qcSensorChartService: QcSensorChartService,
     private modalService: ModalService,
-    private typhoonService: TyphoonTrackService
+    private typhoonService: TyphoonTrackService,
+    private elementRef: ElementRef<HTMLElement>
   ) {
     // this.getScreenSize();
   }
@@ -296,16 +448,15 @@ export class MapPlaygroundComponent
 
   ngAfterViewInit(): void {
     this.initMap();
+
     fromEvent(this.map, 'style.load')
       .pipe(first(), takeUntil(this._unsub))
       .subscribe(() => {
         this.map.resize();
-        this.addNavigationControls();
         this.addGeolocationControls();
         this.initCenterListener();
         this.initGeolocationListener();
         this.initCalculation();
-        this.addCustomTooltips();
         this.getScreenSize();
         this.iniScaleControl();
       });
@@ -314,58 +465,208 @@ export class MapPlaygroundComponent
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
-        // this.getScreenSize();
-        this.addExaggerationControl();
-        this.addCriticalFacilityLayers();
-        this.initHazardLayers();
-        //this.initSensors();
-        this.initQuezonCitySensors();
-        this.initQCCritFac();
-        this.initQCMunicipalBoundary();
-        this.initVolcanoes();
-        this.initBoundaries();
-        this.initWeatherSatelliteLayers();
-        this.showContourMaps();
-        this.initQcCenterListener();
-        this.initLagunaCenterListener();
-        this.initBarangayBoundary();
-        this.initAffectedExposure();
-        this.initRainForcast();
-        this.initTyphoonTrack();
-        this.initPar();
-        this.initLightning();
-        this.initTemperature();
-        this.initWeatherUpdates();
-        this.initWind();
-        this.initRiverbasin();
+        // Essential work first: the Standard basemap configuration, the 3D
+        // terrain and the initial camera. These are cheap, define the first
+        // frame the user sees, and must not be delayed. They add no data
+        // layers, so moving them out of the previous single chain does not
+        // change layer stacking.
+        this.initEssentialLayers();
+        // Everything else (≈20 hazard / weather layer groups, several large
+        // image and video downloads, the hazard tileset) is deferred until the
+        // browser is idle so it cannot delay the first basemap paint or the
+        // first pan/zoom gesture. See scheduleDeferredInit().
+        this.scheduleDeferredInit();
       });
   }
 
+  /**
+   * Layer groups that must exist the moment the style is ready.
+   *
+   * These are the pieces that define the first frame the user actually sees:
+   * the Mapbox Standard basemap configuration, the 3D terrain, and the initial
+   * camera (including the QC / Laguna admin camera). None of them adds a data
+   * layer, so the relative stacking of the NOAH overlays is unaffected by the
+   * split from {@link initDeferredLayers}.
+   */
+  private initEssentialLayers(): void {
+    // The playground basemap is a Mapbox Standard style. Apply its
+    // configuration before any custom layer is added so slots resolve
+    // against a fully configured basemap.
+    this.mapService.applyStandardConfig(this.map);
+    this.addExaggerationControl();
+    this.initQcCenterListener();
+    this.initLagunaCenterListener();
+    this.initWeatherUpdates();
+  }
+
+  /**
+   * The remaining layer groups, run lazily once the map is interactive.
+   *
+   * Every layer produced here is either hidden at start-up (hazard fills,
+   * boundaries, volcanoes, critical facilities, risk-assessment rainfall)
+   * or gated behind the weather-updates toggle (satellite video, rainfall
+   * contours, wind). Initialising them outside the first paint keeps the
+   * basemap responsive while the data loads progressively behind it. The
+   * order is unchanged from the original chain so overlay stacking is
+   * identical.
+   */
+  private initDeferredLayers(): void {
+    this.addCriticalFacilityLayers();
+    this.initHazardLayers();
+    //this.initSensors();
+    this.initQuezonCitySensors();
+    this.initQCCritFac();
+    this.initQCMunicipalBoundary();
+    this.initVolcanoes();
+    this.initBoundaries();
+    this.initWeatherSatelliteLayers();
+    this.showContourMaps();
+    this.initBarangayBoundary();
+    this.initAffectedExposure();
+    this.initRainForcast();
+    this.initTyphoonTrack();
+    this.initPar();
+    //this.initLightning();
+    this.initTemperature();
+    this.initWind();
+    this.initRiverbasin();
+  }
+
+  /**
+   * Schedules {@link initDeferredLayers} for the next idle period.
+   *
+   * `requestIdleCallback` (Chrome / Edge / Firefox) runs the work in a gap in
+   * the main thread — after the first basemap paint and while the user is not
+   * interacting — with a 1500ms timeout so the layers still appear promptly on
+   * a busy page. Safari has no `requestIdleCallback`; a zero-delay macrotask is
+   * used there, which still runs after the current frame rather than blocking
+   * it. Any pending pass is cancelled first so a second `style.load` cannot
+   * queue a duplicate run.
+   */
+  private scheduleDeferredInit(): void {
+    this.cancelDeferredInit();
+
+    const run = () => {
+      this.deferredInitHandle = null;
+      this.deferredInitFallbackTimer = null;
+
+      // The component may have been destroyed (or the map released) while the
+      // callback waited for an idle gap.
+      if (this._unsub.isStopped) {
+        return;
+      }
+
+      this.initDeferredLayers();
+      // The style (re)load recreated the PAR boundary alongside every other
+      // overlay. Pin it above the synchronous initialisers that just ran; the
+      // async ones below re-assert the order through addNoahLayer().
+      this.moveParToTop();
+    };
+
+    const win = window as typeof window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number }
+      ) => number;
+    };
+
+    if (typeof win.requestIdleCallback === 'function') {
+      this.deferredInitHandle = win.requestIdleCallback(run, { timeout: 1500 });
+    } else {
+      this.deferredInitFallbackTimer = window.setTimeout(run, 0);
+    }
+  }
+
+  /** Cancels a pending {@link scheduleDeferredInit} pass, if any. */
+  private cancelDeferredInit(): void {
+    const win = window as typeof window & {
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (this.deferredInitHandle !== null && win.cancelIdleCallback) {
+      win.cancelIdleCallback(this.deferredInitHandle);
+    }
+    this.deferredInitHandle = null;
+
+    if (this.deferredInitFallbackTimer !== null) {
+      window.clearTimeout(this.deferredInitFallbackTimer);
+    }
+    this.deferredInitFallbackTimer = null;
+  }
+
+  /**
+   * Runs `build` immediately if `shown$` already emits `true`, otherwise the
+   * first time it does.
+   *
+   * This is how the expensive optional overlays (weather-satellite video,
+   * rainfall contours, temperature / rainfall-forecast rasters, wind) avoid
+   * downloading anything while they are hidden: the source, layer and their
+   * subscriptions are not created until the layer is actually requested.
+   *
+   * The callers re-arm this on every `style.load`, and the subscription is
+   * torn down by `_changeStyle` / destroy, so a basemap switch rebuilds the
+   * overlay if it is still shown while a switch while it is hidden simply
+   * waits for the next show.
+   */
+  private runWhenFirstShown(shown$: Observable<boolean>, build: () => void) {
+    shown$
+      .pipe(
+        filter((shown) => shown === true),
+        take(1),
+        takeUntil(this._unsub),
+        takeUntil(this._changeStyle)
+      )
+      .subscribe(() => build());
+  }
+
   ngOnDestroy(): void {
+    // Drop any queued deferred layer initialisation before the map is torn
+    // down so it cannot run against a destroyed map.
+    this.cancelDeferredInit();
+    // Stop watching the layout for the Mapbox logo and drop a pending
+    // repositioning of the scale bar.
+    if (this.logoObserver) {
+      this.logoObserver.disconnect();
+      this.logoObserver = null;
+    }
+    if (this.scaleRepositionTimer !== null) {
+      window.clearTimeout(this.scaleRepositionTimer);
+      this.scaleRepositionTimer = null;
+    }
+    // The place of the scale bar is published to the host element, so drop it
+    // again instead of leaving it behind for the next playground.
+    const host = this.elementRef.nativeElement;
+    host.style.removeProperty(SCALE_LEFT_VARIABLE);
+    host.style.removeProperty(SCALE_BOTTOM_VARIABLE);
+    host.style.removeProperty(SCALE_HEIGHT_VARIABLE);
+    // Cancel the wind particle RAF loop first: it reads from `this.map` and
+    // paints to the (now detached) canvas, so it must not outlive the map.
     this.stopWindAnimation();
     this.removeWindResizeListener();
     this.removeWindMoveListeners();
+    // The lighting control owns the Philippine-Time clock; it stops itself on
+    // destroy. Release the map reference last.
     this._unsub.next(null);
     this._unsub.complete();
     this._changeStyle.next(null);
     this._changeStyle.complete();
+    this.mapService.releaseMap(this.map);
   }
 
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?) {
     this.screenWidth = window.innerWidth;
     this.screenHeight = window.innerHeight;
-  }
-
-  /**
-   * Adds the plus and minus zoom map controls
-   */
-  addNavigationControls() {
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // The Mapbox logo the scale bar follows moves with the window.
+    this.scheduleScaleReposition();
   }
 
   /**
    * Adds the geolocation map control
+   *
+   * The control's own button is hidden (`showButton: false`); the locate
+   * action lives in the NOAH map controls toolbar, which triggers the control
+   * programmatically.
    */
   addGeolocationControls() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
@@ -445,57 +746,137 @@ export class MapPlaygroundComponent
   }
 
   iniScaleControl() {
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: 'metric',
-    });
+    // The playground shows its Mapbox logo in the bottom-left corner of the
+    // map, so the scale bar sits right above it instead of in the right-hand
+    // column of the controls toolbar.
+    this.mapService.attachScaleControl(this.map, 'bottom-left');
+    this.positionScaleAboveLogo();
+    this.watchLogoPosition();
+  }
 
-    // Create a custom container for the scale control
-    const container = document.createElement('div');
-    container.id = 'custom-scale-control';
-    container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
-    container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
-    container.style.padding = '5px'; // padding around the box
-    container.style.background = 'white';
-    container.style.borderRadius = '6px';
-    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+  /**
+   * Moves the scale bar directly above the Mapbox logo in the bottom-left
+   * corner of the map.
+   *
+   * The playground draws its own Mapbox logo next to the sidebar (the logo of
+   * the map itself sits behind the sidebar) and on a phone that logo moves to
+   * the top of the drawer. The logo is therefore measured instead of being
+   * hard-coded, so the scale bar follows it wherever it is.
+   */
+  private positionScaleAboveLogo(): void {
+    const container = document.getElementById('custom-scale-control');
+    const mapContainer = this.map?.getContainer();
 
-    // Append container to the map
-    this.map.getContainer().appendChild(container);
+    if (!container || !mapContainer) {
+      return;
+    }
 
-    // Add the scale control using Mapbox’s API
-    const scaleEl = scale.onAdd(this.map);
-    container.appendChild(scaleEl);
+    const logo = this.findVisibleMapboxLogo();
 
-    // Style adjustments
-    const scaleElem = scaleEl as HTMLElement;
-    scaleElem.style.fontSize = '12px';
-    scaleElem.style.lineHeight = '20px';
-    scaleElem.style.fontWeight = 'bold';
+    if (!logo) {
+      return;
+    }
 
-    // Align the text and scale bar like Mapbox example
-    scaleElem.style.display = 'flex';
-    scaleElem.style.flexDirection = 'column'; // puts number above the bar
-    scaleElem.style.alignItems = 'center'; // center horizontal alignment
+    const logoRect = logo.getBoundingClientRect();
+    const mapRect = mapContainer.getBoundingClientRect();
 
-    if (scaleElem.style.flexDirection === 'row') {
-      // find the label element inside the scaleEl
-      const label = scaleElem.querySelector('div');
-      if (label) {
-        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
+    const left = Math.round(logoRect.left - mapRect.left);
+    const bottom = Math.round(mapRect.bottom - logoRect.top + SCALE_LOGO_GAP);
+    const height = Math.round(container.getBoundingClientRect().height);
+
+    this.publishScalePosition(left, bottom, height);
+  }
+
+  /**
+   * Publishes where the scale bar is, so the overlays that follow it can find
+   * it.
+   *
+   * The variables go on the host element of the playground, which is the one
+   * ancestor shared by the map (and with it the scale bar) and the coordinate
+   * readout that sits above the scale bar.
+   */
+  private publishScalePosition(
+    left: number,
+    bottom: number,
+    height: number
+  ): void {
+    const host = this.elementRef.nativeElement;
+
+    host.style.setProperty(SCALE_LEFT_VARIABLE, `${left}px`);
+    host.style.setProperty(SCALE_BOTTOM_VARIABLE, `${bottom}px`);
+    host.style.setProperty(SCALE_HEIGHT_VARIABLE, `${height}px`);
+  }
+
+  /**
+   * The Mapbox logo the reader can actually see.
+   *
+   * The playground has up to three logos in the page: the one of the map
+   * itself, the one next to the sidebar and the one on top of the drawer on a
+   * phone. Only one of them is on screen at a time, the others are hidden
+   * behind the sidebar or the drawer. A logo counts as visible when the point
+   * in its middle hits the logo itself and not the panel that covers it.
+   */
+  private findVisibleMapboxLogo(): HTMLElement | null {
+    const logos = Array.from(
+      document.querySelectorAll<HTMLElement>('.mapboxgl-ctrl-logo')
+    );
+
+    for (const logo of logos) {
+      const rect = logo.getBoundingClientRect();
+
+      if (rect.width === 0 || rect.height === 0) {
+        continue;
+      }
+
+      const hit = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      );
+
+      if (hit && (hit === logo || logo.contains(hit) || hit.contains(logo))) {
+        return logo;
       }
     }
 
-    const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '423px';
-      } else {
-        container.style.top = '359px';
-      }
-    };
-    applyPosition();
+    return null;
+  }
+
+  /**
+   * Watches the layout for the changes that move the Mapbox logo: the
+   * sidebar being opened or closed, the drawer being dragged on a phone and
+   * the window being resized.
+   */
+  private watchLogoPosition(): void {
+    if (typeof MutationObserver === 'undefined') {
+      return;
+    }
+
+    this.logoObserver = new MutationObserver(() =>
+      this.scheduleScaleReposition()
+    );
+    this.logoObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style'],
+    });
+  }
+
+  /**
+   * Repositions the scale bar after the layout settled.
+   *
+   * The repositioning is delayed and only done once per burst of changes, so
+   * dragging the drawer does not measure the logo on every pixel.
+   */
+  private scheduleScaleReposition(): void {
+    if (this.scaleRepositionTimer !== null) {
+      return;
+    }
+
+    this.scaleRepositionTimer = window.setTimeout(() => {
+      this.scaleRepositionTimer = null;
+      this.positionScaleAboveLogo();
+    }, SCALE_REPOSITION_DELAY);
   }
 
   /**
@@ -542,14 +923,14 @@ export class MapPlaygroundComponent
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
           const qcTextID = `${qcSensorType}-text`;
           const minZoom = 12;
+          // Both layers share one GeoJSON source. Mapbox GL JS v3 requires a
+          // named source referenced by id, so declare it explicitly.
+          this.addNoahSource(qcSensorType, { type: 'geojson', data });
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: qcSensorType,
             type: 'circle',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: qcSensorType,
             paint: {
               'circle-color': IOT_SENSOR_COLORS[qcSensorType],
               'circle-radius': [
@@ -566,13 +947,10 @@ export class MapPlaygroundComponent
               'circle-opacity': 0,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: qcTextID,
             type: 'symbol',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: qcSensorType,
             layout: {
               'text-field': [
                 'case',
@@ -771,8 +1149,8 @@ export class MapPlaygroundComponent
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
 
               const popupContent = `
@@ -853,8 +1231,8 @@ export class MapPlaygroundComponent
                   ? `${latestData}m`
                   : `${latestData}mm`;
 
-              while (Math.abs(e.lnglat - coordinates[0]) > 180) {
-                coordinates[0] += e.lnglat.lng > coordinates[0] ? 360 : -360;
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
               popUp.setLngLat(coordinates).setHTML(
                 `
@@ -1382,16 +1760,23 @@ export class MapPlaygroundComponent
             },
           ];
 
+          // All critical-facility layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${qcCriticalFacilities}-qc-critfac`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layers to map
           critFacLayers.forEach(({ id, type, color, filter }) => {
             const paint: any =
               type === 'fill'
                 ? { 'fill-color': color, 'fill-opacity': 0.75 }
                 : { 'line-color': color, 'line-width': 3, 'line-opacity': 1 };
-            this.map.addLayer({
+            this.addNoahLayer({
               id,
               type: type as any,
-              source: { type: 'geojson', data },
+              source: `${qcCriticalFacilities}-qc-critfac`,
               layout: { visibility: 'none' },
               paint,
               filter: ['==', 'CF Type', filter],
@@ -1426,14 +1811,18 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // Both boundary layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${qcMunicipalBoundary}-qc-muni-boundary`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'qc_muni_boundary',
             type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${qcMunicipalBoundary}-qc-muni-boundary`,
             layout: {
               visibility: 'none',
             },
@@ -1442,13 +1831,10 @@ export class MapPlaygroundComponent
               'fill-opacity': 0.01,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'qc_muni_boudline',
             type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${qcMunicipalBoundary}-qc-muni-boundary`,
             layout: {
               visibility: 'none',
             },
@@ -1494,14 +1880,18 @@ export class MapPlaygroundComponent
         .pipe(first())
         .toPromise()
         .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
+          // Both boundary layers share one GeoJSON source. Mapbox GL JS v3 requires
+          // a named source referenced by id.
+          this.addNoahSource(`${barangayBoundary}-brgy-boundary-source`, {
+            type: 'geojson',
+            data,
+          });
+
           // add layer to map
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'brgy-boundary',
             type: 'fill',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${barangayBoundary}-brgy-boundary-source`,
             layout: {
               visibility: 'none',
             },
@@ -1510,13 +1900,10 @@ export class MapPlaygroundComponent
               'fill-opacity': 0.01,
             },
           });
-          this.map.addLayer({
+          this.addNoahLayer({
             id: 'brgy_boundline',
             type: 'line',
-            source: {
-              type: 'geojson',
-              data,
-            },
+            source: `${barangayBoundary}-brgy-boundary-source`,
             layout: {
               visibility: 'none',
             },
@@ -1557,15 +1944,15 @@ export class MapPlaygroundComponent
   }
 
   initPar() {
-    this.map.addSource('par-outline', {
+    this.addNoahSource(PAR_SOURCE_ID, {
       type: 'geojson',
       data: 'https://webgis-static.up.edu.ph/api/par/par_outline.json',
     });
 
-    this.map.addLayer({
-      id: 'par-outline-layer',
+    this.addNoahLayer({
+      id: PAR_LAYER_ID,
       type: 'line',
-      source: 'par-outline',
+      source: PAR_SOURCE_ID,
       layout: { visibility: 'none' },
       paint: {
         'line-color': [
@@ -1613,12 +2000,13 @@ export class MapPlaygroundComponent
             ? 'visible'
             : 'none';
 
-        this.map.setLayoutProperty(
-          'par-outline-layer',
-          'visibility',
-          finalVisibility
-        );
+        this.map.setLayoutProperty(PAR_LAYER_ID, 'visibility', finalVisibility);
       });
+
+    // The layer is appended last on creation, but another initialiser may
+    // already have added overlay layers above it (or will add them later).
+    // Re-assert the boundary order once the source and layer exist.
+    this.moveParToTop();
   }
 
   // END OF QC IOT
@@ -1630,7 +2018,7 @@ export class MapPlaygroundComponent
   //       .toPromise()
   //       .then((data: GeoJSON.FeatureCollection<GeoJSON.Geometry>) => {
   //         // add layer to map
-  //         this.map.addLayer({
+  //         this.addNoahLayer({
   //           id: sensorType,
   //           type: 'circle',
   //           source: {
@@ -1670,7 +2058,23 @@ export class MapPlaygroundComponent
   //   });
   // }
 
+  /**
+   * Risk-assessment rainfall forecast is a raster image that is hidden until
+   * the risk-assessment group is turned on (`riskAssessment.shown` defaults to
+   * `false`). The image is only created once both the group and the rainfall
+   * layer are shown.
+   */
   initRainForcast() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.riskAssessmentGroupShown$,
+        this.pgService.rainForcastShown$,
+      ]).pipe(map(([groupShown, rainShown]) => groupShown && rainShown)),
+      () => this.buildRainForcastLayer()
+    );
+  }
+
+  private buildRainForcastLayer() {
     const rainForcastImage = {
       'rain-forecast': {
         url: 'https://webgis-static.up.edu.ph/api/rainfall/rainmap_gtif_day1.png',
@@ -1700,9 +2104,9 @@ export class MapPlaygroundComponent
     };
     Object.keys(rainForcastImage).forEach((rainType) => {
       const rainForcastDetails = rainForcastImage[rainType];
-      this.map.addSource(rainType, getRainForcastSource(rainForcastDetails));
+      this.addNoahSource(rainType, getRainForcastSource(rainForcastDetails));
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: rainType,
         type: 'raster',
         source: rainType,
@@ -1792,13 +2196,13 @@ export class MapPlaygroundComponent
 
     // 3) ADD PRIMARY SOURCE
     if (!this.map.getSource(typhoonMapSource)) {
-      this.map.addSource(typhoonMapSource, { type: 'geojson', data: mainData });
+      this.addNoahSource(typhoonMapSource, { type: 'geojson', data: mainData });
     } else {
       (this.map.getSource(typhoonMapSource) as any).setData(mainData);
     }
     // MAIN POINTS
     if (!this.map.getLayer('typhoon-track-icon')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-icon',
         type: 'symbol',
         source: typhoonMapSource,
@@ -1817,7 +2221,7 @@ export class MapPlaygroundComponent
 
     // MAIN LINE
     if (!this.map.getLayer('typhoon-track-line')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-line',
         type: 'line',
         source: typhoonMapSource,
@@ -1832,7 +2236,7 @@ export class MapPlaygroundComponent
 
     // FORECAST - IF EXISTING
     if (!this.map.getLayer('typhoon-forecast-circles-fill')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-forecast-circles-fill',
         type: 'fill',
         source: typhoonMapSource,
@@ -1848,7 +2252,7 @@ export class MapPlaygroundComponent
         ],
       });
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-forecast-circles-outline',
         type: 'line',
         source: typhoonMapSource,
@@ -1867,7 +2271,7 @@ export class MapPlaygroundComponent
 
     // TRACK LINE
     if (!this.map.getLayer('typhoon-track-line')) {
-      this.map.addLayer({
+      this.addNoahLayer({
         id: 'typhoon-track-line',
         type: 'line',
         source: typhoonMapSource,
@@ -1967,11 +2371,18 @@ export class MapPlaygroundComponent
           // add layers if not exists
           const agencyUpper = agencyType.toUpperCase();
 
+          // Both track layers share one GeoJSON source. Mapbox GL JS v3
+          // requires a named source referenced by id.
+          this.addNoahSource(`${agencyType}-typhoon-track-source`, {
+            type: 'geojson',
+            data,
+          });
+
           if (!this.map.getLayer(lineId)) {
-            this.map.addLayer({
+            this.addNoahLayer({
               id: lineId,
               type: 'line',
-              source: { type: 'geojson', data },
+              source: `${agencyType}-typhoon-track-source`,
               filter: [
                 'all',
                 ['==', ['geometry-type'], 'LineString'],
@@ -1990,10 +2401,10 @@ export class MapPlaygroundComponent
           }
 
           if (!this.map.getLayer(pointsId)) {
-            this.map.addLayer({
+            this.addNoahLayer({
               id: pointsId,
               type: 'circle',
-              source: { type: 'geojson', data },
+              source: `${agencyType}-typhoon-track-source`,
               filter: [
                 'all',
                 ['==', ['geometry-type'], 'Point'],
@@ -2098,18 +2509,20 @@ export class MapPlaygroundComponent
         (error, image) => {
           if (error) throw error;
           // 3 - add volcano icon
-          _this.map.addImage(volcanoType, image);
+          if (!_this.map.hasImage(volcanoType)) {
+            _this.map.addImage(volcanoType, image);
+          }
 
           // 4 - add source
           const volcanoMapSource = `${volcanoType}-map-source`;
-          _this.map.addSource(volcanoMapSource, {
+          _this.addNoahSource(volcanoMapSource, {
             type: 'geojson',
             data: volcanoObjData.url,
           });
 
           // 5 - add layer
           const layerID = `${volcanoType}-map-layer`;
-          this.map.addLayer({
+          this.addNoahLayer({
             id: layerID,
             type: 'symbol',
             source: volcanoMapSource,
@@ -2222,7 +2635,18 @@ export class MapPlaygroundComponent
     });
   }
 
+  /**
+   * Temperature is a raster image source (heat index / max temperature) that is
+   * hidden on load (`temperature.shown` defaults to `false`). The images are
+   * only created once the temperature group is actually shown.
+   */
   initTemperature() {
+    this.runWhenFirstShown(this.pgService.temperatureShown$, () =>
+      this.buildTemperatureLayers()
+    );
+  }
+
+  private buildTemperatureLayers() {
     const temperatureImages = {
       heat_index: {
         urlPrefix: 'HI',
@@ -2265,12 +2689,12 @@ export class MapPlaygroundComponent
     Object.keys(temperatureImages).forEach(
       (temperatureType: TemperatureType) => {
         const temperatureDetails = temperatureImages[temperatureType];
-        this.map.addSource(
+        this.addNoahSource(
           temperatureType,
           getTemperatureSource(temperatureDetails)
         );
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: temperatureType,
           type: 'raster',
           source: temperatureType,
@@ -2376,7 +2800,28 @@ export class MapPlaygroundComponent
       });
   }
 
+  /**
+   * Weather-satellite overlays are the heaviest optional download in the
+   * playground: each source is a WebM *and* an MP4 loop that renders as a
+   * `<video>` texture. The weather-updates group is off on load, so building
+   * these eagerly downloaded video the user was never looking at. The source,
+   * layer and subscriptions are now created the first time the group (and the
+   * satellite layer) is actually shown, and rebuilt after a style change while
+   * it stays shown.
+   */
   initWeatherSatelliteLayers() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.weatherSatellitesShown$,
+      ]).pipe(
+        map(([groupShown, satelliteShown]) => groupShown && satelliteShown)
+      ),
+      () => this.buildWeatherSatelliteLayers()
+    );
+  }
+
+  private buildWeatherSatelliteLayers() {
     const weatherSatelliteImages = {
       himawari: {
         url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_himawari.webm',
@@ -2422,7 +2867,7 @@ export class MapPlaygroundComponent
         const weatherSatelliteDetails = weatherSatelliteImages[weatherType];
 
         // 1. Add source per weather satellite type
-        this.map.addSource(
+        this.addNoahSource(
           weatherType,
           getWeatherSatelliteSource(weatherSatelliteDetails)
         );
@@ -2451,7 +2896,7 @@ export class MapPlaygroundComponent
         });
 
         // 3. Add layer per weather satellite source
-        this.map.addLayer({
+        this.addNoahLayer({
           id: weatherType,
           type: 'raster',
           source: weatherType,
@@ -2555,7 +3000,7 @@ export class MapPlaygroundComponent
             reject(error);
             return;
           }
-          if (image) {
+          if (image && !this.map.hasImage(imageName)) {
             this.map.addImage(imageName, image);
           }
           resolve();
@@ -2598,7 +3043,7 @@ export class MapPlaygroundComponent
         const lightningObjData = lightningSourceFile[lightningType];
 
         // 1 - add source
-        this.map.addSource(
+        this.addNoahSource(
           lightningType,
           getLightningSource(lightningObjData, lightningType)
         );
@@ -2623,7 +3068,7 @@ export class MapPlaygroundComponent
           .catch(() => dataAvailable$.next(false));
 
         // 2 - add layer using symbol icons instead of colored circles
-        this.map.addLayer({
+        this.addNoahLayer({
           id: lightningType,
           type: 'symbol',
           source: lightningType,
@@ -2972,14 +3417,14 @@ export class MapPlaygroundComponent
 
         const boundariesMapSource = `${boundariesType}-map-source`;
         // 2 - add source
-        this.map.addSource(boundariesMapSource, {
+        this.addNoahSource(boundariesMapSource, {
           type: 'vector',
           url: boundariesObjData.url,
         });
         // 3 - add layer
         const layerID = `${boundariesType}-map-layer`;
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: layerID,
           type: 'fill',
           source: boundariesMapSource,
@@ -2990,7 +3435,6 @@ export class MapPlaygroundComponent
           paint: {
             'fill-color': 'rgba(0, 0, 0, 0)', //Transparent color for area
           },
-          interactive: true,
         });
 
         // Add line layer
@@ -3011,7 +3455,7 @@ export class MapPlaygroundComponent
           linePaint['line-dasharray'] = [1, 1]; // Dashed
         }
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: lineLayerID,
           type: 'line',
           source: boundariesMapSource,
@@ -3020,14 +3464,13 @@ export class MapPlaygroundComponent
             visibility: 'none',
           },
           paint: linePaint,
-          interactive: false,
         });
         let municipalTextLayerID;
         let provincialTextLayerID;
 
         if (boundariesType === 'municipal' || boundariesType === 'provincial') {
           const textLayerID = `${boundariesType}-text-layer`;
-          this.map.addLayer({
+          this.addNoahLayer({
             id: textLayerID,
             type: 'symbol',
             source: boundariesMapSource,
@@ -3216,14 +3659,14 @@ export class MapPlaygroundComponent
 
     riverbasinLayers.forEach((layer) => {
       if (!this.map.getSource(layer.sourceID)) {
-        this.map.addSource(layer.sourceID, {
+        this.addNoahSource(layer.sourceID, {
           type: 'vector',
           url: layer.url,
         });
       }
 
       if (!this.map.getLayer(layer.layerID)) {
-        this.map.addLayer({
+        this.addNoahLayer({
           id: layer.layerID,
           type: layer.type,
           source: layer.sourceID,
@@ -3575,46 +4018,99 @@ export class MapPlaygroundComponent
   /**
    * Manually update the exaggeration of the map.
    *
+   * The store is the single source of truth. Every path that can change what
+   * the map should render (a slider move, the 3D Terrain checkbox, or a
+   * `style.load` that wiped the style) funnels into
+   * `applyTerrainExaggeration()`, which always sends a *complete* terrain
+   * specification. That matters because of two `setTerrain` behaviours in
+   * mapbox-gl 3.32.0:
+   *
+   * - `Style.setTerrain` calls `_checkLoaded()` first, so calling it while a
+   *   `setStyle()` is still in flight throws `Style is not done loading`.
+   * - `TerrainSpecification.source` is required. When it is omitted,
+   *   `setTerrain` only fills it in from the terrain that is *already* applied;
+   *   if there is none, the spec fails validation and the update is silently
+   *   dropped, leaving the slider doing nothing. Always passing `source` makes
+   *   the call self-contained and idempotent.
+   *
+   * A single subscription folds the store's `shown` flag and `level` into one
+   * effective exaggeration, which replaces the two competing subscriptions that
+   * used to fight over `setTerrain`. Because `addExaggerationControl()` runs
+   * again on *every* `style.load` and `setTerrain` is wiped by `setStyle`, the
+   * subscription is scoped with `takeUntil(this._changeStyle)`: each style
+   * change tears the previous writer down and the following `style.load`
+   * installs exactly one replacement. Without it, every basemap switch would
+   * leave another live subscription behind, each one re-calling `setTerrain` —
+   * the very "another writer" accumulation this was meant to avoid.
+   * `distinctUntilChanged` runs after the mapping so it compares the
+   * effective exaggeration and ignores changes that cannot alter the terrain
+   * (e.g. toggling the expand chevron).
+   *
    * Reference:
    * https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
    */
   addExaggerationControl() {
-    this.map.addSource('mapbox-dem', {
-      type: 'raster-dem',
-      url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-      volatile: true,
-    } as any);
+    this.applyTerrainExaggeration(this.getEffectiveExaggeration());
 
-    // Watch exaggeration level
     this.pgService.exagerration$
       .pipe(
         takeUntil(this._unsub),
         takeUntil(this._changeStyle),
+        map((exaggeration) => (exaggeration.shown ? exaggeration.level : 0)),
         distinctUntilChanged(),
-        map((exaggeration) => exaggeration.level)
+        skip(1)
       )
-      .subscribe((level) =>
-        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: level })
-      );
+      .subscribe((exaggeration) => this.applyTerrainExaggeration(exaggeration));
+  }
 
-    // Watch exaggeration visibility
-    this.pgService.exagerration$
-      .pipe(
-        takeUntil(this._unsub),
-        takeUntil(this._changeStyle),
-        distinctUntilChanged()
-      )
-      .subscribe((exaggeration) => {
-        if (exaggeration.shown) {
-          this.map.setTerrain({
-            source: 'mapbox-dem',
-            exaggeration: exaggeration.level,
-          });
-          return;
-        }
+  /**
+   * The exaggeration the map should currently render: the slider level while
+   * 3D Terrain is enabled, and a flat `0` while it is disabled.
+   */
+  private getEffectiveExaggeration(): number {
+    const exaggeration = this.pgService.getExaggeration();
+    return exaggeration.shown ? exaggeration.level : 0;
+  }
 
-        this.map.setTerrain({ source: 'mapbox-dem', exaggeration: 0 });
+  /**
+   * Applies `exaggeration` to the map, re-adding the DEM source if needed.
+   *
+   * Intended to be called from the `style.load` handler, which is the point
+   * where `setTerrain` is allowed to run: `Style.setTerrain` only requires the
+   * style's own `_loaded` flag, and `style.load` is fired once that is set.
+   * `map.isStyleLoaded()` is deliberately *not* used as a guard here, because
+   * it additionally waits for every source, glyph and sprite to finish
+   * loading, so it is still `false` for a while after `style.load` and would
+   * silently drop the initial terrain.
+   *
+   * The `try`/`catch` covers the remaining race: a store emission arriving
+   * while a `setStyle()` is in flight makes `setTerrain` throw
+   * `Style is not done loading`. That must not escape (these run inside the
+   * `style.load` initialisation chain) and does not lose the value, because
+   * `addExaggerationControl()` runs again on the next `style.load` and
+   * re-reads the store.
+   */
+  private applyTerrainExaggeration(exaggeration: number) {
+    if (!this.map) {
+      return;
+    }
+
+    try {
+      this.addNoahSource(this.terrainSourceId, {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        tileSize: 512,
+        maxzoom: 14,
+        encoding: 'mapbox',
       });
+
+      this.map.setTerrain({
+        source: this.terrainSourceId,
+        exaggeration,
+      });
+    } catch (error) {
+      console.warn('Unable to apply the terrain exaggeration', error);
+    }
   }
 
   /**
@@ -3629,7 +4125,7 @@ export class MapPlaygroundComponent
       } as mapboxgl.AnySourceData;
       const sourceID = tileset.url.replace('mapbox://upri-noah.', '');
       // 1. Add source first
-      this.map.addSource(sourceID, sourceData);
+      this.addNoahSource(sourceID, sourceData);
 
       // 2. Get the hazard type and level
       const [rawHazardType, rawHazardLevel] = [
@@ -3665,20 +4161,149 @@ export class MapPlaygroundComponent
     this.mapService.init();
 
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map. See
+      // MapService.getMapPerformanceOptions() for the rationale of each option.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map',
-      style: environment.mapbox.styles.terrain,
+      style: environment.mapbox.styles.standard,
       zoom: 5.5,
       minZoom: 4,
       touchZoomRotate: true,
       center: PH_DEFAULT_CENTER,
       attributionControl: false,
+      antialias: false,
+      // The Standard basemap declares `globe`, but NOAH is a flat hazard map
+      // and the legacy terrain / satellite styles are mercator. Pinning
+      // mercator keeps the basemap, the hazard polygons and the coordinates
+      // the rest of the app writes into the store visually unchanged. Without
+      // it the basemap would start curving and the exaggeration control would
+      // look different from every other layer.
+      projection: 'mercator',
     });
   }
 
+  /**
+   * True when the currently loaded basemap is a Mapbox Standard style.
+   *
+   * Standard exposes `bottom` / `middle` / `top` slots; the legacy satellite
+   * style does not, so a slot must not be sent for it.
+   */
+  private get isStandardBasemap(): boolean {
+    return hasStandardBasemap(this.map);
+  }
+
+  /**
+   * Adds a NOAH layer, skipping it when it already exists.
+   *
+   * Several NOAH initialisers re-run on every `style.load`, so this guard keeps
+   * the additions idempotent without changing any layer id, filter or paint
+   * value. `slot` defaults to the Standard `top` slot so custom overlays keep
+   * the same visual position they had when appended to the end of a classic
+   * style's layer array; a layer that already declares a slot (the flood
+   * hazard fills, which use `middle`) keeps it.
+   */
+  private addNoahLayer(
+    layer: mapboxgl.AnyLayer,
+    slot: StandardSlot = NOAH_OVERLAY_SLOT
+  ) {
+    if (this.map.getLayer(layer.id)) {
+      return;
+    }
+
+    let paint: mapboxgl.AnyLayer['paint'] | undefined = layer.paint;
+    if (this.isStandardBasemap) {
+      paint = withStandardLightingNoop(layer);
+      this.map.addLayer({
+        ...layer,
+        slot,
+        paint,
+      } as mapboxgl.AnyLayer);
+    } else {
+      this.map.addLayer(layer);
+    }
+
+    // Every NOAH overlay is appended to the style, so a layer created after
+    // the PAR boundary would otherwise paint over it. Re-assert the boundary
+    // order immediately after the addition instead of on a render frame or a
+    // high-frequency map event.
+    if (layer.id !== PAR_LAYER_ID) {
+      this.moveParToTop();
+    }
+  }
+
+  /**
+   * Keeps the PAR boundary above every other NOAH overlay.
+   *
+   * `moveLayer(id)` without a `beforeId` appends the layer to the end of the
+   * style's layer order. Within the Standard `top` slot that is the topmost
+   * render position, so the boundary stays above satellite / contour /
+   * temperature rasters, typhoon tracks, hazard fills and any layer added
+   * after it.
+   *
+   * The source and layer are checked first because this is also called while
+   * the deferred initialisers and async fetches are still running, i.e. before
+   * `initPar()` has created them. The `try`/`catch` covers a style switch in
+   * flight (`moveLayer` throws while the style is loading); the following
+   * `style.load` rebuilds the layer and calls this again.
+   */
+  private moveParToTop(): void {
+    if (!this.map.getLayer(PAR_LAYER_ID)) {
+      return;
+    }
+    if (!this.map.getSource(PAR_SOURCE_ID)) {
+      return;
+    }
+
+    try {
+      // Ensure typhoon shading sits above rasters (Himawari/contours/temp)
+      // but below the PAR boundary.
+      TYPHOON_SHADING_LAYER_IDS.forEach((layerId) => {
+        if (this.map.getLayer(layerId)) {
+          try {
+            this.map.moveLayer(layerId);
+          } catch (e) {
+            // ignore ordering errors for non-existent/rebuilding layers
+          }
+        }
+      });
+      this.map.moveLayer(PAR_LAYER_ID);
+    } catch (error) {
+      console.warn(
+        'Unable to move the PAR boundary above the map layers',
+        error
+      );
+    }
+  }
+
+  /**
+   * Adds a source, skipping it when it already exists.
+   */
+  private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
+    if (this.map.getSource(sourceId)) {
+      return;
+    }
+    this.map.addSource(sourceId, source);
+  }
+
+  /**
+   * The animated wind layer is off on load (it lives inside the weather-updates
+   * group). Initialising it eagerly fetched the wind grid and forecast payload
+   * and spun up the particle canvas that was never visible, so the whole setup
+   * now waits until the group and the wind layer are both shown.
+   */
   initWind(): void {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.windShown$,
+      ]).pipe(map(([groupShown, windShown]) => groupShown && windShown)),
+      () => this.buildWind()
+    );
+  }
+
+  private buildWind(): void {
     this.resizeWindCanvas();
     this.initWindParticles();
-    this.requestWindDay(0);
 
     // Prefetch the forecast payload in the background so the advance
     // forecast buttons apply instantly when clicked (the JSON is large and
@@ -3741,14 +4366,10 @@ export class MapPlaygroundComponent
         this.windSettings.color = color;
       });
 
-    this.pgService.selectedWindForecastDay$
+    this.pgService.windTimeline$
       .pipe(takeUntil(this._changeStyle), takeUntil(this._unsub))
-      .subscribe((day) => {
-        // Skip only when this exact day is already on screen. A fresh click
-        // always (re)triggers loading/applying so no click is ever dropped.
-        if (day === this.windAppliedDay && this.windReady) return;
-
-        this.requestWindDay(day);
+      .subscribe(({ day, blend }) => {
+        this.requestWindTimeline(day, blend);
       });
   }
 
@@ -3869,61 +4490,113 @@ export class MapPlaygroundComponent
       : { r: 103, g: 255, b: 1 };
   }
 
-  private requestWindDay(day: WindForecastDay): void {
+  /**
+   * The wind forecast plays as one continuous sweep: every update carries
+   * the day the sweep starts from plus a 0..1 blend into the following day.
+   * The day pair is loaded (and cached) once per transition; blend-only
+   * updates just move the pointer the running particles sample from, so the
+   * flow keeps going straight through without stopping, restarting or
+   * jumping when the day changes.
+   */
+  private requestWindTimeline(day: WindForecastDay, blend: number): void {
+    this.pruneWindGridCache();
+
+    this.windBlend = Number.isFinite(blend)
+      ? Math.max(0, Math.min(1, blend))
+      : 0;
+
+    const nextDay = this.nextWindForecastDay(day);
+
+    if (day === this.windGridDay && nextDay === this.windNextGridDay) {
+      return;
+    }
+
+    // A newer pair supersedes any load still in flight, so live and
+    // forecast data can never overwrite each other.
     const token = ++this.windLoadToken;
 
-    const apply = (grid: WindGrid): void => {
-      // A newer request superseded this one; discard stale results so live
-      // and forecast data never overwrite each other.
-      if (token !== this.windLoadToken) return;
+    this.windGridDay = day;
+    this.windNextGridDay = nextDay;
 
+    this.applyWindDay(day, token, (grid) => {
       this.windGrid = grid;
-      this.windReady = true;
-      this.windAppliedDay = day;
-      this.applyWindGrid();
-    };
+    });
 
-    const handleError = (): void => {
-      if (token !== this.windLoadToken) return;
-
-      console.error('Wind fetch failed, using calm fallback');
-      this.windGrid = null;
-      this.windReady = false;
-    };
-
-    if (day === 0) {
-      if (this.windLiveGrid) {
-        apply(this.windLiveGrid);
-        return;
-      }
-
-      this.loadLiveWindGrid().then(apply, handleError);
-      return;
-    }
-
-    if (this.windForecastPayload) {
-      apply(this.buildForecastGrid(this.windForecastPayload.points, day));
-      return;
-    }
-
-    this.loadForecastPayload()
-      .then((payload) => apply(this.buildForecastGrid(payload.points, day)))
-      .catch(handleError);
+    this.applyWindDay(nextDay, token, (grid) => {
+      this.windNextGrid = grid;
+    });
   }
 
-  private applyWindGrid(): void {
-    if (this.windVisible && !this.windMapMoving) {
-      this.stopWindAnimation();
-      this.initWindParticles();
-      this.startWindAnimation();
+  /**
+   * Loads one day of the sweep, applying it synchronously when it is
+   * already cached (the sweep revisits every day, so every pass after the
+   * first is instant) and asynchronously the first time around.
+   */
+  private applyWindDay(
+    day: WindForecastDay,
+    token: number,
+    assign: (grid: WindGrid | null) => void
+  ): void {
+    const cached = this.windGridCache[day];
+
+    if (cached) {
+      assign(cached);
+      return;
     }
+
+    this.loadWindDay(day)
+      .then((grid) => {
+        if (token !== this.windLoadToken) return;
+        assign(grid);
+      })
+      .catch(() => {
+        if (token !== this.windLoadToken) return;
+
+        console.error('Wind fetch failed, using calm fallback');
+        assign(null);
+      });
+  }
+
+  private loadWindDay(day: WindForecastDay): Promise<WindGrid> {
+    if (day === 0) {
+      return this.loadLiveWindGrid().then((grid) => {
+        this.windGridCache[day] = grid;
+        return grid;
+      });
+    }
+
+    return this.loadForecastPayload().then((payload) => {
+      const grid = this.buildForecastGrid(payload.points, day);
+      this.windGridCache[day] = grid;
+      return grid;
+    });
+  }
+
+  /**
+   * After today (+5D is the last entry) the sweep flows back to the live
+   * "Today" grid, so even the wrap around the end of the timeline is a
+   * smooth morph instead of a jump.
+   */
+  private nextWindForecastDay(day: WindForecastDay): WindForecastDay {
+    const lastDay = WIND_FORECAST_DAYS[WIND_FORECAST_DAYS.length - 1].value;
+
+    return day >= lastDay ? 0 : ((day + 1) as WindForecastDay);
+  }
+
+  /** Forecast grids are keyed to the date they were built for. */
+  private pruneWindGridCache(): void {
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (this.windCacheDate === today) return;
+
+    this.windCacheDate = today;
+    this.windGridCache = {};
   }
 
   private loadLiveWindGrid(): Promise<WindGrid> {
-    if (this.windLiveGrid) return Promise.resolve(this.windLiveGrid);
-
     // Share one in-flight request so rapid clicks don't fetch the same
-    // endpoint multiple times.
+    // endpoint multiple times. Once it resolves, the grid is served from
+    // the day cache, so this only ever runs once per session.
     if (this.windLiveGridPromise) return this.windLiveGridPromise;
 
     this.windLiveGridPromise = fetch(
@@ -3933,10 +4606,7 @@ export class MapPlaygroundComponent
         if (!res.ok) throw new Error(`wind API returned ${res.status}`);
         return res.json();
       })
-      .then((data) => {
-        this.windLiveGrid = this.buildLiveGrid(data.points || []);
-        return this.windLiveGrid;
-      })
+      .then((data) => this.buildLiveGrid(data.points || []))
       .catch((err) => {
         this.windLiveGridPromise = null;
         throw err;
@@ -4052,8 +4722,32 @@ export class MapPlaygroundComponent
     return { uGrid, vGrid };
   }
 
+  /**
+   * Wind at a point, blended between the day the sweep is on and the day it
+   * is moving into, so day changes morph the flow smoothly instead of
+   * snapping the whole field over at once.
+   */
   private windAt(lng: number, lat: number): { u: number; v: number } {
-    if (!this.windReady || !this.windGrid) return { u: 0, v: 0 };
+    const from = this.sampleWindGrid(this.windGrid, lng, lat);
+    const to = this.sampleWindGrid(this.windNextGrid, lng, lat);
+
+    // Either side can still be loading (or have failed); use whichever is
+    // available and only blend once both are on screen.
+    if (from === null) return to ?? { u: 0, v: 0 };
+    if (to === null || this.windBlend <= 0) return from;
+
+    return {
+      u: from.u + (to.u - from.u) * this.windBlend,
+      v: from.v + (to.v - from.v) * this.windBlend,
+    };
+  }
+
+  private sampleWindGrid(
+    grid: WindGrid | null,
+    lng: number,
+    lat: number
+  ): { u: number; v: number } | null {
+    if (!grid) return null;
 
     const bounds = this.windGridBounds;
     const clampedLng = Math.max(bounds.west, Math.min(bounds.east, lng));
@@ -4070,7 +4764,7 @@ export class MapPlaygroundComponent
     const r1 = Math.min(r0 + 1, this.windGridRows - 1);
     const fc = colF - c0;
     const fr = rowF - r0;
-    const { uGrid, vGrid } = this.windGrid;
+    const { uGrid, vGrid } = grid;
     const u00 = uGrid[r0][c0];
     const u10 = uGrid[r0][c1];
     const u01 = uGrid[r1][c0];
@@ -4415,9 +5109,9 @@ export class MapPlaygroundComponent
 
         await Promise.all(
           layerData.sourceLayer.map(async (sourceLayer) => {
-            this.map.addSource(sourceLayer, sourceData);
+            this.addNoahSource(sourceLayer, sourceData);
 
-            this.map.addLayer({
+            this.addNoahLayer({
               id: sourceLayer,
               type: 'fill',
               source: sourceLayer,
@@ -4492,7 +5186,23 @@ export class MapPlaygroundComponent
     );
   }
 
+  /**
+   * Rainfall contours are five large PNG raster overlays, all hidden until the
+   * weather-updates group is turned on. Building them eagerly downloaded five
+   * images that were transparent (opacity 0) on the default view, so they are
+   * now created the first time the group and the contour layer are both shown.
+   */
   showContourMaps() {
+    this.runWhenFirstShown(
+      combineLatest([
+        this.pgService.weatherUpdatesGroupShown$,
+        this.pgService.contourMapGroupShown$,
+      ]).pipe(map(([groupShown, contourShown]) => groupShown && contourShown)),
+      () => this.buildContourMaps()
+    );
+  }
+
+  private buildContourMaps() {
     const contourMapImages = {
       '1hr': {
         url: 'https://webgis-static.up.edu.ph/api/contours/1hr_latest_rainfall_contour.png',
@@ -4551,9 +5261,9 @@ export class MapPlaygroundComponent
     Object.keys(contourMapImages).forEach((contourType) => {
       const contourMapDetails = contourMapImages[contourType];
 
-      this.map.addSource(contourType, getContourMapSource(contourMapDetails));
+      this.addNoahSource(contourType, getContourMapSource(contourMapDetails));
 
-      this.map.addLayer({
+      this.addNoahLayer({
         id: contourType,
         type: 'raster',
         source: contourType,
@@ -4600,19 +5310,45 @@ export class MapPlaygroundComponent
 
     if (style in environment.mapbox.styles) {
       this.mapStyle = style;
-      this.map.setStyle(environment.mapbox.styles[style]);
       this._changeStyle.next(null);
+      const currentCenter = this.map.getCenter();
+      const currentZoom = this.map.getZoom();
+      const currentBearing = this.map.getBearing();
+      const currentPitch = this.map.getPitch();
+      const currentTerrain = (this.map as any).getTerrain
+        ? (this.map as any).getTerrain()
+        : null;
+      this.map.setStyle(environment.mapbox.styles[style]);
+      this.map.once('style.load', () => {
+        if (currentCenter) {
+          this.map.setCenter(currentCenter);
+          this.map.setZoom(currentZoom);
+          this.map.setBearing(currentBearing);
+          this.map.setPitch(currentPitch);
+        }
+        if (currentTerrain) {
+          try {
+            this.map.setTerrain(currentTerrain);
+          } catch (e) {
+            console.warn('Could not restore terrain after style change', e);
+          }
+        }
+      });
     }
   }
 
+  /**
+   * Sets up the drawing tool used to measure areas and distances.
+   *
+   * MapboxDraw's own button bar is hidden (`displayControlsDefault: false`
+   * with `controls: false`): the draw, measure and clear actions live in the
+   * NOAH map controls toolbar, which drives the control through
+   * `changeMode()` / `deleteAll()`.
+   */
   initCalculation() {
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        line_string: true,
-        trash: true,
-      },
+      controls: false,
     });
 
     this.map.addControl(this.draw);
@@ -4624,50 +5360,44 @@ export class MapPlaygroundComponent
 
   private updateCalculate(event) {
     const data = this.draw.getAll();
-    const answer = document.getElementById('area');
+    const areaEl = document.getElementById('area');
+    const distanceEl = document.getElementById('distance');
     let totalArea = 0;
     let totalLength = 0;
 
     if (data.features.length > 0) {
       data.features.forEach((feature) => {
         if (feature.geometry.type === 'Polygon') {
-          const area = turf.area(feature);
+          const area = turfArea(feature);
           totalArea += area;
         } else if (feature.geometry.type === 'LineString') {
-          const length = turf.length(feature, { units: 'kilometers' });
+          const length = turfLength(feature, { units: 'kilometers' });
           totalLength += length;
         }
       });
 
-      let output = '';
-
-      if (totalLength > 0) {
+      if (totalLength > 0 && distanceEl) {
         const roundedLength = Math.round(totalLength * 100) / 100;
-        output += `<p style="margin-bottom:2px;"><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
-      }
-      if (totalArea > 0) {
-        const roundedArea = Math.round(totalArea * 100) / 100;
-        output += `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+        distanceEl.innerHTML = `<p><b>Total Distance:</b> ${roundedLength.toLocaleString()} km</p>`;
+      } else if (distanceEl) {
+        distanceEl.innerHTML = '';
       }
 
-      answer.innerHTML = output;
+      if (totalArea > 0 && areaEl) {
+        const roundedArea = Math.round(totalArea * 100) / 100;
+        areaEl.innerHTML = `<p><b>Total Area</b>: ${roundedArea.toLocaleString()} sqm</p>`;
+      } else if (areaEl) {
+        areaEl.innerHTML = '';
+      }
     } else {
-      answer.innerHTML = '';
+      if (areaEl) {
+        areaEl.innerHTML = '';
+      }
+      if (distanceEl) {
+        distanceEl.innerHTML = '';
+      }
     }
   }
-
-  // Add custom tooltips for are and distance
-  private addCustomTooltips = () => {
-    const buttons = document.querySelectorAll('.mapbox-gl-draw_ctrl-draw-btn');
-    buttons.forEach((button) => {
-      if (button.classList.contains('mapbox-gl-draw_polygon')) {
-        button.setAttribute('title', 'Measure Area');
-      }
-      if (button.classList.contains('mapbox-gl-draw_line')) {
-        button.setAttribute('title', 'Measure Distance');
-      }
-    });
-  };
 
   /**
    * All hazard maps except the debris flow and alluvial fan are
@@ -4716,17 +5446,23 @@ export class MapPlaygroundComponent
    */
   private _addFillHazardLayer(params: LayerSettingsParam) {
     const { layerID, sourceID, sourceLayer, hazardType, hazardLevel } = params;
-    this.map.addLayer({
-      id: layerID,
-      type: 'fill',
-      source: sourceID,
-      'source-layer': sourceLayer,
-      layout: { visibility: 'none' },
-      paint: {
-        'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
-        'fill-opacity': 0.75,
+    // `middle` keeps the flood polygons above terrain / 3D buildings but below
+    // Standard's own labels, so hazard data stays readable.
+    this.addNoahLayer(
+      {
+        id: layerID,
+        type: 'fill',
+        source: sourceID,
+        'source-layer': sourceLayer,
+        layout: { visibility: 'none' },
+        paint: {
+          'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
+          'fill-opacity': 0.75,
+        },
+        slot: 'middle',
       },
-    });
+      NOAH_HAZARD_SLOT
+    );
   }
 
   /**
@@ -4742,44 +5478,50 @@ export class MapPlaygroundComponent
     lh2Subtype: LH2Subtype
   ) {
     if (lh2Subtype === 'af') {
-      this.map.addLayer({
-        id: layerName,
-        type: 'line',
-        source: sourceID,
-        'source-layer': layerName,
-        layout: { visibility: 'none' },
-        paint: {
-          'line-width': 2,
-          'line-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'ALLUVIAL'],
-            4,
-            NOAH_COLORS['noah-black'].high,
-          ],
-          'line-opacity': 0.75,
+      this.addNoahLayer(
+        {
+          id: layerName,
+          type: 'line',
+          source: sourceID,
+          'source-layer': layerName,
+          layout: { visibility: 'none' },
+          paint: {
+            'line-width': 2,
+            'line-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'ALLUVIAL'],
+              4,
+              NOAH_COLORS['noah-black'].high,
+            ],
+            'line-opacity': 0.75,
+          },
         },
-      });
+        NOAH_HAZARD_SLOT
+      );
     }
 
     if (lh2Subtype === 'df') {
-      this.map.addLayer({
-        id: layerName,
-        type: 'fill',
-        source: sourceID,
-        'source-layer': layerName,
-        layout: { visibility: 'none' },
-        paint: {
-          'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'ALLUVIAL'],
-            3,
-            NOAH_COLORS['noah-red'].high,
-          ],
-          'fill-opacity': 0.75,
+      this.addNoahLayer(
+        {
+          id: layerName,
+          type: 'fill',
+          source: sourceID,
+          'source-layer': layerName,
+          layout: { visibility: 'none' },
+          paint: {
+            'fill-color': [
+              'interpolate',
+              ['linear'],
+              ['get', 'ALLUVIAL'],
+              3,
+              NOAH_COLORS['noah-red'].high,
+            ],
+            'fill-opacity': 0.75,
+          },
         },
-      });
+        NOAH_HAZARD_SLOT
+      );
     }
   }
 
@@ -4939,23 +5681,46 @@ export class MapPlaygroundComponent
       });
   }
 
+  /**
+   * Adds the layers of one critical facility type.
+   *
+   * The points come from the Mapbox vector tileset in `criticalFacilities`
+   * and are clustered on the client, because Mapbox GL JS can only cluster
+   * GeoJSON sources. The layers read from a plain GeoJSON source that
+   * Supercluster writes into; the tileset is only the raw point source.
+   */
   private _loadCriticalFacilityIcon(name: CriticalFacility) {
     const _this = this;
+    const { url, sourceLayer } = criticalFacilities[name];
+
     this.map.loadImage(`assets/map-sprites/${name}.png`, (error, image) => {
       if (error) throw error;
-      _this.map.addImage(name, image);
+      // This runs again on every style change, so guard against re-registering
+      // an image that Mapbox GL JS already has.
+      if (!_this.map.hasImage(name)) {
+        _this.map.addImage(name, image);
+      }
 
-      _this.map.addSource(name, {
+      _this.addNoahSource(getClusterSourceId(name), {
         type: 'geojson',
-        data: criticalFacilities[name].data,
-        cluster: true,
-        clusterMaxZoom: 12,
-        clusterMinPoints: 3,
-      });
+        data: { type: 'FeatureCollection', features: [] },
+      } as mapboxgl.AnySourceData);
 
-      _this.map.addLayer(getCircleLayer(name));
-      _this.map.addLayer(getSymbolLayer(name, this.mapStyle));
-      _this.map.addLayer(getClusterTextCount(name));
+      _this.addNoahSource(getTilesetSourceId(name), {
+        type: 'vector',
+        url,
+      } as mapboxgl.AnySourceData);
+
+      // Mapbox GL JS only asks a source for tiles when a visible layer uses
+      // it, so the tileset needs a layer of its own for
+      // `querySourceFeatures` to return anything. It draws nothing.
+      _this.addNoahLayer(getTilesetCollectorLayer(name, sourceLayer));
+
+      _this.addNoahLayer(getCircleLayer(name));
+      _this.addNoahLayer(getSymbolLayer(name, this.mapStyle));
+      _this.addNoahLayer(getClusterTextCount(name));
+
+      _this._initCriticalFacilityClusters(name, sourceLayer);
 
       // opacity
       this.pgService
@@ -5010,6 +5775,339 @@ export class MapPlaygroundComponent
           );
         });
     });
+  }
+
+  /**
+   * Loads the published GeoJSON of one critical facility type.
+   *
+   * This is the fallback for the Mapbox vector tileset: the tilesets of
+   * `criticalFacilities` are not published under the `upri-noah` account, so
+   * the tileset never delivers a feature and the layer would stay empty
+   * without this path.
+   */
+  private _loadCriticalFacilityGeoJSON(name: CriticalFacility) {
+    const clusterState = this._critFacClusterStates[name];
+
+    if (!clusterState || clusterState.usedFallback) return;
+    clusterState.usedFallback = true;
+
+    this.http.get(criticalFacilities[name].data).subscribe({
+      next: (data: any) => {
+        if (!this.map || !data) return;
+
+        const features = Array.isArray(data?.features) ? data.features : [];
+        const points: GeoJSON.Feature<GeoJSON.Point>[] = [];
+
+        features.forEach((feature: any) => {
+          if (!feature || !feature.geometry) return;
+          if (feature.geometry.type !== 'Point') return;
+
+          const coords = feature.geometry.coordinates;
+          if (!Array.isArray(coords) || coords.length < 2) return;
+
+          points.push({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [coords[0], coords[1]] },
+            properties: { ...(feature.properties || {}) },
+          });
+        });
+
+        clusterState.points = points;
+        clusterState.seen = new Set<string>();
+        clusterState.index = new Supercluster({
+          radius: CRIT_FAC_CLUSTER_RADIUS,
+          maxZoom: CRIT_FAC_CLUSTER_MAX_ZOOM,
+          minPoints: CRIT_FAC_CLUSTER_MIN_POINTS,
+        });
+        clusterState.dirty = true;
+
+        clusterState.rebuild();
+      },
+      error: (err) => {
+        console.error(
+          `Failed to load the critical facilities GeoJSON for ${name}`,
+          err
+        );
+      },
+    });
+  }
+
+  /**
+   * Wires the client-side clustering of one critical facility type.
+   *
+   * The points are harvested from the vector tileset with
+   * `querySourceFeatures`, clustered with Supercluster and written back into
+   * the GeoJSON cluster source the layers read from. Harvesting repeats
+   * whenever new tiles arrive, so the cluster set grows while the user pans.
+   */
+  private _initCriticalFacilityClusters(
+    name: CriticalFacility,
+    sourceLayer: string
+  ) {
+    const _this = this;
+    const tilesetSourceId = getTilesetSourceId(name);
+    const clusterSourceId = getClusterSourceId(name);
+
+    const existing = this._critFacClusterStates[name];
+    const clusterState: CritFacilityClusterState = existing || {
+      points: [],
+      seen: new Set<string>(),
+      index: new Supercluster({
+        radius: CRIT_FAC_CLUSTER_RADIUS,
+        maxZoom: CRIT_FAC_CLUSTER_MAX_ZOOM,
+        minPoints: CRIT_FAC_CLUSTER_MIN_POINTS,
+      }),
+      usedFallback: false,
+      dirty: true,
+      rebuild: () => undefined,
+      cleanup: () => undefined,
+    };
+
+    if (!existing) {
+      this._critFacClusterStates[name] = clusterState;
+
+      // The teardown is registered once per facility type. It drops the
+      // listeners of the current style when the style changes or when the
+      // component is destroyed.
+      this._changeStyle.pipe(takeUntil(this._unsub)).subscribe(() => {
+        clusterState.cleanup();
+      });
+      this._unsub.subscribe(() => {
+        clusterState.cleanup();
+      });
+    } else {
+      // A basemap switch re-creates the sources and the layers, so the
+      // listeners of the previous style have to go before new ones are added.
+      existing.cleanup();
+    }
+
+    const rebuild = () => {
+      if (!_this.map) return;
+
+      if (clusterState.dirty) {
+        try {
+          clusterState.index.load(clusterState.points);
+        } catch (err) {
+          console.warn(
+            `Critical facilities clustering failed for ${name}`,
+            err
+          );
+          clusterState.points = [];
+          clusterState.index.load([]);
+        }
+        clusterState.dirty = false;
+      }
+
+      let clusters: GeoJSON.Feature[] = [];
+
+      try {
+        clusters = clusterState.index.getClusters(
+          _this._criticalFacilityBounds(),
+          _this.map.getZoom()
+        ) as unknown as GeoJSON.Feature[];
+      } catch {
+        clusters = [];
+      }
+
+      const source = _this.map.getSource(clusterSourceId) as
+        | mapboxgl.GeoJSONSource
+        | undefined;
+
+      source?.setData({
+        type: 'FeatureCollection',
+        features: clusters,
+      } as GeoJSON.FeatureCollection);
+    };
+
+    clusterState.rebuild = rebuild;
+
+    /**
+     * Copies the points of the loaded tiles into the cluster index.
+     */
+    const harvest = () => {
+      if (clusterState.usedFallback || !_this.map) return;
+
+      let features: mapboxgl.GeoJSONFeature[] = [];
+
+      try {
+        features = _this.map.querySourceFeatures(tilesetSourceId, {
+          sourceLayer,
+        });
+      } catch {
+        return;
+      }
+
+      let added = 0;
+
+      features.forEach((feature) => {
+        if (!feature.geometry || feature.geometry.type !== 'Point') return;
+
+        const coords = feature.geometry.coordinates as number[];
+        if (!coords || coords.length < 2) return;
+
+        // A tile boundary can report the same facility twice, so the points
+        // are deduped by their feature id, or by their coordinates when the
+        // tileset does not carry one.
+        const key =
+          feature.id !== undefined && feature.id !== null
+            ? `id:${feature.id}`
+            : `${coords[0]},${coords[1]},${JSON.stringify(feature.properties)}`;
+
+        if (clusterState.seen.has(key)) return;
+        clusterState.seen.add(key);
+
+        clusterState.points.push({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [coords[0], coords[1]] },
+          properties: { ...feature.properties },
+        });
+        added += 1;
+      });
+
+      if (added > 0) {
+        clusterState.dirty = true;
+        rebuild();
+      }
+    };
+
+    const onSourceData = (event: mapboxgl.MapSourceDataEvent) => {
+      if (event.sourceId !== tilesetSourceId) return;
+      harvest();
+    };
+
+    const onMoveEnd = () => {
+      harvest();
+      rebuild();
+    };
+
+    const onSourceError = () => {
+      _this._loadCriticalFacilityGeoJSON(name);
+    };
+
+    // The tileset is the primary source. The GeoJSON is only used when the
+    // tileset cannot be reached, either because it errored or because it did
+    // not deliver a single point in time.
+    const fallbackTimer = window.setTimeout(() => {
+      if (clusterState.usedFallback || clusterState.points.length > 0) return;
+      onSourceError();
+    }, 8000);
+
+    this.map.on('sourcedata', onSourceData);
+    this.map.on('moveend', onMoveEnd);
+    this.map.on('zoomend', onMoveEnd);
+
+    const tilesetSource = this.map.getSource(tilesetSourceId) as
+      | mapboxgl.VectorTileSource
+      | undefined;
+    tilesetSource?.on('error', onSourceError);
+
+    const removeClickListeners = this._initCriticalFacilityClusterClicks(name);
+
+    clusterState.cleanup = () => {
+      window.clearTimeout(fallbackTimer);
+      this.map?.off('sourcedata', onSourceData);
+      this.map?.off('moveend', onMoveEnd);
+      this.map?.off('zoomend', onMoveEnd);
+      tilesetSource?.off('error', onSourceError);
+      removeClickListeners();
+    };
+
+    rebuild();
+    harvest();
+  }
+
+  /**
+   * Makes the clusters and the single facilities of one critical facility
+   * type clickable.
+   *
+   * A cluster zooms in to the zoom level at which it breaks up, a single
+   * facility zooms in by two levels. The returned function removes the
+   * listeners again.
+   */
+  private _initCriticalFacilityClusterClicks(name: CriticalFacility) {
+    const _this = this;
+    const clusterLayerId = `${name}-cluster`;
+    const pointLayerId = `${name}-image`;
+
+    const onClusterClick = (
+      event: mapboxgl.MapLayerMouseEvent | mapboxgl.MapMouseEvent
+    ) => {
+      const feature = event.features && event.features[0];
+      if (!feature || !feature.properties) return;
+
+      const clusterId = feature.properties.cluster_id;
+      if (clusterId === undefined || clusterId === null) return;
+
+      const clusterState = _this._critFacClusterStates[name];
+      let zoom = _this.map.getZoom() + 2;
+
+      if (clusterState) {
+        try {
+          zoom = clusterState.index.getClusterExpansionZoom(clusterId);
+        } catch {
+          // The cluster is not in the index anymore, so the fixed zoom step
+          // above is used instead.
+        }
+      }
+
+      _this.map.easeTo({
+        center: event.lngLat,
+        zoom: Math.min(zoom, _this.map.getMaxZoom()),
+      });
+    };
+
+    const onPointClick = (event: mapboxgl.MapLayerMouseEvent) => {
+      const feature = event.features && event.features[0];
+      if (!feature || !feature.geometry) return;
+      if (feature.geometry.type !== 'Point') return;
+
+      const coords = feature.geometry.coordinates as number[];
+
+      _this.map.easeTo({
+        center: [coords[0], coords[1]],
+        zoom: Math.min(_this.map.getZoom() + 2, _this.map.getMaxZoom()),
+      });
+    };
+
+    const onMouseEnter = () => {
+      _this.map.getCanvas().style.cursor = 'pointer';
+    };
+
+    const onMouseLeave = () => {
+      _this.map.getCanvas().style.cursor = '';
+    };
+
+    this.map.on('click', clusterLayerId, onClusterClick);
+    this.map.on('click', pointLayerId, onPointClick);
+    this.map.on('mouseenter', clusterLayerId, onMouseEnter);
+    this.map.on('mouseleave', clusterLayerId, onMouseLeave);
+    this.map.on('mouseenter', pointLayerId, onMouseEnter);
+    this.map.on('mouseleave', pointLayerId, onMouseLeave);
+
+    return () => {
+      this.map?.off('click', clusterLayerId, onClusterClick);
+      this.map?.off('click', pointLayerId, onPointClick);
+      this.map?.off('mouseenter', clusterLayerId, onMouseEnter);
+      this.map?.off('mouseleave', clusterLayerId, onMouseLeave);
+      this.map?.off('mouseenter', pointLayerId, onMouseEnter);
+      this.map?.off('mouseleave', pointLayerId, onMouseLeave);
+    };
+  }
+
+  /**
+   * The visible extent, padded so that the clusters just outside of the
+   * viewport are drawn as well.
+   */
+  private _criticalFacilityBounds(): [number, number, number, number] {
+    const bounds = this.map.getBounds();
+    const pad = 0.1;
+
+    return [
+      bounds.getWest() - pad,
+      bounds.getSouth() - pad,
+      bounds.getEast() + pad,
+      bounds.getNorth() + pad,
+    ];
   }
 }
 

@@ -8,6 +8,7 @@ import { Observable, Subscription, timer } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],

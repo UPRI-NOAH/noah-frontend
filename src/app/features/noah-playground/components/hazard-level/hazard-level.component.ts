@@ -13,6 +13,7 @@ import {
 import { Subject } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-hazard-level',
   templateUrl: './hazard-level.component.html',
   styleUrls: ['./hazard-level.component.scss'],
@@ -30,6 +31,17 @@ export class HazardLevelComponent implements OnInit, OnDestroy {
   get highOnly(): boolean {
     // Temporary -- should use ID instead
     return this.name === 'Debris Flow and Alluvial Fan';
+  }
+
+  get legendTypeLabel(): string {
+    switch (this.type) {
+      case 'landslide':
+        return 'Landslide';
+      case 'storm-surge':
+        return 'Storm Surge';
+      default:
+        return 'Flood';
+    }
   }
 
   private _unsub = new Subject();

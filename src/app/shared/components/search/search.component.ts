@@ -28,6 +28,7 @@ import { LocationService } from '@core/services/location.service';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
@@ -68,6 +69,12 @@ export class SearchComponent implements OnInit {
             this.places$.next([]);
             this.locationSearchHistoryService.refresh();
             return of([]);
+          }
+
+          const coordinates = this.parseCoordinates(searchText);
+          if (coordinates) {
+            this.loading = false;
+            return of([this.createCoordinatePlace(coordinates)]);
           }
 
           this.places$.next([]);
@@ -120,6 +127,19 @@ export class SearchComponent implements OnInit {
     place?: any
   ): void {
     try {
+      if (e.code === 'Enter' && !eventType) {
+        const coordinates = this.parseCoordinates(
+          this.normalizeSearchText(this.searchTermCtrl?.value)
+        );
+
+        if (coordinates) {
+          e.preventDefault();
+          this.pickPlace(this.createCoordinatePlace(coordinates));
+        }
+
+        return;
+      }
+
       const locationOptionsCount = this.locationOptions.length;
       const locationOptionsArray = this.locationOptions.toArray();
 
@@ -201,6 +221,11 @@ export class SearchComponent implements OnInit {
 
     this.isDropdownOpen = false;
     this.searchTermCtrl.setValue(place.name || place.text || place.place_name);
+
+    if (place.isCoordinateSearch) {
+      this.selectPlace.emit(place);
+      return;
+    }
 
     this.mapService.retrievePlace(place.mapbox_id).subscribe((result: any) => {
       // check both possible response shapes
@@ -286,5 +311,42 @@ export class SearchComponent implements OnInit {
 
   private normalizeSearchText(searchText: unknown): string {
     return typeof searchText === 'string' ? searchText.trim() : '';
+  }
+
+  private parseCoordinates(
+    searchText: string
+  ): { lat: number; lng: number } | null {
+    const match = searchText.match(
+      /^\s*(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)\s*$/
+    );
+
+    if (!match) {
+      return null;
+    }
+
+    const lng = Number(match[1]);
+    const lat = Number(match[2]);
+
+    if (Math.abs(lng) <= 180 && Math.abs(lat) <= 90) {
+      return { lat, lng };
+    }
+
+    return null;
+  }
+
+  private createCoordinatePlace(coordinates: { lat: number; lng: number }) {
+    const text = `${coordinates.lng}, ${coordinates.lat}`;
+
+    return {
+      name: text,
+      text,
+      place_name: 'Coordinates',
+      center: [coordinates.lng, coordinates.lat],
+      geometry: {
+        type: 'Point',
+        coordinates: [coordinates.lng, coordinates.lat],
+      },
+      isCoordinateSearch: true,
+    };
   }
 }

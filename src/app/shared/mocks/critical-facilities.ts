@@ -1,6 +1,6 @@
-import { CircleLayer, LngLatLike, SymbolLayer, VectorSource } from 'mapbox-gl';
+import { CircleLayer, LngLatLike, SymbolLayer } from 'mapbox-gl';
 
-export type MapStyle = 'terrain' | 'satellite';
+export type MapStyle = 'terrain' | 'satellite' | 'standard';
 
 export const CRITICAL_FACILITIES_ARR = [
   'police-station',
@@ -18,13 +18,43 @@ export type SampleMarker = {
   address: string;
 };
 
+/**
+ * A critical facility type is published twice: as a Mapbox vector tileset
+ * (`url`) and as a GeoJSON file (`data`).
+ *
+ * The tileset is the primary source. `data` is the fallback that is used when
+ * the tileset cannot be reached, so the layer keeps working either way.
+ */
+export type CriticalFacilitySource = {
+  url: string;
+  sourceLayer: string;
+  data: string;
+};
+
+/** Zoom level at which the clusters break up into single facilities. */
+export const CRIT_FAC_CLUSTER_MAX_ZOOM = 12;
+
+/** Cluster radius in pixels. */
+export const CRIT_FAC_CLUSTER_RADIUS = 60;
+
+/** Number of facilities needed before a cluster is formed. */
+export const CRIT_FAC_CLUSTER_MIN_POINTS = 3;
+
+/** Source id of the raw Mapbox vector tileset. */
+export const getTilesetSourceId = (sourceName: string) =>
+  `${sourceName}-tileset`;
+
+/** Source id of the GeoJSON source the cluster layers read from. */
+export const getClusterSourceId = (sourceName: string) =>
+  `${sourceName}-clusters`;
+
 export const getSymbolLayer = (
   sourceName: string,
   mapStyle: MapStyle
 ): SymbolLayer => ({
   id: `${sourceName}-image`,
   type: 'symbol',
-  source: sourceName,
+  source: getClusterSourceId(sourceName),
   paint: {
     'icon-opacity': 1,
     'text-opacity': 1,
@@ -60,7 +90,7 @@ export const getCircleLayer = (sourceName: string): CircleLayer => {
   return {
     id: `${sourceName}-cluster`,
     type: 'circle',
-    source: sourceName,
+    source: getClusterSourceId(sourceName),
     filter: ['has', 'point_count'],
     layout: { visibility: 'none' },
     paint: {
@@ -81,7 +111,7 @@ export const getClusterTextCount = (sourceName: string): SymbolLayer => {
   return {
     id: `${sourceName}-cluster-text`,
     type: 'symbol',
-    source: sourceName,
+    source: getClusterSourceId(sourceName),
     filter: ['has', 'point_count'],
     layout: {
       visibility: 'none',
@@ -96,23 +126,52 @@ export const getClusterTextCount = (sourceName: string): SymbolLayer => {
   };
 };
 
+/**
+ * The layer that makes Mapbox GL JS load the tileset tiles.
+ *
+ * Mapbox GL JS only asks a source for tiles when a *visible* layer uses it,
+ * so the vector tileset needs a layer of its own for `querySourceFeatures` to
+ * return anything. The layer draws nothing, it only keeps the tiles flowing.
+ */
+export const getTilesetCollectorLayer = (
+  sourceName: string,
+  sourceLayer: string
+): CircleLayer => ({
+  id: `${sourceName}-tileset-collector`,
+  type: 'circle',
+  source: getTilesetSourceId(sourceName),
+  'source-layer': sourceLayer,
+  filter: ['==', ['geometry-type'], 'Point'],
+  paint: {
+    'circle-radius': 0,
+    'circle-opacity': 0,
+  },
+});
+
 export const getCriticalFacility = () => {};
 
-export const criticalFacilities = {
+export const criticalFacilities: Record<
+  CriticalFacility,
+  CriticalFacilitySource
+> = {
   school: {
     url: 'mapbox://upri-noah.drbtf3uh',
+    sourceLayer: 'schools_g-cjc0bt',
     data: 'https://webgis-static.up.edu.ph/api/critical_facilities/schools.geojson',
   },
   hospital: {
     url: 'mapbox://upri-noah.0qj1zvhm',
+    sourceLayer: 'hospitals_g-2v0hca',
     data: 'https://webgis-static.up.edu.ph/api/critical_facilities/hospitals.geojson',
   },
   'fire-station': {
     url: 'mapbox://upri-noah.cebidtpr',
+    sourceLayer: 'fire_station_g-64u931',
     data: 'https://webgis-static.up.edu.ph/api/critical_facilities/fire_station.geojson',
   },
   'police-station': {
     url: 'mapbox://upri-noah.ds1saq22',
+    sourceLayer: 'police_station_g-6ekisg',
     data: 'https://webgis-static.up.edu.ph/api/critical_facilities/police_station.geojson',
   },
 };

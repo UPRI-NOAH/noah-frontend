@@ -349,6 +349,17 @@ export const WIND_FORECAST_DAYS = [
 
 export type WindForecastDay = typeof WIND_FORECAST_DAYS[number]['value'];
 
+/**
+ * The wind forecast plays as one continuous sweep. `day` is the day the
+ * sweep is currently on and `blend` (0..1) is how far it has moved into the
+ * following day, so the wind field morphs smoothly instead of jumping a
+ * whole day at a time.
+ */
+export type WindTimeline = {
+  day: WindForecastDay;
+  blend: number;
+};
+
 export type WindGroupState = {
   shown: boolean;
   expanded: boolean;
@@ -745,7 +756,7 @@ const createInitialValue = (): NoahPlaygroundState => ({
         // shown: true,
         particleCount: 1500,
         speed: 1.5,
-        color: '#67FF01',
+        color: '#ffffff',
       },
     },
   },

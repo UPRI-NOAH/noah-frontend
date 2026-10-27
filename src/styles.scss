@@ -1,7 +1,10 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import 'swiper/swiper-bundle.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// Swiper's package.json `exports` map only exposes this stylesheet as a bare
+// string, which css-loader's "style" condition rejects. Referencing it by path
+// bypasses the exports map while keeping it in the same cascade position.
+@import '../node_modules/swiper/swiper-bundle.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
 
@@ -19,6 +22,83 @@
   --color-5: #1a994e;
   --color-6: #333333;
   font-size: 16px;
+
+  // Width of the floating map style / lighting panel. Exposed globally so the
+  // other map overlays (the know-your-hazards legend, for one) can sit clear
+  // of it without hard-coding the width a second time.
+  --noah-map-controls-panel-width: 336px;
+
+  // Where the NOAH map controls toolbar starts and how tall it is. The
+  // controls component publishes both; the scale bar and the coordinate
+  // readout use them to stack below the toolbar without hard-coded offsets.
+  --noah-map-controls-toolbar-top: 10px;
+  --noah-map-controls-toolbar-height: 120px;
+
+  // How tall the shared map attribution is. The attribution component
+  // publishes it, so the scale bar can sit above the credits without
+  // hard-coding an offset that breaks as soon as the credits wrap.
+  --noah-map-attribution-height: 24px;
+
+  // How far above the bottom edge of the map the shared map attribution
+  // sits. The attribution component publishes it, so a page that covers the
+  // bottom of the map can raise the credits and the scale bar follows.
+  --noah-map-attribution-bottom: 10px;
+}
+
+/* The custom scale bar. It shares the right-hand column with the NOAH map
+   controls toolbar and sits right below it on pages that have the toolbar.
+   On pages without the toolbar (KYH, Weather Updates) it sits just above the
+   shared map attribution in the bottom-right corner so it remains visible and
+   responsive. The playground moves it to the bottom-left corner instead,
+   right above the Mapbox logo. */
+#custom-scale-control {
+  position: absolute;
+  right: 10px;
+  z-index: 15;
+  padding: 6px 10px 5px 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#custom-scale-control[data-position='right-top'] {
+  top: calc(
+    var(--noah-map-controls-toolbar-top, 10px) +
+      var(--noah-map-controls-toolbar-height, 120px) + 12px
+  );
+}
+
+#custom-scale-control[data-position='bottom-right'] {
+  bottom: calc(
+    var(--noah-map-attribution-bottom, 10px) +
+      var(--noah-map-attribution-height, 24px) + 2px
+  );
+}
+
+/* The scale bar of the playground sits directly above the Mapbox logo in the
+   bottom-left corner of the map. The logo moves with the sidebar, so the
+   playground publishes where it is as `--noah-scale-left` and
+   `--noah-scale-bottom`; the values here are the fallback for the corner of
+   the map itself. The height of the bar is published as well, so the
+   coordinate readout can sit right on top of it. */
+#custom-scale-control[data-position='bottom-left'] {
+  left: var(--noah-scale-left, 10px);
+  bottom: var(--noah-scale-bottom, 35px);
+  right: auto;
+}
+
+#custom-scale-control .mapboxgl-ctrl-scale {
+  height: 14px;
+  border: 1px solid #1f2937;
+  border-top: none;
+  background: transparent;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  color: #111827;
 }
 
 .mapboxgl-ctrl-group button {
@@ -46,7 +126,7 @@ html {
 
   input[type='checkbox'] {
     appearance: none;
-    color-adjust: exact;
+    print-color-adjust: exact;
     vertical-align: middle;
     background-origin: border-box;
     user-select: none;

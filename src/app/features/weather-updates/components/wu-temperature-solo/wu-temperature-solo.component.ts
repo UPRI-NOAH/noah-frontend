@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-wu-temperature-solo',
   templateUrl: './wu-temperature-solo.component.html',
   styleUrls: ['./wu-temperature-solo.component.scss'],

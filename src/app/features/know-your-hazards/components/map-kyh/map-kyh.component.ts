@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { MapService } from '@core/services/map.service';
 import { environment } from '@env/environment';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
@@ -6,6 +6,13 @@ import mapboxgl, { GeolocateControl, Map, Marker } from 'mapbox-gl';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { fromEvent, Subject } from 'rxjs';
+import {
+  hasStandardBasemap,
+  NOAH_HAZARD_SLOT,
+  NOAH_OVERLAY_SLOT,
+  StandardSlot,
+  withStandardLightingNoop,
+} from '@core/services/standard-style';
 
 import PH_COMBO_LAYERS from '@shared/data/kyh_combined_tileset.json';
 
@@ -20,6 +27,7 @@ import { NOAH_COLORS } from '@shared/mocks/noah-colors';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-map-kyh',
   templateUrl: './map-kyh.component.html',
   styleUrls: ['./map-kyh.component.scss'],
@@ -28,8 +36,16 @@ export class MapKyhComponent implements OnInit {
   map!: Map;
   geolocateControl!: GeolocateControl;
   //centerMarker!: Marker;
-  mapStyle: MapStyle = 'terrain';
+  mapStyle: MapStyle = 'standard';
   currentLocation$: Observable<string>;
+
+  /**
+   * How far above the bottom edge of the map the shared attribution sits.
+   *
+   * The page raises the credits when the sidebar panel covers the bottom of
+   * the map on a phone.
+   */
+  @Input() attributionBottomOffset: number | null = null;
 
   kyhLegend: boolean = true;
   btnLegend: boolean = false;
@@ -37,10 +53,13 @@ export class MapKyhComponent implements OnInit {
   private _unsub = new Subject();
   private _changeStyle = new Subject();
   private centerMarker: mapboxgl.Marker | null = null;
+  private readonly terrainSourceId = 'noah-terrain-dem';
+  private readonly defaultTerrainExaggeration = 1.8;
   constructor(
     private gaService: GoogleAnalyticsService,
     private mapService: MapService,
-    private kyhService: KyhService
+    private kyhService: KyhService,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +70,6 @@ export class MapKyhComponent implements OnInit {
       .subscribe(() => {
         this.initGeocoder();
         this.initGeolocation();
-        this.initAttribution();
         this.initCenterListener();
         this.initGeolocationListener();
         this.iniScaleControl();
@@ -60,6 +78,11 @@ export class MapKyhComponent implements OnInit {
     fromEvent(this.map, 'style.load')
       .pipe(takeUntil(this._unsub))
       .subscribe(() => {
+        // No-op for the legacy terrain / satellite basemaps, but this map can be
+        // switched to a Mapbox Standard style, so configure it whenever the
+        // loaded style actually is Standard.
+        this.mapService.applyStandardConfig(this.map);
+        this.applyDefaultTerrain();
         this.initLayers();
         this.initMarkers();
       });
@@ -68,6 +91,8 @@ export class MapKyhComponent implements OnInit {
   ngOnDestroy(): void {
     this._unsub.next(null);
     this._unsub.complete();
+    // Stop tracking the map so it is not re-lit after it is discarded.
+    this.mapService.releaseMap(this.map);
   }
 
   selectPlace(selectedPlace) {
@@ -89,11 +114,6 @@ export class MapKyhComponent implements OnInit {
     const [lng, lat] = coords;
     this.kyhService.setCenter({ lat, lng });
     this.kyhService.setCurrentCoords({ lat, lng });
-  }
-
-  initAttribution() {
-    const attribution = this.mapService.getNewAttributionControl();
-    this.map.addControl(attribution, 'bottom-right');
   }
 
   initCenterListener() {
@@ -123,14 +143,19 @@ export class MapKyhComponent implements OnInit {
         maxZoom: 13, // If you want your result not to go further than a specific zoom
       },
     });
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
     geocoder.on('result', (e) => {
       this.kyhService.setCurrentLocation(e.result['place_name']);
       console.log(e.result);
     });
   }
 
+  /**
+   * Adds the geolocation control.
+   *
+   * The control's own button is hidden (`showButton: false`); the locate
+   * action lives in the NOAH map controls toolbar, which triggers the control
+   * programmatically.
+   */
   initGeolocation() {
     this.geolocateControl = this.mapService.getNewGeolocateControl();
     this.map.addControl(this.geolocateControl, 'top-right');
@@ -168,7 +193,7 @@ export class MapKyhComponent implements OnInit {
       } as mapboxgl.AnySourceData;
       const sourceID = tileset.url.replace('mapbox://upri-noah.', '');
       // 1. Add source first
-      this.map.addSource(sourceID, sourceData);
+      this.addNoahSource(sourceID, sourceData);
 
       // 2. Get the hazard type and level
       const [rawHazardType, rawHazardLevel] = [
@@ -187,54 +212,67 @@ export class MapKyhComponent implements OnInit {
             ...layerName.toLowerCase().split('_').splice(1),
           ];
           if (lh2Subtype === 'af') {
-            this.map.addLayer({
-              id: layerName,
-              type: 'line',
-              source: sourceID,
-              'source-layer': layerName,
-              paint: {
-                'line-width': 2,
-                'line-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'ALLUVIAL'],
-                  4,
-                  NOAH_COLORS['noah-black'].high,
-                ],
-                'line-opacity': 0.75,
+            this.addNoahLayer(
+              {
+                id: layerName,
+                type: 'line',
+                source: sourceID,
+                'source-layer': layerName,
+                paint: {
+                  'line-width': 2,
+                  'line-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'ALLUVIAL'],
+                    4,
+                    NOAH_COLORS['noah-black'].high,
+                  ],
+                  'line-opacity': 0.75,
+                },
               },
-            });
+              NOAH_HAZARD_SLOT
+            );
           }
 
           if (lh2Subtype === 'df') {
-            this.map.addLayer({
+            this.addNoahLayer(
+              {
+                id: layerName,
+                type: 'fill',
+                source: sourceID,
+                'source-layer': layerName,
+                paint: {
+                  'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'ALLUVIAL'],
+                    3,
+                    NOAH_COLORS['noah-red'].high,
+                  ],
+                  'fill-opacity': 0.75,
+                },
+              },
+              NOAH_HAZARD_SLOT
+            );
+          }
+        } else {
+          this.addNoahLayer(
+            {
               id: layerName,
               type: 'fill',
               source: sourceID,
               'source-layer': layerName,
               paint: {
-                'fill-color': [
-                  'interpolate',
-                  ['linear'],
-                  ['get', 'ALLUVIAL'],
-                  3,
-                  NOAH_COLORS['noah-red'].high,
-                ],
+                'fill-color': getHazardColor(
+                  hazardType,
+                  'noah-red',
+                  hazardLevel
+                ),
                 'fill-opacity': 0.75,
               },
-            });
-          }
-        } else {
-          this.map.addLayer({
-            id: layerName,
-            type: 'fill',
-            source: sourceID,
-            'source-layer': layerName,
-            paint: {
-              'fill-color': getHazardColor(hazardType, 'noah-red', hazardLevel),
-              'fill-opacity': 0.75,
             },
-          });
+            NOAH_HAZARD_SLOT
+          );
         }
 
         // add visibility watcher
@@ -247,16 +285,95 @@ export class MapKyhComponent implements OnInit {
           )
           .subscribe((shown: boolean) => {
             const visibility = shown ? 'visible' : 'none';
+            if (!this.map.getLayer(layerName)) return;
             this.map.setLayoutProperty(layerName, 'visibility', visibility);
           });
       });
     });
   }
 
+  /**
+   * True when the currently loaded basemap is a Mapbox Standard style.
+   *
+   * Standard exposes `bottom` / `middle` / `top` slots; the legacy satellite
+   * style does not, so a slot must not be sent for it.
+   */
+  private get isStandardBasemap(): boolean {
+    return hasStandardBasemap(this.map);
+  }
+
+  /**
+   * Adds a NOAH layer, skipping it when it already exists, and placing it in
+   * the Standard `top` slot by default so overlays keep the visual position
+   * they had when appended to a classic style's layer array.
+   *
+   * Inside a Standard basemap the layer is also opted out of Standard's
+   * `light-3d` lighting (see `withStandardLightingNoop`), so hazard colours
+   * stay identical in every dawn / day / dusk / night preset — exactly as they
+   * do in the playground.
+   */
+  private addNoahLayer(
+    layer: mapboxgl.AnyLayer,
+    slot: StandardSlot = NOAH_OVERLAY_SLOT
+  ) {
+    if (this.map.getLayer(layer.id)) {
+      return;
+    }
+
+    if (this.isStandardBasemap) {
+      this.map.addLayer({
+        ...layer,
+        slot,
+        paint: withStandardLightingNoop(layer),
+      } as mapboxgl.AnyLayer);
+      return;
+    }
+
+    this.map.addLayer(layer);
+  }
+
+  private addNoahSource(sourceId: string, source: mapboxgl.AnySourceData) {
+    if (this.map.getSource(sourceId)) {
+      return;
+    }
+    this.map.addSource(sourceId, source);
+  }
+
+  /**
+   * Applies the default 3D terrain and exaggeration, matching the playground.
+   *
+   * `setTerrain` is wiped by `setStyle`, so this is called from the
+   * `style.load` handler and therefore re-runs after every basemap switch.
+   */
+  private applyDefaultTerrain() {
+    if (!this.map) {
+      return;
+    }
+
+    try {
+      this.addNoahSource(this.terrainSourceId, {
+        type: 'raster-dem',
+        url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        tileSize: 512,
+        maxzoom: 14,
+        encoding: 'mapbox',
+      });
+
+      this.map.setTerrain({
+        source: this.terrainSourceId,
+        exaggeration: this.defaultTerrainExaggeration,
+      });
+    } catch (error) {
+      console.warn('Unable to apply the default terrain exaggeration', error);
+    }
+  }
+
   initMap() {
     this.currentLocation$ = this.kyhService.currentLocation$;
     this.mapService.init();
     this.map = new mapboxgl.Map({
+      // Shared cache / rendering-behaviour tuning for every NOAH map.
+      ...this.mapService.getMapPerformanceOptions(),
       container: 'map-kyh',
       style: environment.mapbox.styles[this.mapStyle],
       zoom: 13,
@@ -265,6 +382,7 @@ export class MapKyhComponent implements OnInit {
       bearing: 30,
       center: this.kyhService.currentCoords,
       attributionControl: false,
+      antialias: false,
     });
   }
 
@@ -317,7 +435,11 @@ export class MapKyhComponent implements OnInit {
               reject(error);
               return;
             }
-            map.addImage(id, image);
+            // initMarkers runs again after every style change; Mapbox GL JS
+            // throws if an image id is registered twice.
+            if (!map.hasImage(id)) {
+              map.addImage(id, image);
+            }
             resolve(image);
           });
         });
@@ -341,15 +463,17 @@ export class MapKyhComponent implements OnInit {
         const criticalFacilitiesLayer = this.map.getLayer('criticalFacilities');
         if (criticalFacilitiesLayer) {
           this.map.removeLayer('criticalFacilities');
-          this.map.removeSource('cfSource');
+          if (this.map.getSource('cfSource')) {
+            this.map.removeSource('cfSource');
+          }
         }
 
-        this.map.addSource('cfSource', {
+        this.addNoahSource('cfSource', {
           type: 'geojson',
           data: criticalFacilities,
         });
 
-        this.map.addLayer({
+        this.addNoahLayer({
           id: 'criticalFacilities',
           type: 'symbol',
           source: 'cfSource',
@@ -386,56 +510,27 @@ export class MapKyhComponent implements OnInit {
   }
 
   iniScaleControl() {
-    const scale = new mapboxgl.ScaleControl({
-      maxWidth: 80,
-      unit: 'metric',
-    });
+    this.attachCoordsToMap();
+    this.mapService.attachScaleControl(this.map, 'bottom-right');
+  }
 
-    // Create a custom container for the scale control
-    const container = document.createElement('div');
-    container.id = 'custom-scale-control';
-    container.style.position = 'absolute';
-    container.style.top = '50%'; // vertically centered
-    container.style.right = '10px'; // some margin from right edge
-    container.style.transform = 'translateY(-50%)';
-    container.style.padding = '5px'; // padding around the box
-    container.style.background = 'white';
-    container.style.borderRadius = '6px';
-    container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+  /**
+   * Moves the coordinate readout into the map container.
+   *
+   * The readout is stacked on top of the scale bar, and both follow the map
+   * credits in the bottom-right corner. The credits publish their geometry on
+   * the map container, so the readout lives there as well to read the same
+   * CSS variables.
+   */
+  private attachCoordsToMap() {
+    const coords = document.getElementById('coordinates');
+    const container = this.map?.getContainer();
 
-    // Append container to the map
-    this.map.getContainer().appendChild(container);
-
-    // Add the scale control using Mapbox’s API
-    const scaleEl = scale.onAdd(this.map);
-    container.appendChild(scaleEl);
-
-    // Style adjustments
-    const scaleElem = scaleEl as HTMLElement;
-    scaleElem.style.fontSize = '12px';
-    scaleElem.style.lineHeight = '20px';
-    scaleElem.style.fontWeight = 'bold';
-
-    // Align the text and scale bar like Mapbox example
-    scaleElem.style.display = 'flex';
-    scaleElem.style.flexDirection = 'column'; // puts number above the bar
-    scaleElem.style.alignItems = 'center'; // center horizontal alignment
-
-    if (scaleElem.style.flexDirection === 'row') {
-      // find the label element inside the scaleEl
-      const label = scaleElem.querySelector('div');
-      if (label) {
-        (label as HTMLElement).style.paddingLeft = '8px'; // space between bar and text
-      }
+    if (!coords || !container || coords.parentElement === container) {
+      return;
     }
-    const applyPosition = () => {
-      if (window.innerWidth <= 767) {
-        container.style.top = '287px';
-      } else {
-        container.style.top = '242px';
-      }
-    };
-    applyPosition();
+
+    container.appendChild(coords);
   }
 
   openLegend() {
@@ -455,7 +550,19 @@ export class MapKyhComponent implements OnInit {
     if (style in environment.mapbox.styles) {
       this.gaService.event('switch_map_style', 'know_your_hazards', style);
       this.mapStyle = style;
+      const currentCenter = this.map.getCenter();
+      const currentZoom = this.map.getZoom();
+      const currentBearing = this.map.getBearing();
+      const currentPitch = this.map.getPitch();
       this.map.setStyle(environment.mapbox.styles[style]);
+      this.map.once('style.load', () => {
+        if (currentCenter) {
+          this.map.setCenter(currentCenter);
+          this.map.setZoom(currentZoom);
+          this.map.setBearing(currentBearing);
+          this.map.setPitch(currentPitch);
+        }
+      });
       this._changeStyle.next(null);
     }
     if (this.centerMarker) {

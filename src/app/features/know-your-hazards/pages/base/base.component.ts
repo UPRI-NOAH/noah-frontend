@@ -4,6 +4,7 @@ import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-base',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
