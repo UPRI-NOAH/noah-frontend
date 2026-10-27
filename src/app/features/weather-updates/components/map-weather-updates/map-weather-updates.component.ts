@@ -267,7 +267,27 @@ export class MapWeatherUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   iniScaleControl() {
+    this.attachCoordsToMap();
     this.mapService.attachScaleControl(this.map, 'bottom-right');
+  }
+
+  /**
+   * Moves the coordinate readout into the map container.
+   *
+   * The readout is stacked on top of the scale bar, and both follow the map
+   * credits in the bottom-right corner. The credits publish their geometry on
+   * the map container, so the readout lives there as well to read the same
+   * CSS variables.
+   */
+  private attachCoordsToMap() {
+    const coords = document.getElementById('coordinates');
+    const container = this.map?.getContainer();
+
+    if (!coords || !container || coords.parentElement === container) {
+      return;
+    }
+
+    container.appendChild(coords);
   }
 
   zoomTyphoon() {

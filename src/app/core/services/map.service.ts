@@ -372,6 +372,16 @@ export class MapService implements OnDestroy {
     scaleElem.style.color = '#111827';
     scaleElem.style.width = '100%';
     scaleElem.style.gap = '2px';
+
+    // Publish the bar's height so overlays that stack directly on top of it
+    // (the coordinate readout) can follow the bar instead of hard-coding an
+    // offset that breaks when the bar's contents change.
+    const height = container.offsetHeight;
+    if (height > 0) {
+      map
+        .getContainer()
+        .style.setProperty('--noah-scale-height', `${height}px`);
+    }
   }
 
   // Simple UUID generator (to replace crypto.randomUUID for Angular compatibility)
