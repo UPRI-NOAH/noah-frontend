@@ -17,10 +17,10 @@ export type AffectedData = {
 })
 export class RiskAssessmentService {
   constructor(private http: HttpClient) {}
-  private API_BASE_URL = 'https://impactbasedummy.vercel.app';
+  private API_BASE_URL = 'https://panahon.up.edu.ph';
   private nextPageUrl: string | null = null;
   private previousPageUrl: string | null = null;
-  private defaultUrl: string = `${this.API_BASE_URL}/affected_brgy/?affected=yes`;
+  private defaultUrl: string = `https://impactbasedummy.vercel.app/affected_brgy/?affected=yes`;
   private S3_BASE_URL = 'https://webgis-static.up.edu.ph/api';
 
   // Track the search term
