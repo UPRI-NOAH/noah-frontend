@@ -2829,8 +2829,9 @@ export class MapPlaygroundComponent
         type: 'video',
       },
       'himawari-GSMAP': {
-        url: 'https://webgis-static.up.edu.ph/api/test/ph_hima_gsmap.webm',
-        urlMp4: 'https://webgis-static.up.edu.ph/api/test/ph_hima_gsmap.mp4',
+        url: 'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.webm',
+        urlMp4:
+          'https://webgis-static.up.edu.ph/api/sat_webm/ph_hima_gsmap.mp4',
         type: 'video',
       },
     };
