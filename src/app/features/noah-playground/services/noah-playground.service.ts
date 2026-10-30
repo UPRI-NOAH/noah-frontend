@@ -55,6 +55,16 @@ import { GoogleAnalyticsService } from 'ngx-google-analytics';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
 
+/**
+ * The SRTM flood tileset is an additional dataset for the 100-year flood
+ * hazard. It is appended locally because the shared combined-tileset manifest
+ * fetched from the webgis API does not include it yet.
+ */
+const SRTM_FLOOD_TILESET = {
+  url: 'mapbox://upri-noah.ph_fh_srtm_tls',
+  sourceLayer: ['ph_fh_srtm'],
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -332,7 +342,14 @@ export class NoahPlaygroundService {
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://webgis-static.up.edu.ph/api/hazards/ph_combined_tileset.json'
       )
-      .pipe(first())
+      .pipe(
+        first(),
+        map((tilesets) =>
+          tilesets.some((tileset) => tileset.url === SRTM_FLOOD_TILESET.url)
+            ? tilesets
+            : [...tilesets, SRTM_FLOOD_TILESET]
+        )
+      )
       .toPromise();
   }
 
