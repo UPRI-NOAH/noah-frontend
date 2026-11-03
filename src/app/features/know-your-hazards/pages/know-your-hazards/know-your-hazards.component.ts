@@ -1,5 +1,6 @@
 import {
   AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -41,19 +42,20 @@ export class KnowYourHazardsComponent implements OnInit, AfterViewChecked {
   private panelPositionDirty = true;
 
   /**
-   * The measured top edge of the sidebar panel, in pixels from the top of the
-   * screen.
+   * The part of the map the sidebar panel covers, in pixels from the bottom of
+   * the map.
    *
    * The last measurement is kept: the panel is pinned to the bottom of the
    * screen, so hiding and showing it does not move it, and the credits must
    * know where it is before the template has re-created it.
    */
-  private panelTop: number | null = null;
+  private panelCoveredHeight: number | null = null;
 
   constructor(
     private kyhService: KyhService,
     private title: Title,
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -103,15 +105,22 @@ export class KnowYourHazardsComponent implements OnInit, AfterViewChecked {
     }
 
     const rect = panel.getBoundingClientRect();
-    this.panelTop = Math.round(rect.top);
-    const legendBottom =
-      Math.round(window.innerHeight - this.panelTop) + ATTRIBUTION_GAP;
+    // The overlays are positioned against the bottom of the map, not against
+    // the viewport: the browser chrome of a phone can shrink the visible
+    // viewport (and `window.innerHeight` with it) while the map keeps the
+    // height of the page, so the two numbers drift apart.
+    const mapBottom =
+      panel.parentElement?.getBoundingClientRect().bottom ?? rect.bottom;
+    this.panelCoveredHeight = Math.round(mapBottom - rect.top);
 
     host.style.setProperty(
       '--noah-kyh-panel-left',
       `${Math.round(rect.left)}px`
     );
-    host.style.setProperty('--noah-kyh-legend-bottom', `${legendBottom}px`);
+    host.style.setProperty(
+      '--noah-kyh-legend-bottom',
+      `${this.panelCoveredHeight + ATTRIBUTION_GAP}px`
+    );
   }
 
   ngAfterViewChecked(): void {
@@ -121,6 +130,10 @@ export class KnowYourHazardsComponent implements OnInit, AfterViewChecked {
 
     this.panelPositionDirty = false;
     this.publishPanelPosition();
+
+    // The credits are placed from a measurement taken after this view was
+    // checked, so check it once more for the new offset to reach the map.
+    this.changeDetector.detectChanges();
   }
 
   private updateSideBarState() {
@@ -139,8 +152,8 @@ export class KnowYourHazardsComponent implements OnInit, AfterViewChecked {
       return null;
     }
 
-    if (this.sideBarMobile && this.panelTop !== null) {
-      return Math.round(window.innerHeight - this.panelTop) + ATTRIBUTION_GAP;
+    if (this.sideBarMobile && this.panelCoveredHeight !== null) {
+      return this.panelCoveredHeight + ATTRIBUTION_GAP;
     }
 
     return LEGEND_BUTTON_SPACE + ATTRIBUTION_GAP;
