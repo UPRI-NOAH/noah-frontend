@@ -4,6 +4,7 @@ import { WindType } from '@features/noah-playground/store/noah-playground.store'
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-wind-group',
   templateUrl: './wind-group.component.html',
   styleUrls: ['./wind-group.component.scss'],

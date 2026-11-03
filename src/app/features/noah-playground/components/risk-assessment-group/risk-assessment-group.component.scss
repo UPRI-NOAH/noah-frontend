@@ -1,0 +1,159 @@
+.flood-impact-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.flood-impact-section + .flood-impact-section {
+  margin-top: 18px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 18px;
+}
+
+.flood-impact-section__heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flood-impact-section__heading h4 {
+  margin: 0;
+  color: #0a0a0a;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.rain-legend,
+.population-legend {
+  padding-left: 30px;
+}
+
+.rain-legend p,
+.population-legend p {
+  margin: 0 0 8px;
+  color: #1e293b;
+  font-size: 13px;
+  line-height: 17px;
+}
+
+.rain-legend img {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+}
+
+.population-legend__items {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.population-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.population-legend__swatch {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.population-legend__swatch--high {
+  background: #c9145b;
+}
+
+.population-legend__swatch--moderate {
+  background: #ed5c96;
+}
+
+.population-legend__swatch--low {
+  background: #ffadb8;
+}
+
+.flood-impact-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 60px);
+  min-height: 44px;
+  margin: 16px 30px 0;
+  border: 0;
+  border-radius: 8px;
+  background: #078546;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 20px;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.flood-impact-card__cta:hover:not(:disabled) {
+  background: #06753e;
+}
+
+.flood-impact-card__cta:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+:host
+  ::ng-deep
+  .flood-impact-section__heading
+  noah-risk-assessment-rain
+  .text-m,
+:host
+  ::ng-deep
+  .flood-impact-section__heading
+  noah-risk-assessment-exposure
+  .text-m {
+  padding: 0;
+}
+
+:host ::ng-deep .flood-impact-section__heading input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: #2563eb;
+}
+
+:host ::ng-deep .flood-impact-section noah-slider {
+  display: block;
+  padding-left: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 420px) {
+  .flood-impact-card__header {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .flood-impact-card__title {
+    font-size: 15px;
+  }
+
+  .rain-legend,
+  .population-legend,
+  :host ::ng-deep .flood-impact-section noah-slider {
+    padding-left: 0;
+  }
+
+  .flood-impact-card__cta {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+}

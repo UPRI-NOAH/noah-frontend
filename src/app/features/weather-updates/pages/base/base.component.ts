@@ -7,6 +7,7 @@ import Swiper, { SwiperOptions } from 'swiper';
 import { filter } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-base',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],

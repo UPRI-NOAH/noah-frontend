@@ -1,6 +1,6 @@
-<div class="text-m f-f-r py-2 pl-4">
-  <div class="flex items-center">
-    <label class="inline-flex items-center checkbox">
+<div class="text-m f-f-r py-2">
+  <div class="facility__header">
+    <label class="facility__checkbox">
       <input
         type="checkbox"
         class="checkbox h-5 w-5 text-blue-600"
@@ -8,12 +8,10 @@
         (click)="toggleShown()"
       />
     </label>
-    <div class="flex flex-col ml-3">
-      <div class="text-lg f-f-r capitalize">{{ displayName }}</div>
-    </div>
+    <div class="text-lg f-f-r capitalize">{{ displayName }}</div>
   </div>
 
-  <div class="flex items-center pt-4">
+  <div class="facility__slider">
     <noah-slider
       label="Opacity"
       [initialValue]="initialOpacityValue"
@@ -21,17 +19,11 @@
     ></noah-slider>
   </div>
 
-  <div class="flex items-center pt-4">
-    <div class="flex flex-col ml-8">
-      <div class="text-lg f-f-r mb-2">Legend</div>
-      <div class="flex items-center mb-1">
-        <label class="inline-flex items-center">
-          <img src="assets/map-sprites/{{ name }}.png" />
-        </label>
-        <div class="flex flex-col ml-3">
-          <div class="text-m leading-none capitalize">{{ displayName }}</div>
-        </div>
-      </div>
-    </div>
+  <div class="flex items-center pt-2 ml-8">
+    <div class="text-lg f-f-r mr-2">Legend:</div>
+    <label class="inline-flex items-center">
+      <img src="assets/map-sprites/{{ name }}.png" />
+    </label>
+    <div class="text-m leading-none capitalize ml-3">{{ displayName }}</div>
   </div>
 </div>

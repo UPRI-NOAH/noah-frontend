@@ -3,6 +3,7 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { ExaggerationState } from '@features/noah-playground/store/noah-playground.store';
 
 @Component({
+  standalone: false,
   selector: 'noah-exaggeration',
   templateUrl: './exaggeration.component.html',
   styleUrls: ['./exaggeration.component.scss'],

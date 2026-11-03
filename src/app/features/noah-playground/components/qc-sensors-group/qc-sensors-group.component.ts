@@ -15,6 +15,7 @@ import { Observable, of } from 'rxjs';
 
 import { BehaviorSubject } from 'rxjs';
 @Component({
+  standalone: false,
   selector: 'noah-qc-sensors-group',
   templateUrl: './qc-sensors-group.component.html',
   styleUrls: ['./qc-sensors-group.component.scss'],

@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-temperature',
   templateUrl: './temperature.component.html',
   styleUrls: ['./temperature.component.scss'],

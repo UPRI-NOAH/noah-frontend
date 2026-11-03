@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { VolcanoType } from '@features/noah-playground/store/noah-playground.store';
-import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-volcano-solo',
   templateUrl: './volcano-solo.component.html',
   styleUrls: ['./volcano-solo.component.scss'],

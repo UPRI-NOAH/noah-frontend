@@ -3,6 +3,7 @@ import { WeatherUpdatesService } from '@features/weather-updates/services/weathe
 import { WEATHER_SATELLITE_ARR } from '@features/weather-updates/store/weather-updates.store';
 import { Observable } from 'rxjs';
 @Component({
+  standalone: false,
   selector: 'noah-typhoon-track-solo',
   templateUrl: './typhoon-track-solo.component.html',
   styleUrls: ['./typhoon-track-solo.component.scss'],

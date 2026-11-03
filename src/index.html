@@ -6,13 +6,20 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Warm up the Mapbox and NOAH data origins as early as the HTML parser
+         allows. DNS + TLS negotiation for api.mapbox.com is on the critical
+         path for the very first basemap tile / style request, so establishing
+         the connection while the app bundle is still parsing removes several
+         round-trips from the first meaningful basemap render. `crossorigin`
+         is required because Mapbox responses are fetched with CORS. -->
+    <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
+    <link rel="preconnect" href="https://events.mapbox.com" crossorigin />
+    <link rel="preconnect" href="https://webgis-static.up.edu.ph" crossorigin />
+    <link rel="dns-prefetch" href="https://api.mapbox.com" />
+    <link rel="dns-prefetch" href="https://events.mapbox.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css"
       rel="stylesheet"
     />
     <link rel="manifest" href="manifest.webmanifest" />

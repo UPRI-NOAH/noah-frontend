@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 
 @Component({
+  standalone: false,
   selector: 'noah-qc-login',
   templateUrl: './qc-login.component.html',
   styleUrls: ['./qc-login.component.scss'],

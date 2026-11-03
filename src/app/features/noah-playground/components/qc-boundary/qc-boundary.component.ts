@@ -8,6 +8,7 @@ export const QC_MUNIBOUNDARY_NAME: Record<QuezonCityMunicipalBoundary, string> =
     'qc-municipal-boundary': 'Municipal Boundary',
   };
 @Component({
+  standalone: false,
   selector: 'noah-qc-boundary',
   templateUrl: './qc-boundary.component.html',
   styleUrls: ['./qc-boundary.component.scss'],
