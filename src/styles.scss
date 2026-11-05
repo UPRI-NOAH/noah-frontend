@@ -47,10 +47,9 @@
 
 /* The custom scale bar. It shares the right-hand column with the NOAH map
    controls toolbar and sits right below it on pages that have the toolbar.
-   On pages without the toolbar (KYH, Weather Updates) it sits just above the
-   shared map attribution in the bottom-right corner so it remains visible and
-   responsive. The playground moves it to the bottom-left corner instead,
-   right above the Mapbox logo. */
+   Otherwise it sits just above the shared map attribution in the bottom-right
+   corner so it remains visible and responsive. Because it is tied to the
+   credits, it also moves down with them when a page hides its bottom panel. */
 #custom-scale-control {
   position: absolute;
   right: 10px;
@@ -78,9 +77,8 @@
   );
 }
 
-/* The scale bar of the playground sits directly above the Mapbox logo in the
-   bottom-left corner of the map. The logo moves with the sidebar, so the
-   playground publishes where it is as `--noah-scale-left` and
+/* A page that anchors the scale bar to the Mapbox logo in the bottom-left
+   corner of the map publishes where the logo is as `--noah-scale-left` and
    `--noah-scale-bottom`; the values here are the fallback for the corner of
    the map itself. The height of the bar is published as well, so the
    coordinate readout can sit right on top of it. */

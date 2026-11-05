@@ -88,32 +88,14 @@ const LOGO_GAP = 10;
 /** The gap between the credits and the right edge of the map. */
 const RIGHT_GAP = 10;
 
-/**
- * The width below which the credits collapse into a round button.
- *
- * It is the same width the rest of the app calls a phone: the `md` breakpoint
- * of Tailwind, which is where the pages hide their desktop chrome.
- */
 const NARROW_WIDTH = 768;
-
-/**
- * The media query that tells whether the map is narrow enough for the credits
- * to collapse.
- */
 const NARROW_QUERY = `(max-width: ${NARROW_WIDTH}px)`;
 
-/**
- * Tells whether the screen is narrow enough for the credits to collapse.
- *
- * The answer is read before the first render, so the credits are already
- * collapsed when the map appears on a phone.
- */
 function isNarrowScreen(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) {
-    return false;
-  }
-
-  return window.matchMedia(NARROW_QUERY).matches;
+  return typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function'
+    ? window.matchMedia(NARROW_QUERY).matches
+    : false;
 }
 
 /**
@@ -271,21 +253,10 @@ export class MapAttributionComponent
   /** The credits to render, in the order they are shown. */
   credits: MapAttributionCredit[] = [];
 
-  /**
-   * Whether the map is narrow enough for the credits to collapse.
-   *
-   * On a phone the credits take up too much room, so they collapse behind a
-   * round button, the way the native Mapbox attribution control collapses on
-   * a narrow screen.
-   */
+  /** Whether the viewport is narrow enough to use the circle toggle. */
   isNarrow = isNarrowScreen();
 
-  /**
-   * Whether the credits are spread out.
-   *
-   * Only the round button on a phone changes this; on a wider screen the
-   * credits are always shown.
-   */
+  /** Start closed on mobile; the circle remains visible for the first load. */
   expanded = false;
 
   /** The attributions the last render was built from, to skip empty updates. */
@@ -294,7 +265,6 @@ export class MapAttributionComponent
   /** Watches the credits so their height never goes stale. */
   private resizeObserver: ResizeObserver | null = null;
 
-  /** Tells whether the map is narrow enough for the credits to collapse. */
   private narrowQuery: MediaQueryList | null = null;
 
   /** Mapbox fires this whenever the style or a source may bring new credits. */
@@ -361,43 +331,25 @@ export class MapAttributionComponent
     container?.style.removeProperty(MAX_WIDTH_VARIABLE);
   }
 
-  /**
-   * Shows or hides the credits.
-   *
-   * Only the round button on a phone does this; on a wider screen the
-   * credits are always shown.
-   */
   toggle(): void {
     this.expanded = !this.expanded;
   }
 
-  /**
-   * Watches how wide the screen is, so the credits collapse again when the
-   * phone is turned and the map becomes narrow once more.
-   */
   private watchWidth(): void {
     if (typeof window === 'undefined' || !window.matchMedia) {
       return;
     }
 
     this.narrowQuery = window.matchMedia(NARROW_QUERY);
-
-    this.zone.runOutsideAngular(() => {
-      this.narrowQuery?.addEventListener('change', this.narrowHandler);
-    });
+    this.narrowQuery.addEventListener('change', this.narrowHandler);
   }
 
-  /**
-   * Collapses the credits whenever the screen becomes narrow or wide again.
-   *
-   * The native Mapbox attribution control does the same: the credits are
-   * collapsed on a narrow screen, and they collapse again when the screen is
-   * rotated and the map becomes narrow once more.
-   */
   private readonly narrowHandler = (event: MediaQueryListEvent) => {
     this.zone.run(() => {
       this.isNarrow = event.matches;
-      this.expanded = false;
+      if (event.matches) {
+        this.expanded = false;
+      }
     });
   };
 

@@ -13,12 +13,48 @@
   max-width: var(--noah-map-attribution-max-width, calc(100% - 114px));
   pointer-events: none;
   font-family: 'Nunito', sans-serif;
-  /* Hidden until the component knows which map it belongs to. */
-  visibility: hidden;
+  visibility: visible;
 }
 
 :host(.is-attached) {
   visibility: visible;
+}
+
+.map-attribution__toggle {
+  display: none;
+}
+
+.map-attribution.is-narrow {
+  padding: 2px;
+  border-radius: 12px;
+
+  .map-attribution__credits {
+    display: none;
+  }
+
+  &.is-expanded .map-attribution__credits {
+    display: flex;
+  }
+
+  .map-attribution__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: #111827;
+    background: transparent;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+  }
 }
 
 /* One translucent bar. The credits stay on a single line when there is room
@@ -71,55 +107,4 @@
 .map-attribution__separator {
   color: #9ca3af;
   user-select: none;
-}
-
-/* The round button that shows and hides the credits. It is only used on a
-   phone, where the credits would otherwise cover a good part of the map. */
-.map-attribution__toggle {
-  display: none;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  color: #111827;
-  background: transparent;
-  border: 0;
-  border-radius: 12px;
-  cursor: pointer;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.06);
-  }
-
-  &:focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
-  }
-}
-
-/* On a phone the credits collapse into the round button, and tapping it
-   shows them again. */
-.map-attribution.is-narrow {
-  padding: 2px;
-  border-radius: 12px;
-
-  .map-attribution__credits {
-    display: none;
-  }
-
-  &.is-expanded .map-attribution__credits {
-    display: flex;
-  }
-
-  .map-attribution__toggle {
-    display: inline-flex;
-  }
 }
