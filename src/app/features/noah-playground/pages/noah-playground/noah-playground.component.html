@@ -2,7 +2,8 @@
   class="fixed w-full h-full min-h-screen bg-gray-100 flex flex-col md:flex-row"
 >
   <button
-    (click)="isMenu = !isMenu"
+    #menuButton
+    (click)="toggleMenu()"
     class="
       fixed
       p-2
@@ -111,6 +112,7 @@
   <!-- end search -->
 
   <nav
+    #sidebar
     class="
       fixed
       p-4
@@ -343,7 +345,7 @@
       </div>
       <!-- QC IOT ACCOUNT LOCAL -->
 
-      <div (click)="isMenu = !isMenu" class="text-black ml-8 cursor-pointer">
+      <div (click)="toggleMenu()" class="text-black ml-8 cursor-pointer">
         <button
           class="
             md:fixed
