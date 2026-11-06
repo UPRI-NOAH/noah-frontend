@@ -1,0 +1,16 @@
+{
+  // Type-checks the Playwright suite (`npm run test:e2e:typecheck`).
+  // Playwright itself only transpiles, so type errors would otherwise go unnoticed.
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es2022", "dom"],
+    "types": ["node"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true
+  },
+  "include": ["**/*.ts", "../playwright.config.ts"]
+}
