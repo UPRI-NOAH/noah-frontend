@@ -1,0 +1,85 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  # Live checks against the real Mapbox / NOAH APIs, every day at 06:00 PHT.
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    # Hermetic suite: every external API is mocked (tests/support/network.ts).
+    if: github.event_name != 'schedule'
+    name: e2e (${{ matrix.project }})
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm install -g pnpm && pnpm install --frozen-lockfile
+      - name: Install Playwright browser
+        run: |
+          case "${{ matrix.project }}" in
+            mobile-chrome) browser=chromium ;;
+            mobile-safari) browser=webkit ;;
+            *) browser=${{ matrix.project }} ;;
+          esac
+          pnpm exec playwright install --with-deps "$browser"
+      - name: Type-check tests
+        run: pnpm run test:e2e:typecheck
+      - name: Build production bundle
+        run: pnpm run e2e:build
+      - name: Run Playwright tests
+        run: pnpm exec playwright test --project=${{ matrix.project }}
+        env:
+          E2E_SKIP_BUILD: '1'
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: test-results-${{ matrix.project }}
+          path: test-results/
+          retention-days: 7
+
+  live:
+    # Contract checks against production services (token, static data, site).
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm install -g pnpm && pnpm install --frozen-lockfile
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run live checks
+        run: pnpm run test:e2e:live
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-live
+          path: playwright-report/
+          retention-days: 30
