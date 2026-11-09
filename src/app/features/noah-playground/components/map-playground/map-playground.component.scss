@@ -65,11 +65,10 @@
   }
 }
 
-/* The coordinate readout sits in the bottom-left corner of the map, directly
-   above the scale bar. Both follow the Mapbox logo, which moves with the
-   sidebar and with the drawer on a phone, so the playground publishes where
-   the scale bar is as `--noah-scale-left`, `--noah-scale-bottom` and
-   `--noah-scale-height`. The 6px is the gap between the two.
+/* The coordinate readout sits in the bottom-right corner, directly on top of
+   the scale bar. The bar is placed above the map credits, so the readout
+   follows the same numbers plus the bar's own height, keeping the two stacked
+   no matter how many lines the credits wrap onto.
 
    The rule is scoped to this component because it has no style encapsulation:
    the other maps have a readout of their own that must keep its place. */
@@ -77,19 +76,30 @@ noah-map-playground .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  left: var(--noah-scale-left, 10px);
-  bottom: calc(
-    var(--noah-scale-bottom, 35px) + var(--noah-scale-height, 25px) + 6px
-  );
-  right: auto;
   top: auto;
+  bottom: calc(
+    var(--noah-map-attribution-bottom, 10px) +
+      var(--noah-map-attribution-height, 24px) + 2px +
+      var(--noah-scale-height, 41px) + 6px
+  );
   z-index: 40;
+  right: 10px;
+  left: auto;
   padding: 5px 10px;
   margin: 0;
   font-size: 12px;
   line-height: 18px;
   border-radius: 3px;
   display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  noah-map-playground .coords {
+    top: 58px;
+    bottom: auto;
+    left: 8px;
+    right: auto;
+  }
 }
 
 .mapboxgl-popup-content {

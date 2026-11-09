@@ -310,33 +310,24 @@ describe('MapAttributionComponent', () => {
     ).toBe('');
   });
 
-  it('shows the credits in full on a wide screen', () => {
+  it('shows the credits by default on a wide screen', () => {
     setMap(createMap());
-
-    component.isNarrow = false;
     fixture.detectChanges();
 
     const bar = fixture.debugElement.query(By.css('.map-attribution'));
+    const toggle = fixture.debugElement.query(
+      By.css('.map-attribution__toggle')
+    );
 
     expect(bar.nativeElement.classList.contains('is-narrow')).toBeFalse();
-    expect(bar.nativeElement.classList.contains('is-expanded')).toBeFalse();
+    expect(toggle.nativeElement).not.toBeNull();
+    expect(
+      bar.nativeElement.querySelector('.map-attribution__credits')
+    ).not.toBeNull();
   });
 
-  it('collapses the credits behind a round button on a phone', () => {
+  it('starts with the attribution credits collapsed on a phone', () => {
     setMap(createMap());
-
-    component.isNarrow = true;
-    fixture.detectChanges();
-
-    const bar = fixture.debugElement.query(By.css('.map-attribution'));
-
-    expect(bar.nativeElement.classList.contains('is-narrow')).toBeTrue();
-    expect(bar.nativeElement.classList.contains('is-expanded')).toBeFalse();
-  });
-
-  it('shows and hides the credits when the button is tapped', () => {
-    setMap(createMap());
-
     component.isNarrow = true;
     fixture.detectChanges();
 
@@ -345,35 +336,8 @@ describe('MapAttributionComponent', () => {
       By.css('.map-attribution__toggle')
     );
 
-    toggle.nativeElement.click();
-    fixture.detectChanges();
-
-    expect(bar.nativeElement.classList.contains('is-expanded')).toBeTrue();
-    expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('true');
-
-    toggle.nativeElement.click();
-    fixture.detectChanges();
-
-    expect(bar.nativeElement.classList.contains('is-expanded')).toBeFalse();
-    expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
-  });
-
-  it('collapses the credits again when the screen changes', () => {
-    setMap(createMap());
-
-    component.isNarrow = true;
-    fixture.detectChanges();
-
-    component.toggle();
-    fixture.detectChanges();
-
-    expect(component.expanded).toBeTrue();
-
-    // The screen is turned, so the map becomes narrow (or wide) again and
-    // the credits collapse.
-    component['narrowHandler']({ matches: true } as MediaQueryListEvent);
-    fixture.detectChanges();
-
     expect(component.expanded).toBeFalse();
+    expect(bar.nativeElement.classList.contains('is-narrow')).toBeTrue();
+    expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
   });
 });

@@ -327,7 +327,7 @@ export class MapService implements OnDestroy {
    * By default the bar sits in the right-hand column below the NOAH map
    * controls toolbar (positioned by CSS via `--noah-map-controls-toolbar-*`).
    * For pages where the toolbar isn't present or where it needs to sit above
-   * the map attribution (e.g. KYH and Weather Updates), pass
+   * the map attribution (NOAH Studio, KYH and Weather Updates), pass
    * `'bottom-right'` to place it just above the shared attribution.
    * `'bottom-left'` puts the bar in the bottom-left corner of the map, where
    * the page publishes the place of the Mapbox logo it sits above as
@@ -354,6 +354,8 @@ export class MapService implements OnDestroy {
     const container = document.createElement('div');
     container.id = 'custom-scale-control';
     container.dataset.position = position;
+    container.style.visibility = 'visible';
+    container.style.display = 'flex';
 
     map.getContainer().appendChild(container);
 
@@ -362,6 +364,7 @@ export class MapService implements OnDestroy {
 
     // Style adjustments: the number sits above the bar; center it in the background.
     const scaleElem = scaleEl as HTMLElement;
+    scaleElem.style.visibility = 'visible';
     scaleElem.style.fontSize = '11px';
     scaleElem.style.lineHeight = '14px';
     scaleElem.style.fontWeight = '500';
