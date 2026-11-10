@@ -132,8 +132,16 @@ test.describe('Hazard maps', () => {
     for (const name of ['high', 'medium', 'low']) {
       await expect(legend.getByText(name, { exact: true })).toBeVisible();
     }
-    await expect(legend.getByText('Choose Color')).toBeVisible();
-    await expect(legend.locator('button[role="button"]')).toHaveCount(6);
+    await expect(
+      legend.getByText('Color Scheme', { exact: true })
+    ).toBeVisible();
+    // Six NOAH palettes plus the custom colour picker.
+    await expect(
+      legend.locator('.hazard-legend__palette > button')
+    ).toHaveCount(6);
+    await expect(
+      legend.locator('.hazard-legend__custom input[type="color"]')
+    ).toHaveCount(1);
   });
 
   test('choosing a palette recolours the legend', async ({ page }) => {
@@ -145,12 +153,15 @@ test.describe('Hazard maps', () => {
 
     // NOAH blue palette (src/app/shared/mocks/noah-colors.ts)
     const blue = legend.locator(
-      'button[role="button"][style*="rgb(43, 117, 178)"]'
+      '.hazard-legend__palette > button[style*="rgb(43, 117, 178)"]'
     );
     await blue.click();
     await expect(blue).toHaveClass(/selected/);
+    await expect(blue).toHaveText('✓');
 
-    const swatches = legend.locator('label > div[style*="background-color"]');
+    const swatches = legend.locator(
+      '.hazard-legend__levels .hazard-legend__swatch'
+    );
     await expect(swatches.nth(0)).toHaveCSS(
       'background-color',
       'rgb(43, 117, 178)'
@@ -175,7 +186,12 @@ test.describe('Hazard maps', () => {
     await expandGroup(page, group, legend);
 
     await legend.locator('input[type="color"]').fill('#0000ff');
-    const swatches = legend.locator('label > div[style*="background-color"]');
+    await expect(legend.locator('.hazard-legend__custom')).toHaveClass(
+      /selected/
+    );
+    const swatches = legend.locator(
+      '.hazard-legend__levels .hazard-legend__swatch'
+    );
     await expect(swatches.nth(0)).toHaveCSS(
       'background-color',
       'rgb(0, 0, 255)'

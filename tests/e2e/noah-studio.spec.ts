@@ -3,12 +3,12 @@ import {
   expectMapReady,
   searchAndSelect,
   searchInput,
-  styleIdOf,
 } from '../support/helpers';
 import { PLACES } from '../support/mock-data';
 import {
   GROUPS,
   groupToggle,
+  measureButton,
   measureOnMap,
   measurementResult,
   sidebar,
@@ -28,7 +28,6 @@ const PUBLIC_GROUPS = [
   GROUPS.weatherSatellite,
   GROUPS.typhoonTrack,
   GROUPS.rainfallContour,
-  GROUPS.lightning,
   GROUPS.wind,
   GROUPS.floodImpact,
   GROUPS.landslide,
@@ -76,7 +75,6 @@ test.describe('Sidebar', () => {
       ['weatherSatellite', true],
       ['typhoonTrack', true],
       ['rainfallContour', true],
-      ['lightning', true],
       ['wind', true],
       ['floodImpact', false],
       ['landslide', false],
@@ -98,7 +96,6 @@ test.describe('Sidebar', () => {
       GROUPS.weatherSatellite,
       GROUPS.typhoonTrack,
       GROUPS.rainfallContour,
-      GROUPS.lightning,
       GROUPS.wind,
     ]) {
       await expect(
@@ -137,24 +134,7 @@ test.describe('Sidebar', () => {
 });
 
 test.describe('Map', () => {
-  test('renders the NOAH basemap with navigation and geolocate controls', async ({
-    page,
-    api,
-  }) => {
-    await expectMapReady(studioMap(page));
-    await expect(
-      studioMap(page).locator('.mapboxgl-ctrl-zoom-in')
-    ).toBeVisible();
-    await expect(
-      studioMap(page).locator('.mapboxgl-ctrl-compass')
-    ).toBeVisible();
-    await expect(
-      studioMap(page).locator('.mapboxgl-ctrl-geolocate')
-    ).toBeVisible();
-    expect(styleIdOf(api.callsTo('mapboxStyle')[0].url)).toMatch(
-      /^upri-noah\//
-    );
-  });
+  // Toolbar, basemap switching and attribution: see map-controls.spec.ts.
 
   test('loads the hazard tilesets listed by the NOAH static API', async ({
     api,
@@ -172,92 +152,58 @@ test.describe('Map', () => {
         ])
       );
   });
-
-  test('switches between terrain and satellite basemaps', async ({
-    page,
-    api,
-  }) => {
-    await expectMapReady(studioMap(page));
-    const initial = styleIdOf(api.callsTo('mapboxStyle')[0].url);
-    const dropdown = studioMap(page).locator('.dropdown');
-
-    await dropdown.hover();
-    await dropdown.getByRole('button', { name: 'Satellite' }).click();
-    await expect.poll(() => api.callsTo('mapboxStyle').length).toBe(2);
-    const satellite = styleIdOf(api.callsTo('mapboxStyle')[1].url);
-    expect(satellite).not.toBe(initial);
-
-    await dropdown.hover();
-    await dropdown.getByRole('button', { name: 'Terrain' }).click();
-    await expect.poll(() => api.callsTo('mapboxStyle').length).toBe(3);
-    expect(styleIdOf(api.callsTo('mapboxStyle')[2].url)).toBe(initial);
-  });
-
-  test('credits Mapbox, OpenStreetMap and the Department of Health', async ({
-    page,
-  }) => {
-    const attribution = studioMap(page)
-      .locator('.mapboxgl-ctrl-attrib')
-      .filter({ visible: true });
-    for (const [name, href] of [
-      ['© Mapbox', 'https://www.mapbox.com/about/maps/'],
-      ['© OpenStreetMap', 'http://www.openstreetmap.org/about/'],
-      ['© Department of Health', 'https://doh.gov.ph/'],
-      ['Improve this map', 'https://www.mapbox.com/map-feedback/'],
-    ]) {
-      await expect(
-        attribution.getByRole('listitem').filter({ hasText: name })
-      ).toHaveAttribute('href', href);
-    }
-  });
 });
 
 test.describe('Measuring tools', () => {
-  const result = measurementResult;
-  const measure = measureOnMap;
+  const LINE: Array<[number, number]> = [
+    [0.55, 0.45],
+    [0.7, 0.55],
+  ];
+  const SQUARE: Array<[number, number]> = [
+    [0.55, 0.4],
+    [0.72, 0.4],
+    [0.72, 0.6],
+    [0.55, 0.6],
+  ];
 
-  test('offers distance and area tools', async ({ page }) => {
+  test('the measure buttons toggle drawing on and off', async ({ page }) => {
     await expectMapReady(studioMap(page));
-    await expect(page.locator('.mapbox-gl-draw_line')).toHaveAttribute(
-      'title',
-      'Measure Distance'
-    );
-    await expect(page.locator('.mapbox-gl-draw_polygon')).toHaveAttribute(
-      'title',
-      'Measure Area'
-    );
-    await expect(page.locator('.mapbox-gl-draw_trash')).toBeVisible();
+    const distance = measureButton(page, 'distance');
+    await expect(distance).toHaveAttribute('aria-pressed', 'false');
+    await distance.click();
+    await expect(distance).toHaveAttribute('aria-pressed', 'true');
+    await distance.click();
+    await expect(distance).toHaveAttribute('aria-pressed', 'false');
   });
 
-  test('measures the length of a drawn line and clears it with the trash tool', async ({
-    page,
-  }) => {
-    await measure(
-      page,
-      'line',
-      [
-        [0.55, 0.45],
-        [0.7, 0.55],
-      ],
-      /Total Distance:\s*[\d,.]+ km/
+  test('measures the length of a drawn line', async ({ page }) => {
+    await measureOnMap(page, 'distance', LINE, /Total Distance:\s*[\d,.]+ km/);
+    // Finishing the line ends drawing mode.
+    await expect(measureButton(page, 'distance')).toHaveAttribute(
+      'aria-pressed',
+      'false'
     );
-
-    await page.locator('.mapbox-gl-draw_trash').click();
-    // Trash deletes the selected feature (the line just drawn).
-    await expect(result(page)).toHaveText('');
+    await expect(measurementResult(page, 'area')).toHaveText('');
   });
 
   test('measures the area of a drawn polygon', async ({ page }) => {
-    await measure(
-      page,
-      'polygon',
-      [
-        [0.55, 0.4],
-        [0.72, 0.4],
-        [0.72, 0.6],
-        [0.55, 0.6],
-      ],
-      /Total Area:?\s*[\d,.]+ sqm/
+    await measureOnMap(page, 'area', SQUARE, /Total Area:?\s*[\d,.]+ sqm/);
+  });
+
+  test('"Clear measurements" removes every shape and total', async ({
+    page,
+  }) => {
+    await measureOnMap(page, 'distance', LINE, /Total Distance/);
+    await measureOnMap(page, 'area', SQUARE, /Total Area/);
+    await expect(measurementResult(page, 'distance')).toContainText(
+      'Total Distance'
     );
+
+    await studioMap(page)
+      .locator('noah-map-controls')
+      .getByRole('button', { name: 'Clear measurements', exact: true })
+      .click();
+    await expect(measurementResult(page, 'distance')).toHaveText('');
+    await expect(measurementResult(page, 'area')).toHaveText('');
   });
 });

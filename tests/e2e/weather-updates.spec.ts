@@ -285,13 +285,10 @@ test.describe('Typhoon track', () => {
 });
 
 test.describe('Map', () => {
-  test('renders with navigation, geolocate and scale controls', async ({
-    page,
-  }) => {
+  // Toolbar, basemap switching and attribution: see map-controls.spec.ts.
+  test('renders with a scale bar', async ({ page }) => {
     const map = page.locator('noah-map-weather-updates');
     await expectMapReady(map);
-    await expect(map.locator('.mapboxgl-ctrl-zoom-in')).toBeVisible();
-    await expect(map.locator('.mapboxgl-ctrl-geolocate')).toBeVisible();
     await expect(map.locator('.mapboxgl-ctrl-scale')).toBeVisible();
   });
 

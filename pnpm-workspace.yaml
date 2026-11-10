@@ -1,0 +1,10 @@
+allowBuilds:
+  '@angular/cli': true
+  '@parcel/watcher': set this to true or false
+  core-js: true
+  esbuild: true
+  husky: true
+  lmdb: set this to true or false
+  msgpackr-extract: set this to true or false
+  nice-napi: true
+  swiper: true

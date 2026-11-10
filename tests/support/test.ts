@@ -45,8 +45,12 @@ export const test = base.extend<NoahFixtures>({
   ],
 
   issues: [
-    async ({ page, allowedPageErrors }, use, testInfo) => {
+    async ({ page, allowedPageErrors, browserName }, use, testInfo) => {
       const issues: PageIssues = { pageErrors: [], consoleErrors: [] };
+      let documents = 0;
+      page.on('framenavigated', (frame) => {
+        if (frame === page.mainFrame()) documents++;
+      });
       page.on('pageerror', (error) => issues.pageErrors.push(error));
       page.on('console', (message) => {
         if (message.type() === 'error')
@@ -61,9 +65,22 @@ export const test = base.extend<NoahFixtures>({
           contentType: 'text/plain',
         });
       }
+      // WebKit reports requests (and Mapbox image blobs) that are cancelled
+      // because the page navigates away as "... due to access control checks"
+      // page errors. Chromium and Firefox drop them silently, so ignore them –
+      // in WebKit only, and only when the test actually left a document.
+      const teardownNoise =
+        browserName === 'webkit' && documents > 1
+          ? [/due to access control checks\.?$/]
+          : [];
       const unexpected = issues.pageErrors
         .map((error) => `${error.name}: ${error.message}`)
-        .filter((text) => !allowedPageErrors.some((re) => re.test(text)));
+        .filter(
+          (text) =>
+            ![...allowedPageErrors, ...teardownNoise].some((re) =>
+              re.test(text)
+            )
+        );
       expect(unexpected, 'uncaught exceptions thrown by the page').toEqual([]);
     },
     { auto: true },

@@ -131,12 +131,12 @@ test.describe('Exposure summary', () => {
   });
 
   test('shows the population exposure legend on the map', async ({ page }) => {
-    const legend = group(page).getByText(
-      'Population Exposure to Flood 100-Year Return Period'
-    );
-    await expect(legend).toBeVisible();
+    const legend = group(page).locator('.population-legend');
+    await expect(
+      legend.getByText('Population exposure to flood, 100-year return period')
+    ).toBeVisible();
     for (const level of ['High', 'Moderate', 'Low']) {
-      await expect(group(page).getByText(level, { exact: true })).toBeVisible();
+      await expect(legend.getByText(level, { exact: true })).toBeVisible();
     }
   });
 
