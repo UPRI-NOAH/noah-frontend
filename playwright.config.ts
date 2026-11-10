@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, ReporterDescription } from '@playwright/test';
 
 /**
  * Playwright configuration for the NOAH frontend end-to-end suite.
@@ -44,9 +44,16 @@ export default defineConfig({
   workers: isCI ? 2 : 4,
   timeout: 60_000,
   expect: { timeout: 10_000 },
-  reporter: isCI
-    ? [['github'], ['list'], ['html', { open: 'never' }]]
-    : [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ...(isCI ? [['github'] as ReporterDescription] : []),
+    ['list'],
+    ['html', { open: 'never' }],
+    // Markdown summary of every run (also added to the GitHub job page in CI).
+    [
+      './tests/support/markdown-reporter.ts',
+      { outputFile: 'test-results/e2e-report.md' },
+    ],
+  ],
 
   use: {
     baseURL: BASE_URL,

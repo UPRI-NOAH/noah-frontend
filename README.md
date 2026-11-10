@@ -15,6 +15,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Test
+
+Run `npm run test:e2e` for a general test of the application across all browsers.
+
+Run `npm run test:e2e:chromium` for a test of the application for chromium-bases browsers.
+
+Once finished, a test-results folder will be generated at root, with e2e-report.md as a summary.
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).

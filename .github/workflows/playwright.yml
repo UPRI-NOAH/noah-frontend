@@ -51,6 +51,14 @@ jobs:
         run: npx playwright test --project=${{ matrix.project }}
         env:
           E2E_SKIP_BUILD: '1'
+      # Markdown summary (tests/support/markdown-reporter.ts); also shown on the job page.
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e-report-md-${{ matrix.project }}
+          path: test-results/e2e-report.md
+          if-no-files-found: ignore
+          retention-days: 30
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

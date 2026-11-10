@@ -30,6 +30,19 @@ docker run --rm -v "$PWD":/work -w /work --ipc=host \
   sh -c 'E2E_SKIP_BUILD=1 npx playwright test --project=webkit --project=mobile-safari'
 ```
 
+## Markdown report
+
+Every run also writes `test-results/e2e-report.md`
+(`support/markdown-reporter.ts`). It lists totals per browser, failures with
+their errors and links to traces, flaky tests, known issues and skipped tests.
+The file is replaced on each run, so copy it elsewhere (for example
+`tests/reports/`) to keep it. In CI the same summary appears on the job's
+summary page and is uploaded as the `e2e-report-md-<project>` artifact.
+
+- Different path: `E2E_REPORT_MD=reports/run.md npm run test:e2e`
+- A `--reporter=...` flag on the command line replaces the configured
+  reporters, so no Markdown file is written for that run.
+
 ## Layout
 
 | Path                                                        | What it covers                                                                                                                                                     |
