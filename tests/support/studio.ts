@@ -48,7 +48,6 @@ export const GROUPS = {
   ),
   typhoonTrack: component('noah-typhoon-track-group', 'Typhoon Track'),
   rainfallContour: component('noah-contour-maps', 'Rainfall Contour'),
-  lightning: component('noah-lightning-group', 'Lightning'),
   wind: component('noah-wind-group', 'Wind'),
   floodImpact: component('noah-risk-assessment-group', 'Flood Impact Forecast'),
   landslide: hazardType('Landslide Hazard'),
@@ -93,18 +92,32 @@ export function sidebarCollapseButton(page: Page): Locator {
 
 export const studioMap = (page: Page) => page.locator('noah-map-playground');
 
-/** Where the measuring tools print "Total Distance" / "Total Area". */
-export const measurementResult = (page: Page) => page.locator('#area');
+export type MeasureTool = 'distance' | 'area';
+
+const MEASURE_BUTTON: Record<MeasureTool, string> = {
+  distance: 'Measure distance',
+  area: 'Measure area',
+};
+
+/** The toolbar button that starts / cancels a measurement. */
+export const measureButton = (page: Page, tool: MeasureTool) =>
+  studioMap(page)
+    .locator('noah-map-controls')
+    .getByRole('button', { name: MEASURE_BUTTON[tool], exact: true });
+
+/** Where the totals are printed: "#distance" (Total Distance) or "#area" (Total Area). */
+export const measurementResult = (page: Page, tool: MeasureTool) =>
+  page.locator(tool === 'distance' ? '#distance' : '#area');
 
 /**
- * Draws a shape with the Studio measuring tools (Mapbox Draw) and waits for
- * the measurement. Draw only starts handling input once the map has fired
- * "load" – which can take a while on a busy CI runner – so the gesture is
- * retried until it lands or `timeout` expires.
+ * Draws a shape with the Studio measuring tools (Mapbox Draw, driven by the
+ * map toolbar) and waits for the measurement. Draw only starts handling input
+ * once the map has fired "load" – which can take a while on a busy CI runner
+ * – so the gesture is retried until it lands or `timeout` expires.
  */
 export async function measureOnMap(
   page: Page,
-  tool: 'line' | 'polygon',
+  tool: MeasureTool,
   points: Array<[number, number]>,
   expected: RegExp,
   timeout = 30_000
@@ -112,14 +125,19 @@ export async function measureOnMap(
   const canvas = studioMap(page).locator('canvas.mapboxgl-canvas');
   await expectMapReady(studioMap(page));
   await expect(async () => {
-    await page.keyboard.press('Escape'); // leave any half-finished drawing
-    await page.locator(`.mapbox-gl-draw_${tool}`).click();
+    // Leave any half-finished drawing so the button starts a fresh one.
+    if (
+      (await measureButton(page, tool).getAttribute('aria-pressed')) === 'true'
+    ) {
+      await measureButton(page, tool).click();
+    }
+    await measureButton(page, tool).click();
     const box = (await canvas.boundingBox())!;
     for (const [fx, fy] of points) {
       await page.mouse.click(box.x + box.width * fx, box.y + box.height * fy);
     }
     await page.keyboard.press('Enter'); // finish the shape
-    await expect(measurementResult(page)).toContainText(expected, {
+    await expect(measurementResult(page, tool)).toContainText(expected, {
       timeout: 2_000,
     });
   }).toPass({ timeout });

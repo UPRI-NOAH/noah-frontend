@@ -1,10 +1,16 @@
 import { test, expect, Page } from '../support/test';
-import { GROUPS, expandGroup, groupToggle, sidebar } from '../support/studio';
+import { expectMapReady } from '../support/helpers';
+import {
+  GROUPS,
+  expandGroup,
+  groupToggle,
+  sidebar,
+  studioMap,
+} from '../support/studio';
 
 /**
  * NOAH Studio "Weather Updates" group: Himawari satellite imagery, typhoon
- * tracks from seven agencies, rainfall contours, lightning (10-minute and the
- * realtime WebSocket relay) and the animated wind forecast.
+ * tracks from seven agencies, rainfall contours and the animated wind forecast.
  */
 
 const TYPHOON_AGENCIES = [
@@ -36,7 +42,7 @@ test('the Weather Updates master switch can be turned on and off', async ({
 });
 
 test.describe('Weather satellite', () => {
-  test('offers Himawari and Himawari + GSMaP loops', async ({ page, api }) => {
+  test('offers Himawari and Himawari + GSMaP loops', async ({ page }) => {
     const group = GROUPS.weatherSatellite;
     const himawari = group
       .root(page)
@@ -61,13 +67,29 @@ test.describe('Weather satellite', () => {
     await gsmap.click();
     await expect(gsmap).toBeChecked();
     await expect(himawari).not.toBeChecked();
+  });
+});
 
-    expect(api.callsTo('staticVideo').map((c) => c.url.pathname)).toEqual(
-      expect.arrayContaining([
-        '/api/sat_webm/ph_himawari.webm',
-        '/api/sat_webm/ph_hima_gsmap.webm',
-      ])
+test.describe('On-demand downloads', () => {
+  test('satellite loops and wind data load only once Weather Updates is on', async ({
+    page,
+    api,
+  }) => {
+    await expectMapReady(studioMap(page));
+    await page.waitForTimeout(1_500);
+    // Off by default, so nothing heavy is downloaded at start-up.
+    expect(api.callsTo('staticVideo')).toHaveLength(0);
+    expect(api.callsTo('staticData').map((c) => c.url.pathname)).not.toContain(
+      '/api/wind/wind_grid.json'
     );
+
+    await weatherUpdatesToggle(page).click();
+    await expect
+      .poll(() => api.callsTo('staticVideo').map((c) => c.url.pathname))
+      .toEqual(expect.arrayContaining(['/api/sat_webm/ph_himawari.webm']));
+    await expect
+      .poll(() => api.callsTo('staticData').map((c) => c.url.pathname))
+      .toContain('/api/wind/wind_grid.json');
   });
 });
 
@@ -144,81 +166,11 @@ test.describe('Rainfall contour', () => {
   });
 });
 
-test.describe('Lightning', () => {
-  test('offers realtime and 10-minute lightning with a strike legend', async ({
-    page,
-  }) => {
-    const group = GROUPS.lightning;
-    const realtime = group
-      .root(page)
-      .locator('#selected-lightning-realtime-lightning');
-    const tenMinutes = group
-      .root(page)
-      .locator('#selected-lightning-10mins-lightning');
-    await expandGroup(page, group, realtime);
-
-    await expect(realtime).toBeChecked();
-    await expect(
-      group
-        .root(page)
-        .locator('label[for="selected-lightning-10mins-lightning"]')
-    ).toHaveText('10-Minute Lightning');
-    await expect(group.root(page).getByText('Cloud to Cloud')).toBeVisible();
-    await expect(group.root(page).getByText('Cloud to Ground')).toBeVisible();
-    await expect(
-      group.root(page).getByRole('link', { name: 'PANaHON (DOST-PAGASA)' })
-    ).toHaveAttribute('href', 'https://www.panahon.gov.ph/');
-
-    await tenMinutes.click();
-    await expect(tenMinutes).toBeChecked();
-    await expect(realtime).not.toBeChecked();
-  });
-
-  test('connects to the realtime relay only while realtime lightning is visible', async ({
-    page,
-    api,
-  }) => {
-    // Hidden by default: Weather Updates is off.
-    await page.waitForTimeout(1_000);
-    expect(api.callsTo('lightningSocket')).toHaveLength(0);
-
-    await weatherUpdatesToggle(page).click();
-    await expect.poll(() => api.lightningSockets.length).toBe(1);
-    expect(api.lightningSockets[0].url()).toBe('wss://ulap-api.up.edu.ph/ws/');
-    expect(api.callsTo('lightningRelay').map((c) => c.url.pathname)).toContain(
-      '/api/lightning/start/'
-    );
-
-    // A strike pushed by the relay is accepted without errors.
-    api.lightningSockets[0].send(
-      JSON.stringify({
-        latitude: 14.65,
-        longitude: 121.07,
-        height: 0,
-        icHeight: 0,
-        timestamp: new Date().toISOString(),
-      })
-    );
-
-    // Switching to the 10-minute product stops the relay.
-    const group = GROUPS.lightning;
-    const tenMinutes = group
-      .root(page)
-      .locator('#selected-lightning-10mins-lightning');
-    await expandGroup(page, group, tenMinutes);
-    await tenMinutes.click();
-    await expect
-      .poll(() => api.callsTo('lightningRelay').map((c) => c.url.pathname))
-      .toContain('/api/lightning/stop/');
-  });
-});
-
 test.describe('Wind', () => {
   const wind = (page: Page) => GROUPS.wind.root(page);
 
   test('shows a six-day forecast timeline that can be stepped and animated', async ({
     page,
-    api,
   }) => {
     await expandGroup(page, GROUPS.wind, wind(page).locator('.wl-day-index'));
 
@@ -244,15 +196,6 @@ test.describe('Wind', () => {
     });
     await play.click();
     await expect(play).toHaveText(/Animate/);
-
-    await expect
-      .poll(() => api.callsTo('staticData').map((c) => c.url.pathname))
-      .toEqual(
-        expect.arrayContaining([
-          '/api/wind/wind_grid.json',
-          '/api/wind/wind_forecast_grid.json',
-        ])
-      );
   });
 
   test('particle count, speed and colour are adjustable', async ({ page }) => {

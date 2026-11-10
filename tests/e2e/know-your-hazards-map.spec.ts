@@ -5,35 +5,29 @@ import {
   searchInput,
   styleIdOf,
 } from '../support/helpers';
+import { configuredStyleIds } from '../support/map-controls';
 import { REVERSE_GEOCODE_PLACE_NAME } from '../support/mock-data';
 
 /**
  * Know Your Hazards map (src/app/features/know-your-hazards/components/map-kyh):
- * Mapbox GL map with NOAH hazard tilesets, navigation/geolocate/scale
- * controls, legend, terrain/satellite switcher and the draggable location pin.
+ * Mapbox GL map with NOAH hazard tilesets, the hazard level legend and the
+ * draggable location pin. The toolbar, style panel and attribution shared by
+ * every map are covered in map-controls.spec.ts.
  */
 
 const map = (page: Page) => page.locator('#map-kyh');
-/** Selected menu entry – a bare `bg-gray-100` class (not `hover:bg-gray-100`). */
-const SELECTED = /(^|\s)bg-gray-100(\s|$)/;
-const legend = (page: Page) =>
-  page
-    .locator('noah-map-kyh')
-    .locator('div')
-    .filter({ has: page.getByRole('heading', { name: 'Hazard Level' }) })
-    .filter({ visible: true })
-    .last();
+const legend = (page: Page) => page.locator('noah-map-kyh .kyh-hazard-legend');
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/know-your-hazards');
   await expectMapReady(map(page));
 });
 
-test('loads the NOAH terrain style with the configured public token', async ({
+test('loads the NOAH Standard style with the configured public token', async ({
   api,
 }) => {
   const [style] = api.callsTo('mapboxStyle');
-  expect(styleIdOf(style.url)).toMatch(/^upri-noah\/[a-z0-9]+$/);
+  expect(configuredStyleIds().Standard).toContain(styleIdOf(style.url));
   expect(style.url.searchParams.get('access_token')).toMatch(
     /^pk\.[\w-]+\.[\w-]+$/
   );
@@ -52,103 +46,24 @@ test('adds the NOAH hazard tilesets to the map', async ({ api }) => {
     );
 });
 
-test('provides zoom, compass, geolocate and scale controls', async ({
-  page,
-}) => {
-  const controls = page.locator('noah-map-kyh');
-  await expect(controls.locator('.mapboxgl-ctrl-zoom-in')).toBeVisible();
-  await expect(controls.locator('.mapboxgl-ctrl-zoom-out')).toBeVisible();
-  await expect(controls.locator('.mapboxgl-ctrl-compass')).toBeVisible();
-  await expect(controls.locator('.mapboxgl-ctrl-geolocate')).toBeVisible();
-  await expect(controls.locator('.mapboxgl-ctrl-scale')).toBeVisible();
-});
-
-test('credits the Department of Health in the attribution', async ({
-  page,
-}) => {
-  await expect(
-    page.locator(
-      'noah-map-kyh .mapboxgl-ctrl-attrib a[href="https://doh.gov.ph"]'
-    )
-  ).toHaveText('© Department of Health');
-});
-
 test('shows a hazard level legend that can be collapsed and restored', async ({
   page,
 }) => {
   const box = legend(page);
+  const toggle = box.getByRole('button', { name: 'Toggle hazard legend' });
+  await expect(box.getByText('Hazard level', { exact: true })).toBeVisible();
+  for (const level of ['Low', 'Medium', 'High']) {
+    await expect(box.getByText(level, { exact: true })).toBeVisible();
+  }
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(box.getByText('Low', { exact: true })).toHaveCount(0);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(box.getByText('Low', { exact: true })).toBeVisible();
-  await expect(box.getByText('Medium', { exact: true })).toBeVisible();
-  await expect(box.getByText('High', { exact: true })).toBeVisible();
-
-  // The "x" icon collapses the legend into a "Legend" button.
-  await box.locator('svg.icon-tabler-x').locator('..').click();
-  const reopen = page
-    .locator('noah-map-kyh')
-    .getByRole('button', { name: 'Legend' });
-  await expect(reopen).toBeVisible();
-  await expect(
-    page.locator('noah-map-kyh').getByRole('heading', { name: 'Hazard Level' })
-  ).toBeHidden();
-
-  await reopen.click();
-  await expect(
-    page.locator('noah-map-kyh').getByRole('heading', { name: 'Hazard Level' })
-  ).toBeVisible();
-});
-
-test.describe('Map style switcher', () => {
-  const switcher = (page: Page) =>
-    page.locator('noah-map-kyh noah-change-style-button');
-
-  test('switches between terrain and satellite basemaps', async ({
-    page,
-    api,
-  }) => {
-    const initialStyle = styleIdOf(api.callsTo('mapboxStyle')[0].url);
-
-    await switcher(page).getByRole('button').first().click();
-    const terrain = switcher(page).getByRole('button', { name: 'Terrain' });
-    const satellite = switcher(page).getByRole('button', { name: 'Satellite' });
-    await expect(terrain).toBeVisible();
-    await expect(terrain).toHaveClass(SELECTED);
-
-    await satellite.click();
-    await expect(satellite).toBeHidden(); // menu closes after a choice
-    await expect.poll(() => api.callsTo('mapboxStyle').length).toBe(2);
-    const satelliteStyle = styleIdOf(api.callsTo('mapboxStyle')[1].url);
-    expect(satelliteStyle).toMatch(/^upri-noah\//);
-    expect(satelliteStyle).not.toBe(initialStyle);
-
-    await switcher(page).getByRole('button').first().click();
-    await expect(satellite).toHaveClass(SELECTED);
-    await expect(terrain).not.toHaveClass(SELECTED);
-
-    await terrain.click();
-    await expect.poll(() => api.callsTo('mapboxStyle').length).toBe(3);
-    expect(styleIdOf(api.callsTo('mapboxStyle')[2].url)).toBe(initialStyle);
-  });
-
-  test('choosing the active style does not reload the map', async ({
-    page,
-    api,
-  }) => {
-    await switcher(page).getByRole('button').first().click();
-    await switcher(page).getByRole('button', { name: 'Terrain' }).click();
-    await page.waitForTimeout(500);
-    expect(api.callsTo('mapboxStyle')).toHaveLength(1);
-  });
-
-  test('the location pin is restored after switching styles', async ({
-    page,
-    api,
-  }) => {
-    await expect(page.locator('#map-kyh .mapboxgl-marker')).toHaveCount(1);
-    await switcher(page).getByRole('button').first().click();
-    await switcher(page).getByRole('button', { name: 'Satellite' }).click();
-    await expect.poll(() => api.callsTo('mapboxStyle').length).toBe(2);
-    await expect(page.locator('#map-kyh .mapboxgl-marker')).toHaveCount(1);
-  });
 });
 
 test.describe('Draggable location pin', () => {

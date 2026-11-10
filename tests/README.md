@@ -6,12 +6,13 @@ runs on every push and pull request (`.github/workflows/playwright.yml`).
 ## Running
 
 ```sh
-npm run test:e2e              # build prod bundle, serve on :4300, all projects
+npm run test:e2e              # build the app, serve on :4300, all projects
 E2E_SKIP_BUILD=1 npm run test:e2e   # reuse the existing dist/ build
 npm run test:e2e:chromium     # desktop + phone Chromium only (fast local loop)
 npm run test:e2e:ui           # Playwright UI mode
 npm run test:e2e:report       # open the last HTML report
 npm run test:e2e:live         # live checks against production APIs (see below)
+npm run test:e2e:typecheck    # type-check the specs (Playwright only transpiles)
 
 # Against an already running app (ng serve, staging, ...):
 E2E_BASE_URL=http://localhost:4200 npx playwright test --project=chromium
@@ -31,19 +32,20 @@ docker run --rm -v "$PWD":/work -w /work --ipc=host \
 
 ## Layout
 
-| Path                                                        | What it covers                                                                                                                         |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `e2e/app-shell.spec.ts`                                     | Routing, redirects, titles, PWA manifest/icons/service worker, broken assets, console errors                                           |
-| `e2e/landing*.spec.ts`, `responsive-layouts.mobile.spec.ts` | Hero, weather shortcuts, Studio CTA, nav, install, footer, phone layouts                                                               |
-| `e2e/search*.spec.ts`                                       | Location search (Mapbox Search Box), keyboard, current location, search history                                                        |
-| `e2e/login.spec.ts`                                         | IoT partner login / logout                                                                                                             |
-| `e2e/know-your-hazards*.spec.ts`                            | Hazard assessment, critical facilities, hazard guides, survival kit, map, draggable pin                                                |
-| `e2e/weather-updates.spec.ts`                               | Rainfall contours, forecast, temperature, typhoon track                                                                                |
-| `e2e/noah-studio*.spec.ts`                                  | Studio sidebar, hazard layers & palettes, weather layers, wind, lightning relay, 4As exposure, IoT, restricted layers, measuring tools |
-| `live/`                                                     | Opt-in contract checks against the real services                                                                                       |
-| `support/network.ts`                                        | Hermetic network mock for every external host                                                                                          |
-| `support/mock-data.ts`                                      | Fixture data (places, hazard values, facilities, ...)                                                                                  |
-| `support/test.ts`                                           | Project `test` – installs the mock, fails on uncaught page errors                                                                      |
+| Path                                                        | What it covers                                                                                                                                                     |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `e2e/app-shell.spec.ts`                                     | Routing, redirects, titles, PWA manifest/icons/service worker, broken assets, console errors                                                                       |
+| `e2e/landing*.spec.ts`, `responsive-layouts.mobile.spec.ts` | Hero, weather shortcuts, Studio CTA, nav, install, footer, phone layouts                                                                                           |
+| `e2e/search*.spec.ts`                                       | Location search (Mapbox Search Box), keyboard, current location, search history                                                                                    |
+| `e2e/login.spec.ts`                                         | IoT partner login / logout                                                                                                                                         |
+| `e2e/know-your-hazards*.spec.ts`                            | Hazard assessment, critical facilities, hazard guides, survival kit, map, draggable pin                                                                            |
+| `e2e/weather-updates.spec.ts`                               | Rainfall contours, forecast, temperature, typhoon track                                                                                                            |
+| `e2e/noah-studio*.spec.ts`                                  | Studio sidebar, hazard layers & palettes, weather layers, wind, 4As exposure, IoT, restricted layers, measuring tools                                              |
+| `e2e/map-controls.spec.ts`                                  | Shared map toolbar (zoom, orientation, location, measuring), Map style panel (Streets / Satellite / Standard), lighting presets and attribution, on all three maps |
+| `live/`                                                     | Opt-in contract checks against the real services                                                                                                                   |
+| `support/network.ts`                                        | Hermetic network mock for every external host                                                                                                                      |
+| `support/mock-data.ts`                                      | Fixture data (places, hazard values, facilities, ...)                                                                                                              |
+| `support/test.ts`                                           | Project `test` – installs the mock, fails on uncaught page errors                                                                                                  |
 
 ## How the mock works
 
@@ -65,7 +67,6 @@ api.abort('iotLogin'); // network failure
 api.delay('searchSuggest', 1500); // observe loading states
 api.criticalFacilities = []; // change fixture data
 api.callsTo('tilequeryHazards'); // inspect requests that were made
-api.lightningSockets[0].send('...'); // push realtime lightning messages
 ```
 
 ## Adding tests for a new feature

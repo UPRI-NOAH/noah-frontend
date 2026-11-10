@@ -1,6 +1,6 @@
 import { test, expect, Page } from '../support/test';
 import { expectMapReady, knownIssue } from '../support/helpers';
-import { MockEndpoint } from '../support/network';
+import { MockEndpoint, NetworkMock } from '../support/network';
 import {
   GROUPS,
   groupToggle,
@@ -15,36 +15,41 @@ import {
  */
 
 /**
- * Records console.error() calls with Error arguments flattened to text.
- * (Firefox reports Error arguments as opaque handles in ConsoleMessage.text(),
- * so the Playwright console event alone is not enough to read Angular's
- * "ERROR Error: Uncaught (in promise): ..." reports.)
+ * Records console.error() calls as text, flattening Error-like arguments
+ * (Error, HttpErrorResponse, ...) to their message. Firefox reports such
+ * arguments as opaque handles in ConsoleMessage.text(), so the Playwright
+ * console event alone is not enough.
  */
 async function recordAppErrors(page: Page) {
   await page.addInitScript(() => {
     const log: string[] = [];
     (window as any).__noahAppErrors = log;
     const original = console.error.bind(console);
+    const describe = (arg: any) =>
+      arg instanceof Error
+        ? `${arg.name}: ${arg.message}`
+        : arg && typeof arg === 'object' && 'message' in arg
+        ? String(arg.message)
+        : String(arg);
     console.error = (...args: unknown[]) => {
-      log.push(
-        args
-          .map((arg) =>
-            arg instanceof Error ? `${arg.name}: ${arg.message}` : String(arg)
-          )
-          .join(' ')
-      );
+      log.push(args.map(describe).join(' '));
       original(...args);
     };
   });
 }
 
-/** Unhandled promise rejections, as reported by Angular's ErrorHandler. */
-async function unhandledRejections(page: Page): Promise<string[]> {
+/**
+ * Errors that reached Angular's global ErrorHandler – which logs them as
+ * `console.error('ERROR', error)` – i.e. errors the app did not handle itself
+ * (uncaught exceptions inside the zone, unhandled promise rejections). This
+ * does not depend on how a given zone.js version words the message.
+ */
+async function unhandledAppErrors(page: Page): Promise<string[]> {
   const log: string[] = await page.evaluate(
     () => (window as any).__noahAppErrors ?? []
   );
   return log
-    .filter((text) => text.includes('Uncaught (in promise)'))
+    .filter((text) => text.startsWith('ERROR'))
     .map((text) => text.slice(0, 200));
 }
 
@@ -54,30 +59,58 @@ async function openStudio(page: Page) {
   await expectMapReady(studioMap(page));
 }
 
-test('measuring tools work even when the satellite animation cannot be loaded', async ({
-  page,
-  api,
-}) => {
-  knownIssue(
-    'Mapbox Draw only activates on the map "load" event, which waits for every source – ' +
-      'including the Himawari video loops added at start-up even while hidden. If the ' +
-      'videos fail to load (outage, unsupported codec) the measuring tools never respond.'
-  );
+const LINE: Array<[number, number]> = [
+  [0.55, 0.45],
+  [0.7, 0.55],
+];
+
+function breakSatelliteVideos(api: NetworkMock) {
   for (const file of ['ph_himawari', 'ph_hima_gsmap']) {
     api.missingStaticFiles.add(`/api/sat_webm/${file}.webm`);
     api.missingStaticFiles.add(`/api/sat_webm/${file}.mp4`);
   }
+}
+
+const weatherUpdatesToggle = (page: Page) =>
+  GROUPS.weatherUpdates.root(page).getByRole('checkbox').first();
+
+test('measuring keeps working when the satellite animation fails after the map is ready', async ({
+  page,
+  api,
+}) => {
+  breakSatelliteVideos(api);
   await openStudio(page);
-  await measureOnMap(
-    page,
-    'line',
-    [
-      [0.55, 0.45],
-      [0.7, 0.55],
-    ],
-    /Total Distance/,
-    20_000
+  // A first measurement proves the map has finished loading.
+  await measureOnMap(page, 'distance', LINE, /Total Distance/);
+  await page
+    .getByRole('button', { name: 'Clear measurements', exact: true })
+    .click();
+
+  await weatherUpdatesToggle(page).click();
+  await expect.poll(() => api.callsTo('staticVideo').length).toBeGreaterThan(0);
+  await measureOnMap(page, 'distance', LINE, /Total Distance/, 15_000);
+});
+
+test('measuring works when the satellite layer is switched on while the map is still loading', async ({
+  page,
+  api,
+}) => {
+  knownIssue(
+    'Mapbox Draw activates on the map "load" event, which waits for every source. ' +
+      'Studio adds the Himawari video sources in its idle-time init, before "load", when ' +
+      'Weather Updates is already on – so the measuring tools wait for both videos to ' +
+      'buffer and never activate if they fail to load.'
   );
+  breakSatelliteVideos(api);
+  // Hold the tileset metadata back so the map is still loading when the user
+  // switches Weather Updates on.
+  api.delay('mapboxTileJson', 8_000);
+  await page.goto('/noah-studio');
+  await expect(sidebar(page)).toBeVisible();
+  await weatherUpdatesToggle(page).click();
+  await expect.poll(() => api.callsTo('staticVideo').length).toBeGreaterThan(0);
+
+  await measureOnMap(page, 'distance', LINE, /Total Distance/, 25_000);
 });
 
 const OUTAGES: Array<{
@@ -92,9 +125,8 @@ const OUTAGES: Array<{
     knownIssue:
       'RiskAssessmentModalComponent.ngOnInit calls archiveData(), which awaits ' +
       'panahon.up.edu.ph/api/latest-results/ without a try/catch – an outage surfaces as ' +
-      'an unhandled promise rejection on every Studio visit.',
+      'an unhandled error (Angular ErrorHandler) on every Studio visit.',
   },
-  { name: 'the realtime lightning relay', endpoints: ['lightningRelay'] },
 ];
 
 for (const { name, endpoints, knownIssue: issue } of OUTAGES) {
@@ -109,6 +141,6 @@ for (const { name, endpoints, knownIssue: issue } of OUTAGES) {
     await expect(groupToggle(page, GROUPS.volcanoes)).toBeChecked();
     await page.waitForTimeout(1_000);
 
-    expect(await unhandledRejections(page)).toEqual([]);
+    expect(await unhandledAppErrors(page)).toEqual([]);
   });
 }

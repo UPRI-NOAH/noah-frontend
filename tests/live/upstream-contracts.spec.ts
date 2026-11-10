@@ -22,16 +22,24 @@ function productionMapboxConfig() {
     join(__dirname, '..', '..', 'src', 'environments', 'environment.prod.ts'),
     'utf8'
   );
-  const token = source.match(/accessToken:\s*'([^']+)'/)?.[1];
+  const token = source.match(/accessToken:\s*'([^']*)'/)?.[1] ?? '';
   const styles = [...source.matchAll(/mapbox:\/\/styles\/([\w-]+\/\w+)/g)].map(
     (m) => m[1]
   );
-  if (!token || styles.length === 0)
-    throw new Error('Could not parse environment.prod.ts');
+  if (styles.length === 0)
+    throw new Error('Could not find Mapbox styles in environment.prod.ts');
   return { token, styles };
 }
 
 const { token, styles } = productionMapboxConfig();
+
+test('the production build ships a Mapbox access token', () => {
+  expect(
+    token,
+    'src/environments/environment.prod.ts has an empty Mapbox accessToken – ' +
+      'production maps, search and hazard assessment cannot reach Mapbox'
+  ).toMatch(/^pk\./);
+});
 const DEFAULT_CENTER = '121.0709613,14.6577006';
 
 test.describe('Mapbox', () => {
@@ -104,7 +112,6 @@ test.describe('NOAH static data (webgis-static.up.edu.ph)', () => {
     'typhoon_track/pagasa_typhoon.geojson',
     'typhoon_track/multi_typhoon.geojson',
     'par/par_outline.json',
-    'lightning/lightning.geojson',
     'volcanoes/active_volcano_rad.geojson',
   ];
   for (const path of geojson) {

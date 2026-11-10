@@ -125,7 +125,10 @@ test.describe('Hazard assessment', () => {
     page,
     api,
   }) => {
-    api.delay('tilequeryHazards', 1_500);
+    // Long enough that all three buttons can be checked on a busy CI runner
+    // (1.5 s was not), short enough for the levels to arrive within the
+    // default 10 s assertion timeout afterwards.
+    api.delay('tilequeryHazards', 5_000);
     await page.goto('/know-your-hazards');
     for (const { label } of HAZARDS) {
       await expect(hazardButton(page, label)).toContainText('Loading...');

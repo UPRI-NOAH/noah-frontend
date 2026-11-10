@@ -1,9 +1,4 @@
-import type {
-  BrowserContext,
-  Request,
-  Route,
-  WebSocketRoute,
-} from '@playwright/test';
+import type { BrowserContext, Request, Route } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import {
@@ -60,8 +55,6 @@ export type MockEndpoint =
   | 'staticVideo'
   | 'staticData'
   | 'legacySensors'
-  | 'lightningRelay'
-  | 'lightningSocket'
   | 'analytics'
   | 'webFonts'
   | 'unmocked';
@@ -114,8 +107,6 @@ function coordinatesFromPath(pathname: string): LngLat | null {
 export class NetworkMock {
   readonly calls: RecordedCall[] = [];
   readonly unmocked: string[] = [];
-  /** Mocked sockets of the realtime lightning relay (wss://ulap-api.up.edu.ph/ws/). */
-  readonly lightningSockets: WebSocketRoute[] = [];
 
   /** Places known to the search mock. */
   places: MockPlace[] = [...ALL_PLACES];
@@ -142,28 +133,13 @@ export class NetworkMock {
       (route, request) => this.handle(route, request)
     );
 
-    // WebSockets bypass page.route(). Refuse unknown third-party sockets...
+    // WebSockets bypass page.route(): refuse third-party sockets and report them.
     const appHost = new URL(this.appOrigin).host;
     await this.context.routeWebSocket(
       (url) => url.host !== appHost,
       (ws) => {
         this.unmocked.push(`WS ${ws.url()}`);
         void ws.close({ code: 1008, reason: 'blocked by e2e network mock' });
-      }
-    );
-    // ...but keep a fake realtime lightning relay that specs can push strikes to.
-    // (Registered last so it takes precedence over the catch-all above.)
-    await this.context.routeWebSocket(
-      /^wss?:\/\/ulap-api\.up\.edu\.ph\//,
-      (ws) => {
-        this.lightningSockets.push(ws);
-        this.calls.push({
-          endpoint: 'lightningSocket',
-          url: new URL(ws.url()),
-          method: 'WEBSOCKET',
-          postData: null,
-        });
-        ws.onMessage(() => undefined); // swallow keep-alive pings
       }
     );
   }
@@ -249,7 +225,10 @@ export class NetworkMock {
 
     if (hostname === 'api.mapbox.com') {
       if (pathname.startsWith('/styles/v1/')) {
-        return pathname.includes('/sprite') ? 'mapboxSprite' : 'mapboxStyle';
+        // Classic sprites (sprite.json/.png) and the GL v3 iconset (iconset.pbf).
+        return /\/(sprite|iconset)/.test(pathname)
+          ? 'mapboxSprite'
+          : 'mapboxStyle';
       }
       if (pathname.startsWith('/fonts/v1/')) return 'mapboxFonts';
       if (pathname.startsWith('/search/searchbox/v1/suggest')) {
@@ -288,7 +267,6 @@ export class NetworkMock {
         : 'exposureArchive';
     }
     if (hostname === 'noah-api.up.edu.ph') return 'legacySensors';
-    if (hostname === 'ulap-api.up.edu.ph') return 'lightningRelay';
 
     if (
       hostname.endsWith('googletagmanager.com') ||
@@ -344,14 +322,23 @@ export class NetworkMock {
           );
 
       case 'mapboxSprite':
-        return (route, request, url) =>
-          url.pathname.endsWith('.json')
-            ? this.json(route, request, {})
-            : route.fulfill({
-                headers: this.corsHeaders(request),
-                contentType: 'image/png',
-                body: TRANSPARENT_PNG,
-              });
+        return (route, request, url) => {
+          if (url.pathname.endsWith('.json'))
+            return this.json(route, request, {});
+          if (url.pathname.endsWith('.pbf')) {
+            // An empty protobuf is a valid iconset without icons.
+            return route.fulfill({
+              headers: this.corsHeaders(request),
+              contentType: 'application/x-protobuf',
+              body: Buffer.alloc(0),
+            });
+          }
+          return route.fulfill({
+            headers: this.corsHeaders(request),
+            contentType: 'image/png',
+            body: TRANSPARENT_PNG,
+          });
+        };
 
       case 'mapboxTileJson':
         return (route, request, url) => {
@@ -503,10 +490,6 @@ export class NetworkMock {
 
       case 'exposureArchive':
         return (route, request) => this.json(route, request, ARCHIVE_RESULTS);
-
-      case 'lightningRelay':
-        // /api/lightning/start/ and /api/lightning/stop/
-        return (route, request) => this.json(route, request, { status: 'ok' });
 
       case 'staticImage':
         return (route, request, url) =>

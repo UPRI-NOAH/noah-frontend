@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright configuration for the NOAH frontend end-to-end suite.
  *
- * By default the suite builds the production bundle, serves it from
+ * By default the suite builds the app (`npm run e2e:build`), serves it from
  * `dist/noah-frontend` on E2E_PORT (4300, so it never collides with a local
  * `ng serve` on 4200) and runs every spec against a hermetic network mock
  * (see tests/support/network.ts).
@@ -105,7 +105,7 @@ export default defineConfig({
         command: webServerCommand,
         url: BASE_URL,
         reuseExistingServer: !isCI,
-        // Includes the Angular production build (~1-3 minutes).
+        // Includes the Angular build (~1-3 minutes).
         timeout: 10 * 60_000,
         stdout: 'pipe',
         stderr: 'pipe',
