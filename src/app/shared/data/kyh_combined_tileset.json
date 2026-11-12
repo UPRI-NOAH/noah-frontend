@@ -23,6 +23,10 @@
     ]
   },
   {
+    "url": "mapbox://upri-noah.ph_fh_srtm_tls",
+    "sourceLayer": ["ph_fh_srtm"]
+  },
+  {
     "url": "mapbox://upri-noah.ph_lh_lh1_tls",
     "sourceLayer": [
       "PH010000000_LH_lh1",

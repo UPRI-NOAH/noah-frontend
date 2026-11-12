@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { SummaryItem } from '@features/noah-playground/services/qc-sensor.service';
 
 @Pipe({
+  standalone: false,
   name: 'searchfilter',
 })
 export class SearchfilterPipe implements PipeTransform {

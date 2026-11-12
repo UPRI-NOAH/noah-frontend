@@ -7,6 +7,7 @@ export const QC_CRITFAC_NAME: Record<QuezonCityCriticalFacilities, string> = {
   'qc-critical-facilities': 'Government-Owned Facilities',
 };
 @Component({
+  standalone: false,
   selector: 'noah-qc-critical-facilities',
   templateUrl: './qc-critical-facilities.component.html',
   styleUrls: ['./qc-critical-facilities.component.scss'],

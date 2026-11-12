@@ -6,6 +6,7 @@ import { FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-weather-satellite',
   templateUrl: './weather-satellite.component.html',
   styleUrls: ['./weather-satellite.component.scss'],

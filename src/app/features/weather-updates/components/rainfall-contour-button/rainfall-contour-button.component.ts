@@ -13,6 +13,7 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'noah-rainfall-contour-button',
   templateUrl: './rainfall-contour-button.component.html',
   styleUrls: ['./rainfall-contour-button.component.scss'],

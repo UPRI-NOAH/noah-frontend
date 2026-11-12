@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-flood',
   templateUrl: './flood.component.html',
   styleUrls: ['./flood.component.scss'],

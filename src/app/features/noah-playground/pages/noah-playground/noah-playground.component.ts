@@ -1,4 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
@@ -11,12 +19,43 @@ import {
   Breakpoints,
 } from '@angular/cdk/layout';
 
+/**
+ * The height of the button that opens the drawer on a phone. It sits at the
+ * bottom of the screen, over the map.
+ */
+const MENU_BUTTON_HEIGHT = 40;
+
+/**
+ * The width of the sidebar that covers the left of the map on a wide
+ * screen.
+ */
+const SIDEBAR_WIDTH = 384;
+
+/**
+ * The room the Mapbox logo of the page takes at the bottom-left of the map,
+ * right next to the sidebar.
+ */
+const LOGO_SPACE = 94;
+
+/**
+ * The gap between the map attribution and whatever covers the bottom of the
+ * map.
+ */
+const ATTRIBUTION_GAP = 10;
+
 @Component({
+  standalone: false,
   selector: 'noah-noah-playground',
   templateUrl: './noah-playground.component.html',
   styleUrls: ['./noah-playground.component.scss'],
 })
-export class NoahPlaygroundComponent implements OnInit {
+export class NoahPlaygroundComponent implements OnInit, AfterViewChecked {
+  /** The drawer that covers the bottom of the map on a phone. */
+  @ViewChild('sidebar') sidebar?: ElementRef<HTMLElement>;
+
+  /** The button that opens the drawer when it is hidden on a phone. */
+  @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
+
   //userName$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   currentLocationPg$: Observable<string>;
   searchTerm: string;
@@ -45,7 +84,23 @@ export class NoahPlaygroundComponent implements OnInit {
   height = 256; // Default height (64 * 4 = 256px)
   private initialTouchY = 0;
   private initialHeight = this.height;
+  private onWindowResize: (() => void) | null = null;
   isVisible = false;
+  screenWidth = 0;
+
+  /** Set when the covered part of the map has to be measured again. */
+  private attributionPositionDirty = true;
+
+  /**
+   * The part of the map the drawer (or the button that opens it) covers,
+   * measured from the bottom of the map.
+   *
+   * The offset is measured instead of being derived from `window.innerHeight`:
+   * on a phone the browser chrome shrinks the visible viewport while the map
+   * keeps the height of the page, so the two drift apart and the credits and
+   * scale end up below the visible screen.
+   */
+  private coveredHeight: number | null = null;
 
   expanded$: Observable<boolean>;
   shown$: Observable<boolean>;
@@ -55,7 +110,8 @@ export class NoahPlaygroundComponent implements OnInit {
     private title: Title,
     private qcLoginService: QcLoginService,
     private modalService: ModalService,
-    public breakpointObserver: BreakpointObserver
+    public breakpointObserver: BreakpointObserver,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +171,12 @@ export class NoahPlaygroundComponent implements OnInit {
     }
 
     this.updateVisibility();
-    window.addEventListener('resize', this.updateVisibility.bind(this));
+    // Keep a single stable reference so the listener can be removed on destroy.
+    // `this.updateVisibility.bind(this)` created a fresh function that could
+    // never be removed, so every visit to the playground leaked another
+    // resize listener that kept firing on a destroyed component.
+    this.onWindowResize = this.updateVisibility.bind(this);
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   toggleShown(event: Event) {
@@ -128,10 +189,116 @@ export class NoahPlaygroundComponent implements OnInit {
     this.pgService.toggleWeatherUpdatesGroupExpanded();
   }
 
+  /** Shows or hides the drawer and measures the new covered area. */
+  toggleMenu() {
+    this.isMenu = !this.isMenu;
+    this.attributionPositionDirty = true;
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.attributionPositionDirty) {
+      return;
+    }
+
+    this.attributionPositionDirty = false;
+
+    if (this.measureAttributionCoverage()) {
+      // The credits are placed from a measurement taken after this view was
+      // checked, so check once more for the new offset to reach the map.
+      this.changeDetector.detectChanges();
+    }
+  }
+
+  /**
+   * Measures how much of the map the drawer, or the button that opens it,
+   * covers.
+   *
+   * The measurement is taken against the bottom of the map rather than the
+   * viewport. On a phone the browser chrome shrinks the visible viewport (and
+   * `window.innerHeight` with it) while the map keeps the height of the page,
+   * so the two numbers drift apart and the credits and scale are pushed below
+   * the visible screen.
+   */
+  private measureAttributionCoverage(): boolean {
+    if (!this.isVisible) {
+      if (this.coveredHeight === null) {
+        return false;
+      }
+
+      this.coveredHeight = null;
+      return true;
+    }
+
+    const anchor = this.isMenu
+      ? this.sidebar?.nativeElement
+      : this.menuButton?.nativeElement;
+
+    if (!anchor) {
+      return false;
+    }
+
+    const panelRect = anchor.getBoundingClientRect();
+
+    if (panelRect.width === 0 || panelRect.height === 0) {
+      return false;
+    }
+
+    const map = document.getElementById('map');
+    const mapBottom = map
+      ? map.getBoundingClientRect().bottom
+      : panelRect.bottom;
+    const covered = Math.max(0, Math.round(mapBottom - panelRect.top));
+
+    if (covered === this.coveredHeight) {
+      return false;
+    }
+
+    this.coveredHeight = covered;
+    return true;
+  }
+
   updateVisibility() {
     // Update visibility based on window width
     const width = window.innerWidth;
     this.isVisible = width < 768; // Tailwind sm breakpoint is 640px, md is 768px
+    this.screenWidth = width;
+    this.attributionPositionDirty = true;
+  }
+
+  /**
+   * How high the shared map attribution has to sit on this page.
+   *
+   * On a phone the drawer covers the bottom of the map while it is open, and
+   * the "open menu" button covers it while it is closed, so the credits move
+   * above whatever is in the way. On a wider screen the drawer is a sidebar
+   * on the left and the credits stay in the corner of the map.
+   */
+  get attributionBottomOffset(): number | null {
+    if (!this.isVisible) {
+      return null;
+    }
+
+    // The fallback is only used before the first measurement, which happens
+    // as soon as the view has been checked.
+    const covered =
+      this.coveredHeight ?? (this.isMenu ? this.height : MENU_BUTTON_HEIGHT);
+
+    return covered + ATTRIBUTION_GAP;
+  }
+
+  /**
+   * How wide the shared map attribution may take on this page.
+   *
+   * On a wide screen the sidebar covers the left of the map and the page
+   * shows its own Mapbox logo right next to it, so the credits must not
+   * reach under either of them.
+   */
+  get attributionMaxWidth(): number | null {
+    if (this.isVisible) {
+      return null;
+    }
+
+    return this.screenWidth - SIDEBAR_WIDTH - LOGO_SPACE - 2 * ATTRIBUTION_GAP;
   }
 
   // Called when the user touches the screen
@@ -151,6 +318,7 @@ export class NoahPlaygroundComponent implements OnInit {
 
     if (newHeight >= minHeight && newHeight <= maxHeight) {
       this.height = newHeight;
+      this.attributionPositionDirty = true;
     }
 
     if (event.touches.length > 1) return; // Skip for multi-touch gestures
@@ -162,6 +330,10 @@ export class NoahPlaygroundComponent implements OnInit {
   ngOnDestroy() {
     if (this.localStorageCheckInterval) {
       clearInterval(this.localStorageCheckInterval); // Clean up when the component is destroyed
+    }
+    if (this.onWindowResize) {
+      window.removeEventListener('resize', this.onWindowResize);
+      this.onWindowResize = null;
     }
   }
 

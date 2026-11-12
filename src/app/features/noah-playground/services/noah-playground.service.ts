@@ -43,19 +43,27 @@ import {
   WindType,
   WindState,
   WindForecastDay,
+  WindTimeline,
 } from '../store/noah-playground.store';
 import { NoahColor, NoahColorPalette } from '@shared/mocks/noah-colors';
-import { Observable, pipe } from 'rxjs';
-import { first, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, pipe } from 'rxjs';
+import { distinctUntilChanged, first, map, shareReplay } from 'rxjs/operators';
 import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { SENSORS, SensorService, SensorType } from './sensor.service';
 import { HttpClient } from '@angular/common/http';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
-import { state } from '@angular/animations';
 import { TyphoonTrackState } from '@features/weather-updates/store/weather-updates.store';
 import { TyphoonTrackType } from '@features/noah-playground/services/typhoon-track.service';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
-import { get } from 'http';
+
+/**
+ * The SRTM flood tileset is an additional dataset for the 100-year flood
+ * hazard. It is appended locally because the shared combined-tileset manifest
+ * fetched from the webgis API does not include it yet.
+ */
+const SRTM_FLOOD_TILESET = {
+  url: 'mapbox://upri-noah.ph_fh_srtm_tls',
+  sourceLayer: ['ph_fh_srtm'],
+};
 
 @Injectable({
   providedIn: 'root',
@@ -65,12 +73,23 @@ export class NoahPlaygroundService {
     return this.store.state$.pipe(map((state) => state.exaggeration));
   }
 
+  /**
+   * The wind sweep lives outside the store: it updates ~16 times a second
+   * while the forecast animates, which is far too chatty for the store.
+   */
+  private readonly windTimeline: BehaviorSubject<WindTimeline>;
+
   constructor(
     private gaService: GoogleAnalyticsService,
     private http: HttpClient,
     private sensorService: SensorService,
     private store: NoahPlaygroundStore
-  ) {}
+  ) {
+    this.windTimeline = new BehaviorSubject<WindTimeline>({
+      day: this.store.state.wind.selectedForecastDay,
+      blend: 0,
+    });
+  }
 
   get center$(): Observable<{ lng: number; lat: number }> {
     return this.store.state$.pipe(map((state) => state.center));
@@ -271,8 +290,17 @@ export class NoahPlaygroundService {
 
   get selectedWindForecastDay$(): Observable<WindForecastDay> {
     return this.store.state$.pipe(
-      map((state) => state.wind.selectedForecastDay)
+      map((state) => state.wind.selectedForecastDay),
+      distinctUntilChanged()
     );
+  }
+
+  /**
+   * The wind forecast sweep: the day it is on plus a continuous 0..1 blend
+   * into the next day. Emits immediately with the current position.
+   */
+  get windTimeline$(): Observable<WindTimeline> {
+    return this.windTimeline.asObservable();
   }
 
   get selectedTemperature$(): Observable<TemperatureType> {
@@ -314,7 +342,14 @@ export class NoahPlaygroundService {
       .get<{ url: string; sourceLayer: string[] }[]>(
         'https://webgis-static.up.edu.ph/api/hazards/ph_combined_tileset.json'
       )
-      .pipe(first())
+      .pipe(
+        first(),
+        map((tilesets) =>
+          tilesets.some((tileset) => tileset.url === SRTM_FLOOD_TILESET.url)
+            ? tilesets
+            : [...tilesets, SRTM_FLOOD_TILESET]
+        )
+      )
       .toPromise();
   }
 
@@ -718,6 +753,29 @@ export class NoahPlaygroundService {
   }
 
   selectWindForecastDay(day: WindForecastDay): void {
+    // Picking a day by hand snaps the sweep straight to it (blend 0).
+    this.windTimeline.next({ day, blend: 0 });
+    this.persistWindForecastDay(day);
+  }
+
+  /**
+   * Moves the wind sweep to `blend` (0..1) of the way from `day` into the
+   * next forecast day. Called on every tick of the playground's wind player,
+   * so the store is only touched when the day itself changes.
+   */
+  setWindTimeline(day: WindForecastDay, blend: number): void {
+    const nextBlend = Number.isFinite(blend)
+      ? Math.max(0, Math.min(1, blend))
+      : 0;
+
+    this.windTimeline.next({ day, blend: nextBlend });
+    this.persistWindForecastDay(day);
+  }
+
+  /** Keeps the store's selected day in sync (it drives the day labels). */
+  private persistWindForecastDay(day: WindForecastDay): void {
+    if (this.store.state.wind.selectedForecastDay === day) return;
+
     const wind: WindGroupState = {
       ...this.store.state.wind,
     };

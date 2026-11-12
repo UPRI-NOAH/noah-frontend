@@ -43,10 +43,58 @@
   </div>
 </div>
 
-<!-- Switch Map Style -->
-<noah-change-style-button
-  class="mapStyle absolute right-0 mr-1 p-1.5"
+<!-- Back button for wider screens: the phone has one in the top bar above,
+     and the map controls sit on the right, so the desktop one gets its own
+     circle in the top-left corner of the map. -->
+<button
+  type="button"
+  routerLink="/"
+  aria-label="Back to landing page"
+  class="
+    hidden
+    md:flex
+    absolute
+    top-4
+    left-4
+    z-40
+    w-10
+    h-10
+    rounded-full
+    bg-white
+    items-center
+    justify-center
+    shadow
+  "
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+    />
+  </svg>
+</button>
+
+<!-- Map controls: the floating toolbar on the right edge of the map and the
+     map style / lighting panel in the bottom-right corner. Shared with the
+     playground and know-your-hazards maps. -->
+<noah-map-controls
+  [map]="map"
   [selectedStyle]="mapStyle"
   (selectedStyleChange)="switchMapStyle($event)"
->
-</noah-change-style-button>
+  [geolocateControl]="geolocateControl"
+></noah-map-controls>
+
+<!-- Map attribution: the shared credits of every NOAH map, in the
+     bottom-right corner of the map. -->
+<noah-map-attribution
+  [map]="map"
+  [bottomOffset]="attributionBottomOffset"
+></noah-map-attribution>

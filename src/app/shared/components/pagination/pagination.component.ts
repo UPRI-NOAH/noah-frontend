@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'noah-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss'],

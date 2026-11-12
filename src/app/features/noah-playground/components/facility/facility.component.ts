@@ -4,6 +4,7 @@ import { CriticalFacility } from '@shared/mocks/critical-facilities';
 import { Subject } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-facility',
   templateUrl: './facility.component.html',
   styleUrls: ['./facility.component.scss'],

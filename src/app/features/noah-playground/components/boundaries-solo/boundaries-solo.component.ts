@@ -4,6 +4,7 @@ import { BoundariesType } from '@features/noah-playground/store/noah-playground.
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-boundaries-solo',
   templateUrl: './boundaries-solo.component.html',
   styleUrls: ['./boundaries-solo.component.scss'],

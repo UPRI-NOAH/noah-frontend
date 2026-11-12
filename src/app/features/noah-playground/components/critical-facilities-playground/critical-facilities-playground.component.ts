@@ -3,6 +3,7 @@ import { NoahPlaygroundService } from '@features/noah-playground/services/noah-p
 import { CRITICAL_FACILITIES_ARR } from '@shared/mocks/critical-facilities';
 
 @Component({
+  standalone: false,
   selector: 'noah-critical-facilities-playground',
   templateUrl: './critical-facilities-playground.component.html',
   styleUrls: ['./critical-facilities-playground.component.scss'],

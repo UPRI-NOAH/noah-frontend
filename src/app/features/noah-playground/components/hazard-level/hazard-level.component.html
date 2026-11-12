@@ -1,5 +1,5 @@
-<div class="text-m f-f-r py-2 pl-4">
-  <div class="flex items-center">
+<div class="hazard-level-card">
+  <div class="hazard-level-card__header">
     <label class="inline-flex items-center checkbox">
       <input
         [checked]="shown"
@@ -8,26 +8,34 @@
         class="checkbox h-5 w-5 text-blue-600"
       />
     </label>
-    <div class="flex flex-col ml-3">
-      <div class="text-lg f-f-r">{{ name }}</div>
-      <span class="text-xs italic font-bold">
-        <h6 *ngIf="id === 'storm-surge-advisory-1'">
+    <div class="hazard-level-card__title">
+      <div class="hazard-level-card__name">{{ name }}</div>
+      <div
+        class="hazard-level-card__note"
+        *ngIf="
+          id === 'storm-surge-advisory-1' ||
+          id === 'storm-surge-advisory-2' ||
+          id === 'storm-surge-advisory-3' ||
+          id === 'storm-surge-advisory-4'
+        "
+      >
+        <span *ngIf="id === 'storm-surge-advisory-1'">
           Storm Surge Height up to 2 meters
-        </h6>
-        <h6 *ngIf="id === 'storm-surge-advisory-2'">
+        </span>
+        <span *ngIf="id === 'storm-surge-advisory-2'">
           Storm Surge Height up to 3 meters
-        </h6>
-        <h6 *ngIf="id === 'storm-surge-advisory-3'">
+        </span>
+        <span *ngIf="id === 'storm-surge-advisory-3'">
           Storm Surge Height up to 4 meters
-        </h6>
-        <h6 *ngIf="id === 'storm-surge-advisory-4'">
+        </span>
+        <span *ngIf="id === 'storm-surge-advisory-4'">
           Storm Surge Height more than 4 meters
-        </h6>
-      </span>
+        </span>
+      </div>
     </div>
   </div>
 
-  <div class="pt-4">
+  <div class="hazard-level-card__section">
     <noah-slider
       label="Opacity"
       [initialValue]="initialOpacityValue"
@@ -35,11 +43,12 @@
     ></noah-slider>
   </div>
 
-  <div class="pt-4">
+  <div class="hazard-level-card__section">
     <noah-hazard-legend
       [selectedColor]="initialColorValue"
       [customPalette]="initialCustomPalette"
       [highOnly]="highOnly"
+      [typeLabel]="legendTypeLabel"
       (valueChange)="changeColor($event)"
     ></noah-hazard-legend>
   </div>

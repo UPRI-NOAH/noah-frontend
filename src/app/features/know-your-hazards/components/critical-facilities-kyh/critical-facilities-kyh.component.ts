@@ -10,6 +10,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { GoogleAnalyticsService } from 'ngx-google-analytics';
 
 @Component({
+  standalone: false,
   selector: 'noah-critical-facilities-kyh',
   templateUrl: './critical-facilities-kyh.component.html',
   styleUrls: ['./critical-facilities-kyh.component.scss'],

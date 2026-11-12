@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AffectedData } from '@features/noah-playground/services/risk-assessment.service';
 
 @Pipe({
+  standalone: false,
   name: 'searchRiskAffected',
 })
 export class SearchRiskAffectedPipe implements PipeTransform {

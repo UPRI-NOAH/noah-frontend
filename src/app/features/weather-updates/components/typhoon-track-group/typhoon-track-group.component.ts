@@ -3,6 +3,7 @@ import { WeatherUpdatesService } from '@features/weather-updates/services/weathe
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 @Component({
+  standalone: false,
   selector: 'noah-typhoon-track-group',
   templateUrl: './typhoon-track-group.component.html',
   styleUrls: ['./typhoon-track-group.component.scss'],

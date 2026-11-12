@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-lightning',
   templateUrl: './lightning.component.html',
   styleUrls: ['./lightning.component.scss'],
