@@ -20,6 +20,7 @@ type Hazard = {
 };
 
 @Component({
+  standalone: false,
   selector: 'noah-hazard-type',
   templateUrl: './hazard-type.component.html',
   styleUrls: ['./hazard-type.component.scss'],

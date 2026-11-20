@@ -1,6 +1,6 @@
-<div class="pl-3">
-  <div class="flex items-center">
-    <div class="inline-flex items-center radio">
+<div class="flex flex-col gap-2 px-3 py-3 transition-colors">
+  <div class="flex items-start">
+    <div class="inline-flex items-center radio pt-0.5">
       <input
         type="radio"
         class="radio h-5 w-5 text-blue-600"
@@ -9,32 +9,30 @@
         (click)="selectWeatherSatellite(name)"
       />
     </div>
-    <div class="flex flex-col ml-3">
+    <div class="flex flex-col ml-3 min-w-0">
       <label
         for="selected-weather-satellite-{{ name }}"
-        class="text-lg f-f-r capitalize"
+        class="text-base leading-tight font-semibold capitalize cursor-pointer"
         >{{ displayName }}</label
       >
       <span
         *ngIf="name === 'himawari' || name === 'himawari-GSMAP'"
-        class="text-sm"
+        class="mt-1 text-xs leading-snug"
       >
-        <section>
-          <p class="italic text-xs tracking-wide mb-2">
-            <span class="font-bold">Source:</span>
-            <a
-              href="https://www.eorc.jaxa.jp/ptree/"
-              target="_blank"
-              class="text-primary"
-            >
-              JAXA Himawari Monitor P-Tree System
-            </a>
-          </p>
-        </section>
+        <span class="font-semibold">Source:</span>
+        <a
+          href="https://www.eorc.jaxa.jp/ptree/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-primary italic break-words"
+        >
+          JAXA Himawari Monitor P-Tree System
+        </a>
       </span>
     </div>
   </div>
-  <div class="flex items-center pt-2">
+
+  <div class="pl-8">
     <noah-slider
       label="Opacity"
       [initialValue]="initialOpacityValue"

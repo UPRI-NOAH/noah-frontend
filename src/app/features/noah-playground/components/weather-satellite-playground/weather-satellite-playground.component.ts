@@ -7,6 +7,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-weather-satellite-playground',
   templateUrl: './weather-satellite-playground.component.html',
   styleUrls: ['./weather-satellite-playground.component.scss'],

@@ -4,6 +4,7 @@ import { LIGHTNING_GROUP_ARR } from '@features/noah-playground/store/noah-playgr
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-lightning-group',
   templateUrl: './lightning-group.component.html',
   styleUrls: ['./lightning-group.component.scss'],

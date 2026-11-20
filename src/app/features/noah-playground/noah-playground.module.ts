@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { HighchartsChartModule } from 'highcharts-angular';
-
 import { NoahPlaygroundRoutingModule } from './noah-playground-routing.module';
 import { SharedModule } from '@shared/shared.module';
 
@@ -82,11 +80,6 @@ import { RiverbasinComponent } from './components/riverbasin/riverbasin.componen
     WindSoloComponent,
     RiverbasinComponent,
   ],
-  imports: [
-    CommonModule,
-    NoahPlaygroundRoutingModule,
-    SharedModule,
-    HighchartsChartModule,
-  ],
+  imports: [CommonModule, NoahPlaygroundRoutingModule, SharedModule],
 })
 export class NoahPlaygroundModule {}

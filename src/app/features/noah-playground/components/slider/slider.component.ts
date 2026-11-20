@@ -11,6 +11,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-slider',
   templateUrl: './slider.component.html',
   styleUrls: ['./slider.component.scss'],

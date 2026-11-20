@@ -3,6 +3,7 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
 import { QcLoginService } from '@features/noah-playground/services/qc-login.service';
 import { Subject } from 'rxjs';
 @Component({
+  standalone: false,
   selector: 'noah-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],

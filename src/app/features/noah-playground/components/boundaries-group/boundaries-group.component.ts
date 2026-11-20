@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-boundaries-group',
   templateUrl: './boundaries-group.component.html',
   styleUrls: ['./boundaries-group.component.scss'],

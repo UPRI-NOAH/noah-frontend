@@ -4,6 +4,7 @@ import { WeatherSatelliteType } from '@features/noah-playground/store/noah-playg
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-weather',
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.scss'],

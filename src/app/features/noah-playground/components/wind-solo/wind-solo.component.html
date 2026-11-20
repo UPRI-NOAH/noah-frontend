@@ -69,12 +69,15 @@
 
     <div class="wl-color-row">
       <label class="wl-color-label">Pick a color:</label>
-      <input
-        type="color"
-        [value]="initialColorValue"
-        (input)="changeColor($any($event.target).value)"
-        class="wl-color-input"
-      />
+      <div class="wl-color-input-wrapper">
+        <input
+          type="color"
+          [value]="initialColorValue"
+          (input)="changeColor($any($event.target).value)"
+          class="wl-color-input"
+        />
+        <span class="wl-color-plus">+</span>
+      </div>
     </div>
   </div>
 </div>

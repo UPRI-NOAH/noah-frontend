@@ -2,6 +2,7 @@ import { Directive, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { KyhService } from '@features/know-your-hazards/services/kyh.service';
 import { UP_ARROW, DOWN_ARROW, ENTER } from '@angular/cdk/keycodes';
 @Directive({
+  standalone: false,
   selector: '[noahArrowKeys]',
 })
 export class ArrowKeysDirective {

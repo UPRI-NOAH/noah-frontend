@@ -8,6 +8,7 @@ export const BARANGAY_BOUNDARY: Record<BarangayBoundary, string> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'noah-brgy-boundary',
   templateUrl: './brgy-boundary.component.html',
   styleUrls: ['./brgy-boundary.component.scss'],

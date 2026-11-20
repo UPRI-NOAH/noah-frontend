@@ -10,6 +10,7 @@ export const EXPOSURE_NAME: Record<RiskAssessmentExposureType, string> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'noah-risk-assessment-exposure',
   templateUrl: './risk-assessment-exposure.component.html',
   styleUrls: ['./risk-assessment-exposure.component.scss'],

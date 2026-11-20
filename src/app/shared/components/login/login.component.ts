@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
 import { ModalService } from '@features/noah-playground/services/modal.service';
 @Component({
+  standalone: false,
   selector: 'noah-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

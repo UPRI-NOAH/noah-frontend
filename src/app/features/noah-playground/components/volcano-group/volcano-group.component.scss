@@ -1,0 +1,68 @@
+.volcano-panel {
+  width: 100%;
+  margin-top: 24px;
+  color: #071b3a;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+.volcano-panel__header {
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  padding: 0 28px 0 24px;
+  border-bottom: 1px solid #60a5fa;
+  cursor: pointer;
+  user-select: none;
+}
+
+.volcano-panel__checkbox {
+  display: inline-flex;
+  align-items: center;
+}
+
+.volcano-panel__checkbox input {
+  width: 21px;
+  height: 21px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+.volcano-panel__title {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.volcano-panel__spacer {
+  flex: 1;
+}
+
+.volcano-panel__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #4a5568;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.volcano-panel__chevron {
+  flex: 0 0 auto;
+}
+
+.volcano-panel__chevron--right {
+  transform: rotate(0deg);
+}
+
+.volcano-panel__body {
+  padding: 24px 28px 72px 24px;
+}

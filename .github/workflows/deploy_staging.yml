@@ -14,29 +14,29 @@ jobs:
     runs-on: ubuntu-latest
     # Here we are configuring build matrix that allows you to perform certain operations on your code
     # with different software/Operating system configurations.
-    # In our case, we are only running it for Node v12.*. but you can multiple entries in that array.
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [22.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # As you can see below we are using matrix.node-version => it means it will execute for all possible combinations
+      # As you can see below we are using matrix.node-version => it will execute for all possible combinations
       # provided matrix keys array(in our case only one kye => node-version)
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
 
-      # Install the node modules
+      # Install the node modules from the committed lockfile
       - name: NPM Install
-        run: npm install
+        run: npm ci
 
       # Create production build
       - name: Production Build
-        run: npm run build -- --prod # This is equivalent to 'ng build --prod'
+        run: npm run build -- --configuration production # This is equivalent to 'ng build --configuration production'
 
       # Install SSH key for the server
       - name: Install SSH Key

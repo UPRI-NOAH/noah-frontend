@@ -7,6 +7,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'noah-sensors-group',
   templateUrl: './sensors-group.component.html',
   styleUrls: ['./sensors-group.component.scss'],

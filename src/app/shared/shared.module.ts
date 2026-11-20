@@ -5,7 +5,8 @@ import { SearchComponent } from './components/search/search.component';
 import { ArrowKeysDirective } from './arrow-keys.directive';
 import { BannerComponent } from './components/banner/banner.component';
 import { ReplacePipe } from './pipes/replace.pipe';
-import { ChangeStyleButtonComponent } from './components/change-style-button/change-style-button.component';
+import { MapControlsComponent } from './components/map-controls/map-controls.component';
+import { MapAttributionComponent } from './components/map-attribution/map-attribution.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import { LoginComponent } from './components/login/login.component';
@@ -16,23 +17,42 @@ import { AlertComponent } from './components/alert/alert.component';
 import { QcLoginComponent } from './components/qc-login/qc-login.component';
 import { SearchRiskAffectedPipe } from './pipes/search-risk-affected.pipe';
 
-const modules = [CommonModule, FormsModule, ReactiveFormsModule];
-const components = [
-  ChangeStyleButtonComponent,
-  SearchComponent,
-  BannerComponent,
-  DisclaimerComponent,
-  SummaryComponent,
-  LoginComponent,
-  QcLoginComponent,
-  PaginationComponent,
-  AlertComponent,
-];
-const directives = [];
-const pipes = [ReplacePipe, SortPipe, SearchfilterPipe, SearchRiskAffectedPipe];
 @NgModule({
-  declarations: [...components, ...directives, ...pipes],
-  imports: [...modules],
-  exports: [...modules, ...components, ...directives, ...pipes],
+  declarations: [
+    MapControlsComponent,
+    MapAttributionComponent,
+    SearchComponent,
+    BannerComponent,
+    DisclaimerComponent,
+    SummaryComponent,
+    LoginComponent,
+    QcLoginComponent,
+    PaginationComponent,
+    AlertComponent,
+    ReplacePipe,
+    SortPipe,
+    SearchfilterPipe,
+    SearchRiskAffectedPipe,
+  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MapControlsComponent,
+    MapAttributionComponent,
+    SearchComponent,
+    BannerComponent,
+    DisclaimerComponent,
+    SummaryComponent,
+    LoginComponent,
+    QcLoginComponent,
+    PaginationComponent,
+    AlertComponent,
+    ReplacePipe,
+    SortPipe,
+    SearchfilterPipe,
+    SearchRiskAffectedPipe,
+  ],
 })
 export class SharedModule {}

@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { shareReplay, first } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-risk-assessment-group',
   templateUrl: './risk-assessment-group.component.html',
   styleUrls: ['./risk-assessment-group.component.scss'],

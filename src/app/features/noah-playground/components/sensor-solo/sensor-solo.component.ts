@@ -11,6 +11,7 @@ export const SENSOR_NAMES: Record<SensorType, string> = {
   wlmsarg: 'Waterlevel & Rain',
 };
 @Component({
+  standalone: false,
   selector: 'noah-sensor-solo',
   templateUrl: './sensor-solo.component.html',
   styleUrls: ['./sensor-solo.component.scss'],

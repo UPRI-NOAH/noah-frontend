@@ -7,6 +7,7 @@ import { ModalService } from '@features/noah-playground/services/modal.service';
 import { NoahPlaygroundService } from '@features/noah-playground/services/noah-playground.service';
 import { first } from 'rxjs/operators';
 @Component({
+  standalone: false,
   selector: 'noah-risk-assessment-modal',
   templateUrl: './risk-assessment-modal.component.html',
   styleUrls: ['./risk-assessment-modal.component.scss'],

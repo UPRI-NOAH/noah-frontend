@@ -159,7 +159,11 @@ export class KyhService {
 
   private _getAllTilesetNames(): string {
     const tilesetNames = {
-      flood: 'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata1_tls',
+      // The SRTM tileset is part of the 100-year flood hazard. Its `Var`
+      // property (1-3) is read by `_getFloodExposure`, so it also contributes
+      // to the flood risk level computed for the selected location.
+      flood:
+        'upri-noah.ph_fh_100yr_tls,upri-noah.ph_fh_nodata1_tls,upri-noah.ph_fh_srtm_tls',
       landslide: 'upri-noah.ph_lh_lh1_tls,upri-noah.ph_lh_lh2_tls',
       'storm-surge': 'upri-noah.ph_ssh_ssa4_tls',
     };

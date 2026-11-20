@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'noah-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],

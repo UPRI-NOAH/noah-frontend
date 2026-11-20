@@ -10,6 +10,7 @@ export const QC_SENSOR_NAMES: Record<QuezonCitySensorType, string> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'noah-qc-sensor-solo',
   templateUrl: './qc-sensor-solo.component.html',
   styleUrls: ['./qc-sensor-solo.component.scss'],

@@ -35,13 +35,17 @@
       />
     </svg>
   </button>
-  <noah-map-weather-updates class="relative h-full w-full">
+  <noah-map-weather-updates
+    class="relative h-full w-full"
+    [attributionBottomOffset]="attributionBottomOffset"
+  >
   </noah-map-weather-updates>
 
   <!-- MOBILE VIEW -->
 
   <!-- Desktop and Tablet View: Sidebar & Legend with scroll -->
   <div
+    #panel
     class="
       bg-gray-50
       md:bottom-0

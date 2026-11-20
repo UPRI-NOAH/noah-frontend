@@ -11,11 +11,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* The coordinate readout sits in the bottom-right corner, directly on top of
+   the scale bar. The bar is placed above the map credits, so the readout
+   follows the same numbers plus the bar's own height, keeping the two stacked
+   no matter how many lines the credits wrap onto. */
 .coords {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   position: absolute;
-  top: 273px;
+  top: auto;
+  bottom: calc(
+    var(--noah-map-attribution-bottom, 10px) +
+      var(--noah-map-attribution-height, 24px) + 2px +
+      var(--noah-scale-height, 41px) + 6px
+  );
   z-index: 40;
   right: 10px;
   padding: 5px 10px;
@@ -24,16 +33,15 @@
   line-height: 18px;
   border-radius: 3px;
   display: none;
+
+  /* On a phone the bottom-right corner belongs to the bottom sheet, so the
+     readout moves to the top-left instead, directly below the back button and
+     the search bar where it never overlaps either of them. */
   @media only screen and (max-width: 768px) {
-    top: 60px;
+    top: 58px;
+    bottom: auto;
+    right: auto;
     left: 10px;
     width: fit-content;
-  }
-}
-
-.mapStyle {
-  top: 167px;
-  @media only screen and (max-width: 768px) {
-    top: 216px;
   }
 }

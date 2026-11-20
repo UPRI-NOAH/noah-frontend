@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
 @Component({
+  standalone: false,
   selector: 'noah-landslides',
   templateUrl: './landslides.component.html',
   styleUrls: ['./landslides.component.scss'],
