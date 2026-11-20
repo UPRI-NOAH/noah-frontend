@@ -578,9 +578,7 @@ type RawHazardLevel =
   | RawStormSurgeAdvisory
   | RawLandslideHazards;
 
-// `srtm` is a separate flood tileset that belongs to the 100-year return
-// period, so it is kept in the raw flood level union alongside the RRP names.
-export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr' | 'srtm';
+export type RawFloodReturnPeriod = '5yr' | '25yr' | '100yr';
 
 export type RawStormSurgeAdvisory = 'ssa1' | 'ssa2' | 'ssa3' | 'ssa4';
 
@@ -611,10 +609,10 @@ function getHazardLevel(
 ): HazardLevel {
   switch (rawHazardType) {
     case 'fh':
-      // The SRTM tileset is an additional 100-year flood dataset.
-      const strippedFloodLevel =
-        rawHazardLevel === 'srtm' ? '100' : rawHazardLevel.replace('yr', '');
-      return `flood-return-period-${strippedFloodLevel}` as HazardLevel;
+      return `flood-return-period-${rawHazardLevel.replace(
+        'yr',
+        ''
+      )}` as HazardLevel;
     case 'lh':
       return handleLandslideLevel(
         rawHazardLevel as RawLandslideHazards
